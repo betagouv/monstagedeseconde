@@ -360,6 +360,7 @@ class InternshipApplication < ApplicationRecord
                   guard: :no_weeks_overlap?,
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
+                    mail_action_items.where(action_name: "canceled_internship_application_by_student").destroy_all
                     if has_ever_been?(%w[approved read_by_employer validated_by_employer])
                       notify_employer_with_digest_email("restored_internship_application")
                     end

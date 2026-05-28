@@ -538,6 +538,22 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
   end
 
+  test "restoring a canceled application removes only its own canceled_internship_application_by_student mail_action_item" do
+    internship_application = create(:weekly_internship_application, :submitted)
+    other_application = create(:weekly_internship_application, :submitted)
+
+    internship_application.cancel_by_student!
+    other_application.cancel_by_student!
+
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    internship_application.restore!
+
+    assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+  end
+
   test "student_email_not_taken validation rejects email already used by another user" do
     existing_user = create(:employer, email: "taken@example.com")
     application = build(:weekly_internship_application, student_email: "taken@example.com")
