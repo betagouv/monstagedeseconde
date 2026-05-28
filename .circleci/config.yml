@@ -19,7 +19,7 @@ jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     working_directory: ~/project
     docker: # run the steps with Docker
-      - image: cimg/ruby:3.4.7-browsers # ...with this image as the primary container; this is where all `steps` will run
+      - image: cimg/ruby:3.4.9-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment: # environment variables for primary container
           BUNDLE_JOBS: 3
           BUNDLE_RETRY: 3
@@ -28,7 +28,7 @@ jobs: # a collection of steps
           PGUSER: monstage_test
           RAILS_ENV: test
           HOST: https://www.example.fr
-      - image: cimg/postgres:17.4-postgis # database image with support of current dir
+      - image: cimg/postgres:17.5-postgis # database image with support of current dir
         environment: # environment variables for database
           POSTGRES_DB: monstage_test
           POSTGRES_USER: monstage_test
@@ -105,7 +105,11 @@ jobs: # a collection of steps
           environment:
             DATABASE_URL: "postgis://monstage_test:monstage_test@localhost:5432/monstage_test"
           command: |
-            sudo apt-get update --allow-releaseinfo-change && sudo apt install postgresql-client
+            sudo install -d /usr/share/postgresql-common/pgdg
+            sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+            sudo sh -c 'echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+            sudo apt-get update --allow-releaseinfo-change
+            sudo apt-get install -y postgresql-client-17
             bundle exec bin/rails db:create db:schema:load --trace
 
       - run:

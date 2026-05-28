@@ -166,6 +166,45 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :bad_request
   end
 
+  test 'PATCH edit as student with fake email cannot use an email already taken by another user' do
+    school = create(:school)
+    student = create(:student, school:, email: "test@#{school.code_uai}.fr")
+    assert student.fake_email?
+    other_user = create(:employer, email: 'taken@example.com')
+    sign_in(student)
+
+    patch(account_path, params: { user: { email: 'taken@example.com' } })
+
+    assert_response :bad_request
+    student.reload
+    assert_equal "test@#{school.code_uai}.fr", student.email
+  end
+
+  test 'PATCH edit as student with fake email can update to a unique email' do
+    school = create(:school)
+    student = create(:student, school:, email: "test@#{school.code_uai}.fr")
+    assert student.fake_email?
+    sign_in(student)
+
+    patch(account_path, params: { user: { email: 'new-unique@example.com' } })
+
+    assert_redirected_to account_path
+    student.reload
+    assert_equal 'new-unique@example.com', student.email
+  end
+
+  test 'PATCH edit as student cannot update email to one already taken by another user' do
+    student = create(:student, email: 'original@example.com')
+    other_user = create(:employer, email: 'taken@example.com')
+    sign_in(student)
+
+    patch(account_path, params: { user: { email: 'taken@example.com' } })
+
+    assert_response :bad_request
+    student.reload
+    assert_equal 'original@example.com', student.email
+  end
+
   test 'PATCH edit as school_manager, can change school' do
     original_school = create(:school)
     school_manager = create(:school_manager, school: original_school)
@@ -309,6 +348,27 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal class_room.id, teacher.class_room_id
     follow_redirect!
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
+  end
+
+  test 'PATCH account cannot escalate type to Users::God' do
+    teacher = create(:teacher, school: create(:school, :with_school_manager))
+    sign_in(teacher)
+
+    patch account_path, params: { user: { type: 'Users::God' } }
+
+    teacher.reload
+    assert_equal 'Users::SchoolManagement', teacher.type
+    refute teacher.is_a?(Users::God)
+  end
+
+  test 'PATCH account cannot escalate type as student' do
+    student = create(:student)
+    sign_in(student)
+
+    patch account_path, params: { user: { type: 'Users::God' } }
+
+    student.reload
+    assert_equal 'Users::Student', student.type
   end
 
   test 'GET #edit as Employer can change email' do

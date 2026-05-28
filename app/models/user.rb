@@ -7,12 +7,29 @@ class User < ApplicationRecord
   include UserAdmin
   include ActiveModel::Dirty
   include PhoneComputation
+  include TwoFactorAuthenticatable
 
   # TODO: move the following to student or just remove
   has_many :favorites
   has_many :url_shrinkers, dependent: :destroy
 
-  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id, :skip_callback_with_review_rebuild
+  attr_accessor :phone_prefix, :phone_suffix, :statistician_type, :current_school_id, :skip_callback_with_review_rebuild,
+                :authorize_type_change
+
+  ALLOWED_TYPES = %w[
+    Users::AcademyRegionStatistician
+    Users::AcademyStatistician
+    Users::EducationStatistician
+    Users::Employer
+    Users::God
+    Users::MinistryStatistician
+    Users::Operator
+    Users::PrefectureStatistician
+    Users::SchoolManagement
+    Users::Statistician
+    Users::Student
+    Users::Visitor
+  ].freeze
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable,
@@ -27,30 +44,32 @@ class User < ApplicationRecord
   # Everyone should register with ac-xxx.fr email
   # 1. should register with ce.UAI@ email
   # 2.3.4. can register without
-  enum :role, 
-       school_manager: 'school_manager',
-       teacher: 'teacher',
-       cpe: 'cpe',
-       admin_officer: 'admin_officer',
-       other: 'other'
-  
+  enum :role, {
+    school_manager: 'school_manager',
+    teacher: 'teacher',
+    cpe: 'cpe',
+    admin_officer: 'admin_officer',
+    other: 'other'
+  }
 
   validates :first_name, :last_name,
             presence: true
   validates :phone, uniqueness: { allow_blank: true },
                     format: {
-                      with: /\A\+(33|262|594|596|687|689)0(6|7)\d{8}\z/,
+                      with: /\A\+(33|262|590|594|596|687|689)0(6|7)\d{8}\z/,
                       message: 'Veuillez modifier le numéro de téléphone mobile'
                     },
                     allow_blank: true
 
-  validates :email, uniqueness: { allow_blank: true },
+  validates :email, uniqueness: { allow_blank: true, case_sensitive: false },
                     format: { with: Devise.email_regexp },
                     allow_blank: true
 
+  validates :type, inclusion: { in: ALLOWED_TYPES }, allow_nil: true
   validate :email_or_phone
   validate :keep_email_existence, on: :update
   validate :password_complexity
+  validate :type_cannot_be_escalated, on: :update
 
   delegate :application, to: Rails
   delegate :routes, to: :application
@@ -241,7 +260,7 @@ class User < ApplicationRecord
   def already_signed?(internship_agreement_id:) = true
 
   def team_id = id
-  def team_members_ids = [id]
+  def team_members_ids = [ id ]
   def agreement_signatorable? = agreement_signatorable
   def anonymized? = anonymized
   def pending_invitation_to_a_team = []
@@ -252,8 +271,9 @@ class User < ApplicationRecord
   def team_members = User.none
   def custom_dashboard_path = Rails.application.routes.url_helpers.root_path
   def multi_internship_agreements = InternshipAgreement.none
+  def mono_internship_agreements = InternshipAgreement.none
 
-  def compute_weeks_lists = [Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks]
+  def compute_weeks_lists = [ Week.both_school_track_selectable_weeks, Week.both_school_track_selectable_weeks ]
 
   def just_created?
     created_at < Time.now + 3.seconds
@@ -305,5 +325,12 @@ class User < ApplicationRecord
     return if password.length >= 12
 
     errors.add :password, 'doit comporter au moins 12 caractères'
+  end
+
+  def type_cannot_be_escalated
+    return unless type_changed?
+    return if authorize_type_change
+
+    errors.add(:type, :invalid)
   end
 end

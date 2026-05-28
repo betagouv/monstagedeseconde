@@ -128,6 +128,16 @@ const InternshipOfferResults = ({
      .fail(fetchFail);
   };
 
+  const trackBoardingHouseView = (id) => {
+    const data = {};
+    if (params.latitude && params.longitude) {
+      data.latitude = params.latitude;
+      data.longitude = params.longitude;
+      data.radius = params.radius || 60000;
+    }
+    $.ajax({ type: 'POST', url: endpoints['trackBoardingHouseView']({ id }), data });
+  };
+
   const fetchBoardingHouses = () => {
     const data = {};
     if (params.latitude && params.longitude) {
@@ -225,7 +235,7 @@ const InternshipOfferResults = ({
                   Nouveau&nbsp;!
                 </h1>
                 <p>
-                  Les internats pouvant proposer des places sont désormais consultables avec le résultat de vos recherches&nbsp;!
+                  Vous habitez loin de votre lieu de stage&nbsp;? Les internats pouvant proposer des places d’hébergement sont désormais consultables avec les résultats de vos recherches.
                 </p>
               </div>
               <div className="fr-modal__footer fr-px-4w fr-pb-4w">
@@ -402,6 +412,7 @@ const InternshipOfferResults = ({
                       icon={boardingHouseIcon}
                       position={[bh.lat, bh.lon]}
                       key={`bh-${bh.id}`}
+                      eventHandlers={{ click: () => trackBoardingHouseView(bh.id) }}
                     >
                       <Popup className='popup-custom'>
                         <div className="content fr-p-2w">
@@ -411,7 +422,7 @@ const InternshipOfferResults = ({
                             {[bh.street, [bh.zipcode, bh.city].filter(Boolean).join(' ')].filter(Boolean).join(', ')}
                           </p>
                           <p className="fr-card__detail fr-mt-1w">
-                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''}
+                            Peut proposer jusqu'à {bh.available_places} place{bh.available_places > 1 ? 's' : ''} d’hébergement
                           </p>
                           {bh.contact_phone && (
                             <p className="fr-card__detail">Tél : {bh.contact_phone}</p>

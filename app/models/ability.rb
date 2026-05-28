@@ -7,16 +7,16 @@ class Ability
   def initialize(user = nil)
     if user.present?
       case user.type
-      when 'Users::Student' then student_abilities(user:)
-      when 'Users::Employer' then employer_abilities(user:)
-      when 'Users::God' then god_abilities
-      when 'Users::Operator' then operator_abilities(user:)
-      when 'Users::PrefectureStatistician' then statistician_abilities(user:)
-      when 'Users::EducationStatistician' then education_statistician_abilities(user:)
-      when 'Users::MinistryStatistician' then ministry_statistician_abilities(user:)
-      when 'Users::AcademyStatistician' then academy_statistician_abilities(user:)
-      when 'Users::AcademyRegionStatistician' then academy_region_statistician_abilities(user:)
-      when 'Users::SchoolManagement'
+      when "Users::Student" then student_abilities(user:)
+      when "Users::Employer" then employer_abilities(user:)
+      when "Users::God" then god_abilities
+      when "Users::Operator" then operator_abilities(user:)
+      when "Users::PrefectureStatistician" then statistician_abilities(user:)
+      when "Users::EducationStatistician" then education_statistician_abilities(user:)
+      when "Users::MinistryStatistician" then ministry_statistician_abilities(user:)
+      when "Users::AcademyStatistician" then academy_statistician_abilities(user:)
+      when "Users::AcademyRegionStatistician" then academy_region_statistician_abilities(user:)
+      when "Users::SchoolManagement"
         common_school_management_abilities(user:)
         school_manager_abilities(user:) if user.school_manager?
       end
@@ -90,7 +90,12 @@ class Ability
     can :apply, InternshipOffer do |internship_offer|
       ## can apply if ##
       # - user has the right grade
-      # - user has not already applied to the same offer
+      # - user has no approved internship application on any offer
+      # - user has not already applied to the same offer or if he did, its status is now
+      #   rejected_by_student_confirmation and corresponding application
+      #   history lists states as one of these:
+      #   - validated_by_employer or
+      #   - approved
       # - user has not already approved applications for the same offer's weeks
       # - offer is not reserved to an other school
       # - offer is published
@@ -99,12 +104,19 @@ class Ability
       # - offer is not an api offer (only for weekly offers and mu)
 
       internship_offer.grades.include?(user.grade) &&
-        !user.internship_applications.exists?(internship_offer_id: internship_offer.id) && # user has not already applied
+        !(user.grade == Grade.troisieme && user.internship_applications.exists?(aasm_state: "approved")) &&
+        (!user.internship_applications.exists?(internship_offer_id: internship_offer.id) ||
+        existing_application(internship_offer, user)&.canceled_with_passed_approved_application?) && # user has not already applied
         user.other_approved_applications_compatible?(internship_offer:) &&
         internship_offer.published? &&
+        !internship_offer.from_api? &&
         (!internship_offer.reserved_to_schools? || user.school_id.in?(internship_offer.schools.pluck(:id))) &&
         (!internship_offer.rep  || user.school.rep_or_rep_plus?) &&
         (!internship_offer.qpv || user.school.qpv?)
+    end
+
+    def existing_application(internship_offer, user)
+      user.internship_applications.find_by(internship_offer_id: internship_offer.id)
     end
 
     can %i[submit_internship_application update show internship_application_edit],
@@ -137,7 +149,8 @@ class Ability
       internship_application.student.id == user.id &&
         !internship_application.student.has_found_her_internships? &&
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
-        internship_application.restored_at.nil?
+        internship_application.restored_at.nil? &&
+        internship_application.no_weeks_overlap?
     end
 
     can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
@@ -153,7 +166,7 @@ class Ability
     end
 
     can_manage_school(user:) do
-      can [:delete], User do |managed_user_from_school|
+      can [ :delete ], User do |managed_user_from_school|
         managed_user_from_school.school_id == user.school_id
       end
     end
@@ -212,7 +225,7 @@ class Ability
 
   def as_employers_like(user:)
     can :subscribe_to_webinar, User do
-      ENV.fetch('WEBINAR_URL', nil).present?
+      ENV.fetch("WEBINAR_URL", nil).present?
     end
     can %i[edit_password show_modal_info supply_offers], User
     can_manage_teams(user:)
@@ -295,7 +308,6 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope
-      edit_date_range
       edit_organisation_representative_full_name
       edit_organisation_representative_role
       edit_siret
@@ -320,9 +332,9 @@ class Ability
     can %i[destroy], TeamMemberInvitation do |team_member_invitation|
       condition = if user.team.alive?
                     user.team.id_in_team?(team_member_invitation.member_id)
-                  else
+      else
                     user.id == team_member_invitation.inviter_id
-                  end
+      end
       team_member_invitation.member_id != user.id && condition
     end
   end
@@ -341,9 +353,9 @@ class Ability
     can %i[destroy], InternshipOfferArea do |area|
       condition = if user.team.alive?
                     user.team.id_in_team?(area.employer_id)
-                  else
+      else
                     user.id == area.employer_id
-                  end
+      end
       user.team_areas.count > 1 && condition
     end
 
@@ -445,7 +457,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ see_reporting_dashboard
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -458,7 +470,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ export_reporting_dashboard_data
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -498,12 +510,14 @@ class Ability
     ], User
     can :choose_role, User unless user.school_manager?
     can_create_and_manage_account(user:) do
-      can [:choose_class_room], User
+      can [ :choose_class_room ], User
     end
     can_read_dashboard_students_internship_applications(user:)
 
     can_manage_school(user:) do
-      can %i[edit update], School
+      can %i[edit update], School do |school|
+        school.id == user.school_id
+      end
       can %i[manage_school_users
              manage_school_students
              manage_school_internship_agreements
@@ -571,11 +585,11 @@ class Ability
   private
 
   def can_read_dashboard_students_internship_applications(user:)
-    can [:dashboard_index], Users::Student do |student|
+    can [ :dashboard_index ], Users::Student do |student|
       student.id == user.id || student_managed_by?(student:, user:)
     end
 
-    can [:dashboard_show], InternshipApplication do |internship_application|
+    can [ :dashboard_show ], InternshipApplication do |internship_application|
       internship_application.student.id == user.id ||
         student_managed_by?(student: internship_application.student, user:)
     end
@@ -608,7 +622,7 @@ class Ability
       class_room.school_id == user.school_id && !user.school_manager?
     end
 
-    can [:show_user_in_school], User do |user|
+    can [ :show_user_in_school ], User do |user|
       user.school
           .users
           .map(&:id)
@@ -645,7 +659,7 @@ class Ability
 
   def read_employer_name?(internship_offer:)
     # this avoids the N+1 query issue
-    if internship_offer.employer.type == 'Users::Operator'
+    if internship_offer.employer.type == "Users::Operator"
       operator = internship_offer.employer.try(:operator)
       if operator.present? && operator.masked_data
         false
@@ -660,6 +674,6 @@ class Ability
   end
 
   def employers_only?
-    ENV.fetch('EMPLOYERS_ONLY', false) == 'true'
+    ENV.fetch("EMPLOYERS_ONLY", false) == "true"
   end
 end

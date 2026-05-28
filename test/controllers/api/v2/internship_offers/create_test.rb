@@ -33,7 +33,7 @@ module Api
         end
         assert_response :unprocessable_entity
         assert_equal 'BAD_PAYLOAD', json_code
-        assert_equal 'param is missing or the value is empty: internship_offer', json_error
+        assert_equal 'param is missing or the value is empty or invalid: internship_offer', json_error
       end
 
       test 'POST #create as operator fails with invalid data respond with :bad_request' do
@@ -709,6 +709,165 @@ module Api
 
           internship_offer = InternshipOffers::Api.first
           assert_equal false, internship_offer.open_data
+        end
+      end
+
+      test 'POST #create as operator with seconde grade missing mandatory weeks returns 422' do
+        travel_to(Date.new(2024, 1, 1)) do
+          sector = create(:sector, uuid: SecureRandom.uuid)
+          title = 'title'
+          description = 'description'
+          period = 2
+          employer_name = 'employer_name'
+          employer_description = 'employer_description'
+          employer_website = 'http://google.fr'
+          coordinates = { latitude: 1, longitude: 1 }
+          street = "Avenue de l'opéra"
+          zipcode = '75002'
+          city = 'Paris'
+          siret = FFaker::CompanyFR.siret
+          sector_uuid = sector.uuid
+          remote_id = 'test-mandatory-weeks'
+          permalink = 'http://monsite.com'
+          weeks = %w[2024-W24] # Only one week instead of all mandatory weeks
+          grades = %w[seconde]
+
+          assert_difference('InternshipOffer.count', 0) do
+            documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_missing_mandatory_weeks) do
+              post api_v2_internship_offers_path(
+                params: {
+                  token: "Bearer #{@token}",
+                  internship_offer: {
+                    title:,
+                    description:,
+                    employer_name:,
+                    employer_description:,
+                    period:,
+                    employer_website:,
+                    siret:,
+                    coordinates:,
+                    street:,
+                    zipcode:,
+                    city:,
+                    sector_uuid:,
+                    remote_id:,
+                    permalink:,
+                    grades:,
+                    weeks:
+                  }
+                }
+              )
+            end
+            assert_response :unprocessable_entity
+            assert_equal 'WRONG_PARAMS', json_code
+            assert_equal 'All mandatory weeks must be included for seconde grade', json_error
+          end
+        end
+      end
+
+      test 'POST #create with quatrieme and seconde grades returns 422 with validation error' do
+        travel_to(Date.new(2024, 1, 1)) do
+          sector = create(:sector, uuid: SecureRandom.uuid)
+          title = 'title'
+          description = 'description'
+          period = 2
+          employer_name = 'employer_name'
+          employer_description = 'employer_description'
+          employer_website = 'http://google.fr'
+          coordinates = { latitude: 1, longitude: 1 }
+          street = "Avenue de l'opéra"
+          zipcode = '75002'
+          city = 'Paris'
+          siret = FFaker::CompanyFR.siret
+          sector_uuid = sector.uuid
+          remote_id = 'test-mixed-grades-quatrieme'
+          permalink = 'http://monsite.com'
+          weeks = %w[2024-W24 2024-W20]
+          grades = %w[quatrieme seconde]
+
+          assert_difference('InternshipOffer.count', 0) do
+            documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_mixed_grades) do
+              post api_v2_internship_offers_path(
+                params: {
+                  token: "Bearer #{@token}",
+                  internship_offer: {
+                    title:,
+                    description:,
+                    employer_name:,
+                    employer_description:,
+                    period:,
+                    employer_website:,
+                    siret:,
+                    coordinates:,
+                    street:,
+                    zipcode:,
+                    city:,
+                    sector_uuid:,
+                    remote_id:,
+                    permalink:,
+                    grades:,
+                    weeks:
+                  }
+                }
+              )
+            end
+            assert_response :unprocessable_entity
+            assert_equal 'WRONG_PARAMS', json_code
+            assert_equal 'Grades must be either college or lycee, not both', json_error
+          end
+        end
+      end
+
+      test 'POST #create with troisieme and seconde grades returns 422 with validation error' do
+        travel_to(Date.new(2024, 1, 1)) do
+          sector = create(:sector, uuid: SecureRandom.uuid)
+          title = 'title'
+          description = 'description'
+          period = 2
+          employer_name = 'employer_name'
+          employer_description = 'employer_description'
+          employer_website = 'http://google.fr'
+          coordinates = { latitude: 1, longitude: 1 }
+          street = "Avenue de l'opéra"
+          zipcode = '75002'
+          city = 'Paris'
+          siret = FFaker::CompanyFR.siret
+          sector_uuid = sector.uuid
+          remote_id = 'test-mixed-grades-troisieme'
+          permalink = 'http://monsite.com'
+          weeks = InternshipOffers::Api.mandatory_seconde_weeks
+          grades = %w[troisieme seconde]
+
+          assert_difference('InternshipOffer.count', 0) do
+            documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_mixed_grades) do
+              post api_v2_internship_offers_path(
+                params: {
+                  token: "Bearer #{@token}",
+                  internship_offer: {
+                    title:,
+                    description:,
+                    employer_name:,
+                    employer_description:,
+                    period:,
+                    employer_website:,
+                    siret:,
+                    coordinates:,
+                    street:,
+                    zipcode:,
+                    city:,
+                    sector_uuid:,
+                    remote_id:,
+                    permalink:,
+                    grades:,
+                    weeks:
+                  }
+                }
+              )
+            end
+            assert_response :unprocessable_entity
+            assert_equal 'WRONG_PARAMS', json_code
+            assert_equal 'Grades must be either college or lycee, not both', json_error
+          end
         end
       end
     end

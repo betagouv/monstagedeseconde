@@ -103,7 +103,10 @@ module Finders
     end
 
     def keyword_query(query)
-      query.merge(InternshipOffer.search_by_keyword(use_params(:keyword)).group(:rank))
+      keyword = use_params(:keyword).to_s.delete("\u0000")
+      return query if keyword.blank?
+
+      query.merge(InternshipOffer.search_by_keyword(keyword).group(:rank))
     end
 
     def nearby_query(query)

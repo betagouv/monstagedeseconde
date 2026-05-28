@@ -253,6 +253,7 @@ class GenerateMultiInternshipAgreement < Prawn::Document
     @pdf.text "Prénom, nom du chef(fe) d'établissement, adresse postale et électronique du lieu de scolarisation dont relève l'élève :"
     @pdf.text "#{@internship_agreement.school_representative_full_name}, " \
       "#{@internship_agreement.school_representative_role}, " \
+      "#{[@internship_agreement.school&.street, @internship_agreement.school&.zipcode, @internship_agreement.school&.city].compact_blank.join(', ')}, " \
       "#{@internship_agreement.school_manager.try(:email)}, " \
       "#{@internship_agreement.school_representative_phone}"
     @pdf.move_down 5

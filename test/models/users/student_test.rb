@@ -19,13 +19,13 @@ module Users
     test 'validate wrong mobile phone format' do
       user = build(:student, phone: '+330111223344')
       refute user.valid?
-      assert_equal ['Veuillez modifier le numéro de téléphone mobile'], user.errors.messages[:phone]
+      assert_equal [ 'Veuillez modifier le numéro de téléphone mobile' ], user.errors.messages[:phone]
     end
 
     test 'validate wrong phone format' do
       user = build(:student, phone: '06111223344')
       refute user.valid?
-      assert_equal ['Veuillez modifier le numéro de téléphone mobile'], user.errors.messages[:phone]
+      assert_equal [ 'Veuillez modifier le numéro de téléphone mobile' ], user.errors.messages[:phone]
     end
 
     test 'validate good phone format' do
@@ -78,6 +78,108 @@ module Users
       end
     end
 
+    test '#validation_message_for_internship_application returns blank when application is not validated' do
+      student = create(:student, :seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+      internship_application = create(
+        :weekly_internship_application,
+        :submitted,
+        student:,
+        internship_offer:
+      )
+
+      assert_equal '',
+                   student.validation_message_for_internship_application(
+                     internship_application
+                   )
+    end
+
+    test '#validation_message_for_internship_application returns blank for troisieme student' do
+      student = create(:student, grade: Grade.troisieme)
+      internship_offer = create(:weekly_internship_offer_3eme)
+      internship_application = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        student:,
+        internship_offer:
+      )
+
+      assert_equal '',
+                   student.validation_message_for_internship_application(
+                     internship_application
+                   )
+    end
+
+    test '#validation_message_for_internship_application with 1 week includes week_1 period details' do
+      student = create(:student, :seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+      internship_application = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        student:,
+        internship_offer:
+      )
+      school_track_data = {
+        week_1: {
+          start: '17',
+          end: '21',
+          month: 'juin',
+          year: '2026'
+        },
+        week_2: {
+          start: '24',
+          end: '28',
+          month: 'juin',
+          year: '2026'
+        }
+      }
+
+      SchoolYear.singleton_class.send(:define_method, :current_year) do
+        '2026-2027'
+      end
+
+      message = nil
+      begin
+        message = SchoolTrack::Seconde.stub(
+          :period_collection,
+          school_track_data
+        ) do
+          student.validation_message_for_internship_application(
+            internship_application
+          )
+        end
+      ensure
+        SchoolYear.singleton_class.send(:remove_method, :current_year)
+      end
+
+      week_data = school_track_data[:week_1]
+
+      assert_includes message,
+                      "les dates allant du #{week_data[:start]} au #{week_data[:end]} #{week_data[:month]} #{week_data[:year]}"
+      assert_includes message,
+                      "l'autre semaine seront conservés"
+    end
+
+    test '#validation_message_for_internship_application with 2 weeks returns generic warning message' do
+      student = create(:student, :seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
+      internship_application = create(
+        :weekly_internship_application,
+        :validated_by_employer,
+        student:,
+        internship_offer:
+      )
+
+      message = student.validation_message_for_internship_application(
+        internship_application
+      )
+
+      assert_equal 'En choisissant ce stage, <strong>toutes vos autres ' \
+                   'candidatures seront annulées et vous ne pourrez pas ' \
+                   'revenir en arrière</strong>.',
+                   message
+    end
+
     test '#other_approved_applications_compatible? context: no application, student tries to apply to an offer with a both weeks period' do
       student = create(:student, :seconde)
       internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
@@ -96,7 +198,7 @@ module Users
       student = create(:student, :seconde)
       internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
       create(:weekly_internship_application, :approved, student:,
-                                                        weeks: [internship_offer_week_2.weeks.first],
+                                                        weeks: [ internship_offer_week_2.weeks.first ],
                                                         internship_offer: internship_offer_week_2)
       internship_offer = create(:weekly_internship_offer_2nde, :both_weeks)
       refute student.other_approved_applications_compatible?(internship_offer:)
@@ -121,7 +223,7 @@ module Users
       internship_offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
       create(:weekly_internship_application, :approved, student:,
                                                         internship_offer: internship_offer_week_1,
-                                                        weeks: [internship_offer_week_1.weeks.first])
+                                                        weeks: [ internship_offer_week_1.weeks.first ])
       internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       refute student.other_approved_applications_compatible?(internship_offer:)
     end
@@ -130,7 +232,7 @@ module Users
       student = create(:student, :seconde)
       internship_offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_week_2,
-                                                        weeks: [internship_offer_week_2.weeks.first])
+                                                        weeks: [ internship_offer_week_2.weeks.first ])
       internship_offer = create(:weekly_internship_offer_2nde, :week_1)
       assert student.other_approved_applications_compatible?(internship_offer:)
     end
@@ -198,6 +300,58 @@ module Users
       refute student.has_found_her_internships?
       create(:weekly_internship_application, :approved, student:, internship_offer: internship_offer_2)
       assert student.has_found_her_internships?
+    end
+
+    # --- compute_weeks_lists ---
+
+    test '#compute_weeks_lists seconde student without school weeks falls back to Week.seconde_weeks' do
+      student = create(:student, :seconde)
+      school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+      assert_equal Week.seconde_weeks.pluck(:id).sort, school_weeks_list.pluck(:id).sort
+      assert_equal school_weeks_list.pluck(:id).sort, preselected_weeks_list.pluck(:id).sort
+    end
+
+    test '#compute_weeks_lists seconde student with future school weeks uses school weeks' do
+      travel_to Date.new(2025, 9, 1) do
+        student = create(:student, :seconde)
+        future_weeks = Week.seconde_weeks
+        future_weeks.each do |week|
+          create(:school_internship_week, school: student.school, week: week)
+        end
+        school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+        assert_equal future_weeks.pluck(:id).sort, school_weeks_list.pluck(:id).sort
+        assert_equal school_weeks_list.pluck(:id).sort, preselected_weeks_list.pluck(:id).sort
+      end
+    end
+
+    test '#compute_weeks_lists seconde student with expired school weeks falls back to default' do
+      travel_to Date.new(2025, 9, 1) do
+        student = create(:student, :seconde)
+        past_weeks = Week.where(year: 2024, number: [25, 26])
+        past_weeks.each do |week|
+          create(:school_internship_week, school: student.school, week: week)
+        end
+        school_weeks_list, _preselected_weeks_list = student.compute_weeks_lists
+        assert_equal Week.seconde_weeks.pluck(:id).sort, school_weeks_list.pluck(:id).sort,
+                     'should fallback to default seconde weeks when school weeks are expired'
+      end
+    end
+
+    test '#compute_weeks_lists seconde student does not filter preselected weeks with in_the_future' do
+      student = create(:student, :seconde)
+      _school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+      assert preselected_weeks_list.any?, 'seconde student should always have preselected weeks'
+    end
+
+    test '#compute_weeks_lists troisieme student filters preselected weeks with in_the_future' do
+      travel_to Date.new(2025, 1, 15) do
+        student = create(:student, :troisieme)
+        school_weeks_list, preselected_weeks_list = student.compute_weeks_lists
+        assert school_weeks_list.count >= preselected_weeks_list.count
+        preselected_weeks_list.each do |week|
+          assert week.id >= Week.current.id, 'preselected weeks should be in the future for troisieme'
+        end
+      end
     end
 
     test '#has_found_her_internships? when student troisieme' do

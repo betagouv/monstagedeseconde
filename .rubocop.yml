@@ -1,5 +1,15 @@
 inherit_gem:
   rubocop-rails-omakase: rubocop.yml
 
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
+# Style/StringLiterals:
+#   EnforcedStyle: single_quotes
+Style/StringLiteralsInInterpolation:
+  Description: >-
+                 Checks if uses of quotes inside expressions in interpolated
+                 strings match the configured preference.
+  Enabled: true
+  VersionAdded: '0.27'
+  # EnforcedStyle: double_quotes
+  SupportedStyles:
+    - single_quotes
+    - double_quotes

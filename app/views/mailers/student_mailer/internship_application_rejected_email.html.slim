@@ -4,9 +4,9 @@ p style=(p_styles)
   = "Votre candidature au stage \"#{@internship_application.internship_offer.title}\" a été refusée par l'employeur pour les raisons suivantes :"
 
 p style=(p_styles)
-  i 
+  i
     div style='padding-left:25px;'
-      = @internship_application.rejected_message&.gsub("\n", "<br>")&.html_safe
+      = simple_format(@internship_application.rejected_message.to_s, {}, wrapper_tag: "div")
 
 p style=(p_styles)
   strong

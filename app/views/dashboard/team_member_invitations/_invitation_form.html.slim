@@ -3,13 +3,11 @@
             url: dashboard_team_member_invitations_path(),
             class: 'fr-my-3w',
             data: { turbo: false } do |f|
-  = render partial: 'inputs/dsfr_input_field',
+  = render partial: 'inputs/dsfr_email_field',
            locals: {f: f,
                     object: @team_member_invitation,
                     label: 'Adresse email',
                     field: :invitation_email,
-                    pattern: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                    type: 'email',
                     maxlength: 85,
                     required: true}
   p.fr-mt-9v

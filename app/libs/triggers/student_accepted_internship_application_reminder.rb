@@ -3,8 +3,6 @@
 module Triggers
   # safe re-entrant code to send notifications
   class StudentAcceptedInternshipApplicationReminder
-    REMINDER_DAYS = 2
-
     def enqueue_all
       Users::Student.find_each do |student|
         notify(student) if notifiable?(student)
@@ -13,14 +11,14 @@ module Triggers
 
     private
 
-    def reminder_threshold
-      REMINDER_DAYS.days.ago
+    def reminder_cutoff
+      1.day.ago.beginning_of_day
     end
 
     def pending_validated_applications(student)
       student.internship_applications
              .where(aasm_state: :validated_by_employer)
-             .where('DATE(validated_by_employer_at) <= ?', reminder_threshold.to_date)
+             .where('validated_by_employer_at < ?', reminder_cutoff)
              .to_a
     end
 
