@@ -538,9 +538,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
   end
 
-  test "restoring a canceled application removes only its own canceled_internship_application_by_student mail_action_item" do
-    internship_application = create(:weekly_internship_application, :submitted)
-    other_application = create(:weekly_internship_application, :submitted)
+  test "resolver cleans up canceled_internship_application_by_student when application is restored, leaving other applications untouched" do
+    employer = create(:employer)
+    other_employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    other_offer = create(:weekly_internship_offer_2nde, employer: other_employer)
+
+    internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+    other_application = create(:weekly_internship_application, :submitted, internship_offer: other_offer)
 
     internship_application.cancel_by_student!
     other_application.cancel_by_student!
@@ -550,6 +555,39 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
     internship_application.restore!
 
+    # after restore the item is still present — resolver handles the cleanup before digest delivery
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+    assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+  end
+
+  test "restoring a canceled application removes only its own canceled_internship_application_by_student mail_action_item" do
+    employer = create(:employer)
+    other_employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    other_offer = create(:weekly_internship_offer_2nde, employer: other_employer)
+
+    internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+    other_application = create(:weekly_internship_application, :submitted, internship_offer: other_offer)
+
+    internship_application.cancel_by_student!
+    other_application.cancel_by_student!
+
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    internship_application.restore!
+
+    # after restore, the canceled item still exists — resolver is responsible for cleanup
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    # resolver marks as resolved any canceled_internship_application_by_student item
+    # whose application is no longer canceled_by_student, scoped to employer —
+    # other_employer's item is untouched
+    Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
     assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
     assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
   end
