@@ -3,10 +3,10 @@
 module Acl
   class Reporting
     def allowed?
-      department_name_from_params = params[:department].try(:downcase)
-      return false if department_name_from_params.nil?
+      requested = normalize(Array(params[:department]))
+      return false if requested.empty?
 
-      user.department_name.try(:downcase) == department_name_from_params
+      (requested - allowed_department_names).empty?
     end
 
     def ministry_statistician_allowed?
@@ -16,6 +16,19 @@ module Acl
     private
 
     attr_reader :params, :user
+
+    def allowed_department_names
+      names = if user.respond_to?(:departments)
+                user.departments.map(&:name)
+      else
+                [ user.department_name ]
+      end
+      normalize(names)
+    end
+
+    def normalize(names)
+      names.flatten.filter_map { |name| name.to_s.downcase.strip.presence }
+    end
 
     def initialize(params:, user:)
       @params = params

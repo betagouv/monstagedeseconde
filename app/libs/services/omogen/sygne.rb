@@ -1,6 +1,4 @@
 module Services::Omogen
-  class SygneApiError < StandardError; end
-
   class Sygne
     include ::Services::ApiRequestsHelper
     # 2434 : 3E SEGPA
@@ -163,7 +161,7 @@ module Services::Omogen
     def sygne_eleves(code_uai, niveau:)
       students = []
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-      response = get_request(uri, default_headers)
+      response = get_with_token_refresh(uri)
       case response
       when Net::HTTPSuccess
         data_students = JSON.parse(response.body, symbolize_names: true)
@@ -194,7 +192,7 @@ module Services::Omogen
 
     def sygne_responsable(ine)
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      response = get_request(uri, default_headers)
+      response = get_with_token_refresh(uri)
       case response
       when Net::HTTPSuccess
         responsibles = JSON.parse(response.body, symbolize_names: true)
@@ -229,6 +227,15 @@ module Services::Omogen
 
     def default_headers
       { 'Authorization': "Bearer #{token}", 'Compression-Zip': "non" }
+    end
+
+    def get_with_token_refresh(uri)
+      response = get_request(uri, default_headers)
+      return response unless response.is_a?(Net::HTTPUnauthorized)
+
+      Rails.logger.warn("refreshing Sygne OAuth token after 401 on #{uri}")
+      @token = fetch_oauth_token
+      get_request(uri, default_headers)
     end
 
     def process_mefstat4_codes(code_uai, limit: nil)
