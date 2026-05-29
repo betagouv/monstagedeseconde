@@ -58,8 +58,11 @@ module Services::EmployerActions
                               .where(urgency_level:)
                               .where(action_name: "restored_internship_application")
       actions.present? && actions.each do |item|
-        if item&.internship_application&.aasm_state != "restored"
-          application_resolve(item.internship_application)
+        application = item.internship_application
+        not_restored = application&.aasm_state != "restored"
+        never_seen_by_employer = !application&.has_ever_been?(%w[read_by_employer])
+        if not_restored || never_seen_by_employer
+          application_resolve(application)
         end
       end
 
