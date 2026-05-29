@@ -273,10 +273,12 @@ class PagesController < ApplicationController
 
     grouped_by_category.transform_values! do |category_docs|
       category_docs.map do |doc|
-        url = doc.fragments['url']&.url || doc.fragments['file']&.url
+        file_url = doc.fragments['file']&.url
+        external_url = doc.fragments['url']&.url
         {
-          url: url,
-          title: doc['resource.title'].as_text
+          url: file_url || external_url,
+          title: doc['resource.title'].as_text,
+          kind: file_url.present? ? :file : :url
         }
       end
     end
