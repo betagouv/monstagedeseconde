@@ -21,6 +21,10 @@ class InternshipAgreement < ApplicationRecord
   has_many :signatures, dependent: :destroy
   belongs_to :internship_application, optional: false
 
+  validates :internship_application_id,
+            uniqueness: { conditions: -> { kept } },
+            if: :kept?
+
   after_create :generate_token, unless: :access_token?
 
   # beware, complementary_terms_rich_text/lega_terms_rich_text are recopy from school.internship_agreement_presets.*
