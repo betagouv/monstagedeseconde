@@ -15,8 +15,7 @@ module Dashboard::InternshipAgreements
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                  internship_offer: internship_offer)
-      internship_agreement = internship_application.internship_agreement
-      internship_agreement.update!(aasm_state: 'validated')
+      internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
       sign_in(student)
 
       get dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf)

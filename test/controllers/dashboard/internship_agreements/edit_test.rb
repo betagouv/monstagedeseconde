@@ -18,7 +18,7 @@ module Dashboard::InternshipOffers
         internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
         class_room = create(:class_room, school: school)
         teacher = create(:teacher, school: school, class_room: class_room)
-        internship_agreement = internship_application.internship_agreement
+        internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
         sign_in(teacher)
 
         get edit_dashboard_internship_agreement_path(internship_agreement.id)
@@ -34,7 +34,7 @@ module Dashboard::InternshipOffers
         internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
         class_room = create(:class_room, school: another_school)
         internship_application.student.update(class_room_id: class_room.id, school_id: another_school.id)
-        internship_agreement = internship_application.internship_agreement
+        internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
         sign_in(school.school_manager)
 
         get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
@@ -46,7 +46,7 @@ module Dashboard::InternshipOffers
       school = create(:school, :with_school_manager)
       internship_application = create(:weekly_internship_application, :approved)
       internship_application.student.update(school_id: school.id)
-      internship_agreement = internship_application.internship_agreement
+      internship_agreement = create(:mono_internship_agreement, internship_application: internship_application)
       sign_in(school.school_manager)
 
       get edit_dashboard_internship_agreement_path(uuid: internship_agreement.uuid)
