@@ -589,7 +589,18 @@ class InternshipOffer < ApplicationRecord
   def requires_update_at_toggle_time?
     return false if published?
 
-    no_remaining_seat_anymore?
+    republish_blocking_reasons.any?
+  end
+
+  def republish_blocking_reasons
+    reasons = []
+    reasons << :seats if no_remaining_seat_anymore?
+    reasons << :weeks if weeks_in_the_past?
+    reasons
+  end
+
+  def weeks_in_the_past?
+    last_date.present? && last_date < Time.current
   end
 
   def approved_applications_current_school_year
