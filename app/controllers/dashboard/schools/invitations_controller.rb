@@ -37,7 +37,7 @@ module Dashboard
       end
 
       def destroy
-        authorize! :destroy_invitation, Invitation
+        authorize! :destroy_invitation, @invitation
         if @invitation.destroy
           redirect_to dashboard_school_users_path(school_id: fetch_school_id),
                       notice: 'L\'invitation a bien été supprimée'

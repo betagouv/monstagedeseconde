@@ -20,6 +20,20 @@ module InternshipApplications
       end
     end
 
+    test 'DB unique index blocks concurrent duplicates that bypass Ruby validations' do
+      travel_to Date.new(2024, 1, 1) do
+        student = create(:student)
+        internship_offer = create(:weekly_internship_offer_2nde)
+        first = create(:weekly_internship_application, student:, internship_offer:)
+        duplicate = build(:weekly_internship_application, student:, internship_offer:)
+        assert_raises(ActiveRecord::RecordNotUnique) do
+          duplicate.save(validate: false)
+        end
+        assert_equal 1, InternshipApplication.where(user_id: student.id,
+                                                    internship_offer_id: internship_offer.id).count
+      end
+    end
+
     test 'is not applicable twice on different week by same student' do
       weeks = Week.selectable_from_now_until_end_of_school_year.first(3).last(2)
       travel_to Date.new(2024, 1, 1) do
