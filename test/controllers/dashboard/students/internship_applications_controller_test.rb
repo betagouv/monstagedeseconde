@@ -161,6 +161,24 @@ module Dashboard
         assert_redirected_to dashboard_students_internship_applications_path(student)
       end
 
+      test "#resend_application as another student is forbidden" do
+        victim = create(:student)
+        attacker = create(:student)
+        sign_in(attacker)
+        internship_application = create(
+          :weekly_internship_application,
+          :submitted,
+          student: victim
+        )
+        assert_no_changes -> { internship_application.reload.dunning_letter_count } do
+          post resend_application_dashboard_students_internship_application_path(
+            student_id: victim.id,
+            uuid: internship_application.uuid
+          ), params: {}
+        end
+        assert_redirected_to root_path
+      end
+
       test "#show with a magic link" do
         student = create(:student)
         sgid = ""

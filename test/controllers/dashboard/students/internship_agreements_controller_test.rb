@@ -15,7 +15,8 @@ module Dashboard
         employer, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                    internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         sign_in(student)
         get sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         # email is asynchronously sent when creating the signature
@@ -33,7 +34,9 @@ module Dashboard
         employer, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
         internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :signed_by_student_only, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'signatures_started')
+        create(:signature, :student, internship_agreement: internship_agreement, user_id: student.id)
         sign_in(student)
         get sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         # email is asynchronously sent when creating the signature
@@ -53,7 +56,8 @@ module Dashboard
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -92,7 +96,8 @@ module Dashboard
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -138,7 +143,8 @@ module Dashboard
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -165,7 +171,8 @@ module Dashboard
         employer, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                    internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         sign_in(student)
         get sign_dashboard_students_internship_agreement_path(uuid: 'nonexistent', student_id: student.id)
         assert_redirected_to root_path
@@ -181,7 +188,8 @@ module Dashboard
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -201,7 +209,8 @@ module Dashboard
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -222,7 +231,8 @@ module Dashboard
         e_, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
-        internship_agreement = create(:mono_internship_agreement, :validated, internship_application: internship_application)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update!(aasm_state: 'validated')
         create(:signature, :student_legal_representative, internship_agreement: internship_agreement, user_id: student.id)
         internship_agreement.sign!
         assert_not_nil internship_agreement.student_legal_representative_full_name

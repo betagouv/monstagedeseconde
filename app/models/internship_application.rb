@@ -502,6 +502,7 @@ class InternshipApplication < ApplicationRecord
 
   def create_agreement
     return unless internship_agreement_creation_allowed?
+    return if InternshipAgreement.kept.exists?(internship_application_id: id)
 
     agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
                                                     .new_from_application(self)

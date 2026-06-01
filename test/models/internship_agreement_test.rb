@@ -6,6 +6,22 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     assert build(:mono_internship_agreement).valid?
   end
 
+  test "validates uniqueness of internship_application_id among kept records" do
+    existing = create(:mono_internship_agreement)
+    duplicate = build(:mono_internship_agreement,
+                      internship_application: existing.internship_application)
+    refute duplicate.valid?
+    assert duplicate.errors[:internship_application_id].present?
+  end
+
+  test "allows a new agreement when previous one is discarded" do
+    existing = create(:mono_internship_agreement)
+    existing.update!(discarded_at: Time.current)
+    duplicate = build(:mono_internship_agreement,
+                      internship_application: existing.internship_application)
+    assert duplicate.valid?
+  end
+
   test "factory multi is valid" do
     assert build(:multi_internship_agreement).valid?
   end

@@ -5,7 +5,7 @@ module Dashboard
     class InternshipApplicationsController < ApplicationController
       include ApplicationTransitable
 
-      ORDER_WITH_INTERNSHIP_DATE = 'internshipDate'
+      ORDER_WITH_INTERNSHIP_DATE = "internshipDate"
       before_action :authenticate_user!, except: %i[update show]
       before_action :find_internship_offer, only: %i[index update show]
       before_action :fetch_internship_application, only: %i[update show set_to_read school_details]
@@ -31,7 +31,7 @@ module Dashboard
         )
       rescue ActiveRecord::RecordInvalid => e
         redirect_back fallback_location: current_user.custom_dashboard_path,
-                      alert: @internship_application.errors.messages.first.join(' : ')
+                      alert: @internship_application.errors.messages.first.join(" : ")
       end
 
       def user_internship_applications
@@ -47,7 +47,7 @@ module Dashboard
             if @current_area
               @internship_applications = @internship_applications.where(internship_offer: @current_area.internship_offers).order(created_at: :desc)
             end
-            response.headers['Content-Disposition'] =
+            response.headers["Content-Disposition"] =
               "attachment; filename=\"candidatures-#{@current_area&.name || 'toutes'}-#{Time.zone.now.strftime('%Y-%m-%d')}.xlsx\""
           end
           format.html do
@@ -66,7 +66,7 @@ module Dashboard
         if params[:sgid].present?
           internship_application = InternshipApplication.from_sgid(params[:sgid])
           if internship_application.nil?
-            flash_error_message = 'Le lien a expiré, veuillez vous identifier pour accéder à la candidature.'
+            flash_error_message = "Le lien a expiré, veuillez vous identifier pour accéder à la candidature."
             redirect_to root_path, flash: { danger: flash_error_message } and return
           else
             sign_in(internship_application.employer)
@@ -74,7 +74,7 @@ module Dashboard
           authorize! :show, InternshipApplication
         elsif params[:token].present?
           unless current_user || authorize_through_token?
-            redirect_to root_path, flash: { error: 'Vous n’avez pas accès à cette candidature' } and return
+            redirect_to root_path, flash: { error: "Vous n’avez pas accès à cette candidature" } and return
           end
           # no authorization here
         else
@@ -89,7 +89,7 @@ module Dashboard
       private
 
       def fetch_user_internship_applications
-        InternshipApplication.where.not(type: 'InternshipApplications::Api')
+        InternshipApplication.where.not(type: "InternshipApplications::Api")
                              .where(internship_offer_id: current_user.internship_offers.ids)
       end
 
@@ -102,24 +102,24 @@ module Dashboard
                          internship_agreement]
         student_includings = %i[school]
         internship_applications = ::InternshipApplications::WeeklyFramed.includes(*includings)
-                                                                      .includes(student: [ *student_includings ])
-                                                                      .where(internship_offer:)
+                                                                        .includes(student: [ *student_includings ])
+                                                                        .where(internship_offer:)
         if params_order == ORDER_WITH_INTERNSHIP_DATE
           internship_applications.order(
-            'internship_applications.updated_at ASC'
+            "internship_applications.updated_at ASC"
           )
         else
           internship_applications.order(
-            'internship_applications.updated_at ASC'
+            "internship_applications.updated_at ASC"
           )
         end
       end
 
       def extra_message
-        extra_message_text = 'Vous pouvez renseigner la convention dès maintenant.'
+        extra_message_text = "Vous pouvez renseigner la convention dès maintenant."
         extra_message_condition = @internship_application.approved? &&
                                   can?(:edit, @internship_application.internship_agreement)
-        extra_message_condition ? extra_message_text : ''
+        extra_message_condition ? extra_message_text : ""
       end
 
       def find_internship_offer
