@@ -12,28 +12,28 @@ module WeekHelpers
 
     # from is a week
     scope :from_date_for_current_year, lambda { |from:|
-      where(year: from.year).where('number >= :from_week', from_week: from.cweek)
+      where(year: from.year).where("number >= :from_week", from_week: from.cweek)
     }
 
     # to is a week
     scope :to_date_for_current_year, lambda { |to:|
-      where(year: to.year).where('number <= :to_week', to_week: to.cweek)
+      where(year: to.year).where("number <= :to_week", to_week: to.cweek)
     }
 
     scope :strictly_before, lambda { |date:|
-      where('year < ?', date.year).or(
-        where('year = ?', date.year).where('number < ?', date.cweek)
+      where("year < ?", date.year).or(
+        where("year = ?", date.year).where("number < ?", date.cweek)
       )
     }
 
     scope :strictly_after, lambda { |date:|
-      where('year > ?', date.year).or(
-        where('year = ?', date.year).where('number > ?', date.cweek)
+      where("year > ?", date.year).or(
+        where("year = ?", date.year).where("number > ?", date.cweek)
       )
     }
     scope :strictly_before_week, lambda { |week:|
-      where('year < ?', week.year).or(
-        where('year = ?', week.year).where('number < ?', week.number)
+      where("year < ?", week.year).or(
+        where("year = ?", week.year).where("number < ?", week.number)
       )
     }
 
@@ -41,30 +41,30 @@ module WeekHelpers
       if week.nil?
         none
       else
-        where('year > ?', week.year).or(
-          where('year = ?', week.year).where('number > ?', week.number)
+        where("year > ?", week.year).or(
+          where("year = ?", week.year).where("number > ?", week.number)
         )
       end
     }
 
     scope :before, lambda { |date:|
-      where('year < ?', date.year).or(
-        where('year = ?', date.year).where('number <= ?', date.cweek)
+      where("year < ?", date.year).or(
+        where("year = ?", date.year).where("number <= ?", date.cweek)
       )
     }
 
     scope :after, lambda { |date:|
       if Date.current.cweek == 53 && Date.current.month == 1
-        where('year >= ?', Date.current.year)
+        where("year >= ?", Date.current.year)
       else
-        where('year > ?', date.year).or(
-          where('year = ?', date.year).where('number >= ?', date.cweek)
+        where("year > ?", date.year).or(
+          where("year = ?", date.year).where("number >= ?", date.cweek)
         )
       end
     }
     scope :before_week, lambda { |week:|
-      where('year < ?', week.year).or(
-        where('year = ?', week.year).where('number < ?', week.number)
+      where("year < ?", week.year).or(
+        where("year = ?", week.year).where("number < ?", week.number)
       )
     }
 
@@ -72,8 +72,8 @@ module WeekHelpers
       if week.nil?
         none
       else
-        where('year > ?', week.year).or(
-          where('year = ?', week.year).where('number > ?', week.number)
+        where("year > ?", week.year).or(
+          where("year = ?", week.year).where("number > ?", week.number)
         )
       end
     }
@@ -137,6 +137,9 @@ module WeekHelpers
     end
 
     def current_school_year
+      # Not memoized on purpose: the "current" school year depends on the
+      # current date, so caching it would make it stale in long-running
+      # processes (and leak across tests that use `travel_to`).
       SchoolYear::Current.new
     end
 
