@@ -53,6 +53,49 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     end
   end
 
+  test 'archived offer shows archived badge and duplicate button in index' do
+    travel_to(Date.new(2026, 6, 1)) do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde,
+                                employer:,
+                                internship_offer_area_id: employer.current_area_id)
+      internship_offer.update_columns(
+        aasm_state: 'unpublished',
+        published_at: nil,
+        first_date: 2.days.ago,
+        last_date: 1.day.ago
+      )
+
+      sign_in(employer)
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        visit dashboard_internship_offers_path
+        assert_selector '.label', text: "Archivée. Dupliquez l'annonce pour la republier"
+        assert_selector 'a.test-duplicate-button'
+      end
+    end
+  end
+
+  test 'archived offer shows archived badge and explanatory text on show page' do
+    travel_to(Date.new(2026, 6, 1)) do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde,
+                                employer:,
+                                internship_offer_area_id: employer.current_area_id)
+      internship_offer.update_columns(
+        aasm_state: 'unpublished',
+        published_at: nil,
+        first_date: 2.days.ago,
+        last_date: 1.day.ago
+      )
+
+      sign_in(employer)
+      visit internship_offer_path(internship_offer, origine: 'dashboard')
+      assert_selector 'p.fr-badge', text: 'Offre archivée'
+      assert_selector '.label', text: "Archivée. Dupliquez l'annonce pour la republier"
+      assert_selector 'a.test-duplicate-button'
+    end
+  end
+
   test 'tabs test(still todo)' do
     employer = create(:employer)
     internship_offer = create(:weekly_internship_offer_2nde, employer:)
