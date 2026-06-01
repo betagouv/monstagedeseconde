@@ -23,18 +23,17 @@ div id="toggle_status_#{dom_id(internship_offer)}" name="toggle_status_#{dom_id(
                     id: id,
                     submit: true
   - else
-    - toggle_path = published ? unpublish_dashboard_internship_offer_path(internship_offer) : publish_dashboard_internship_offer_path(internship_offer)
-    = form_with url: toggle_path,
-                method: :post,
-                data: { turbo: true, :'toggle-activate-target' => 'checkToggle' } do |f|
-      div [class="toggle-block text-left d-flex"
-           data-action='change->toggle-activate#toggle'
-           data-toggle-activate-type-param='form']
-        .label = status_label
-        div
+    .toggle-block.text-left.d-flex data-action='change->toggle-activate#toggle' data-toggle-activate-type-param='alink'
+      .label = status_label
+      div
+        = link_to dashboard_internship_offer_path(internship_offer.id, internship_offer: { aasm_state: toggled_aasm_state, published_at: toggled_published_at }),
+                  class: '',
+                  data: { turbo: true },
+                  title: 'Publier / Masquer',
+                  method: :patch do
           = render 'toggle_publish_element',
                     published: published,
                     id: id,
-                    submit: true
+                    submit: false
 
 

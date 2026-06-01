@@ -77,21 +77,23 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         InternshipOffers::WeeklyFramed.update_older_internship_offers
         assert internship_offer.reload.published?
         visit dashboard_internship_offers_path
-        assert_selector '.label', text: 'Publié'
+        find('.label', text: 'Publié')
 
         # Mask it
-        page.execute_script(<<~JS)
-          document.querySelector("#toggle_status_#{dom_id(internship_offer)} form").requestSubmit();
-        JS
-        assert_selector ".label", text: "Masqué"
+        find("a[title='Publier / Masquer']").click
+        find('h2.h4', text: 'Les offres')
+        find('.label', text: 'Masqué')
         assert_nil internship_offer.reload.published_at
         assert internship_offer.unpublished?
 
+        # ----------------------------
         # republish
-        page.execute_script(<<~JS)
-          document.querySelector("#toggle_status_#{dom_id(internship_offer)} form").requestSubmit();
-        JS
-        assert_selector ".label", text: "Publié"
+        # ----------------------------
+        within("#toggle_status_#{dom_id(internship_offer)}") do
+          find("a[rel='nofollow'][data-method='patch']").click # this republishes the internship_offer
+        end
+        find('h2.h4', text: 'Les offres')
+        sleep 0.05
         assert internship_offer.reload.published?
         refute internship_offer.published_at.nil?
       end
