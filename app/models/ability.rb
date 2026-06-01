@@ -39,6 +39,7 @@ class Ability
     can :show, :account, :rebuild_review_job
     can :manage, School
     can :manage, Sector
+    can :manage, NafSectorMapping
     can :manage, Academy
     can :manage, AcademyRegion
     can %i[read update export unpublish publish], InternshipOffer
@@ -148,7 +149,8 @@ class Ability
       internship_application.student.id == user.id &&
         !internship_application.student.has_found_her_internships? &&
         internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
-        internship_application.restored_at.nil?
+        internship_application.restored_at.nil? &&
+        internship_application.no_weeks_overlap?
     end
 
     can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
@@ -306,7 +308,6 @@ class Ability
       edit_tutor_email
       edit_tutor_role
       edit_activity_scope
-      edit_date_range
       edit_organisation_representative_full_name
       edit_organisation_representative_role
       edit_siret
@@ -456,7 +457,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ see_reporting_dashboard
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -469,7 +470,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ export_reporting_dashboard_data
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -514,7 +515,9 @@ class Ability
     can_read_dashboard_students_internship_applications(user:)
 
     can_manage_school(user:) do
-      can %i[edit update], School
+      can %i[edit update], School do |school|
+        school.id == user.school_id
+      end
       can %i[manage_school_users
              manage_school_students
              manage_school_internship_agreements

@@ -20,9 +20,6 @@ require "support/team_and_areas_helper"
 require "minitest/retry"
 require "webmock/minitest"
 require "sidekiq/testing"
-if ENV.fetch("FAIL_FAST", false) == "true"
-  require "minitest/fail_fast"
-end
 
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
@@ -102,5 +99,8 @@ class ActionDispatch::IntegrationTest
 
   parallelize_setup do |i|
     ActiveStorage::Blob.service.root = "#{ActiveStorage::Blob.service.root}-#{i}"
+    # Isolate $redis per worker so cross-worker flushdb (after_teardown below)
+    # cannot wipe in-flight magic-link jti keys.
+    $redis = Redis.new(url: ENV["REDIS_URL"], db: i + 1)
   end
 end

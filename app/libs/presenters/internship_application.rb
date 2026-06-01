@@ -1,6 +1,9 @@
 module Presenters
   class InternshipApplication
     include ::ActionView::Helpers::DateHelper
+    include ::ActionView::Helpers::TagHelper
+    include ::ActionView::Helpers::TextHelper
+    include ::ActionView::Helpers::OutputSafetyHelper
 
     delegate :student, to: :internship_application
     delegate :internship_offer, to: :internship_application
@@ -200,6 +203,8 @@ module Presenters
     end
 
     def ok_for_transfer?
+      return false if internship_offer.remaining_seats_count.to_i.zero?
+
       current_state_in_list?(ok_for_transfer_states)
     end
 
@@ -228,16 +233,22 @@ module Presenters
 
     def employer_explanations
       motives = []
-      canceled_motive = { meth: :canceled_by_employer_message, label: 'Annulation par l\'entreprise' }
-      rejected_motive = { meth: :rejected_message, label: 'Refus par l\'entreprise' }
+      canceled_motive = { meth: :canceled_by_employer_message, label: "Annulation par l'entreprise" }
+      rejected_motive = { meth: :rejected_message, label: "Refus par l'entreprise" }
 
       motives << canceled_motive if internship_application.canceled_by_employer_message?
       motives << rejected_motive if internship_application.rejected_message?
 
-      motives.map do |motive|
-        text = internship_application.send(motive[:meth].to_s)
-        text.blank? ? nil : "<p><strong>#{motive[:label]}</strong> : </br>#{text}"
-      end.compact
+      motives.filter_map do |motive|
+        text = internship_application.public_send(motive[:meth])
+        next if text.blank?
+
+        safe_join([
+          tag.strong("#{motive[:label]} :"),
+          tag.br,
+          simple_format(text)
+        ])
+      end
     end
 
     def str_weeks

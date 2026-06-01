@@ -1,7 +1,7 @@
 module Signatorable
   extend ActiveSupport::Concern
   included do
-    SIGNATURE_PHONE_TOKEN_LIFETIME ||= 5 # minutes
+    SIGNATURE_PHONE_TOKEN_LIFETIME ||= 10 # minutes
 
 
     def mono_internship_agreements
@@ -15,7 +15,7 @@ module Signatorable
     def create_signature_phone_token
       return false if school_management? && !school_manager?
 
-      update(signature_phone_token: format('%06d', rand(999_999)),
+      update(signature_phone_token: format("%06d", rand(999_999)),
              signature_phone_token_expires_at: SIGNATURE_PHONE_TOKEN_LIFETIME.minutes.from_now)
     end
 
@@ -65,9 +65,9 @@ module Signatorable
     end
 
     def show_code
-      return '' if signature_phone_token.nil?
+      return "" if signature_phone_token.nil?
 
-      [signature_phone_token[0..2], signature_phone_token[3..-1]].join(' ')
+      [ signature_phone_token[0..2], signature_phone_token[3..-1] ].join(" ")
     end
 
     def employer_like?

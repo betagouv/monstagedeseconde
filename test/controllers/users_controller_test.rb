@@ -350,6 +350,27 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_select '#alert-success #alert-text', { text: 'Compte mis à jour avec succès.' }, 1
   end
 
+  test 'PATCH account cannot escalate type to Users::God' do
+    teacher = create(:teacher, school: create(:school, :with_school_manager))
+    sign_in(teacher)
+
+    patch account_path, params: { user: { type: 'Users::God' } }
+
+    teacher.reload
+    assert_equal 'Users::SchoolManagement', teacher.type
+    refute teacher.is_a?(Users::God)
+  end
+
+  test 'PATCH account cannot escalate type as student' do
+    student = create(:student)
+    sign_in(student)
+
+    patch account_path, params: { user: { type: 'Users::God' } }
+
+    student.reload
+    assert_equal 'Users::Student', student.type
+  end
+
   test 'GET #edit as Employer can change email' do
     sign_in(create(:employer))
     get account_path

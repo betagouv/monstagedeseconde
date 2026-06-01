@@ -128,6 +128,16 @@ const InternshipOfferResults = ({
      .fail(fetchFail);
   };
 
+  const trackBoardingHouseView = (id) => {
+    const data = {};
+    if (params.latitude && params.longitude) {
+      data.latitude = params.latitude;
+      data.longitude = params.longitude;
+      data.radius = params.radius || 60000;
+    }
+    $.ajax({ type: 'POST', url: endpoints['trackBoardingHouseView']({ id }), data });
+  };
+
   const fetchBoardingHouses = () => {
     const data = {};
     if (params.latitude && params.longitude) {
@@ -402,6 +412,7 @@ const InternshipOfferResults = ({
                       icon={boardingHouseIcon}
                       position={[bh.lat, bh.lon]}
                       key={`bh-${bh.id}`}
+                      eventHandlers={{ click: () => trackBoardingHouseView(bh.id) }}
                     >
                       <Popup className='popup-custom'>
                         <div className="content fr-p-2w">

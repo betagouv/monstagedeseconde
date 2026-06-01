@@ -29,6 +29,19 @@ class StudentMailerTest < ActionMailer::TestCase
     refute_email_spammyness(email)
   end
 
+  test 'rejected email neutralizes HTML in rejected_message (XSS regression)' do
+    internship_application = create(
+      :weekly_internship_application,
+      rejected_message: %(<script>alert("xss")</script>)
+    )
+
+    email = StudentMailer.internship_application_rejected_email(internship_application: internship_application)
+    html_body = email.html_part.body.to_s
+
+    refute_includes html_body, '<script'
+    refute_includes html_body, 'alert("xss")</script>'
+  end
+
   test 'email sent when internship application is canceled by employer' do
     internship_application = create(:weekly_internship_application)
 
@@ -42,6 +55,21 @@ class StudentMailerTest < ActionMailer::TestCase
     assert_equal EmailUtils.from, email.from.first
     assert_equal [internship_application.student.email], email.to
     refute_email_spammyness(email)
+  end
+
+  test 'canceled_by_employer email neutralizes HTML in canceled_by_employer_message (XSS regression)' do
+    internship_application = create(
+      :weekly_internship_application,
+      canceled_by_employer_message: %(<script>alert("xss")</script>)
+    )
+
+    email = StudentMailer.internship_application_canceled_by_employer_email(
+      internship_application: internship_application
+    )
+    html_body = email.html_part.body.to_s
+
+    refute_includes html_body, '<script'
+    refute_includes html_body, 'alert("xss")</script>'
   end
 
   test 'email sent when internship application is validated by employer' do

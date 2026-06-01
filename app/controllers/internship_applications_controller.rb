@@ -55,6 +55,9 @@ class InternshipApplicationsController < ApplicationController
       log_error(object: @internship_application)
       render 'new', status: :bad_request
     end
+  rescue ActiveRecord::RecordNotUnique
+    redirect_to internship_offer_path(@internship_offer),
+                alert: 'Vous avez déjà postulé à cette offre.'
   end
 
   def completed
@@ -86,7 +89,7 @@ class InternshipApplicationsController < ApplicationController
       destinations = transfer_params[:destinations].split(',').compact.map(&:strip)
       faulty_emails = check_transfer_destinations(destinations)
       if faulty_emails.empty?
-        @internship_application.transfer!
+        @internship_application.transfer! if @internship_application.may_transfer?
         @internship_application.generate_token
 
         destinations.each do |destination|

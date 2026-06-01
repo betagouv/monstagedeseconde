@@ -290,6 +290,7 @@ export default function SirenInput({
     // because both jsx components and stimulus send events to the containers (show/hide)
     ministryClassList.add("fr-hidden"); // default
 
+    const groupChoice = document.getElementById("group-choice");
     if (is_public != undefined) {
       toggleHideContainerById("public-private-radio-buttons", false);
       if (is_public) {
@@ -317,6 +318,9 @@ export default function SirenInput({
         // remove required attribute from sector input
         sector.removeAttribute("required");
 
+        // ministère de tutelle obligatoire pour une structure publique
+        if (groupChoice) groupChoice.required = true;
+
         // hide sector bloc
         sectorBloc.hidden = true;
       } else {
@@ -324,8 +328,17 @@ export default function SirenInput({
         document.getElementById(
           `${resourceName}_is_public_false`
         ).checked = true;
+        if (groupChoice) {
+          groupChoice.required = false;
+          groupChoice.value = "";
+        }
         sectorBlocClassList.remove("fr-hidden");
-        sector.value = "";
+        // Auto-select sector from NAF mapping if available
+        if (selection.sectorId && sector) {
+          sector.value = selection.sectorId;
+        } else {
+          sector.value = "";
+        }
       }
     }
     if (isFaulty && formerPublicValue) {
