@@ -22,8 +22,8 @@ module InternshipApplicationsHelper
     "show-internship-application-#{internship_application.id}-#{internship_application.user_id}"
   end
 
-  def callout_title(internship_application)
-    if internship_application.is_re_approvable?
+  def callout_title(can_employer_validate:)
+    if can_employer_validate
       'Vous souhaitez retenir cette candidature ?'
     else
       'Vous ne souhaitez plus retenir cette candidature ?'

@@ -111,50 +111,35 @@
                     = "Motif"
                 p.small=  @internship_application.response_message
 
-        - if @internship_application.is_re_approvable? || @internship_application.is_modifiable? || @internship_application.cancelable?
+        - if can?(:re_approve, @internship_application)
           .fr-callout.fr-icon-information-line.fr-mt-4w.fr-mb-4w
             h3.fr-callout__title
-              = callout_title(@internship_application)
-            - if @internship_application.is_re_approvable?
-              p.fr-callout__text
-                | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
-              = render "dashboard/internship_offers/internship_applications/action_modal",
-                internship_application:@internship_application,
-                aasm_target: :employer_validate!,
-                modal_opener_label: 'Retenir cette candidature',
-                subtitle: '',
-                message: "En cliquant sur Retenir cette candidature, vous confirmez que vous souhaitez prendre cet élève en stage. Celui-ci sera informé de votre décision.",
-                rich_text: false,
-                modal_id: "approve-internship-application-#{@internship_application.id}",
-                fa_icon: "fr-icon-check-line",
-                token: nil,
-                opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
-            - elsif @internship_application.rejectable?
-              = render "dashboard/internship_offers/internship_applications/action_modal",
-                internship_application: @internship_application,
-                aasm_target: :reject!,
-                modal_opener_label: 'Refuser cette candidature',
-                subtitle: 'Motif de refus de stage*',
-                message: "En cliquant sur “refuser”, vous confirmez que vous ne souhaitez " \
-                                    "pas prendre cet élève en stage. Celui-ci sera informé de votre décision.",
-                rich_text: true,
-                modal_id: "reject-internship-application-#{@internship_application.id}",
-                fa_icon: "fr-icon-close-line",
-                token: nil,
-                opened_modal: defined?(opened_modal) ? opened_modal == 'refuse' : false
-
-            - if @internship_application.cancelable?
-              = render "dashboard/internship_offers/internship_applications/action_modal",
-                internship_application: @internship_application,
-                aasm_target: :cancel_by_employer!,
-                modal_opener_label: 'Annuler cette candidature',
-                subtitle: 'Motif de l\'annulation',
-                message: "En cliquant sur “annuler”, vous confirmez que vous souhaitez annuler cette candidature. Celui-ci sera informé de votre décision.",
-                rich_text: true,
-                modal_id: "cancel-internship-application-#{@internship_application.id}",
-                fa_icon: "fr-icon-close-line",
-                token: nil,
-                opened_modal: defined?(opened_modal) ? opened_modal == 'cancel' : false
+              | Vous souhaitez retenir cette candidature ?
+            p.fr-callout__text
+              | Un email sera envoyé à l’élève lui indiquant que vous souhaitez retenir sa candidature. Il devra ensuite confirmer sa participation au stage.
+            = render(partial: %(dashboard/internship_offers/internship_applications/action_modal),
+                     locals: { internship_application: @internship_application,
+                               aasm_target: :employer_validate!,
+                               modal_opener_label: %(Retenir cette candidature),
+                               subtitle: %(),
+                               message: %(En cliquant sur Retenir cette candidature, vous confirmez que vous souhaitez prendre cet élève en stage. Celui-ci sera informé de votre décision.),
+                               rich_text: false,
+                               modal_id: %(approve-internship-application-#{@internship_application.id}),
+                               fa_icon: %(fr-icon-check-line),
+                               token: nil, opened_modal: (defined?(opened_modal) ? opened_modal == %(accept) : false) })
+        - elsif @internship_application.aasm_state.in?(InternshipApplication::RE_APPROVABLE_STATES)
+          .fr-alert.fr-alert--info.fr-mb-2w
+            h3.fr-alert__title.fr-text--lg
+              | Retenir cette candidature est impossible car :
+            p
+              ul
+                li
+                  - if @internship_application.student.internship_applications.approved.any?
+                    = "#{@internship_application.student.presenter.full_name} a choisi un autre stage "
+                  - else
+                    = "le statut de la candidature ne le permet pas "
+        - if @internship_application.cancelable?
+          = render(partial: %(dashboard/internship_offers/internship_applications/action_modal), locals: { internship_application: @internship_application, aasm_target: :cancel_by_employer!, modal_opener_label: %(Annuler cette candidature), subtitle: %(Motif de l'annulation), message: %(En cliquant sur annuler, vous confirmez que vous souhaitez annuler cette candidature. Celui-ci sera informé de votre décision.), rich_text: true, modal_id: %(cancel-internship-application-#{@internship_application.id}), fa_icon: %(fr-icon-close-line), token: nil, opened_modal: (defined?(opened_modal) ? opened_modal == %(cancel) : false) })
 
 - else
   .row
@@ -184,4 +169,4 @@
           = render "dashboard/internship_offers/internship_applications/actions/employer_decisions", **opts
 
     .fr-ml-11w.fr-mb-8v
-      = render 'internship_applications/transfer_notice'
+      = render "internship_applications/transfer_notice"

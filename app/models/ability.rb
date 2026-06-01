@@ -153,6 +153,15 @@ class Ability
         internship_application.no_weeks_overlap?
     end
 
+    can(:restore_if_there_were_extra_spots, InternshipApplication) do |internship_application|
+      internship_application.student.id == user.id &&
+        !internship_application.student.has_found_her_internships? &&
+        internship_application.aasm_state.in?(InternshipApplication::RESTORABLE_STATES) &&
+        internship_application.restored_at.nil? &&
+        internship_application.no_weeks_overlap? &&
+        !internship_application.internship_offer.has_spots_left?
+    end
+
     can %i[read show update sign student_sign legal_representative_sign], InternshipAgreement do |internship_agreement|
       internship_agreement.student.id == user.id
     end
@@ -287,9 +296,28 @@ class Ability
     can(:read_employer_name, InternshipOffer) do |internship_offer|
       read_employer_name?(internship_offer:)
     end
-    can %i[show transfer update], InternshipApplication do |internship_application|
+    can %i[show update], InternshipApplication do |internship_application|
       internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:,
                                                                                                      internship_application:)
+    end
+    can(:reject, InternshipApplication) do |internship_application|
+      (internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:, internship_application:)) &&
+        internship_application.rejectable?
+    end
+    can(:transfer, InternshipApplication) do |internship_application|
+      (internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:, internship_application:)) &&
+        internship_application.aasm_state.in?(%w[submitted restored read_by_employer]) &&
+        InternshipOffer.find(internship_application.internship_offer_id).has_spots_left?
+    end
+    can(:employer_validate, InternshipApplication) do |internship_application|
+      (internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:, internship_application:)) &&
+        internship_application.aasm_state.in?(InternshipApplication::SUBMITTED_LIKE_STATES) &&
+        !internship_application.student.internship_applications.approved.any?
+    end
+    can(:re_approve, InternshipApplication) do |internship_application|
+      (internship_application.internship_offer.employer_id == user.id || application_related_to_team?(user:, internship_application:)) &&
+        internship_application.aasm_state.in?(InternshipApplication::RE_APPROVABLE_STATES) &&
+        !internship_application.student.internship_applications.approved.any?
     end
   end
 

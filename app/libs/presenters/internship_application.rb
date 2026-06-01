@@ -202,25 +202,6 @@ module Presenters
       end
     end
 
-    def ok_for_transfer?
-      return false if internship_offer.remaining_seats_count.to_i.zero?
-
-      current_state_in_list?(ok_for_transfer_states)
-    end
-
-    def ok_for_reject?
-      internship_application.rejectable?
-    end
-
-    def ok_for_restore?
-      internship_application.aasm_state.in?(
-        ::InternshipApplication::RESTORABLE_STATES
-      )
-    end
-
-    def ok_for_employer_validation?
-      current_state_in_list?(SUBMITTED_LIKE_STATES)
-    end
 
     def with_employer_explanation?
       unless internship_application.aasm_state.in?(::InternshipApplication.with_employer_explanations_states)
@@ -303,10 +284,6 @@ module Presenters
 
     def current_state_in_list?(state_array)
       state_array.include?(internship_application.aasm_state)
-    end
-
-    def ok_for_transfer_states
-      %w[submitted restored read_by_employer]
     end
   end
 end

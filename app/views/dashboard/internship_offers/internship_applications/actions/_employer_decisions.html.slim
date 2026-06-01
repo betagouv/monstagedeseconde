@@ -1,14 +1,14 @@
 - with_options = !defined?(opened_modal)
 - prez = @internship_application.presenter(current_user)
 - offer = @internship_application.internship_offer
-- if prez.ok_for_employer_validation? && !offer.has_spots_left?
+- if can?(:employer_validate, @internship_application) && !offer.has_spots_left?
   .fr-alert.fr-alert--warning.fr-mb-3w
     p.fr-alert__title Cette offre n'a plus de places disponibles.
     p
       = link_to 'Augmentez le nombre de places',
                 edit_dashboard_internship_offer_path(offer, anchor: 'max_candidates_fields')
       |  pour pouvoir retenir cette candidature.
-- if prez.ok_for_restore? && !offer.has_spots_left?
+- if can?(:restore_if_there_were_extra_spots, @internship_application)
   .fr-alert.fr-alert--warning.fr-mb-3w
     p.fr-alert__title Cette offre n'a plus de places disponibles.
     p
@@ -17,21 +17,19 @@
                 edit_dashboard_internship_offer_path(offer, anchor: 'max_candidates_fields')
       |  disponibles pour ce stage.
 .d-flex.flex-row
-  - if prez.ok_for_reject?
+  - if can?(:reject, @internship_application)
     = render "dashboard/internship_offers/internship_applications/actions/reject",
               internship_application: @internship_application,
               token: params[:token],
               opened_modal: params[:opened_modal]
-  - if prez.ok_for_transfer? && with_options
+  - if can?(:transfer, @internship_application) && with_options
     = render "dashboard/internship_offers/internship_applications/actions/transfer",
               internship_application: @internship_application,
               opened_modal: false
-  - if prez.ok_for_employer_validation?
+  - if can?(:employer_validate, @internship_application)
     = render "dashboard/internship_offers/internship_applications/actions/approve",
               internship_application: @internship_application,
               token: params[:token],
               opened_modal: params[:opened_modal]
-  - if prez.ok_for_restore? && offer.has_spots_left?
-    = render "dashboard/internship_offers/internship_applications/actions/restore",
-              internship_application: @internship_application
+
 

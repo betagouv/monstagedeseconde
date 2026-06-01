@@ -236,6 +236,69 @@ class AbilityTest < ActiveSupport::TestCase
     end
   end
 
+  test "Employer internship application abilities" do
+    travel_to Date.new(2024, 9, 1) do
+      employer = create(:employer)
+      another_employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde, employer:, max_candidates: 20)
+      other_offer = create(:weekly_internship_offer_2nde, employer: another_employer)
+      ability = Ability.new(employer)
+
+      # reject
+      rejectable_application = create(:weekly_internship_application, :submitted, internship_offer:)
+      non_rejectable_application = create(:weekly_internship_application, :approved, internship_offer:)
+      assert(ability.can?(:reject, rejectable_application),
+             "employer can reject a submitted application on his offer")
+      refute(ability.can?(:reject, non_rejectable_application),
+             "employer cannot reject an approved application")
+      refute(ability.can?(:reject, create(:weekly_internship_application, :submitted, internship_offer: other_offer)),
+             "employer cannot reject application on another employer's offer")
+
+      # transfer
+      transferable_application = create(:weekly_internship_application, :submitted, internship_offer:)
+      assert(ability.can?(:transfer, transferable_application),
+             "employer can transfer a submitted application on his offer when spots remain")
+      refute(ability.can?(:transfer, create(:weekly_internship_application, :submitted, internship_offer: other_offer)),
+             "employer cannot transfer application on another employer's offer")
+
+      # employer_validate: blocked if student already has an approved application
+      student_with_approved = create(:weekly_internship_application, :approved).student
+      application_for_student_with_approved = create(:weekly_internship_application,
+                                                     :submitted,
+                                                     student: student_with_approved,
+                                                     internship_offer:)
+      refute(ability.can?(:employer_validate, application_for_student_with_approved),
+             "employer cannot validate application if student already has an approved application")
+
+      free_student_application = create(:weekly_internship_application, :submitted, internship_offer:)
+      assert(ability.can?(:employer_validate, free_student_application),
+             "employer can validate application if student has no approved application")
+      refute(ability.can?(:employer_validate, create(:weekly_internship_application, :submitted, internship_offer: other_offer)),
+             "employer cannot validate application on another employer's offer")
+
+      # employer_validate: SUBMITTED_LIKE_STATES only (not re-approvable states)
+      rejected_application = create(:weekly_internship_application, :rejected, internship_offer:)
+      refute(ability.can?(:employer_validate, rejected_application),
+             "employer_validate does not cover rejected state — use re_approve instead")
+
+      # re_approve: covers RE_APPROVABLE_STATES (rejected, canceled_by_employer, expired)
+      assert(ability.can?(:re_approve, rejected_application),
+             "employer can re_approve a rejected application when student has no approved application")
+      another_student_with_approved = create(:weekly_internship_application, :approved).student
+      refute(ability.can?(:re_approve, create(:weekly_internship_application, :rejected,
+                                              student: another_student_with_approved,
+                                              internship_offer:)),
+             "employer cannot re_approve a rejected application if student already has an approved application")
+      refute(ability.can?(:re_approve, free_student_application),
+             "re_approve does not cover submitted state — only RE_APPROVABLE_STATES")
+
+      # restore is forbidden for employers
+      restorable_application = create(:weekly_internship_application, :rejected, internship_offer:)
+      refute(ability.can?(:restore, restorable_application),
+             "employer cannot restore an application — only students can")
+    end
+  end
+
   test "God" do
     travel_to Date.new(2023, 10, 1) do
       god = build(:god)
