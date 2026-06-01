@@ -4,7 +4,7 @@
   p.fr-callout__text  Vous trouverez ci-dessous le lien de téléchargement de la convention de stage de l'élève dont vous êtes responsable.
   p
     = link_to "Voir la convention (PDF)",
-              upload_public_internship_agreement_path(uuid: @internship_agreement.uuid, format: :pdf),
+              upload_public_internship_agreement_path(uuid: @internship_agreement.uuid, access_token: params[:access_token], format: :pdf),
               class: "fr-btn fr-btn--sm fr-btn--secondary",
               target: "_blank"
 

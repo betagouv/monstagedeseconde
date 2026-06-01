@@ -249,6 +249,31 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     end
   end
 
+  test "create_agreement is idempotent (no duplicate agreement on second call)" do
+    create(:school, :with_school_manager)
+    internship_application = create(:weekly_internship_application, :approved)
+
+    assert_equal 1,
+                 InternshipAgreement.kept.where(internship_application_id: internship_application.id).count
+
+    assert_no_changes -> { InternshipAgreement.count } do
+      internship_application.create_agreement
+    end
+  end
+
+  test "create_agreement recreates agreement after the existing one is discarded" do
+    create(:school, :with_school_manager)
+    internship_application = create(:weekly_internship_application, :approved)
+    existing = internship_application.internship_agreement
+    existing.update!(discarded_at: Time.current)
+
+    assert_difference -> { InternshipAgreement.count }, +1 do
+      internship_application.reload.create_agreement
+    end
+    assert_equal 1,
+                 InternshipAgreement.kept.where(internship_application_id: internship_application.id).count
+  end
+
   test "transition from submited to rejected send rejected email to student" do
     internship_application = create(:weekly_internship_application, :submitted)
     freeze_time do
@@ -348,7 +373,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   test "#after_employer_validation_notifications when student registered by phone" do
     student = create(:student, :registered_with_phone)
     internship_application = create(:weekly_internship_application, student:)
-    assert internship_application.after_employer_validation_notifications.is_a?(SendSmsStudentValidatedApplicationJob)
+    assert internship_application.send(:after_employer_validation_notifications).is_a?(SendSmsStudentValidatedApplicationJob)
   end
 
   test "#after_employer_validation_notifications when student registered by email" do
@@ -359,7 +384,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     mock_mail.expect(:deliver_later, true, [], wait: 1.second)
 
     StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
-      internship_application.after_employer_validation_notifications
+      internship_application.send(:after_employer_validation_notifications)
     end
     mock_mail.verify
   end
