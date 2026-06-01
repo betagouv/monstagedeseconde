@@ -298,7 +298,7 @@ module Dashboard
     end
 
     def republish_blocking_reasons
-      @internship_offer.republish_blocking_reasons
+      @republish_blocking_reasons ||= @internship_offer.republish_blocking_reasons
     end
 
     def republish_anchor
