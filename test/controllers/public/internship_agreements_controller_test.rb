@@ -15,6 +15,10 @@ module Public
                                       :approved,
                                       student: student,
                                       internship_offer: internship_offer)
+      # Approving an application auto-creates an agreement (AASM approve callback ->
+      # create_agreement). Remove it so we can build the validated one this suite needs
+      # without hitting the internship_application_id uniqueness validation.
+      internship_application.reload.internship_agreement&.destroy
       create(:mono_internship_agreement, :validated, internship_application: internship_application)
     end
 
