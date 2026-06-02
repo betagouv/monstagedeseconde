@@ -273,6 +273,19 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
   end
 
+  test '#no_remaining_seat_anymore? is true when remaining seats is zero or negative' do
+    internship_offer = create(:weekly_internship_offer_2nde)
+
+    internship_offer.stats.update!(remaining_seats_count: 1)
+    refute internship_offer.no_remaining_seat_anymore?
+
+    internship_offer.stats.update!(remaining_seats_count: 0)
+    assert internship_offer.no_remaining_seat_anymore?
+
+    internship_offer.stats.update!(remaining_seats_count: -1)
+    assert internship_offer.no_remaining_seat_anymore?
+  end
+  
   test '.by_weeks excludes offers whose required weeks extend beyond the selection' do
     week_1 = SchoolTrack::Seconde.first_week
     week_2 = SchoolTrack::Seconde.second_week
