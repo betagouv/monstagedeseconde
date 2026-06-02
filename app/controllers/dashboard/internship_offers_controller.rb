@@ -10,12 +10,6 @@ module Dashboard
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 
-    # Define allowed stats columns for ordering: update with correct column names
-    ALLOWED_STATS_COLUMNS = %w[
-      submitted_applications_count
-      viewed_count
-      # add other allowed statistics columns here
-    ].freeze
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
       authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
@@ -68,7 +62,8 @@ module Dashboard
     def create
       @duplication = true
       authorize! :create, InternshipOffer
-      internship_offer_builder.create(params: internship_offer_params) do |on|
+      create_params = internship_offer_params.merge(employer_id: current_user.id)
+      internship_offer_builder.create(params: create_params) do |on|
         on.success do |created_internship_offer|
           @internship_offer = created_internship_offer
           @internship_offer = Dto::PlanningAdapter.new(instance: @internship_offer, params: internship_offer_params,
@@ -246,7 +241,7 @@ module Dashboard
     end
 
     def order_column
-      if params[:order] && ALLOWED_STATS_COLUMNS.include?(params[:order])
+      if params[:order] && VALID_ORDER_COLUMNS.include?(params[:order])
         params[:order]
       else
         'submitted_applications_count'
@@ -267,8 +262,8 @@ module Dashboard
     def internship_offer_params
       params.expect(
         internship_offer: [
-          :academy, :aasm_state, :city, :contact_phone, :all_year_long,
-          :department, :description, :employer_chosen_name, :employer_id,
+          :academy, :city, :contact_phone, :all_year_long,
+          :department, :description, :employer_chosen_name,
           :employer_name, :employer_type, :entreprise_chosen_full_address,
           :entreprise_city,
           :entreprise_coordinates_longitude, :entreprise_coordinates_latitude,
@@ -276,8 +271,8 @@ module Dashboard
           :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
           :group_id, :internship_address_manual_enter, :internship_offer_area_id,
           :is_public, :lunch_break, :max_candidates,
-          :period, :period_field, :published_at, :region, :renewed, :republish, :school_id,
-          :sector_id, :shall_publish, :siret, :street, :title, :type, :workspace_conditions,
+          :period, :period_field, :published_at, :region, :renewed, :republish,
+          :sector_id, :shall_publish, :siret, :street, :title, :workspace_conditions,
           :workspace_accessibility, :user_update, :verb, :zipcode, :code_ape, :qpv, :rep,
           entreprise_coordinates: {}, coordinates: {},
           week_ids: [], grade_ids: [], daily_hours: {}, weekly_hours: [], school_ids: []]

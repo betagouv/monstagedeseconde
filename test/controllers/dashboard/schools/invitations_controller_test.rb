@@ -100,6 +100,20 @@ module Dashboard
         assert_equal 0, Invitation.count, 'invitation removal failed'
       end
 
+      test 'DESTROY invitation belonging to another school is forbidden' do
+        school_manager = create(:school_manager)
+        other_manager = create(:school_manager)
+        invitation = create(:invitation, user_id: other_manager.id)
+
+        sign_in(school_manager)
+
+        assert_no_changes -> { Invitation.count } do
+          delete dashboard_school_invitation_path(school_manager.school.id, invitation.to_param)
+        end
+        assert_redirected_to root_path
+        assert Invitation.exists?(invitation.id), 'invitation should not have been destroyed'
+      end
+
       test 'resend_invitation' do
         school_manager = create(:school_manager)
         invitation = create(:invitation, user_id: school_manager.id)

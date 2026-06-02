@@ -27,5 +27,5 @@
           .category-content id="content-category-#{category_index}" 
             .row
               - documents.each do |resource|
-                = render partial: "pages/home/resource_card", locals: { badge: "PDF", link_title: resource[:title], target: '_blank', file: resource[:url] }
+                = render partial: "pages/home/resource_card", locals: { badge: "PDF", link_title: resource[:title], target: '_blank', file: resource[:url], kind: resource[:kind] }
         - content_i = content_i + 1
