@@ -3,7 +3,7 @@ module Public
     layout 'no_link_layout', only: %i[show]
 
     def show
-      @internship_agreement = find_internship_agreement
+      @internship_agreement = find_internship_agreement || find_signed_agreement_by_uuid
       return render_not_found unless @internship_agreement
 
       render :show
@@ -61,8 +61,7 @@ module Public
 
         @internship_agreement.sign! if @internship_agreement.may_sign?
         @internship_agreement.update_columns(access_token: nil)
-        redirect_to root_path,
-                    notice: 'Vous avez bien signé la convention de stage.' and return
+        redirect_to public_internship_agreement_path(uuid: @internship_agreement.uuid) and return
       end
     rescue ActiveRecord::RecordNotFound
       redirect_to root_path, alert: 'Convention introuvable' and return
@@ -97,6 +96,12 @@ module Public
       return nil if params[:uuid].present? && record.uuid.to_s != params[:uuid].to_s
 
       record
+    end
+
+    def find_signed_agreement_by_uuid
+      return nil if params[:uuid].blank?
+
+      InternshipAgreement.find_by(uuid: params[:uuid], aasm_state: %w[signatures_started signed])
     end
 
     def find_by_access_token(token)

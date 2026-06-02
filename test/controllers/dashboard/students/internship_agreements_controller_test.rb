@@ -72,7 +72,7 @@ module Dashboard
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
-        assert_redirected_to root_path
+        assert_redirected_to public_internship_agreement_path(uuid: internship_agreement.uuid)
         follow_redirect!
         assert_select ".fr-alert", text: "Signature déjà complétée."
         assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
@@ -100,9 +100,7 @@ module Dashboard
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
         original_access_token = internship_agreement.access_token
-        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id,),
-        sign_in(student)
-        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id,),
+        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id),
              params: {
                signature: {
                  uuid: internship_agreement.uuid,
@@ -116,22 +114,6 @@ module Dashboard
         follow_redirect!
         assert_select(".fr-alert", text: "Signature déjà complétée.")
         assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
-        assert_equal 1, internship_agreement.reload.signatures.count
-        assert_equal "student_legal_representative", internship_agreement.signatures.first.signatory_role
-        assert_equal "signatures_started", internship_agreement.aasm_state
-
-        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id),
-             params: {
-               signature: {
-                 uuid: internship_agreement.uuid,
-                 student_id: student.id,
-                 access_token: internship_agreement.access_token,
-                 student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
-               }
-             }
-        assert_redirected_to root_path
-        follow_redirect!
-        assert_select ".alert", text: "Vous avez bien signé la convention de stage. Fermer ×"
         assert_equal 1, internship_agreement.reload.signatures.count
         assert_equal "student_legal_representative", internship_agreement.signatures.first.signatory_role
         assert_equal "signatures_started", internship_agreement.aasm_state
@@ -205,7 +187,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-                                                     .update_columns(aasm_state: "validated")
+        internship_agreement.update_columns(aasm_state: "validated")
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
