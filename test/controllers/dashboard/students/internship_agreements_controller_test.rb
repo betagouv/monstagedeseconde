@@ -72,7 +72,7 @@ module Dashboard
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
-        assert_redirected_to public_internship_agreement_path(uuid: internship_agreement.uuid)
+        assert_redirected_to signed_public_internship_agreement_path(uuid: internship_agreement.uuid)
         follow_redirect!
         assert_select ".fr-alert", text: "Signature déjà complétée."
         assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
@@ -110,7 +110,7 @@ module Dashboard
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
-        assert_redirected_to public_internship_agreement_path(uuid: internship_agreement.uuid)
+        assert_redirected_to signed_public_internship_agreement_path(uuid: internship_agreement.uuid)
         follow_redirect!
         assert_select(".fr-alert", text: "Signature déjà complétée.")
         assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."

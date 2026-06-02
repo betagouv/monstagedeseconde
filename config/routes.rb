@@ -259,6 +259,7 @@ Rails.application.routes.draw do
     resources :internship_agreements, only: [ :show ], param: :uuid do
       member do
         get :upload, to: "internship_agreements#upload", defaults: { format: :pdf }
+        get :signed, to: "internship_agreements#signed"
         post :legal_representative_sign, to: "internship_agreements#legal_representative_sign"
       end
     end

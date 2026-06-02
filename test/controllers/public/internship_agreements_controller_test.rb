@@ -15,7 +15,9 @@ module Public
                                       :approved,
                                       student: student,
                                       internship_offer: internship_offer)
-      create(:mono_internship_agreement, :validated, internship_application: internship_application)
+      internship_application.internship_agreement.tap do |agreement|
+        agreement.update_columns(aasm_state: 'validated')
+      end
     end
 
     test 'show without access_token returns 404 (uuid alone must not grant access)' do
@@ -70,7 +72,7 @@ module Public
                student_legal_representative_full_name: agreement.student_legal_representative_full_name
              }
            }
-      assert_redirected_to root_path
+      assert_redirected_to signed_public_internship_agreement_path(uuid: agreement.uuid)
 
       # Rep 2's email link (same access_token) is now dead — show is 404
       get public_internship_agreement_path(uuid: agreement.uuid, access_token: original_token)
@@ -94,7 +96,7 @@ module Public
                student_legal_representative_full_name: agreement.student_legal_representative_full_name
              }
            }
-      assert_redirected_to root_path
+      assert_redirected_to signed_public_internship_agreement_path(uuid: agreement.uuid)
       assert_nil session['warden.user.user.key']
     end
   end
