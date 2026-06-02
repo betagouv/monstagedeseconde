@@ -37,6 +37,30 @@ class RailsAdmin::Config::Fields::Base
   end
 end
 
+# Prevent Chrome from autofilling the current admin's credentials into edit forms
+# (e.g. phone field getting filled with the logged-in user's email).
+class RailsAdmin::Config::Fields::Types::String
+  register_instance_option :html_attributes do
+    {
+      required: required?,
+      maxlength: length,
+      size: input_size,
+      autocomplete: 'off'
+    }
+  end
+end
+
+class RailsAdmin::Config::Fields::Types::Password
+  register_instance_option :html_attributes do
+    {
+      required: required?,
+      maxlength: length,
+      size: input_size,
+      autocomplete: 'new-password'
+    }
+  end
+end
+
 %w[kpi.rb switch_user.rb publish.rb import_students_from_sygne.rb].each do |action|
   require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
 end
