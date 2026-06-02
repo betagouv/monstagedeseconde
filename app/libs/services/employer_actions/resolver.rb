@@ -46,8 +46,11 @@ module Services::EmployerActions
                               .where(urgency_level:)
                               .where(action_name: "canceled_internship_application_by_student")
       actions.present? && actions.each do |item|
-        unless item&.internship_application&.canceled_by_student?
-          application_resolve(item.internship_application)
+        application = item.internship_application
+        not_canceled = !application&.canceled_by_student?
+        never_seen_by_employer = !application&.has_ever_been?(%w[read_by_employer])
+        if not_canceled || never_seen_by_employer
+          application_resolve(application)
         end
       end
 
