@@ -40,6 +40,7 @@ class Ability
     can :manage, School
     can :manage, UserSchool
     can :manage, Sector
+    can :manage, NafSectorMapping
     can :manage, Academy
     can :manage, AcademyRegion
     can %i[read update export unpublish publish], InternshipOffer
@@ -457,7 +458,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ see_reporting_dashboard
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -470,7 +471,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ export_reporting_dashboard_data
             see_dashboard_administrations_summary
             see_dashboard_department_summary
