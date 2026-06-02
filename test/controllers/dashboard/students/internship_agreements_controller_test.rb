@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 module Dashboard
   module Students
@@ -8,7 +8,7 @@ module Dashboard
       include Devise::Test::IntegrationHelpers
       include TeamAndAreasHelper
 
-      test 'student can sign internship agreement' do
+      test "student can sign internship agreement" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
 
@@ -16,26 +16,26 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                    internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         sign_in(student)
         get sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
         # email is asynchronously sent when creating the signature
         assert_redirected_to dashboard_students_internship_applications_path(student_id: student.id)
         follow_redirect!
-        assert_select('.alert', text: 'Vous avez bien signé la convention de stage. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage. Fermer ×')
+        assert_select(".alert", text: "Vous avez bien signé la convention de stage. Un email a été envoyé aux responsables légaux pour les inviter à signer la convention de stage. Fermer ×")
         assert_equal 1, internship_agreement.reload.signatures.count
-        assert_equal 'student', internship_agreement.signatures.first.signatory_role
-        assert_equal 'signatures_started', internship_agreement.aasm_state
+        assert_equal "student", internship_agreement.signatures.first.signatory_role
+        assert_equal "signatures_started", internship_agreement.aasm_state
       end
 
-      test 'student cannot sign twice the internship agreement' do
+      test "student cannot sign twice the internship agreement" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
         employer, internship_offer = create_employer_and_offer_2nde
         internship_application = create(:weekly_internship_application, :approved, student: student,
         internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'signatures_started')
+        internship_agreement.update!(aasm_state: "signatures_started")
         create(:signature, :student, internship_agreement: internship_agreement, user_id: student.id)
         sign_in(student)
         get sign_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id)
@@ -44,7 +44,7 @@ module Dashboard
           student_id: student.id,
         )
         follow_redirect!
-        assert_select('.alert', text: 'Vous avez déjà signé cette convention de stage Fermer ×')
+        assert_select(".alert", text: "Vous avez déjà signé cette convention de stage Fermer ×")
         assert_equal 1, internship_agreement.reload.signatures.count
       end
 
@@ -56,7 +56,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -68,25 +68,26 @@ module Dashboard
                  uuid: internship_agreement.uuid,
                  student_id: student.id,
                  access_token: internship_agreement.access_token,
-                 student_legal_representative_nr: '1',
+                 student_legal_representative_nr: "1",
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
         assert_redirected_to root_path
         follow_redirect!
-        assert_select '.alert', text: "Vous avez bien signé la convention de stage. Fermer ×"
+        assert_select ".fr-alert", text: "Signature déjà complétée."
+        assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
         assert_equal 1, internship_agreement.reload.signatures.count
-        assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
-        assert_equal 'signatures_started', internship_agreement.aasm_state
+        assert_equal "student_legal_representative", internship_agreement.signatures.first.signatory_role
+        assert_equal "signatures_started", internship_agreement.aasm_state
         last_signature = Signature.last
         assert_equal last_signature.student_legal_representative_full_name, internship_agreement.student_legal_representative_full_name
         assert_equal last_signature.user_id, student.id
-        assert_nil  internship_agreement.access_token
+        assert_nil internship_agreement.access_token
         # No devise session should have been opened during the signing flow
-        assert_nil session['warden.user.user.key']
+        assert_nil session["warden.user.user.key"]
       end
 
-      test 'legal representative cannot sign twice the internship agreement' do
+      test "legal representative cannot sign twice the internship agreement" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
 
@@ -94,27 +95,46 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
         original_access_token = internship_agreement.access_token
-        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id, ),
+        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id,),
+        sign_in(student)
+        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id,),
              params: {
                signature: {
                  uuid: internship_agreement.uuid,
                  student_id: student.id,
-                 student_legal_representative_nr: '1',
-                 access_token: original_access_token,
+                 student_legal_representative_nr: "1",
+                 access_token: internship_agreement.access_token,
+                 student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
+               }
+             }
+        assert_redirected_to public_internship_agreement_path(uuid: internship_agreement.uuid)
+        follow_redirect!
+        assert_select(".fr-alert", text: "Signature déjà complétée.")
+        assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
+        assert_equal 1, internship_agreement.reload.signatures.count
+        assert_equal "student_legal_representative", internship_agreement.signatures.first.signatory_role
+        assert_equal "signatures_started", internship_agreement.aasm_state
+
+        post legal_representative_sign_public_internship_agreement_path(uuid: internship_agreement.uuid, student_id: student.id),
+             params: {
+               signature: {
+                 uuid: internship_agreement.uuid,
+                 student_id: student.id,
+                 access_token: internship_agreement.access_token,
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
         assert_redirected_to root_path
         follow_redirect!
-        assert_select '.alert', text: "Vous avez bien signé la convention de stage. Fermer ×"
+        assert_select ".alert", text: "Vous avez bien signé la convention de stage. Fermer ×"
         assert_equal 1, internship_agreement.reload.signatures.count
-        assert_equal 'student_legal_representative', internship_agreement.signatures.first.signatory_role
-        assert_equal 'signatures_started', internship_agreement.aasm_state
+        assert_equal "student_legal_representative", internship_agreement.signatures.first.signatory_role
+        assert_equal "signatures_started", internship_agreement.aasm_state
         assert_nil internship_agreement.access_token
 
         # Second POST with the (now-nilled) original token must be rejected
@@ -129,11 +149,11 @@ module Dashboard
              }
         assert_redirected_to root_path
         follow_redirect!
-        assert_select('.alert', text: 'Convention introuvable Fermer ×')
+        assert_select(".alert", text: "Convention introuvable Fermer ×")
         assert_equal 1, internship_agreement.reload.signatures.count
       end
 
-      test 'legal representative cannot sign with invalid token' do
+      test "legal representative cannot sign with invalid token" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
 
@@ -141,7 +161,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -150,17 +170,17 @@ module Dashboard
                signature: {
                  uuid: internship_agreement.uuid,
                  student_id: student.id,
-                 access_token: 'invalid_token',
+                 access_token: "invalid_token",
                  student_legal_representative_full_name: internship_agreement.student_legal_representative_full_name
                }
              }
         assert_redirected_to root_path
         follow_redirect!
-        assert_select('.alert', text: 'Convention introuvable Fermer ×')
+        assert_select(".alert", text: "Convention introuvable Fermer ×")
         assert_equal 0, internship_agreement.reload.signatures.count
       end
 
-      test 'should handle RecordNotFound on sign action' do
+      test "should handle RecordNotFound on sign action" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
 
@@ -168,15 +188,15 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                    internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         sign_in(student)
-        get sign_dashboard_students_internship_agreement_path(uuid: 'nonexistent', student_id: student.id)
+        get sign_dashboard_students_internship_agreement_path(uuid: "nonexistent", student_id: student.id)
         assert_redirected_to root_path
         follow_redirect!
-        assert_select('.alert', text: "Vous n'êtes pas autorisé à effectuer cette action. Fermer ×")
+        assert_select(".alert", text: "Vous n'êtes pas autorisé à effectuer cette action. Fermer ×")
       end
 
-      test 'new' do
+      test "new" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
         student_token = student.to_sgid.to_s
@@ -185,7 +205,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+                                                     .update_columns(aasm_state: "validated")
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
@@ -194,10 +214,10 @@ module Dashboard
                                                              access_token: internship_agreement.access_token,
                                                              student_id: student.id)
         assert_response :success
-        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
+        assert_select "h1", text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
       end
 
-      test 'new with invalid token' do
+      test "new with invalid token" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
         student_token = student.to_sgid.to_s
@@ -206,20 +226,20 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         refute_nil internship_agreement.access_token
         assert_not_nil internship_agreement.student_legal_representative_full_name
         assert_not_nil internship_agreement.student_legal_representative_email
 
         get new_dashboard_students_internship_agreement_path(uuid: internship_agreement.uuid,
-                                                             access_token: 'invalid_token',
+                                                             access_token: "invalid_token",
                                                              student_id: student.id)
         assert_redirected_to root_path
         follow_redirect!
-        assert_select('.alert', text: 'Convention introuvable Fermer ×')
+        assert_select(".alert", text: "Convention introuvable Fermer ×")
       end
 
-      test 'new when already signed by legal representative' do
+      test "new when already signed by legal representative" do
         school = create(:school, :with_school_manager)
         student = create(:student, school: school)
         student_token = student.to_sgid.to_s
@@ -228,7 +248,7 @@ module Dashboard
         internship_application = create(:weekly_internship_application, :approved, student: student,
                                                                                     internship_offer: internship_offer)
         internship_agreement = internship_application.internship_agreement
-        internship_agreement.update!(aasm_state: 'validated')
+        internship_agreement.update!(aasm_state: "validated")
         create(:signature, :student_legal_representative, internship_agreement: internship_agreement, user_id: student.id)
         internship_agreement.sign!
         assert_not_nil internship_agreement.student_legal_representative_full_name
@@ -239,9 +259,9 @@ module Dashboard
                                                              student_id: student.id)
         assert_response :success
 
-        assert_select 'h1', text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
-        assert_select '.fr-alert', text: "Signature déjà complétée."
-        assert_select '.fr-callout__title', text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
+        assert_select "h1", text: "Espace de signature de la convention de stage destiné aux responsables légaux de #{student.presenter.full_name}"
+        assert_select ".fr-alert", text: "Signature déjà complétée."
+        assert_select ".fr-callout__title", text: "La convention de stage a déjà été signée par #{internship_agreement.student_legal_representative_full_name}."
       end
     end
   end
