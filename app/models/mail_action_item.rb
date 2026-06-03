@@ -52,7 +52,15 @@ class MailActionItem < ApplicationRecord
                       internship_application internship_application_id
                       internship_agreement internship_agreement_id stale_at]
     attrs.merge!(kwargs.slice(*allowed_keys))
-    record = new(action_name: name, **attrs)
+
+    recipient = attrs.delete(:recipient) || kwargs[:recipient]
+    lookup = { action_name: name,
+               recipient_type: recipient&.class&.name,
+               recipient_id: recipient&.id,
+               internship_agreement_id: attrs[:internship_agreement_id],
+               internship_application_id: attrs[:internship_application_id] }.compact
+    record = find_or_initialize_by(lookup)
+    record.assign_attributes(attrs.merge(action_name: name))
     record.save!
     record
   end
@@ -79,8 +87,13 @@ class MailActionItem < ApplicationRecord
       field :urgency_level
       field :stale_at
       field :resolved_at
-      field :deliveries_count
-      field :max_deliveries_count
+      field :deliveries_ratio, :string do
+        formatted_value { "#{bindings[:object].deliveries_count} / #{bindings[:object].max_deliveries_count}" }
+        label "Envois"
+      end
+      # make a link to internship_application or internship_agreement if present
+      field :internship_application
+      field :internship_agreement
       field :created_at
       field :updated_at
     end
@@ -93,8 +106,12 @@ class MailActionItem < ApplicationRecord
       field :urgency_level
       field :stale_at
       field :resolved_at
-      field :deliveries_count
-      field :max_deliveries_count
+      field :deliveries_ratio, :string do
+        formatted_value { "#{bindings[:object].deliveries_count} / #{bindings[:object].max_deliveries_count}" }
+        label "Envois"
+      end
+      field :internship_application
+      field :internship_agreement_id
       field :created_at
       field :updated_at
     end
