@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -3972,17 +3971,17 @@ CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.intern
 
 
 --
+-- Name: index_internship_agreements_on_application_id_unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_agreements_on_application_id_unique ON public.internship_agreements USING btree (internship_application_id) WHERE (discarded_at IS NULL);
+
+
+--
 -- Name: index_internship_agreements_on_discarded_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_internship_agreements_on_discarded_at ON public.internship_agreements USING btree (discarded_at);
-
-
---
--- Name: index_internship_agreements_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_agreements_on_internship_application_id ON public.internship_agreements USING btree (internship_application_id);
 
 
 --
@@ -4770,6 +4769,13 @@ CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.intern
 
 
 --
+-- Name: uniq_applications_per_user_offer; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX uniq_applications_per_user_offer ON public.internship_applications USING btree (user_id, internship_offer_id);
+
+
+--
 -- Name: internship_offers sync_internship_offers_tsv; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -5462,6 +5468,8 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260526090153'),
+('20260520214758'),
 ('20260515090000'),
 ('20260430082727'),
 ('20260420123136'),
@@ -5965,3 +5973,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

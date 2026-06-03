@@ -39,6 +39,16 @@ module Dashboard
       test 'GET class_rooms#show as SchoolManagement with no weeks declared contains key navigations links' do
         puts 'TODO'
       end
+
+      test 'GET class_rooms#show of another school is forbidden' do
+        school = create(:school, :with_school_manager)
+        other_school = create(:school, :with_school_manager)
+        class_room = create(:class_room, school: other_school)
+        sign_in(create(:teacher, school: school))
+
+        get dashboard_school_class_room_path(other_school, class_room)
+        assert_redirected_to root_path
+      end
     end
   end
 end

@@ -137,7 +137,10 @@ module WeekHelpers
     end
 
     def current_school_year
-      @current_school_year ||= SchoolYear::Current.new
+      # Not memoized on purpose: the "current" school year depends on the
+      # current date, so caching it would make it stale in long-running
+      # processes (and leak across tests that use `travel_to`).
+      SchoolYear::Current.new
     end
 
     # LIMITS

@@ -5,7 +5,13 @@ module FindableWeek
 
   included do
     scope :by_weeks, lambda { |weeks:|
-      joins(:weeks).where(weeks: { id: weeks.ids })
+      selected_ids = weeks.ids
+      next none if selected_ids.empty?
+
+      offers_with_extra_week = InternshipOfferWeek.where.not(week_id: selected_ids)
+                                                  .select(:internship_offer_id)
+      joins(:weeks).where(weeks: { id: selected_ids })
+                   .where.not(id: offers_with_extra_week)
     }
 
     scope :older_than, lambda { |week:|
