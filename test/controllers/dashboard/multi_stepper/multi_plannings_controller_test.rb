@@ -5,6 +5,9 @@ module Dashboard::MultiStepper
     include Devise::Test::IntegrationHelpers
 
     setup do
+      # Pin to an in-season date so selectable weeks exist regardless of when
+      # the suite runs (in June there are no future-selectable weeks left).
+      travel_to Time.zone.local(2025, 10, 1)
       @employer = create(:employer)
       @multi_activity = create(:multi_activity, employer: @employer)
       @multi_coordinator = create(:multi_coordinator, multi_activity: @multi_activity)

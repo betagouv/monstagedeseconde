@@ -14,12 +14,21 @@ class InternshipAgreement < ApplicationRecord
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
+  # index croissant = convention plus avancée (utilisé pour dé-dupliquer les candidatures)
+  ORDERED_STATES_INDEX = %w[
+    draft started_by_employer completed_by_employer started_by_school_manager
+    validated signatures_started signed_by_all
+  ].freeze
   TO_BE_SIGNED_STATES = %i[validated signatures_started].freeze
   EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer].freeze
   EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
 
   has_many :signatures, dependent: :destroy
   belongs_to :internship_application, optional: false
+
+  validates :internship_application_id,
+            uniqueness: { conditions: -> { kept } },
+            if: :kept?
 
   after_create :generate_token, unless: :access_token?
 
