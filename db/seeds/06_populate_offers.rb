@@ -377,6 +377,58 @@ def populate_internship_offers
                                 &.last
                                 &.unpublish!
 
+  # Offre 2de — état: removed (dépubliée définitivement)
+  offer_removed_seconde = InternshipOffers::WeeklyFramed.create!(
+    employer: Users::Employer.first,
+    contact_phone: '+33637607756',
+    siret:,
+    max_candidates: 3,
+    period: [ 0, 1, 2 ].sample,
+    sector: Sector.third,
+    is_public: false,
+    title: '(2de) - Stage archiviste — service des archives municipales',
+    description: 'Vous découvrez le métier d\'archiviste au sein du service des archives municipales de la ville.',
+    employer_description: 'Les archives municipales conservent et valorisent le patrimoine documentaire de la ville.',
+    street: '3 rue des Archives',
+    zipcode: '75003',
+    city: 'Paris',
+    coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    employer_name: 'Mairie de Paris',
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: seconde_weeks,
+    grades: [ Grade.seconde ],
+    entreprise_full_address: '3 rue des Archives, 75003 Paris',
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: [ '09:00', '17:00' ]
+  )
+  offer_removed_seconde.remove! if offer_removed_seconde.may_remove?
+
+  # Offre 3ème — état: removed (dépubliée définitivement)
+  offer_removed_troisieme = InternshipOffers::WeeklyFramed.create!(
+    employer: Users::Employer.first,
+    contact_phone: '+33637607756',
+    siret:,
+    max_candidates: 3,
+    period: [ 0, 1, 2 ].sample,
+    sector: Sector.third,
+    is_public: false,
+    title: '(3eme) - Stage menuisier — atelier artisanal',
+    description: 'Vous observez le travail du menuisier dans un atelier artisanal de fabrication de meubles.',
+    employer_description: 'Atelier artisanal spécialisé dans la fabrication de meubles sur mesure.',
+    street: '7 rue du Faubourg Saint-Antoine',
+    zipcode: '75011',
+    city: 'Paris',
+    coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    employer_name: 'Atelier Bois & Co',
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: troisieme_weeks,
+    grades: [ Grade.troisieme ],
+    entreprise_full_address: '7 rue du Faubourg Saint-Antoine, 75011 Paris',
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: [ '09:00', '17:00' ]
+  )
+  offer_removed_troisieme.remove! if offer_removed_troisieme.may_remove?
+
   # 11 multi-line
   description = " - Présentation des services de la direction régionale de la banque Acme Corp. (banque de dépôt). - Présentation des principes secondaires du métier. - Immersion au sein d’une équipe d'admiistrateurs de comptes de la banque. Proposition de gestion de portefeuille de clients en fin de stage, avec les conseils du tuteur'. "
 
