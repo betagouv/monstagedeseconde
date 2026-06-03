@@ -96,11 +96,13 @@ module Users
     alias presenter role_presenter
 
     def signatory_role
-      Signature.signatory_roles[:school_manager] if role == 'school_manager'
-      Signature.signatory_roles[:cpe] if role == 'cpe'
-      Signature.signatory_roles[:other] if role == 'other'
-      Signature.signatory_roles[:admin_officer] if role == 'admin_officer'
-      Signature.signatory_roles[:teacher] if role == 'teacher'
+      case role
+      when 'school_manager' then Signature.signatory_roles[:school_manager]
+      when 'cpe'            then Signature.signatory_roles[:cpe]
+      when 'other'          then Signature.signatory_roles[:other]
+      when 'admin_officer'  then Signature.signatory_roles[:admin_officer]
+      when 'teacher'        then Signature.signatory_roles[:teacher]
+      end
     end
 
     def school_management? = true
