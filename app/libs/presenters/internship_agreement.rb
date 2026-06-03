@@ -179,14 +179,23 @@ module Presenters
     def common_status_label(translation_path)
       if internship_agreement.from_multi? && current_user.employer_like? && internship_agreement.signatures_started?
         I18n.t("#{translation_path}.multi_employer")
-      elsif internship_agreement.signatures_started? &&
-          (internship_agreement.signed_by_team_member?(user: current_user) ||
-            internship_agreement.signed_by?(user: current_user.try(:school).try(:school_manager)))
-        I18n.t("#{translation_path}.already_signed")
       elsif internship_agreement.signatures_started?
-        I18n.t("#{translation_path}.not_signed_yet")
+        signatures_started_label
       else
         I18n.t(translation_path)
+      end
+    end
+
+    def signatures_started_label
+      current_user_signed = current_user_signed?
+      remaining = internship_agreement.roles_not_signed_yet
+
+      if !current_user_signed
+        'Convention partiellement signée. En attente de votre signature.'
+      elsif remaining.size == 1
+        "Vous avez déjà signé. En attente de la signature de #{human_signatory_role(remaining.first)}."
+      else
+        'Vous avez déjà signé. En attente des autres signatures.'
       end
     end
 
@@ -194,6 +203,22 @@ module Presenters
       Rails.application.routes.url_helpers.dashboard_internship_agreement_path(
         uuid: internship_agreement.uuid
       )
+    end
+
+    def current_user_signed?
+      if current_user.school_management?
+        internship_agreement.signed_by?(user: current_user)
+      else
+        internship_agreement.signed_by_team_member?(user: current_user)
+      end
+    end
+
+    def human_signatory_role(role)
+      if ::Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE.include?(role)
+        "l'équipe pédagogique"
+      else
+        ::Signature::FR_SIGNATORY_ROLE[role.to_sym]&.downcase || role
+      end
     end
   end
 end
