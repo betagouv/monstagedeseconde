@@ -784,6 +784,8 @@ fr:
 
         internship_application:
           attributes:
+            base:
+              duplicate: "Vous avez déjà postulé à cette offre"
             user_id:
               duplicate: "Vous êtes déjà candidat pour cette offre"
             internship_offer:
@@ -792,9 +794,6 @@ fr:
               blank: Veuillez renseigner vos motivations
             student:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
-        internship_applications/weekly_framed:
-          attributes:
-            duplicate: Duplicat internship_address_manual_enter
   student: "Élève"
   student legal representative: "Représentant légal"
   admin:
@@ -817,6 +816,10 @@ fr:
         title: 'Reset des données de la plateforme review'
         breadcrumb: 'Data Review Reset'
         menu: 'Reset des données de la plateforme review'
+      import_students_from_sygne:
+        menu: 'Importer les élèves depuis Sygne'
+        title: 'Importer les élèves depuis Sygne'
+        breadcrumb: 'Importer les élèves depuis Sygne'
       index:
         no_records: Aucun résultat
       delete:

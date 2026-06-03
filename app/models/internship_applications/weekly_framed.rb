@@ -33,17 +33,6 @@ module InternshipApplications
 
     private
 
-    def unique_student_application_per_week
-      return if weeks.blank? || student.blank? || internship_offer.blank?
-
-      duplicate = InternshipApplication.joins(:weeks)
-                                      .where(internship_offer_id: internship_offer_id,
-                                              user_id: user_id,
-                                              weeks: { id: weeks.ids })
-                                      .exists?
-      errors.add(:base, :duplicate) if duplicate
-    end
-
     def internship_offer_has_spots_left?
       errors.add(:internship_offer, :has_no_spots_left) unless internship_offer.has_spots_left?
     end

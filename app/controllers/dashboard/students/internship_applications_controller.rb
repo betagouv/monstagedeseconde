@@ -56,6 +56,7 @@ module Dashboard
       end
 
       def resend_application
+        authorize! :internship_application_edit, @internship_application
         if @internship_application.max_dunning_letter_count_reached?
           redirect_to dashboard_students_internship_applications_path(@current_student),
                       alert: 'Vous avez atteint le nombre maximum de relances pour cette candidature'
