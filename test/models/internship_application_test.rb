@@ -47,7 +47,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     freeze_time do
       assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
         assert_changes -> { MailActionItem.count }, from: 0, to: 1 do
-          create(:weekly_internship_application)
+          create(:weekly_internship_application, :submitted, submitted_at: nil)
         end
 
         assert_equal Time.now.utc, InternshipApplication.last.submitted_at
@@ -242,6 +242,31 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     end
   end
 
+  test "create_agreement is idempotent (no duplicate agreement on second call)" do
+    create(:school, :with_school_manager)
+    internship_application = create(:weekly_internship_application, :approved)
+
+    assert_equal 1,
+                 InternshipAgreement.kept.where(internship_application_id: internship_application.id).count
+
+    assert_no_changes -> { InternshipAgreement.count } do
+      internship_application.create_agreement
+    end
+  end
+
+  test "create_agreement recreates agreement after the existing one is discarded" do
+    create(:school, :with_school_manager)
+    internship_application = create(:weekly_internship_application, :approved)
+    existing = internship_application.internship_agreement
+    existing.update!(discarded_at: Time.current)
+
+    assert_difference -> { InternshipAgreement.count }, +1 do
+      internship_application.reload.create_agreement
+    end
+    assert_equal 1,
+                 InternshipAgreement.kept.where(internship_application_id: internship_application.id).count
+  end
+
   test "transition from submited to rejected send rejected email to student" do
     internship_application = create(:weekly_internship_application, :submitted)
     freeze_time do
@@ -341,7 +366,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   test "#after_employer_validation_notifications when student registered by phone" do
     student = create(:student, :registered_with_phone)
     internship_application = create(:weekly_internship_application, student:)
-    assert internship_application.after_employer_validation_notifications.is_a?(SendSmsStudentValidatedApplicationJob)
+    assert internship_application.send(:after_employer_validation_notifications).is_a?(SendSmsStudentValidatedApplicationJob)
   end
 
   test "#after_employer_validation_notifications when student registered by email" do
@@ -352,7 +377,7 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     mock_mail.expect(:deliver_later, true, [], wait: 1.second)
 
     StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
-      internship_application.after_employer_validation_notifications
+      internship_application.send(:after_employer_validation_notifications)
     end
     mock_mail.verify
   end
@@ -536,6 +561,60 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     internship_application = create(:weekly_internship_application, :restored)
     assert_equal "restored", internship_application.aasm_state
     assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
+  end
+
+  test "resolver cleans up canceled_internship_application_by_student when application is restored, leaving other applications untouched" do
+    employer = create(:employer)
+    other_employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    other_offer = create(:weekly_internship_offer_2nde, employer: other_employer)
+
+    internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+    other_application = create(:weekly_internship_application, :submitted, internship_offer: other_offer)
+
+    internship_application.cancel_by_student!
+    other_application.cancel_by_student!
+
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    internship_application.restore!
+
+    # after restore the item is still present — resolver handles the cleanup before digest delivery
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+    assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+  end
+
+  test "restoring a canceled application removes only its own canceled_internship_application_by_student mail_action_item" do
+    employer = create(:employer)
+    other_employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    other_offer = create(:weekly_internship_offer_2nde, employer: other_employer)
+
+    internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+    other_application = create(:weekly_internship_application, :submitted, internship_offer: other_offer)
+
+    internship_application.cancel_by_student!
+    other_application.cancel_by_student!
+
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    internship_application.restore!
+
+    # after restore, the canceled item still exists — resolver is responsible for cleanup
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    # resolver marks as resolved any canceled_internship_application_by_student item
+    # whose application is no longer canceled_by_student, scoped to employer —
+    # other_employer's item is untouched
+    Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+    assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
   end
 
   test "student_email_not_taken validation rejects email already used by another user" do
@@ -728,5 +807,78 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       end
       assert_equal "validated_by_employer", application_full.reload.aasm_state
     end
+  end
+
+  test "#is_re_approvable? is true for an expired application with no blocker" do
+    application = create(:weekly_internship_application, :expired)
+
+    assert application.is_re_approvable?
+    assert_nil application.re_approval_blocked_reason
+  end
+
+  test "#re_approval_blocked_reason is :anonymized when student is anonymized" do
+    application = create(:weekly_internship_application, :expired)
+    application.student.update_columns(anonymized: true)
+
+    assert_equal :anonymized, application.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
+  test "#re_approval_blocked_reason is :no_seats_left when the offer has no seat left" do
+    application = create(:weekly_internship_application, :expired)
+    application.internship_offer.stats.update!(remaining_seats_count: 0)
+
+    assert_equal :no_seats_left, application.reload.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
+  test "#re_approval_blocked_reason is :no_seats_left when the offer is over capacity" do
+    application = create(:weekly_internship_application, :expired)
+    application.internship_offer.stats.update!(remaining_seats_count: -1)
+
+    assert_equal :no_seats_left, application.reload.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
+  test "#re_approval_blocked_reason is :conflicting when student already has a conflicting approved application" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: "lycee")
+      student = create(:student, :seconde, school:)
+      week = SchoolTrack::Seconde.both_weeks.first
+      conflicting_offer = create(:weekly_internship_offer_2nde, :week_1)
+      expired_offer = create(:weekly_internship_offer_2nde, :week_1)
+      create(:weekly_internship_application, :approved,
+             student:, internship_offer: conflicting_offer, weeks: [week])
+      expired_application = create(:weekly_internship_application, :expired,
+                                   student:, internship_offer: expired_offer, weeks: [week])
+
+      assert_equal :conflicting, expired_application.re_approval_blocked_reason
+      refute expired_application.is_re_approvable?
+    end
+  end
+
+  test "#is_re_approvable? is true for a seconde gt expired application with an approved application on a different week" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: "lycee")
+      student = create(:student, :seconde, school:)
+      week_1 = SchoolTrack::Seconde.both_weeks.first
+      week_2 = SchoolTrack::Seconde.both_weeks.second
+      approved_offer = create(:weekly_internship_offer_2nde, :week_1)
+      expired_offer = create(:weekly_internship_offer_2nde, :week_2)
+      create(:weekly_internship_application, :approved,
+             student:, internship_offer: approved_offer, weeks: [week_1])
+      expired_application = create(:weekly_internship_application, :expired,
+                                   student:, internship_offer: expired_offer, weeks: [week_2])
+
+      assert_nil expired_application.re_approval_blocked_reason
+      assert expired_application.is_re_approvable?
+    end
+  end
+
+  test "#is_re_approvable? is false for a submitted application even with no blocker" do
+    application = create(:weekly_internship_application, :submitted)
+
+    assert_nil application.re_approval_blocked_reason
+    refute application.is_re_approvable?
   end
 end

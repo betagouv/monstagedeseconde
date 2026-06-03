@@ -1,4 +1,16 @@
 module SearchInternshipOfferHelpers
+  def dismiss_boarding_house_modal
+    return unless page.has_selector?("div[role='dialog'][aria-labelledby='boarding-house-announcement-title']",
+                                     wait: 1)
+
+    within("div[role='dialog'][aria-labelledby='boarding-house-announcement-title']") do
+      click_button('OK')
+    end
+
+    assert_no_selector("div[role='dialog'][aria-labelledby='boarding-house-announcement-title']",
+                       wait: 5)
+  end
+
   def assert_presence_of(internship_offer:)
     assert_selector "a[data-test-id='#{internship_offer.id}']",
                     count: 1
@@ -14,10 +26,10 @@ module SearchInternshipOfferHelpers
   end
 
   def fill_in_city_or_zipcode(with:, expect:)
+    dismiss_boarding_house_modal
     find('#input-search-by-city-or-zipcode').fill_in(with: '').fill_in(with:)
     return if with.empty?
 
-    # sleep 2
     find('#test-input-location-container #downshift-0-item-0', wait: 3).click
     assert_equal expect,
                  find('#test-input-location-container #input-search-by-city-or-zipcode').value,

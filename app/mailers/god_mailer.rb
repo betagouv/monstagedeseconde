@@ -180,7 +180,7 @@ class GodMailer < ApplicationMailer
     )
 
     send_email(
-      to: email_recipients,
+      to: recipients_email - [ @internship_offer.employer.email ], # the employer has already been notified when the last signature was done
       subject: "Une convention de stage est signée par tous"
     )
   end

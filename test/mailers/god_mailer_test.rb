@@ -8,7 +8,7 @@ class GodMailerTest < ActionMailer::TestCase
     email.deliver_now
     assert_emails 1
     assert_equal [ EmailUtils.from ], email.from
-    assert_equal [ ENV["TEAM_DSI_EMAIL"] ], email.to
+    assert_equal [ ENV.fetch("TEAM_DSI_EMAIL", "1e1s_team@free.fr") ], email.to
     refute_email_spammyness(email)
   end
 

@@ -25,7 +25,7 @@ module Dashboard::InternshipAgreements
       student                = create(:student, school: school, class_room: class_room)
       teacher                = create(:teacher, school: school, class_room: other_class_room)
       internship_application = create(:weekly_internship_application, :approved, user_id: student.id)
-      internship_agreement   = create(:mono_internship_agreement, internship_application: internship_application)
+      internship_agreement   = internship_application.internship_agreement
       sign_in teacher
       patch dashboard_internship_agreement_path(uuid: internship_agreement.uuid),
             params: { internship_agreements_mono_internship_agreement: { student_class_room: "a" } }
@@ -110,8 +110,7 @@ module Dashboard::InternshipAgreements
 
     test "PATCH #update as school manager owning students updates internship_agreement" do
       internship_application = create(:weekly_internship_application, :approved)
-      internship_agreement = create(:mono_internship_agreement, :created_by_system,
-                                    internship_application: internship_application)
+      internship_agreement = internship_application.internship_agreement
       school_manager = internship_application.student.school_manager
       new_school_representative_full_name = "John Doe"
       params = {
@@ -147,8 +146,7 @@ module Dashboard::InternshipAgreements
     test "PATCH #update as school manager owning students updates internship_agreement with missing school_manager_event" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_offer)
-      internship_agreement = create(:mono_internship_agreement, :created_by_system,
-                                    internship_application: internship_application)
+      internship_agreement = internship_application.internship_agreement
       school_manager = internship_application.student.school_manager
       new_school_representative_full_name = "John Doe"
       params = {
@@ -166,8 +164,7 @@ module Dashboard::InternshipAgreements
 
     test "PATCH #update as school manager owning students updates internship_agreement with soft saving" do
       internship_application = create(:weekly_internship_application, :approved)
-      internship_agreement = create(:mono_internship_agreement, :created_by_system,
-                                    internship_application: internship_application)
+      internship_agreement = internship_application.internship_agreement
       school_manager = internship_application.student.school_manager
       new_school_representative_full_name = "John Doe"
       params = {
@@ -192,12 +189,13 @@ module Dashboard::InternshipAgreements
       internship_application = create(:weekly_internship_application,
                                       :approved,
                                       internship_offer: internship_offer)
-      internship_agreement = create(:mono_internship_agreement,
-                                    :started_by_employer,
-                                    organisation_representative_full_name: "John Doe",
-                                    organisation_representative_role: "CEO",
-                                    tutor_email: "test@honer.com",
-                                    internship_application: internship_application)
+      internship_agreement = internship_application.internship_agreement
+      internship_agreement.update!(
+        aasm_state: "started_by_employer",
+        organisation_representative_full_name: "John Doe",
+        organisation_representative_role: "CEO",
+        tutor_email: "test@honer.com"
+      )
       sign_in(employer)
 
       patch_url = dashboard_internship_agreement_path(uuid: internship_agreement.uuid)

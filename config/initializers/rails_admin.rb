@@ -1,8 +1,8 @@
 # postgis type
-require 'nested_form/engine'
-require 'nested_form/builder_mixin'
-require 'school_year/base'
-require 'school_year/current'
+require "nested_form/engine"
+require "nested_form/builder_mixin"
+require "school_year/base"
+require "school_year/current"
 class RailsAdmin::Config::Fields::Types::Geography < RailsAdmin::Config::Fields::Types::Hidden
   RailsAdmin::Config::Fields::Types.register(self)
 end
@@ -37,8 +37,32 @@ class RailsAdmin::Config::Fields::Base
   end
 end
 
-%w[kpi.rb switch_user.rb publish.rb].each do |action|
-  require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
+# Prevent Chrome from autofilling the current admin's credentials into edit forms
+# (e.g. phone field getting filled with the logged-in user's email).
+class RailsAdmin::Config::Fields::Types::String
+  register_instance_option :html_attributes do
+    {
+      required: required?,
+      maxlength: length,
+      size: input_size,
+      autocomplete: 'off'
+    }
+  end
+end
+
+class RailsAdmin::Config::Fields::Types::Password
+  register_instance_option :html_attributes do
+    {
+      required: required?,
+      maxlength: length,
+      size: input_size,
+      autocomplete: 'new-password'
+    }
+  end
+end
+
+%w[kpi.rb switch_user.rb publish.rb import_students_from_sygne.rb].each do |action|
+  require Rails.root.join("lib", "rails_admin", "config", "actions", action)
 end
 stats_path = "/reporting/dashboards?school_year=#{SchoolYear::Current.new.offers_beginning_of_period.year}"
 
@@ -51,14 +75,14 @@ RailsAdmin.config do |config|
     warden.authenticate! scope: :user
   end
   config.current_user_method(&:current_user)
-  config.main_app_name = ['1élève1stage']
+  config.main_app_name = [ "1élève1stage" ]
 
   ## == CancanCan ==
   config.authorize_with :cancancan
 
-  config.parent_controller = 'AdminController'
-  config.model 'User' do
-    navigation_icon 'fas fa-user'
+  config.parent_controller = "AdminController"
+  config.model "User" do
+    navigation_icon "fas fa-user"
   end
 
   ## == PaperTrail ==
@@ -89,12 +113,15 @@ RailsAdmin.config do |config|
     end
 
     switch_user do
-      except ['Users::God']
+      except [ "Users::God" ]
     end
 
     export
     publish do
-      only ['InternshipOffers::WeeklyFramed']
+      only [ "InternshipOffers::WeeklyFramed" ]
+    end
+    import_students_from_sygne do
+      only [ "School" ]
     end
   end
 
@@ -102,6 +129,7 @@ RailsAdmin.config do |config|
 
   config.included_models = %w[School
                               Sector
+                              NafSectorMapping
                               Academy
                               AcademyRegion
                               Group
@@ -113,6 +141,7 @@ RailsAdmin.config do |config|
                               InternshipAgreement
                               Operator
                               InappropriateOffer
+                              MailActionItem
                               Users::Student
                               Users::SchoolManagement
                               Users::PrefectureStatistician
@@ -125,18 +154,18 @@ RailsAdmin.config do |config|
                               Users::God]
 
   config.navigation_static_links = {
-    'Ajouter un établissement' => '/ecoles/nouveau',
-    'Supprimer un étudiant, un employeur' => '/utilisateurs/anonymiseur',
-    'Tranformer un compte' => '/utilisateurs/transform_input',
-    'Stats' => stats_path,
-    'Internats' => '/reporting/internats',
-    'Sidekiq' => '/sidekiq',
-    'Feature flip' => '/admin/flipper/',
-    'AB Testing' => '/split'
+    "Ajouter un établissement" => "/ecoles/nouveau",
+    "Supprimer un étudiant, un employeur" => "/utilisateurs/anonymiseur",
+    "Tranformer un compte" => "/utilisateurs/transform_input",
+    "Stats" => stats_path,
+    "Internats" => "/reporting/internats",
+    "Sidekiq" => "/sidekiq",
+    "Feature flip" => "/admin/flipper/",
+    "AB Testing" => "/split"
   }
-  if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' && !Rails.env.production?
+  if ENV.fetch("ENABLE_REVIEW_DATA_RESET", "false") == "true" && !Rails.env.production?
     config.navigation_static_links.merge!(
-      'Reset des données de review' => '/reset_review_data/new'
+      "Reset des données de review" => "/reset_review_data/new"
     )
   end
 end

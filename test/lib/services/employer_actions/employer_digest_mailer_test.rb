@@ -92,10 +92,14 @@ module Services
         end
       end
 
-      test ".perform_for_medium_level delivers for canceled_internship_application_by_student" do
-        internship_application = create(:weekly_internship_application)
+      test ".perform_for_medium_level delivers for canceled_internship_application_by_student when previously read" do
+        internship_application = create(:weekly_internship_application, :canceled_by_student)
         employer = internship_application.internship_offer.employer
-        internship_application.update_columns(aasm_state: "canceled_by_student")
+        create(:internship_application_state_change,
+               internship_application: internship_application,
+               from_state: "submitted",
+               to_state: "read_by_employer",
+               author: employer)
         MailActionItem.delete_all
 
         item = MailActionItem.create!(
@@ -116,9 +120,14 @@ module Services
                      MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
 
-      test ".perform_for_medium_level delivers for restored_internship_application" do
+      test ".perform_for_medium_level delivers for restored_internship_application when previously read" do
         internship_application = create(:weekly_internship_application, :restored)
         employer = internship_application.internship_offer.employer
+        create(:internship_application_state_change,
+               internship_application: internship_application,
+               from_state: "submitted",
+               to_state: "read_by_employer",
+               author: employer)
         MailActionItem.delete_all
 
         item = MailActionItem.create!(
@@ -183,6 +192,56 @@ module Services
         Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
 
         assert_equal [ valid_medium.id ],
+                     MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
+      end
+
+      test ".perform_for_medium_level does NOT notify employer when application was canceled without being read" do
+        internship_application = create(:weekly_internship_application, :canceled_by_student)
+        employer = internship_application.internship_offer.employer
+        MailActionItem.delete_all
+
+        MailActionItem.create!(
+          recipient: employer,
+          action_name: "canceled_internship_application_by_student",
+          action_type: :pending_internship_application,
+          internship_application:,
+          urgency_level: :medium,
+          stale_at: 30.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 1
+        )
+
+        Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
+
+        assert_equal 0, MailActionItem.where(recipient: employer, deliveries_count: 1).count
+      end
+
+      test ".perform_for_medium_level DOES notify employer when application was read then canceled" do
+        internship_application = create(:weekly_internship_application, :canceled_by_student)
+        employer = internship_application.internship_offer.employer
+        create(:internship_application_state_change,
+               internship_application: internship_application,
+               from_state: "submitted",
+               to_state: "read_by_employer",
+               author: employer)
+        MailActionItem.delete_all
+
+        item = MailActionItem.create!(
+          recipient: employer,
+          action_name: "canceled_internship_application_by_student",
+          action_type: :pending_internship_application,
+          internship_application:,
+          urgency_level: :medium,
+          stale_at: 30.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 1
+        )
+
+        Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
+
+        assert_equal [ item.id ],
                      MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
     end

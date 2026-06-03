@@ -724,7 +724,7 @@ module InternshipOffers::InternshipApplications
         :weekly_internship_application,
         :validated_by_employer,
         internship_offer: internship_offer_2,
-        weeks: internship_offer_2.weeks,
+        weeks: SchoolTrack::Seconde.both_weeks,
         user_id: student.id
       )
       assert_equal 2, internship_application_2.weeks.count

@@ -39,6 +39,7 @@ class Ability
     can :show, :account, :rebuild_review_job
     can :manage, School
     can :manage, Sector
+    can :manage, NafSectorMapping
     can :manage, Academy
     can :manage, AcademyRegion
     can %i[read update export unpublish publish], InternshipOffer
@@ -54,6 +55,7 @@ class Ability
     end
     can %i[index_and_filter], Reporting::InternshipOffer
     can :manage, InternshipAgreement
+    can :manage, MailActionItem
     can %i[ show_modal_info
             switch_user
             read
@@ -75,6 +77,7 @@ class Ability
     can :manage, Operator
     can :read_employer_name, InternshipOffer
     can :manage, InappropriateOffer
+    can :manage, MailActionItem
   end
 
   def student_abilities(user:)
@@ -456,7 +459,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ see_reporting_dashboard
             see_dashboard_administrations_summary
             see_dashboard_department_summary
@@ -469,7 +472,7 @@ class Ability
 
     can %i[index_and_filter], Reporting::InternshipOffer
     can :read, Group
-    can %i[index], Acl::Reporting # , &:allowed?
+    can %i[index], Acl::Reporting, &:allowed?
     can %i[ export_reporting_dashboard_data
             see_dashboard_administrations_summary
             see_dashboard_department_summary

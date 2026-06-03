@@ -63,6 +63,9 @@ fr:
       internship_applications/weekly_framed:
         one: Candidature
         other: Candidatures
+      mail_action_item:
+        one: Info Email
+        other: Info Emails
       student_legal_representative:
         one: Représentant légal
         other: Responsables légaux
@@ -225,6 +228,24 @@ fr:
         coordinates: Coordonnées GPS
         department: Département
         internship_address_manual_enter: modalité de saisie de l'adresse
+      mail_action_item:
+        action_name: Nom de l'action
+        first_seen_at: Première vue
+        stale_at: Date d'expiration
+        last_notified_at: Dernière notification
+        resolved_at: Résolu le
+        deliveries_count: Nombre de livraisons
+        max_deliveries_count: Nombre maximum de livraisons
+        payload: Contenu
+        created_at: Créé le
+        updated_at: Mis à jour le
+        action_type: Type d'action
+        urgency_level: Niveau d'urgence
+        internship_offer_id: ID de l'offre de stage
+        internship_application_id: ID de la candidature de stage
+        internship_agreement_id: ID de l'accord de stage
+        recipient_type: Type de destinataire
+        recipient_id: ID du destinataire
       entreprise: &entreprises_fields
         siret: Siret
         is_public: Secteur public/privé
@@ -510,6 +531,7 @@ fr:
           approved: acceptée
           rejected: refusée
           expired: expirée
+          expired_by_student: absence de réponse
           transfered: transférée
           canceled_by_employer: annulée par l'employeur
           validated_by_employer: validée par l'employeur
@@ -783,6 +805,8 @@ fr:
 
         internship_application:
           attributes:
+            base:
+              duplicate: "Vous avez déjà postulé à cette offre"
             user_id:
               duplicate: "Vous êtes déjà candidat pour cette offre"
             internship_offer:
@@ -791,9 +815,6 @@ fr:
               blank: Veuillez renseigner vos motivations
             student:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
-        internship_applications/weekly_framed:
-          attributes:
-            duplicate: Duplicat internship_address_manual_enter
   student: "Élève"
   student legal representative: "Représentant légal"
   admin:
@@ -816,6 +837,10 @@ fr:
         title: 'Reset des données de la plateforme review'
         breadcrumb: 'Data Review Reset'
         menu: 'Reset des données de la plateforme review'
+      import_students_from_sygne:
+        menu: 'Importer les élèves depuis Sygne'
+        title: 'Importer les élèves depuis Sygne'
+        breadcrumb: 'Importer les élèves depuis Sygne'
       index:
         no_records: Aucun résultat
       delete:

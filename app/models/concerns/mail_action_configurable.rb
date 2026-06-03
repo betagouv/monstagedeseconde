@@ -6,7 +6,7 @@ module MailActionConfigurable
   included do
     # ACTION_CONFIGS: single source of truth for create_by_name! defaults.
     # Keys are action names; each value must include :action_type, :urgency_level,
-    # :max_deliveries_count and :stale_at (as a lambda).
+    # :max_deliveries_count.
     # To add a new action: add one entry here + the value to the enum in MailActionItem.
     PENDING_APPLICATION_CONFIGS = {
       "new_internship_application" => {
