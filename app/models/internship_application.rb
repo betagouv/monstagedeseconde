@@ -455,7 +455,8 @@ class InternshipApplication < ApplicationRecord
     # false if student is anonymised or student has an approved application
     return false if student.anonymized? ||
                     student.internship_applications.where(aasm_state: "approved").any? ||
-                    internship_offer.remaining_seats_count.zero?
+                    internship_offer.remaining_seats_count.zero? ||
+                    any_week_in_the_past?
 
     RE_APPROVABLE_STATES.include?(aasm_state)
   end
@@ -465,6 +466,16 @@ class InternshipApplication < ApplicationRecord
     return false if student.anonymized? || internship_offer.remaining_seats_count.zero?
 
     student.internship_applications.where(aasm_state: "approved").any?
+  end
+
+  def re_approval_blocked_by_past_dates?
+    return false unless RE_APPROVABLE_STATES.include?(aasm_state)
+
+    any_week_in_the_past?
+  end
+
+  def any_week_in_the_past?
+    weeks.any?(&:in_the_past?)
   end
 
   def cancelable?

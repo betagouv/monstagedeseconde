@@ -69,6 +69,19 @@ module Dashboard::InternshipOffers
       assert_no_text "Vous ne pouvez pas restaurer cette candidature car l'élève a choisi un autre stage."
     end
 
+    test 'employer cannot retenir a rejected application when internship dates are in the past' do
+      employer2, internship_offer2 = create_employer_and_offer_2nde
+      past_week = Week.strictly_before(date: Date.current).order(:year, :number).last
+      rejected_application = create(:weekly_internship_application, :rejected,
+                                    internship_offer: internship_offer2, weeks: [ past_week ])
+
+      sign_in(employer2)
+      visit dashboard_internship_offer_internship_application_path(internship_offer2,
+                                                                   uuid: rejected_application.uuid)
+      assert_text 'Vous ne pouvez pas retenir cette candidature car les dates du stage sont déjà passées.'
+      assert_button 'Retenir cette candidature', disabled: true
+    end
+
     test 'employer can unpublish an internship_offer from index page' do
       employer, internship_offer = create_employer_and_offer_2nde
       assert internship_offer.published?

@@ -129,6 +129,13 @@
                 fa_icon: "fr-icon-check-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
+            - elsif @internship_application.re_approval_blocked_by_past_dates?
+              = button_tag "Retenir cette candidature",
+                           type: "button",
+                           disabled: true,
+                           class: "fr-icon-check-line fr-btn mx-1 fr-btn--icon-left"
+              p.fr-text--sm.fr-mt-1w.fr-mb-0
+                | Vous ne pouvez pas retenir cette candidature car les dates du stage sont déjà passées.
             - elsif @internship_application.re_approval_blocked_by_student_choice?
               .fr-alert.fr-alert--warning.fr-mb-3w
                 p.fr-alert__title Vous ne pouvez pas restaurer cette candidature car l'élève a choisi un autre stage.

@@ -792,4 +792,39 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
     refute submitted_application.re_approval_blocked_by_student_choice?
   end
+
+  test "#re_approval_blocked_by_past_dates? is true when internship weeks are in the past" do
+    past_week = Week.strictly_before(date: Date.current).order(:year, :number).last
+    rejected_application = create(:weekly_internship_application, :rejected, weeks: [ past_week ])
+
+    assert rejected_application.re_approval_blocked_by_past_dates?
+  end
+
+  test "#re_approval_blocked_by_past_dates? is false when internship weeks are in the future" do
+    future_week = Week.strictly_after(date: Date.current).order(:year, :number).first
+    rejected_application = create(:weekly_internship_application, :rejected, weeks: [ future_week ])
+
+    refute rejected_application.re_approval_blocked_by_past_dates?
+  end
+
+  test "#re_approval_blocked_by_past_dates? is false for a non re-approvable state" do
+    past_week = Week.strictly_before(date: Date.current).order(:year, :number).last
+    submitted_application = create(:weekly_internship_application, :submitted, weeks: [ past_week ])
+
+    refute submitted_application.re_approval_blocked_by_past_dates?
+  end
+
+  test "#is_re_approvable? is false when internship weeks are in the past" do
+    past_week = Week.strictly_before(date: Date.current).order(:year, :number).last
+    rejected_application = create(:weekly_internship_application, :rejected, weeks: [ past_week ])
+
+    refute rejected_application.is_re_approvable?
+  end
+
+  test "#is_re_approvable? is true when internship weeks are in the future" do
+    future_week = Week.strictly_after(date: Date.current).order(:year, :number).first
+    rejected_application = create(:weekly_internship_application, :rejected, weeks: [ future_week ])
+
+    assert rejected_application.is_re_approvable?
+  end
 end
