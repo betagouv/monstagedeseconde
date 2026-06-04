@@ -39,119 +39,119 @@ module Presenters
       # action_label stands for action button content
       action_path = { path: internship_application_path }
       case internship_application.aasm_state.to_s
-      when 'submitted'
-        label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'nouveau'
-        action_label = reader.student? ? 'Voir' : 'Répondre'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
+      when "submitted"
+        label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : "nouveau"
+        action_label = reader.student? ? "Voir" : "Répondre"
+        action_level = reader.student? ? "tertiary" : "primary"
+        tab = reader.student? ? "Envoyées, en attente de réponse" : "Reçues, en attente de réponse"
         { label:,
-          badge: 'info',
+          badge: "info",
           tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      when 'restored'
+          actions: [ action_path.merge(label: action_label, level: action_level) ] }
+      when "restored"
         states_with_notice = %w[read_by_employer transfered validated_by_employer]
         action_label = if reader.student?
-                         'Voir'
-                       elsif internship_application.has_ever_been?(states_with_notice)
-                         'Candidature restaurée - répondre'
-                       else
-                         'Répondre'
-                       end
+                         "Voir"
+        elsif internship_application.has_ever_been?(states_with_notice)
+                         "Candidature restaurée - répondre"
+        else
+                         "Répondre"
+        end
         label = if reader.student?
                   "sans réponse de l'entreprise"
-                elsif internship_application.has_ever_been?(states_with_notice)
-                  'candidature restaurée'
-                else
-                  'nouveau'
-                end
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
+        elsif internship_application.has_ever_been?(states_with_notice)
+                  "candidature restaurée"
+        else
+                  "nouveau"
+        end
+        action_level = reader.student? ? "tertiary" : "primary"
+        tab = reader.student? ? "Envoyées, en attente de réponse" : "Reçues, en attente de réponse"
         { label:,
-          badge: 'info',
+          badge: "info",
           tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      when 'read_by_employer'
-        label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'Lue'
-        badge = reader.student? ? 'info' : 'warning'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
-        action_label = reader.student? || reader.school_management? ? 'Voir' : 'Répondre'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        { label:,
-          badge:,
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-
-      when 'transfered'
-        action_label = reader.student? ? 'en attente de réponse' : 'transféré'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        label = reader.student? ? 'en attente de réponse' : 'transféré'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Transférées'
-        { label:,
-          badge: 'info',
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-
-      when 'validated_by_employer'
-        label = reader.student? || reader.school_management? ? 'acceptée par l\'entreprise' : 'en attente de réponse'
-        action_label = reader.student? ? 'Répondre' : 'Voir'
-        action_level = reader.student? ? 'primary' : 'tertiary'
-        badge = reader.student? ? 'success' : 'info'
-        tab = 'Acceptées par l’offreur, à confirmer par l’élève'
+          actions: [ action_path.merge(label: action_label, level: action_level) ] }
+      when "read_by_employer"
+        label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : "Lue"
+        badge = reader.student? ? "info" : "warning"
+        tab = reader.student? ? "Envoyées, en attente de réponse" : "Reçues, en attente de réponse"
+        action_label = reader.student? || reader.school_management? ? "Voir" : "Répondre"
+        action_level = reader.student? ? "tertiary" : "primary"
         { label:,
           badge:,
           tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      when 'canceled_by_employer'
+          actions: [ action_path.merge(label: action_label, level: action_level) ] }
+
+      when "transfered"
+        action_label = reader.student? ? "en attente de réponse" : "transféré"
+        action_level = reader.student? ? "tertiary" : "primary"
+        label = reader.student? ? "en attente de réponse" : "transféré"
+        tab = reader.student? ? "Envoyées, en attente de réponse" : "Transférées"
+        { label:,
+          badge: "info",
+          tab:,
+          actions: [ action_path.merge(label: action_label, level: action_level) ] }
+
+      when "validated_by_employer"
+        label = reader.student? || reader.school_management? ? "acceptée par l'entreprise" : "en attente de réponse"
+        action_label = reader.student? ? "Répondre" : "Voir"
+        action_level = reader.student? ? "primary" : "tertiary"
+        badge = reader.student? ? "success" : "info"
+        tab = "Acceptées par l’offreur, à confirmer par l’élève"
+        { label:,
+          badge:,
+          tab:,
+          actions: [ action_path.merge(label: action_label, level: action_level) ] }
+      when "canceled_by_employer"
         # label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
-        tab = 'Annulées'
-        { label: 'annulée par l\'employeur',
-          badge: 'error',
+        tab = "Annulées"
+        { label: "annulée par l'employeur",
+          badge: "error",
           tab:,
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'rejected'
+          actions: [ action_path.merge(label: "Voir", level: "tertiary") ] }
+      when "rejected"
         # label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
-        tab = 'Refusées'
-        { label: 'refusée par l\'employeur',
-          badge: 'warning',
+        tab = "Refusées"
+        { label: "refusée par l'employeur",
+          badge: "warning",
           tab:,
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'canceled_by_student'
-        label = reader.student? || reader.school_management? ? 'annulée' : 'annulée par l\'élève'
-        tab = 'Annulées'
+          actions: [ action_path.merge(label: "Voir", level: "tertiary") ] }
+      when "canceled_by_student"
+        label = reader.student? || reader.school_management? ? "annulée" : "annulée par l'élève"
+        tab = "Annulées"
         { label:,
-          badge: 'purple-glycine',
+          badge: "purple-glycine",
           tab:,
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'expired'
-        { label: 'expirée',
-          badge: 'error',
-          tab: 'Expirées',
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'expired_by_student'
-        label = reader.student? || reader.school_management? ? 'vous n\'avez pas répondu dans les délais' : "l'élève n’a pas répondu dans les délais"
+          actions: [ action_path.merge(label: "Voir", level: "tertiary") ] }
+      when "expired"
+        { label: "expirée",
+          badge: "error",
+          tab: "Expirées",
+          actions: [ action_path.merge(label: "Voir", level: "tertiary") ] }
+      when "expired_by_student"
+        label = reader.student? || reader.school_management? ? "vous n'avez pas répondu dans les délais" : "l'élève n’a pas répondu dans les délais"
         { label: label,
-          badge: 'error',
-          tab: 'Expirées',
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'canceled_by_student_confirmation'
-        { label: reader.student? ? 'Vous avez choisi un autre stage' : "L'élève a choisi un autre stage",
-          badge: 'purple-glycine',
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'approved'
-        action_label = reader.student? ? 'Contacter l\'employeur' : 'Voir'
-        action_level = reader.student? ? 'primary' : 'secondary'
-        tab = reader.student? ? 'Votre stage validé' : 'Stage validé'
-        { label: 'stage validé',
-          badge: 'success',
+          badge: "error",
+          tab: "Expirées",
+          actions: [ action_path.merge(label: "Voir", level: "tertiary") ] }
+      when "canceled_by_student_confirmation"
+        { label: reader.student? ? "Vous avez choisi un autre stage" : "L'élève a choisi un autre stage",
+          badge: "purple-glycine",
+          actions: [ action_path.merge(label: "Voir", level: "tertiary") ] }
+      when "approved"
+        action_label = reader.student? ? "Contacter l'employeur" : "Voir"
+        action_level = reader.student? ? "primary" : "secondary"
+        tab = reader.student? ? "Votre stage validé" : "Stage validé"
+        { label: "stage validé",
+          badge: "success",
           tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
+          actions: [ action_path.merge(label: action_label, level: action_level) ] }
       else
         {}
       end
     end
 
     def actions_in_show_page
-      return '' if internship_application.aasm_state.nil?
+      return "" if internship_application.aasm_state.nil?
 
       student_has_found = internship_application.student
                                                 .with_2_weeks_internships_approved?
@@ -161,47 +161,46 @@ module Presenters
     def actions_when_student_has_found
       return [] unless internship_application.approved?
 
-      [{ label: 'Contacter l\'offreur',
-         color: 'primary',
-         level: 'tertiary' }]
+      [ { label: "Contacter l'offreur",
+         color: "primary",
+         level: "tertiary" } ]
     end
 
     def actions_when_student_has_not_found
       case internship_application.aasm_state
-      when 'submitted'
-        [{ label: 'Renvoyer la demande',
-           color: 'primary',
-           level: 'primary' }]
+      when "submitted"
+        [ { label: "Renvoyer la demande",
+           color: "primary",
+           level: "primary" } ]
 
-      when 'transfered'
-        [{ label: 'Renvoyer la demande',
-           color: 'primary',
-           level: 'primary' }]
+      when "transfered"
+        [ { label: "Renvoyer la demande",
+           color: "primary",
+           level: "primary" } ]
 
-      when 'read_by_employer'
-        [{ label: 'Renvoyer la demande',
-           color: 'primary',
-           level: 'tertiary' }]
+      when "read_by_employer"
+        [ { label: "Renvoyer la demande",
+           color: "primary",
+           level: "tertiary" } ]
 
-      when 'validated_by_employer'
-        [{ label: 'Choisir ce stage',
+      when "validated_by_employer"
+        [ { label: "Choisir ce stage",
            form_path: internship_application_path,
-           transition: 'approve!',
-           color: 'primary',
-           level: 'primary' }]
-      when 'approved'
-        [{ label: 'Contacter l\'offreur',
-           color: 'primary',
-           level: 'tertiary' }]
+           transition: "approve!",
+           color: "primary",
+           level: "primary" } ]
+      when "approved"
+        [ { label: "Contacter l'offreur",
+           color: "primary",
+           level: "tertiary" } ]
 
-      when 'canceled_by_employer', 'rejected', 'canceled_by_student', 'expired', 'canceled_by_student_confirmation'
+      when "canceled_by_employer", "rejected", "canceled_by_student", "expired", "canceled_by_student_confirmation"
         []
 
       else
         []
       end
     end
-
 
     def with_employer_explanation?
       unless internship_application.aasm_state.in?(::InternshipApplication.with_employer_explanations_states)
