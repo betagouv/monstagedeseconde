@@ -22,6 +22,10 @@ Rails.application.routes.draw do
 
       # flipper
       mount Flipper::UI.app(Flipper) => '/admin/flipper'
+
+      # letter_thief : emails sortants interceptés (remplace Mailtrap en review).
+      # Réservé aux comptes god car ils contiennent des données personnelles.
+      mount LetterThief::Engine => '/letter_thief' if Rails.env.review?
     end
 
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
