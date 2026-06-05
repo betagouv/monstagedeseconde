@@ -41,19 +41,21 @@ export default class extends Controller {
   }
 
   onConfirm() {
+    if (this.submitting) return;
+    this.submitting = true;
     this.element.closest('form').submit();
   }
 
   onValidate(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.submitting) return;
+
     if (this.noGradeOffer()) {
-      // Prevent submission if no grade is selected, SNO
-      event.preventDefault();
-      event.stopPropagation();
       toggleContainer(this.alertContainerTarget, true);
     } else if (this.isDoubleGradeOffer()) {
       this.maxCandidatesDisplayTarget.textContent = ` (${this.maxCandidatesSourceTarget.value})`;
-      event.preventDefault();
-      event.stopPropagation();
       openDsfrModal(this.dialogContainerTarget);
     } else {
       this.onConfirm();
