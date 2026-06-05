@@ -1,12 +1,12 @@
 div id="pub_status_#{dom_id @internship_offer}"
-  - if internship_offer.reload.published_at.present?
+  - if internship_offer.weeks_in_past_no_future_available? || internship_offer.created_during_former_year?
+    p.fr-badge.fr-badge--warning
+      = "Offre archivée"
+  - elsif internship_offer.reload.published_at.present?
     .d-flex.align-items-center
       p.fr-badge.fr-badge--success.fr-mb-0 Offre publiée
       span.internship_offer-published_at.fr-text--lg.fr-mx-2w.fr-mb-0.blue-france
         = "depuis le #{l(internship_offer.published_at, format: :human_mm_dd)}"
-  - elsif internship_offer.created_during_former_year?
-    p.fr-badge.fr-badge--warning
-      = "Offre archivée"
   - else
     p.fr-badge.fr-badge--warning
       = "Offre masquée"
