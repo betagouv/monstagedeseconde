@@ -11,7 +11,7 @@ module StepperProxy
 
       before_validation :clean_siret, unless: -> { internship_address_manual_enter }
       before_validation :public_entreprise_sector_settings, if: -> { is_public && !from_api? }
-      before_validation :assign_sector_from_naf, if: -> { !is_public && code_ape.present? && sector_id_changed? == false }
+      before_validation :assign_sector_from_naf, if: -> { !is_public && code_ape.present? && new_record? }
       before_save :entreprise_used_name
 
       attr_accessor :entreprise_chosen_full_address,

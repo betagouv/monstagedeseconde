@@ -33,23 +33,36 @@ class EntrepriseTest < ActiveSupport::TestCase
     assert entreprise.contact_phone.gsub(' ', '').match?(/0\d{9}/)
   end
 
-  test 'private entreprise auto-assigns sector from NAF mapping' do
+  test 'new private entreprise auto-assigns sector from NAF mapping on creation' do
     sector_info = create(:sector, name: 'Informatique et réseaux')
     create(:naf_sector_mapping, code_naf: '62.01Z', sector: sector_info)
     other_sector = create(:sector, name: 'Autre secteur')
 
     entreprise = build(:entreprise, :private, sector: other_sector, code_ape: '62.01Z')
-    # Reset sector_id_changed? tracking so the before_validation triggers
-    entreprise.clear_changes_information
-
     entreprise.valid?
     assert_equal sector_info.id, entreprise.sector_id
+  end
+
+  test 'existing private entreprise does not overwrite sector from NAF on update' do
+    banque_sector = create(:sector, name: 'Banque et assurance')
+    fonction_publique_sector = create(:sector, name: 'Fonction publique')
+    create(:naf_sector_mapping, code_naf: '84.11Z', sector: fonction_publique_sector)
+
+    # Créé sans code_ape mappé vers Fonction publique pour que le secteur reste Banque et assurance
+    entreprise = create(:entreprise, :private, sector: banque_sector, code_ape: '99.99Z')
+    # Simule un employeur qui change son code_ape après coup (données incohérentes en BDD)
+    entreprise.update_column(:code_ape, '84.11Z')
+
+    # La mise à jour d'un autre champ ne doit pas écraser le secteur existant
+    entreprise.reload
+    entreprise.update!(employer_chosen_name: 'Nouvelle raison sociale')
+
+    assert_equal banque_sector.id, entreprise.reload.sector_id
   end
 
   test 'private entreprise keeps user-chosen sector when no NAF mapping exists' do
     chosen_sector = create(:sector, name: 'Mon secteur')
     entreprise = build(:entreprise, :private, sector: chosen_sector, code_ape: '99.99Z')
-    entreprise.clear_changes_information
 
     entreprise.valid?
     assert_equal chosen_sector.id, entreprise.sector_id
