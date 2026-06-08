@@ -81,8 +81,9 @@ class MailActionItem < ApplicationRecord
       field :resolved_at
       field :deliveries_count
       field :max_deliveries_count
+      field :last_notified_at
+      field :stale_at
       field :created_at
-      field :updated_at
     end
 
     show do
@@ -96,7 +97,6 @@ class MailActionItem < ApplicationRecord
       field :deliveries_count
       field :max_deliveries_count
       field :created_at
-      field :updated_at
     end
 
     edit do
