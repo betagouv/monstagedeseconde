@@ -32,6 +32,36 @@ module Dashboard::Users
       assert_select '.fr-alert p', text: "Erreur de code, veuillez recommencer"
     end
 
+    test 'employer signing succeeds with bypass code 000000 in non-production' do
+      internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
+      employer = internship_agreement.employer
+      employer.update(phone: '+330623456789')
+      # No matching token created on purpose: hors-production, 000000 doit suffire.
+      sign_in(employer)
+
+      params = {
+        user: {
+          internship_agreement_id: internship_agreement.id,
+          :'digit-code-target-0' => '0',
+          :'digit-code-target-1' => '0',
+          :'digit-code-target-2' => '0',
+          :'digit-code-target-3' => '0',
+          :'digit-code-target-4' => '0',
+          :'digit-code-target-5' => '0',
+          id: employer.id
+        }
+      }
+      post signature_code_validate_dashboard_user_path(
+              format: :turbo_stream,
+              id: employer.id),
+             params: params
+
+      assert_response :success
+      assert_select '.fr-alert p', text: 'Erreur de code, veuillez recommencer', count: 0
+      assert_select 'h1#fr-modal-signature-title', text: 'Apposez votre signature'
+      assert employer.reload.signature_phone_token_checked_at.present?
+    end
+
     test 'employer signing fails when using too old a code params ' do
       internship_agreement = create(:mono_internship_agreement)
       employer = internship_agreement.employer

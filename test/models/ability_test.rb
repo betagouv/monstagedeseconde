@@ -40,8 +40,8 @@ class AbilityTest < ActiveSupport::TestCase
       assert(ability.can?(:dashboard_show, internship_application))
       assert(ability.can?(:internship_application_edit, internship_application))
       assert(ability.cannot?(:dashboard_show, create(:weekly_internship_application)))
-      assert(ability.cannot?(:index, Acl::InternshipOfferDashboard.new(user: student)),
-             "employers should be able to index InternshipOfferDashboard")
+      assert(ability.cannot?(:index, :internship_offer_dashboard),
+             "students should not be able to index internship offer dashboard")
       refute(ability.can?(:read_employer_data, internship_application),
              "student shall not read employer data unless internship_application is validated")
       ability = Ability.new(other_student)
@@ -199,8 +199,8 @@ class AbilityTest < ActiveSupport::TestCase
              "employers should be able to discard internships offer not belonging to him")
       assert(ability.can?(:discard, InternshipOffer.new(employer:)),
              "employers should be able to discard internships offer that belongs to him")
-      assert(ability.can?(:index, Acl::InternshipOfferDashboard.new(user: employer)),
-             "employers should be able to index InternshipOfferDashboard")
+      assert(ability.can?(:index, :internship_offer_dashboard),
+             "employers should be able to index internship offer dashboard")
 
       team_member_invitation = create(:team_member_invitation, inviter: employer,
                                                                member: another_employer, invitation_email: another_employer.email)
@@ -592,8 +592,8 @@ class AbilityTest < ActiveSupport::TestCase
            "Operator should be able to update internships offer that belongs to him")
     assert(ability.can?(:index_and_filter, Reporting::InternshipOffer))
     assert(ability.can?(:index, Acl::Reporting.new(user: operator, params: {})))
-    assert(ability.can?(:index, Acl::InternshipOfferDashboard.new(user: operator)),
-           "Operator should be able to index InternshipOfferDashboard")
+    assert(ability.can?(:index, :internship_offer_dashboard),
+           "Operator should be able to index internship offer dashboard")
 
     refute(ability.can?(:create_remote_internship_request, SupportTicket),
            "operators are not supposed to fill forms for remote internships support")
