@@ -84,6 +84,25 @@ module Services
         assert_nil item.reload.resolved_at
       end
 
+      test ".call does not resolve restored_internship_application as collateral damage from new_internship_application resolution when application was read, canceled, then restored" do
+        internship_application = create(:weekly_internship_application, :read_by_employer)
+        employer = internship_application.internship_offer.employer
+        student = internship_application.student
+
+        internship_application.cancel_by_student!(student)
+        internship_application.restore!(student)
+
+        assert internship_application.has_ever_been?(%w[read_by_employer]),
+               "precondition: application must have been seen by employer"
+
+        item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
+
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+        assert_nothing_raised { item.reload }
+        assert_nil item.reload.resolved_at
+      end
+
       # ---------------------------------------------------------------------------
       # canceled_internship_application_by_student — never seen by employer
       # ---------------------------------------------------------------------------

@@ -42,6 +42,23 @@ module Services::EmployerActions
       end
 
       # ------------------------
+      # restored_internship_application case
+      # ------------------------
+      # resolved (i.e. not notified) unless the application is actually restored AND
+      # the employer had read it at some point in its history.
+      # Runs before new_internship_application below so that its resolution of the
+      # whole application doesn't wipe this item out as collateral damage.
+      actions = MailActionItem.for_user(user_id)
+                              .where(urgency_level:)
+                              .where(action_name: "restored_internship_application")
+      actions.present? && actions.each do |item|
+        application = item.internship_application
+        not_restored = application&.aasm_state != "restored"
+        never_seen_by_employer = !application&.has_ever_been?(%w[read_by_employer])
+        item.update_columns(resolved_at: Time.current) if not_restored || never_seen_by_employer
+      end
+
+      # ------------------------
       # new_internship_application case
       # ------------------------
       # application which aasm_state is not :submitted are to be set as resolved
@@ -53,21 +70,6 @@ module Services::EmployerActions
           unless mail_action_item&.internship_application&.submitted?
             application_resolve(mail_action_item.internship_application)
           end
-        end
-      end
-
-      # ------------------------
-      # restored_internship_application case
-      # ------------------------
-      actions = MailActionItem.for_user(user_id)
-                              .where(urgency_level:)
-                              .where(action_name: "restored_internship_application")
-      actions.present? && actions.each do |item|
-        application = item.internship_application
-        not_restored = application&.aasm_state != "restored"
-        never_seen_by_employer = !application&.has_ever_been?(%w[read_by_employer])
-        if not_restored || never_seen_by_employer
-          application_resolve(application)
         end
       end
 
@@ -134,6 +136,7 @@ module Services::EmployerActions
     SELF_RESOLVING_ACTION_NAMES = %w[
       canceled_internship_application_by_student
       cancel_by_student_confirmation
+      restored_internship_application
     ].freeze
 
     def self.application_resolve(application)
