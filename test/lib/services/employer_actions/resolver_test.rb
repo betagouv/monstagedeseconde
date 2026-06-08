@@ -85,6 +85,45 @@ module Services
       end
 
       # ---------------------------------------------------------------------------
+      # canceled_internship_application_by_student — never seen by employer
+      # ---------------------------------------------------------------------------
+
+      test ".call resolves canceled_internship_application_by_student when application was never seen by employer" do
+        internship_application = create(:weekly_internship_application, :submitted)
+        employer = internship_application.internship_offer.employer
+        student = internship_application.student
+
+        internship_application.cancel_by_student!(student)
+
+        refute internship_application.has_ever_been?(%w[read_by_employer]),
+               "precondition: application must never have been seen by employer"
+
+        item = internship_application.mail_action_items.find_by!(action_name: "canceled_internship_application_by_student")
+
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+      end
+
+      test ".call does not resolve canceled_internship_application_by_student when application was previously read_by_employer" do
+        internship_application = create(:weekly_internship_application, :read_by_employer)
+        employer = internship_application.internship_offer.employer
+        student = internship_application.student
+
+        internship_application.cancel_by_student!(student)
+
+        assert internship_application.has_ever_been?(%w[read_by_employer]),
+               "precondition: application must have been seen by employer"
+
+        item = internship_application.mail_action_items.find_by!(action_name: "canceled_internship_application_by_student")
+
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+        assert_nothing_raised { item.reload }
+        assert_nil item.reload.resolved_at
+      end
+
+      # ---------------------------------------------------------------------------
       # agreement_signed_by_all — new behaviour
       # ---------------------------------------------------------------------------
 

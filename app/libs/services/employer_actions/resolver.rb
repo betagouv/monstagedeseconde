@@ -25,6 +25,23 @@ module Services::EmployerActions
 
     def self.extra_resolver(user_id:, urgency_level:)
       # ------------------------
+      # canceled_internship_application_by_student case
+      # ------------------------
+      # resolved (i.e. not notified) unless the application is actually canceled by
+      # the student AND the employer had read it before the cancellation.
+      # Runs before new_internship_application below so that its resolution of the
+      # whole application doesn't wipe this item out as collateral damage.
+      actions = MailActionItem.for_user(user_id)
+                              .where(urgency_level:)
+                              .where(action_name: "canceled_internship_application_by_student")
+      actions.present? && actions.each do |item|
+        application = item.internship_application
+        not_canceled = !application&.canceled_by_student?
+        never_seen_by_employer = !application&.has_ever_been?(%w[read_by_employer])
+        item.update_columns(resolved_at: Time.current) if not_canceled || never_seen_by_employer
+      end
+
+      # ------------------------
       # new_internship_application case
       # ------------------------
       # application which aasm_state is not :submitted are to be set as resolved
@@ -36,21 +53,6 @@ module Services::EmployerActions
           unless mail_action_item&.internship_application&.submitted?
             application_resolve(mail_action_item.internship_application)
           end
-        end
-      end
-
-      # ------------------------
-      # canceled_internship_application_by_student case
-      # ------------------------
-      actions = MailActionItem.for_user(user_id)
-                              .where(urgency_level:)
-                              .where(action_name: "canceled_internship_application_by_student")
-      actions.present? && actions.each do |item|
-        application = item.internship_application
-        not_canceled = !application&.canceled_by_student?
-        never_seen_by_employer = !application&.has_ever_been?(%w[read_by_employer])
-        if not_canceled || never_seen_by_employer
-          application_resolve(application)
         end
       end
 
@@ -127,13 +129,19 @@ module Services::EmployerActions
 
     private
 
+    # action_names with their own dedicated resolution rules above:
+    # they must not be wiped out as collateral damage here.
+    SELF_RESOLVING_ACTION_NAMES = %w[
+      canceled_internship_application_by_student
+    ].freeze
+
     def self.application_resolve(application)
       return unless application.present? && application.persisted?
 
       MailActionItem.where(
         action_type: :pending_internship_application,
         internship_application_id: application.id,
-      ).each do |item|
+      ).where.not(action_name: SELF_RESOLVING_ACTION_NAMES).each do |item|
         item.update_columns(resolved_at: Time.current)
       end
     end
