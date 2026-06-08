@@ -120,7 +120,7 @@ module Dashboard::InternshipOffers
       end
     end
 
-    test "POST #create - duplicate with both publics is blocked during forbidden period (late May to July 15)" do
+    test "POST #create - duplicate with both publics is blocked during forbidden period (late May to July 1st)" do
       travel_to(Date.new(2025, 6, 10)) do
         school = create(:school)
         employer = create(:employer)
