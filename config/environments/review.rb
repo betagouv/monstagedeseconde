@@ -78,8 +78,11 @@ Rails.application.configure do
 
   # Use a different cache store in production.
 
+  # Heroku Redis impose TLS (URL en rediss://) avec un certificat auto-signé : on désactive
+  # la vérification du certificat, mais uniquement dans ce cas (inoffensif en local / non-TLS).
+  redis_cache_ssl = ENV.fetch('REDIS_URL', '').start_with?('rediss://') ? { ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE } } : {}
   config.cache_store = :redis_cache_store,
-                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu' }
+                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu', **redis_cache_ssl }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
