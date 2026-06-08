@@ -8,7 +8,7 @@ dialog.fr-modal[
     .fr-grid-row.fr-grid-row--center
       .fr-col-12.fr-col-md-8.fr-col-lg-6
       .fr-modal__body
-        = form_with(url: url, method: :post, data: { turbo: false }, class: 'd-inline') do |f|
+        = form_with(url: url, method: :post, data: { turbo: false, controller: "single-submit", action: "submit->single-submit#lock" }, class: 'd-inline') do |f|
           = f.hidden_field :ids
           = f.hidden_field :transition, value: transition
           .fr-modal__header

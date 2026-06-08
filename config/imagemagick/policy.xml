@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policymap [
+  <!ELEMENT policymap (policy)*>
+  <!ATTLIST policymap xmlns CDATA #FIXED ''>
+  <!ELEMENT policy EMPTY>
+  <!ATTLIST policy xmlns CDATA #FIXED '' domain NMTOKEN #REQUIRED
+    name NMTOKEN #IMPLIED pattern CDATA #IMPLIED rights NMTOKEN #IMPLIED
+    stealth NMTOKEN #IMPLIED value CDATA #IMPLIED>
+]>
+<!--
+  Hardened ImageMagick policy for 1Eleve1Stage.
+  Loaded via MAGICK_CONFIGURE_PATH (see config/initializers/imagemagick_policy.rb).
+
+  Why: signature/agreement code shells out to ImageMagick (MiniMagick) on
+  user-supplied images (app/models/school.rb, app/libs/generate_*_agreement.rb,
+  app/jobs/desinterlace_school_signature_job.rb). This policy is the
+  defense-in-depth layer that covers ALL those call sites at once:
+    - caps resources to stop decompression-bomb / memory DoS;
+    - disables coders we never use and that are classic RCE/SSRF vectors
+      (ImageTragick: MVG/MSL/SVG ; SSRF: URL/HTTP(S)/FTP ; PostScript: PS/EPS);
+    - blocks indirect file reads (@-references).
+
+  PDF is intentionally LEFT ENABLED: School#convert_pdf_to_png converts PDF
+  school signatures to PNG. PDF goes through the Ghostscript delegate, which is
+  a residual risk — keep Ghostscript patched. School uploads are already
+  validated (content_type in jpeg/png/pdf, size < 5MB) in app/models/school.rb.
+-->
+<policymap>
+  <!-- Resource limits (anti-DoS / decompression bomb) -->
+  <policy domain="resource" name="memory" value="512MiB"/>
+  <policy domain="resource" name="map" value="1GiB"/>
+  <policy domain="resource" name="area" value="100MP"/>
+  <policy domain="resource" name="disk" value="2GiB"/>
+  <policy domain="resource" name="width" value="32KP"/>
+  <policy domain="resource" name="height" value="32KP"/>
+  <policy domain="resource" name="list-length" value="32"/>
+  <policy domain="resource" name="thread" value="2"/>
+  <policy domain="resource" name="time" value="120"/>
+
+  <!-- Disable dangerous / unused coders -->
+  <policy domain="coder" rights="none" pattern="MVG"/>
+  <policy domain="coder" rights="none" pattern="MSL"/>
+  <policy domain="coder" rights="none" pattern="MSVG"/>
+  <policy domain="coder" rights="none" pattern="SVG"/>
+  <policy domain="coder" rights="none" pattern="PS"/>
+  <policy domain="coder" rights="none" pattern="PS2"/>
+  <policy domain="coder" rights="none" pattern="PS3"/>
+  <policy domain="coder" rights="none" pattern="EPS"/>
+  <policy domain="coder" rights="none" pattern="EPT"/>
+  <policy domain="coder" rights="none" pattern="XPS"/>
+  <policy domain="coder" rights="none" pattern="PCL"/>
+  <policy domain="coder" rights="none" pattern="EPHEMERAL"/>
+  <policy domain="coder" rights="none" pattern="URL"/>
+  <policy domain="coder" rights="none" pattern="HTTPS"/>
+  <policy domain="coder" rights="none" pattern="HTTP"/>
+  <policy domain="coder" rights="none" pattern="FTP"/>
+  <policy domain="coder" rights="none" pattern="TEXT"/>
+  <policy domain="coder" rights="none" pattern="LABEL"/>
+  <policy domain="coder" rights="none" pattern="CAPTION"/>
+  <policy domain="coder" rights="none" pattern="SHOW"/>
+  <policy domain="coder" rights="none" pattern="WIN"/>
+  <policy domain="coder" rights="none" pattern="PLT"/>
+  <policy domain="coder" rights="none" pattern="VID"/>
+  <policy domain="coder" rights="none" pattern="PANGO"/>
+
+  <!-- Block indirect reads (@file references) -->
+  <policy domain="path" rights="none" pattern="@*"/>
+</policymap>

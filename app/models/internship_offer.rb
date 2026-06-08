@@ -579,7 +579,7 @@ class InternshipOffer < ApplicationRecord
   end
 
   def no_remaining_seat_anymore?
-    remaining_seats_count.zero?
+    remaining_seats_count <= 0
   end
 
   def requires_updates?

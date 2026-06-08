@@ -13,8 +13,8 @@ module Dashboard
     end
 
     def update_multiple
-      authorize! :update_multiple, InternshipApplication
       @internship_applications = InternshipApplication.where(id: params[:ids].split(','))
+      @internship_applications.each { |internship_application| authorize! :update, internship_application }
 
       begin
         ActiveRecord::Base.transaction do
