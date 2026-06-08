@@ -73,7 +73,8 @@
     "node": ">=22.x"
   },
   "resolutions": {
-    "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
+    "rails_admin/@fortawesome/fontawesome-free": "^5.15.0",
+    "sass": "1.76.0"
   },
   "peerDependencies": {
     "postcss": "^8.5.3"

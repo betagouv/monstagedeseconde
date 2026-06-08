@@ -30,7 +30,7 @@ Most repos have a single context:
 │   └── adr/
 │       ├── 0001-event-sourced-orders.md
 │       └── 0002-postgres-for-write-model.md
-└── src/
+└── app/
 ```
 
 If a `CONTEXT-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
@@ -40,7 +40,7 @@ If a `CONTEXT-MAP.md` exists at the root, the repo has multiple contexts. The ma
 ├── CONTEXT-MAP.md
 ├── docs/
 │   └── adr/                          ← system-wide decisions
-├── src/
+├── app/
 │   ├── ordering/
 │   │   ├── CONTEXT.md
 │   │   └── docs/adr/                 ← context-specific decisions

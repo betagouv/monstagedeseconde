@@ -272,4 +272,47 @@ class InternshipOfferTest < ActiveSupport::TestCase
     internship_offer = build(:weekly_internship_offer_2nde, is_public: false, group: nil, sector: sector)
     assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
   end
+
+  test '#no_remaining_seat_anymore? is true when remaining seats is zero or negative' do
+    internship_offer = create(:weekly_internship_offer_2nde)
+
+    internship_offer.stats.update!(remaining_seats_count: 1)
+    refute internship_offer.no_remaining_seat_anymore?
+
+    internship_offer.stats.update!(remaining_seats_count: 0)
+    assert internship_offer.no_remaining_seat_anymore?
+
+    internship_offer.stats.update!(remaining_seats_count: -1)
+    assert internship_offer.no_remaining_seat_anymore?
+  end
+  
+  test '.by_weeks excludes offers whose required weeks extend beyond the selection' do
+    week_1 = SchoolTrack::Seconde.first_week
+    week_2 = SchoolTrack::Seconde.second_week
+
+    one_week_offer = create(:weekly_internship_offer_2nde, :week_1)
+    other_week_offer = create(:weekly_internship_offer_2nde, :week_2)
+    two_weeks_offer = create(:weekly_internship_offer_2nde, :both_weeks)
+
+    selected = OpenStruct.new(ids: [week_1.id])
+    matched = InternshipOffer.by_weeks(weeks: selected).distinct.to_a
+
+    assert_includes matched, one_week_offer
+    refute_includes matched, two_weeks_offer
+    refute_includes matched, other_week_offer
+  end
+
+  test '.by_weeks returns multi-week offers when both weeks are selected' do
+    week_1 = SchoolTrack::Seconde.first_week
+    week_2 = SchoolTrack::Seconde.second_week
+
+    one_week_offer = create(:weekly_internship_offer_2nde, :week_1)
+    two_weeks_offer = create(:weekly_internship_offer_2nde, :both_weeks)
+
+    selected = OpenStruct.new(ids: [week_1.id, week_2.id])
+    matched = InternshipOffer.by_weeks(weeks: selected).distinct.to_a
+
+    assert_includes matched, one_week_offer
+    assert_includes matched, two_weeks_offer
+  end
 end
