@@ -124,6 +124,25 @@ module Services
       end
 
       # ---------------------------------------------------------------------------
+      # cancel_by_student_confirmation — must survive collateral resolution
+      # ---------------------------------------------------------------------------
+
+      test ".call does not resolve cancel_by_student_confirmation as collateral damage from new_internship_application resolution" do
+        internship_application = create(:weekly_internship_application, :read_by_employer)
+        employer = internship_application.internship_offer.employer
+        student = internship_application.student
+
+        internship_application.cancel_by_student_confirmation!(student)
+
+        item = internship_application.mail_action_items.find_by!(action_name: "cancel_by_student_confirmation")
+
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+        assert_nothing_raised { item.reload }
+        assert_nil item.reload.resolved_at
+      end
+
+      # ---------------------------------------------------------------------------
       # agreement_signed_by_all — new behaviour
       # ---------------------------------------------------------------------------
 

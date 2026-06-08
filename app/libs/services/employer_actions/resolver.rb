@@ -133,6 +133,7 @@ module Services::EmployerActions
     # they must not be wiped out as collateral damage here.
     SELF_RESOLVING_ACTION_NAMES = %w[
       canceled_internship_application_by_student
+      cancel_by_student_confirmation
     ].freeze
 
     def self.application_resolve(application)

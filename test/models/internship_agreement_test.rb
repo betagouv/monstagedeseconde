@@ -171,4 +171,32 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     assert_equal 1, item.max_deliveries_count
     assert item.stale_at > Time.current
   end
+
+  test "#finalize creates a signatures_enabled MailActionItem for the employer" do
+    internship_agreement = create(:mono_internship_agreement,
+                                  aasm_state: :completed_by_employer,
+                                  skip_notifications_when_system_creation: false)
+    employer = internship_agreement.employer
+
+    assert_difference -> {
+      internship_agreement.mail_action_items.where(action_name: "signatures_enabled").count
+    }, 1 do
+      internship_agreement.finalize!
+    end
+
+    item = internship_agreement.mail_action_items.find_by!(action_name: "signatures_enabled")
+    assert_equal "pending_internship_agreement", item.action_type
+    assert_equal "medium", item.urgency_level
+    assert_equal employer, item.recipient
+  end
+
+  test "#finalize does not notify when skip_notifications_when_system_creation is true" do
+    internship_agreement = create(:mono_internship_agreement,
+                                  aasm_state: :completed_by_employer,
+                                  skip_notifications_when_system_creation: true)
+
+    assert_no_difference -> { MailActionItem.where(action_name: "signatures_enabled").count } do
+      internship_agreement.finalize!
+    end
+  end
 end
