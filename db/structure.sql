@@ -62,6 +62,17 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 
 
 --
+-- Name: action_type; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.action_type AS ENUM (
+    'pending_internship_offer',
+    'pending_internship_application',
+    'pending_internship_agreement'
+);
+
+
+--
 -- Name: agreement_signatory_role; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -112,6 +123,18 @@ CREATE TYPE public.targeted_grades AS ENUM (
     'quatrieme_only',
     'troisieme_or_quatrieme',
     'seconde_troisieme_or_quatrieme'
+);
+
+
+--
+-- Name: urgency_level; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.urgency_level AS ENUM (
+    'critical',
+    'high',
+    'medium',
+    'low'
 );
 
 
@@ -1656,6 +1679,51 @@ ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_
 
 
 --
+-- Name: mail_action_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.mail_action_items (
+    id bigint NOT NULL,
+    action_name character varying,
+    first_seen_at timestamp(6) without time zone,
+    stale_at timestamp(6) without time zone,
+    last_notified_at timestamp(6) without time zone,
+    resolved_at timestamp(6) without time zone,
+    deliveries_count integer DEFAULT 0,
+    max_deliveries_count integer DEFAULT 1,
+    payload jsonb,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    action_type public.action_type,
+    urgency_level public.urgency_level,
+    internship_offer_id bigint,
+    internship_application_id bigint,
+    internship_agreement_id bigint,
+    recipient_type character varying NOT NULL,
+    recipient_id bigint NOT NULL
+);
+
+
+--
+-- Name: mail_action_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.mail_action_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: mail_action_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.mail_action_items_id_seq OWNED BY public.mail_action_items.id;
+
+
+--
 -- Name: ministry_groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1937,6 +2005,40 @@ CREATE SEQUENCE public.multi_plannings_id_seq
 --
 
 ALTER SEQUENCE public.multi_plannings_id_seq OWNED BY public.multi_plannings.id;
+
+
+--
+-- Name: naf_sector_mappings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.naf_sector_mappings (
+    id bigint NOT NULL,
+    code_naf character varying,
+    sector_id bigint NOT NULL,
+    date_start date,
+    date_end date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: naf_sector_mappings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.naf_sector_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: naf_sector_mappings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.naf_sector_mappings_id_seq OWNED BY public.naf_sector_mappings.id;
 
 
 --
@@ -2967,6 +3069,13 @@ ALTER TABLE ONLY public.letter_thief_email_messages ALTER COLUMN id SET DEFAULT 
 
 
 --
+-- Name: mail_action_items id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items ALTER COLUMN id SET DEFAULT nextval('public.mail_action_items_id_seq'::regclass);
+
+
+--
 -- Name: ministry_groups id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3020,6 +3129,13 @@ ALTER TABLE ONLY public.multi_planning_weeks ALTER COLUMN id SET DEFAULT nextval
 --
 
 ALTER TABLE ONLY public.multi_plannings ALTER COLUMN id SET DEFAULT nextval('public.multi_plannings_id_seq'::regclass);
+
+
+--
+-- Name: naf_sector_mappings id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings ALTER COLUMN id SET DEFAULT nextval('public.naf_sector_mappings_id_seq'::regclass);
 
 
 --
@@ -3451,6 +3567,14 @@ ALTER TABLE ONLY public.letter_thief_email_messages
 
 
 --
+-- Name: mail_action_items mail_action_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT mail_action_items_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ministry_groups ministry_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3512,6 +3636,14 @@ ALTER TABLE ONLY public.multi_planning_weeks
 
 ALTER TABLE ONLY public.multi_plannings
     ADD CONSTRAINT multi_plannings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: naf_sector_mappings naf_sector_mappings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings
+    ADD CONSTRAINT naf_sector_mappings_pkey PRIMARY KEY (id);
 
 
 --
@@ -4299,6 +4431,41 @@ CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.lette
 
 
 --
+-- Name: index_mail_action_items_on_internship_agreement_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_internship_agreement_id ON public.mail_action_items USING btree (internship_agreement_id);
+
+
+--
+-- Name: index_mail_action_items_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_internship_application_id ON public.mail_action_items USING btree (internship_application_id);
+
+
+--
+-- Name: index_mail_action_items_on_internship_offer_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_internship_offer_id ON public.mail_action_items USING btree (internship_offer_id);
+
+
+--
+-- Name: index_mail_action_items_on_recipient_pl_action_urgency_resolved; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_recipient_pl_action_urgency_resolved ON public.mail_action_items USING btree (recipient_type, recipient_id, action_type, urgency_level, resolved_at);
+
+
+--
+-- Name: index_mail_action_items_on_recipient_type_and_recipient_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_mail_action_items_on_recipient_type_and_recipient_id ON public.mail_action_items USING btree (recipient_type, recipient_id);
+
+
+--
 -- Name: index_ministry_groups_on_email_whitelist_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4394,6 +4561,20 @@ CREATE INDEX index_multi_plannings_on_multi_coordinator_id ON public.multi_plann
 --
 
 CREATE INDEX index_multi_plannings_on_school_id ON public.multi_plannings USING btree (school_id);
+
+
+--
+-- Name: index_naf_sector_mappings_on_code_naf; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naf_sector_mappings_on_code_naf ON public.naf_sector_mappings USING btree (code_naf);
+
+
+--
+-- Name: index_naf_sector_mappings_on_sector_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_naf_sector_mappings_on_sector_id ON public.naf_sector_mappings USING btree (sector_id);
 
 
 --
@@ -4911,6 +5092,14 @@ ALTER TABLE ONLY public.users_internship_offers_histories
 
 
 --
+-- Name: naf_sector_mappings fk_rails_25e11ff27d; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.naf_sector_mappings
+    ADD CONSTRAINT fk_rails_25e11ff27d FOREIGN KEY (sector_id) REFERENCES public.sectors(id);
+
+
+--
 -- Name: multi_plannings fk_rails_26d7b78f80; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5063,6 +5252,14 @@ ALTER TABLE ONLY public.internship_offer_weeks
 
 
 --
+-- Name: mail_action_items fk_rails_5d8ff7dc27; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_5d8ff7dc27 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
 -- Name: school_internship_weeks fk_rails_61db9e054c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5164,6 +5361,14 @@ ALTER TABLE ONLY public.multi_activities
 
 ALTER TABLE ONLY public.internship_application_state_changes
     ADD CONSTRAINT fk_rails_8ab7e06756 FOREIGN KEY (internship_application_id) REFERENCES public.internship_applications(id);
+
+
+--
+-- Name: mail_action_items fk_rails_8c811b267e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_8c811b267e FOREIGN KEY (internship_offer_id) REFERENCES public.internship_offers(id);
 
 
 --
@@ -5439,6 +5644,14 @@ ALTER TABLE ONLY public.class_rooms
 
 
 --
+-- Name: mail_action_items fk_rails_fa7c89927e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_items
+    ADD CONSTRAINT fk_rails_fa7c89927e FOREIGN KEY (internship_agreement_id) REFERENCES public.internship_agreements(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -5447,11 +5660,19 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20260526090153'),
 ('20260520214758'),
+('20260515100000'),
 ('20260515090000'),
+('20260507100000'),
+('20260505040224'),
+('20260504130000'),
+('20260504120000'),
+('20260430092540'),
+('20260430085934'),
 ('20260430082727'),
 ('20260429091409'),
 ('20260420123136'),
 ('20260309162833'),
+('20260306100239'),
 ('20260203214306'),
 ('20260126172713'),
 ('20260115112842'),
@@ -5950,4 +6171,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

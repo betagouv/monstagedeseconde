@@ -43,6 +43,7 @@ module Abilities
       can :manage, Operator
       can :read_employer_name, InternshipOffer
       can :manage, InappropriateOffer
+      can :see_educonnect_failures, EventReport
     end
   end
 end
