@@ -68,6 +68,13 @@ module Users
       internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
     end
 
+    def currently_signing_internship_agreement?
+      return false unless mono_internship_agreements.any? || multi_internship_agreements.any?
+
+      agreement = mono_internship_agreements.any? ? mono_internship_agreements.first : multi_internship_agreements.first
+      agreement.aasm_state.in?(%w[validated signatures_started])
+    end
+
     def age
       ((Time.zone.now - birth_date.to_time) / 1.year.seconds).floor
     end
