@@ -26,22 +26,6 @@ module Dashboard
         redirect_to dashboard_school_users_path(@school),
                     flash: { success: "Une erreur est survenue, impossible de supprimer #{user.presenter.human_role} #{user.presenter.short_name} de votre établissement: #{e.record.full_messages}" }
       end
-
-      def update
-        user = @school.users.find(params[:id])
-
-        authorize! :update, user
-        user.update!(user_params)
-        redirect_back fallback_location: root_path
-      rescue ActiveRecord::RecordInvalid
-        redirect_back fallback_location: root_path, status: :bad_request
-      end
-
-      private
-
-      def user_params
-        params.require(:user)
-      end
     end
   end
 end

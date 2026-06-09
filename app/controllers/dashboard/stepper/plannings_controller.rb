@@ -86,23 +86,22 @@ module Dashboard::Stepper
     private
 
     def planning_params
-      params.require(:planning)
-            .permit(
-              :all_year_long,
-              :grade_college,
-              :grade_2e,
-              :lunch_break,
-              :max_candidates,
-              :period_field,
-              :school_id,
-              :rep,
-              :qpv,
-              :weeks_count,
-              daily_hours: {},
-              weekly_hours: [],
-              week_ids: [],
-              school_ids: []
-            )
+      params.expect(planning: [
+        :all_year_long,
+        :grade_college,
+        :grade_2e,
+        :lunch_break,
+        :max_candidates,
+        :period_field,
+        :school_id,
+        :rep,
+        :qpv,
+        :weeks_count,
+        daily_hours: {},
+        weekly_hours: [],
+        week_ids: [],
+        school_ids: []
+      ])
     end
 
     def builder_params
@@ -131,7 +130,7 @@ module Dashboard::Stepper
     def sanitize_content
       return unless planning_params[:lunch_break].present?
 
-      planning_params[:lunch_break] =
+      params[:planning][:lunch_break] =
         strip_content(planning_params[:lunch_break])
     end
   end

@@ -2,6 +2,7 @@
 
 class Sector < ApplicationRecord
   has_many :internship_offers
+  has_many :naf_sector_mappings
   before_create :set_uuid
 
   MAPPING_COVER = {

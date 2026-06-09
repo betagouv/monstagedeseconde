@@ -9,14 +9,14 @@ module Services::Omogen
 
     MEFSTAT4_CODES = %w[2115 2116 2211 2434 2433]
     def net_synchro
-      uri = URI(ENV['NET_SYNCHRO_URL'])
+      uri = URI(ENV["NET_SYNCHRO_URL"])
 
       response = perform_http_request(uri, {
-                                        'Code-Application' => 'FRE',
-                                        'Code-RNE' => '0595121W',
-                                        'Compression-Zip' => 'non',
-                                        'Contexte-Annee-Scolaire' => '2021',
-                                        'Perimetre-Applicatif' => 'A09'
+                                        "Code-Application" => "FRE",
+                                        "Code-RNE" => "0595121W",
+                                        "Compression-Zip" => "non",
+                                        "Contexte-Annee-Scolaire" => "2021",
+                                        "Perimetre-Applicatif" => "A09"
                                       })
 
       case response
@@ -28,20 +28,20 @@ module Services::Omogen
     end
 
     def sygne
-      uri = URI(ENV['SYGNE_URL'])
+      uri = URI(ENV["SYGNE_URL"])
 
       http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
+      http.use_ssl = true if uri.scheme == "https"
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request['Authorization'] = "Bearer #{token}"
-      request['Code-Application'] = 'FRE'
-      request['Code-RNE'] = '0595121W'
-      request['Compression-Zip'] = 'non'
+      request["Authorization"] = "Bearer #{token}"
+      request["Code-Application"] = "FRE"
+      request["Code-RNE"] = "0595121W"
+      request["Compression-Zip"] = "non"
     end
 
     def sygne_status
-      uri = URI(ENV['SYGNE_URL'] + '/version')
+      uri = URI(ENV["SYGNE_URL"] + "/version")
       response = perform_http_request(uri)
 
       case response
@@ -84,7 +84,7 @@ module Services::Omogen
       process_mefstat4_codes(code_uai)
     end
 
-    def sygne_schools(code_uai = '0590116F')
+    def sygne_schools(code_uai = "0590116F")
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves)")
       schools_in_data = []
       response = get_request(uri, get_default_headers)
@@ -95,15 +95,15 @@ module Services::Omogen
         puts response.body
         Rails.logger.error "Failed to get sygne eleves : #{response.message}"
       end
-      print 'x'
+      print "x"
       schools_in_data
     end
 
-    def sygne_responsables(ine = '001291528AA')
+    def sygne_responsables(ine = "001291528AA")
       # http://{context-root}/sygne/api/v{version.major}/eleves/{ine}/responsables + queryParams
 
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      response = perform_http_request(uri, { 'Compression-Zip' => 'non' })
+      response = perform_http_request(uri, { "Compression-Zip" => "non" })
 
       # [{ 'email' => 't-t@hotmail.fr',
       #    'nomFamille' => 't PPPEPF',
@@ -146,13 +146,13 @@ module Services::Omogen
       when Net::HTTPSuccess
         JSON.parse(response.body).map do |responsable|
           {
-            name: responsable['nomFamille'],
-            first_name: responsable['prenom'],
-            email: responsable['email'],
-            phone: responsable['telephonePersonnel'],
-            address: format_address(responsable['adrResidenceResp']),
-            level: responsable['codeNiveauResponsabilite'],
-            sexe: responsable['codeCivilite'] == '1' ? 'M' : 'F'
+            name: responsable["nomFamille"],
+            first_name: responsable["prenom"],
+            email: responsable["email"],
+            phone: responsable["telephonePersonnel"],
+            address: format_address(responsable["adrResidenceResp"]),
+            level: responsable["codeNiveauResponsabilite"],
+            sexe: responsable["codeCivilite"] == "1" ? "M" : "F"
           }
         end
       end
@@ -161,11 +161,9 @@ module Services::Omogen
     def sygne_eleves(code_uai, niveau:)
       students = []
       uri = URI("#{ENV['SYGNE_URL']}/etablissements/#{code_uai}/eleves?niveau=#{niveau}")
-      response = get_request(uri, default_headers)
+      response = get_with_token_refresh(uri)
       case response
       when Net::HTTPSuccess
-        # puts response.body
-        # puts JSON.parse(response.body)
         data_students = JSON.parse(response.body, symbolize_names: true)
         data_students.each do |data_student|
           if data_student.fetch(:codeMef, false) && Grade.code_mef_ok?(code_mef: data_student[:codeMef])
@@ -173,26 +171,28 @@ module Services::Omogen
           end
         end
       when Net::HTTPNotFound
-        puts response.body
-        error_message = "Failed to get sygne eleves  - HTTPNotFound - #{response.message}"
-        Rails.logger.error error_message
-        raise error_message
+        raise SygneApiError, "sygne_eleves 404 | uai=#{code_uai} niveau=#{niveau}"
       when Net::HTTPForbidden
-        error_message = "Failed to get sygne eleves - 403 - Forbidden Access | #{response.try(:message)}"
-        Rails.logger.error error_message
-        raise error_message
+        raise SygneApiError, "sygne_eleves 403 | uai=#{code_uai} niveau=#{niveau}"
+      when Net::HTTPUnauthorized
+        raise SygneApiError, "sygne_eleves 401 token expired | uai=#{code_uai} niveau=#{niveau}"
+      when Net::HTTPServerError
+        raise SygneApiError, "sygne_eleves #{response.code} | uai=#{code_uai} niveau=#{niveau}"
       else
-        puts response
-        error_message = "Failed to get sygne eleves | #{response.try(:message)}"
-        Rails.logger.error error_message
-        raise error_message
+        raise SygneApiError, "sygne_eleves unexpected HTTP #{response.code} | uai=#{code_uai} niveau=#{niveau}"
       end
       students
+    rescue JSON::ParserError => e
+      raise SygneApiError, "sygne_eleves JSON invalide | uai=#{code_uai} niveau=#{niveau} | #{e.message.truncate(120)}"
+    rescue Net::OpenTimeout, Net::ReadTimeout => e
+      raise SygneApiError, "sygne_eleves timeout | uai=#{code_uai} niveau=#{niveau} | #{e.class}"
+    rescue SocketError => e
+      raise SygneApiError, "sygne_eleves réseau | uai=#{code_uai} niveau=#{niveau} | #{e.message.truncate(120)}"
     end
 
     def sygne_responsable(ine)
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
-      response = get_request(uri, default_headers)
+      response = get_with_token_refresh(uri)
       case response
       when Net::HTTPSuccess
         responsibles = JSON.parse(response.body, symbolize_names: true)
@@ -200,10 +200,17 @@ module Services::Omogen
 
         responsibles.sort_by! { |responsible| responsible[:codeNiveauResponsabilite] }
         Services::Omogen::SygneResponsible.new(responsibles.first)
+      when Net::HTTPNotFound
+        nil
       else
-        puts response
-        raise "Failed to get sygne eleves : #{response.message}"
+        raise SygneApiError, "sygne_responsable #{response.code} | ine=#{ine}"
       end
+    rescue JSON::ParserError => e
+      raise SygneApiError, "sygne_responsable JSON invalide | ine=#{ine} | #{e.message.truncate(120)}"
+    rescue Net::OpenTimeout, Net::ReadTimeout => e
+      raise SygneApiError, "sygne_responsable timeout | ine=#{ine} | #{e.class}"
+    rescue SocketError => e
+      raise SygneApiError, "sygne_responsable réseau | ine=#{ine} | #{e.message.truncate(120)}"
     end
 
     def initialize
@@ -219,7 +226,16 @@ module Services::Omogen
     end
 
     def default_headers
-      { 'Authorization': "Bearer #{token}", 'Compression-Zip': 'non' }
+      { 'Authorization': "Bearer #{token}", 'Compression-Zip': "non" }
+    end
+
+    def get_with_token_refresh(uri)
+      response = get_request(uri, default_headers)
+      return response unless response.is_a?(Net::HTTPUnauthorized)
+
+      Rails.logger.warn("refreshing Sygne OAuth token after 401 on #{uri}")
+      @token = fetch_oauth_token
+      get_request(uri, default_headers)
     end
 
     def process_mefstat4_codes(code_uai, limit: nil)
@@ -238,15 +254,15 @@ module Services::Omogen
     end
 
     def fetch_oauth_token
-      response = post_form_request(url: ENV['OMOGEN_OAUTH_URL'],
+      response = post_form_request(url: ENV["OMOGEN_OAUTH_URL"],
                                    params: {
-                                     grant_type: 'client_credentials',
-                                     client_id: ENV['OMOGEN_CLIENT_ID'],
-                                     client_secret: ENV['OMOGEN_CLIENT_SECRET']
+                                     grant_type: "client_credentials",
+                                     client_id: ENV["OMOGEN_CLIENT_ID"],
+                                     client_secret: ENV["OMOGEN_CLIENT_SECRET"]
                                    })
       case response
       when Net::HTTPSuccess
-        JSON.parse(response.body)['access_token']
+        JSON.parse(response.body)["access_token"]
       else
         raise "Failed to get OAuth token: #{response.message}"
       end

@@ -39,6 +39,11 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
+  RE_APPROVABLE_BLOCKED_REASONS = {
+    anonymized: "Le compte de cet élève n'existe plus.",
+    conflicting: "L'élève a déjà accepté un stage sur cette période.",
+    no_seats_left: "Le nombre de places maximum pour ce stage a déjà été atteint."
+  }.freeze
   REJECTABLE_STATES = %w[submitted read_by_employer transfered]
   CANCELABLE_STATES = %w[restored validated_by_employer approved]
   VALID_TRANSITIONS = %w[
@@ -96,11 +101,12 @@ class InternshipApplication < ApplicationRecord
   # Validations
   validates :student_phone,
             format: {
-              with: /\A\+?(33|262|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
-              message: "Veuillez modifier le numéro de téléphone mobile",
+              with: /\A\+?(33|262|590|594|596|687|689)?\s?0?(6|7)\s?(\d{2,3}\s?){1,3}\d{2,3}\z/,
+              message: "Veuillez modifier le numéro de téléphone mobile"
             }
   validates :student_email,
             format: { with: Devise.email_regexp }
+  validate :student_email_not_taken, on: :create
   validates :weeks, presence: true, on: :create
 
   # Callbacks
@@ -193,17 +199,17 @@ class InternshipApplication < ApplicationRecord
   scope :seconde, lambda {
     joins(student: :grade)
       .where(grades: { id: Grade.seconde.id })
-      .where.not(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+      .where.not(grades: { id: [ Grade.troisieme.id, Grade.quatrieme.id ] })
   }
   scope :troisieme_or_quatrieme, lambda {
     joins(student: :grade)
-      .where(grades: { id: [Grade.troisieme.id, Grade.quatrieme.id] })
+      .where(grades: { id: [ Grade.troisieme.id, Grade.quatrieme.id ] })
       .where.not(grades: { id: Grade.seconde.id })
   }
   scope :troisieme, lambda {
     joins(student: :grade)
       .where(grades: { id: Grade.troisieme.id })
-      .where.not(grades: { id: [Grade.seconde.id, Grade.quatrieme.id] })
+      .where.not(grades: { id: [ Grade.seconde.id, Grade.quatrieme.id ] })
   }
 
 
@@ -215,12 +221,6 @@ class InternshipApplication < ApplicationRecord
   scope :not_by_id, ->(id:) { where.not(id:) }
 
   scope :weekly_framed, -> { where(type: InternshipApplications::WeeklyFramed.name) }
-
-  # add an additional delay when sending email using richtext
-  # sometimes email was sent before action_texts_rich_text was persisted
-  def deliver_later_with_additional_delay
-    yield.deliver_later(wait: 1.second)
-  end
 
   aasm do
     state :submitted, initial: true
@@ -278,6 +278,7 @@ class InternshipApplication < ApplicationRecord
     event :approve do
       transitions from: %i[validated_by_employer],
                   to: :approved,
+                  guard: :no_other_approved_application?,
                   after: proc { |user, *_args|
                     update!("approved_at": Time.now.utc)
                     unless skip_callback_with_review_rebuild
@@ -364,6 +365,7 @@ class InternshipApplication < ApplicationRecord
     event :restore do
       transitions from: RESTORABLE_STATES.map(&:to_sym),
                   to: :restored,
+                  guard: :no_weeks_overlap?,
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
                     if has_ever_been?(%w[approved read_by_employer validated_by_employer])
@@ -397,22 +399,27 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
-  def set_submitted_at
-    self.submitted_at = Time.now.utc if submitted_at.nil?
+  def no_weeks_overlap?
+    return true if student.internship_applications.approved.empty?
+
+    approved_weeks = student.internship_applications.approved.map(&:weeks).flatten
+    weeks_overlap = approved_weeks.any? { |approved_week| weeks.include?(approved_week) }
+    !weeks_overlap
   end
 
   def from_doubling_task?
     internship_offer.from_doubling_task?
   end
 
-  def notify_users
-    EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
-    Triggered::StudentSubmittedInternshipApplicationConfirmationJob.perform_later(self)
-
-    return if student.internship_applications.count == 0
-
-    Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
-    Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  def internship_application_aasm_message_builder(aasm_target:)
+    case self
+    when InternshipApplications::WeeklyFramed
+      InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
+    when InternshipApplications::Multi
+      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
+    else
+      raise "can not build aasm message for this kind of internship_application"
+    end
   end
 
   def multi?
@@ -437,21 +444,6 @@ class InternshipApplication < ApplicationRecord
     Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
   end
 
-  def student_approval_notifications
-    teacher = student.teacher
-    arg_hash = {
-      internship_application: self,
-      teacher: teacher,
-    }
-
-
-    return unless teacher.present?
-
-    deliver_later_with_additional_delay do
-      TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
-    end
-  end
-
   def missing_school_manager?
     student.school && student.school.school_manager.nil?
   end
@@ -465,12 +457,15 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_re_approvable?
-    # false if student is anonymised or student has an approved application
-    return false if student.anonymized? ||
-                    student.internship_applications.where(aasm_state: "approved").any? ||
-                    internship_offer.remaining_seats_count.zero?
+    re_approval_blocked_reason.nil? && RE_APPROVABLE_STATES.include?(aasm_state)
+  end
 
-    RE_APPROVABLE_STATES.include?(aasm_state)
+  def re_approval_blocked_reason
+    return :anonymized if student.anonymized?
+    return :conflicting unless no_other_approved_application?
+    return :no_seats_left if internship_offer.remaining_seats_count <= 0
+
+    nil
   end
 
   def cancelable?
@@ -485,20 +480,6 @@ class InternshipApplication < ApplicationRecord
     %w[rejected canceled_by_employer]
   end
 
-  def after_employer_validation_notifications
-    if type == "InternshipApplications::WeeklyFramed" && student.teacher.present?
-      deliver_later_with_additional_delay do
-        TeacherMailer.internship_application_validated_by_employer_email(self)
-      end
-    end
-    if student.email.present?
-      deliver_later_with_additional_delay do
-        StudentMailer.internship_application_validated_by_employer_email(internship_application: self)
-      end
-    end
-    SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
-  end
-
   def selectable_weeks
     weeks = internship_offer.weeks
     if student.troisieme_or_quatrieme?
@@ -511,6 +492,7 @@ class InternshipApplication < ApplicationRecord
 
   def create_agreement
     return unless internship_agreement_creation_allowed?
+    return if InternshipAgreement.kept.exists?(internship_application_id: id)
 
     agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
                                                     .new_from_application(self)
@@ -520,41 +502,6 @@ class InternshipApplication < ApplicationRecord
     EmployerMailer.internship_application_approved_with_agreement_email(
       internship_agreement:,
     ).deliver_later
-  end
-
-  def create_multi_agreement
-    return unless internship_agreement_creation_allowed?
-
-    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
-                                                    .new_from_application(self)
-    agreement.skip_validations_for_system = true
-    agreement.save!
-    # TODO notify coordinator and employers
-    EmployerMailer.internship_application_approved_with_agreement_email(
-      internship_agreement:,
-    ).deliver_later
-  end
-
-  def internship_application_counter_hook
-    case self
-    when InternshipApplications::WeeklyFramed
-      InternshipApplicationCountersHooks::WeeklyFramed.new(internship_application: self)
-    when InternshipApplications::Multi
-      InternshipApplicationCountersHooks::Multi.new(internship_application: self)
-    else
-      raise "can not process stats for this kind of internship_application"
-    end
-  end
-
-  def internship_application_aasm_message_builder(aasm_target:)
-    case self
-    when InternshipApplications::WeeklyFramed
-      InternshipApplicationAasmMessageBuilders::WeeklyFramed.new(internship_application: self, aasm_target:)
-    when InternshipApplications::Multi
-      InternshipApplicationAasmMessageBuilders::Multi.new(internship_application: self, aasm_target:)
-    else
-      raise "can not build aasm message for this kind of internship_application"
-    end
   end
 
   def student_is_male?
@@ -615,33 +562,10 @@ class InternshipApplication < ApplicationRecord
     "Candidature de " + student_name
   end
 
-  def cancel_all_pending_applications
-    applications_to_cancel = student.internship_applications
-                                    .where(aasm_state: InternshipApplication::PENDING_STATES)
-                                    .where.not(id: id)
-    if student.seconde_gt?
-      if internship_offer.seconde_school_track_week_1?
-        applications_to_cancel = applications_to_cancel.select do |application|
-          offer = application.internship_offer
-          offer.seconde_school_track_week_1? || offer.two_weeks_long?
-        end
-      end
-      if internship_offer.seconde_school_track_week_2?
-        applications_to_cancel = applications_to_cancel.select do |application|
-          offer = application.internship_offer
-          offer.seconde_school_track_week_2? || offer.two_weeks_long?
-        end
-      end
-    end
-    applications_to_cancel.each do |application|
-      application.cancel_by_student_confirmation! unless application == self
-    end
-  end
-
   def employers_filtered_by_notifications_emails
     original_employer = internship_offer.employer
-    return [original_employer.email] unless original_employer.employer_like?
-    return [original_employer.email] if original_employer.team.not_exists?
+    return [ original_employer.email ] unless original_employer.employer_like?
+    return [ original_employer.email ] if original_employer.team.not_exists?
 
     potential_employers = original_employer.team.db_members
     emails = potential_employers.map do |potential_employer|
@@ -686,9 +610,117 @@ class InternshipApplication < ApplicationRecord
     end
   end
 
+  def canceled_with_passed_approved_application?
+    return false unless canceled_by_student_confirmation?
+
+    has_ever_been?(%w[approved validated_by_employer])
+  end
+
   protected
 
   private
+
+  # add an additional delay when sending email using richtext
+  # sometimes email was sent before action_texts_rich_text was persisted
+  def deliver_later_with_additional_delay
+    yield.deliver_later(wait: 1.second)
+  end
+
+  def set_submitted_at
+    self.submitted_at = Time.now.utc if submitted_at.nil?
+  end
+
+  def notify_users
+    EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
+
+    return if student.internship_applications.count == 0
+
+    Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
+    Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
+  end
+
+  def student_approval_notifications
+    teacher = student.teacher
+    arg_hash = {
+      internship_application: self,
+      teacher: teacher
+    }
+
+    return unless teacher.present?
+
+    deliver_later_with_additional_delay do
+      TeacherMailer.internship_application_approved_with_agreement_email(**arg_hash)
+    end
+  end
+
+  def after_employer_validation_notifications
+    if type == "InternshipApplications::WeeklyFramed" && student.teacher.present?
+      deliver_later_with_additional_delay do
+        TeacherMailer.internship_application_validated_by_employer_email(self)
+      end
+    end
+    if student.email.present?
+      deliver_later_with_additional_delay do
+        StudentMailer.internship_application_validated_by_employer_email(internship_application: self)
+      end
+    end
+    SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
+  end
+
+  def create_multi_agreement
+    return unless internship_agreement_creation_allowed?
+
+    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
+                                                    .new_from_application(self)
+    agreement.skip_validations_for_system = true
+    agreement.save!
+    # TODO notify coordinator and employers
+    EmployerMailer.internship_application_approved_with_agreement_email(
+      internship_agreement:,
+    ).deliver_later
+  end
+
+  def internship_application_counter_hook
+    case self
+    when InternshipApplications::WeeklyFramed
+      InternshipApplicationCountersHooks::WeeklyFramed.new(internship_application: self)
+    when InternshipApplications::Multi
+      InternshipApplicationCountersHooks::Multi.new(internship_application: self)
+    else
+      raise "can not process stats for this kind of internship_application"
+    end
+  end
+
+  def cancel_all_pending_applications
+    applications_to_cancel = student.internship_applications
+                                    .where(aasm_state: InternshipApplication::PENDING_STATES)
+                                    .where.not(id: id)
+    if student.seconde_gt?
+      if internship_offer.seconde_school_track_week_1?
+        applications_to_cancel = applications_to_cancel.select do |application|
+          offer = application.internship_offer
+          offer.seconde_school_track_week_1? || offer.two_weeks_long?
+        end
+      end
+      if internship_offer.seconde_school_track_week_2?
+        applications_to_cancel = applications_to_cancel.select do |application|
+          offer = application.internship_offer
+          offer.seconde_school_track_week_2? || offer.two_weeks_long?
+        end
+      end
+    end
+    applications_to_cancel.each do |application|
+      application.cancel_by_student_confirmation! unless application == self
+    end
+  end
+
+  def student_email_not_taken
+    return if student_email.blank?
+
+    if User.where.not(id: user_id).where("LOWER(email) = ?", student_email.downcase.strip).exists?
+      errors.add(:student_email, "est déjà utilisée par un autre compte. Merci de choisir une autre adresse email")
+    end
+  end
 
   def internship_agreement_creation_allowed?
     # return false unless student.school&.school_manager&.email
@@ -705,7 +737,7 @@ class InternshipApplication < ApplicationRecord
     # return '' if student.phone.blank? # TODO Check if this is necessary why removing prefix if phone is blank but will be updated
 
     prefix = "+33"
-    ["+262", "+594", "+596", "+687", "+689"].each do |p|
+    [ "+262", "+590", "+594", "+596", "+687", "+689" ].each do |p|
       prefix = p if student.phone&.start_with?(p)
     end
     "#{prefix}0"
@@ -737,5 +769,24 @@ class InternshipApplication < ApplicationRecord
                     .where(user_id: employer.id)
                     .where(internship_offer_area_id: internship_offer.internship_offer_area.id)
                     .exists?
+  end
+
+  def no_other_approved_application?
+    others = student.internship_applications.approved.where.not(id: id)
+    return others.empty? unless student.seconde_gt?
+
+    others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+  end
+
+  def weekly_conflict_with?(other_offer)
+    return true if internship_offer.two_weeks_long? || other_offer.two_weeks_long?
+
+    if internship_offer.seconde_school_track_week_1?
+      other_offer.seconde_school_track_week_1?
+    elsif internship_offer.seconde_school_track_week_2?
+      other_offer.seconde_school_track_week_2?
+    else
+      true
+    end
   end
 end

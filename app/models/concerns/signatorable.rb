@@ -1,8 +1,13 @@
 module Signatorable
   extend ActiveSupport::Concern
   included do
-    SIGNATURE_PHONE_TOKEN_LIFETIME ||= 5 # minutes
+    SIGNATURE_PHONE_TOKEN_LIFETIME ||= 10 # minutes
+    SIGNATURE_BYPASS_CODE ||= '000000'
 
+    # Hors-production : aucun SMS n'est envoyé et le code 000000 est accepté.
+    def signature_code_bypass_allowed?
+      !Rails.env.production?
+    end
 
     def mono_internship_agreements
       internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
@@ -15,7 +20,7 @@ module Signatorable
     def create_signature_phone_token
       return false if school_management? && !school_manager?
 
-      update(signature_phone_token: format('%06d', rand(999_999)),
+      update(signature_phone_token: format("%06d", rand(999_999)),
              signature_phone_token_expires_at: SIGNATURE_PHONE_TOKEN_LIFETIME.minutes.from_now)
     end
 
@@ -23,6 +28,8 @@ module Signatorable
       return false unless phone.present?
 
       token_created = create_signature_phone_token
+      return token_created if signature_code_bypass_allowed? # hors-prod : pas de SMS, code 000000
+
       message = "Votre code de signature : #{show_code} " \
                 "- Validité : #{SIGNATURE_PHONE_TOKEN_LIFETIME} minutes"
       token_created && SendSmsJob.perform_later(user: self, message: message) && true
@@ -47,11 +54,15 @@ module Signatorable
     end
 
     def code_expired?(code:)
+      return false if signature_code_bypass_allowed? && code == SIGNATURE_BYPASS_CODE
+
       signature_phone_token.nil? ||
         !signature_phone_token_still_ok?
     end
 
     def code_valid?(code:)
+      return true if signature_code_bypass_allowed? && code == SIGNATURE_BYPASS_CODE
+
       signature_phone_token.present? &&
         signature_phone_token == code
     end
@@ -65,9 +76,9 @@ module Signatorable
     end
 
     def show_code
-      return '' if signature_phone_token.nil?
+      return "" if signature_phone_token.nil?
 
-      [signature_phone_token[0..2], signature_phone_token[3..-1]].join(' ')
+      [ signature_phone_token[0..2], signature_phone_token[3..-1] ].join(" ")
     end
 
     def employer_like?

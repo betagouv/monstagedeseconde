@@ -7,9 +7,12 @@ module Triggers
     include ActiveJob::TestHelper
 
     setup do
+      travel_to Time.zone.now.midday
       @student = create(:student, phone: '+5940611223344')
       @reminder_service = Triggers::StudentAcceptedInternshipApplicationReminder.new
     end
+
+    teardown { travel_back }
 
     test '.enqueue_all does not queue not queues job ' \
          'when internship_application validated_by_employer ' \
@@ -45,7 +48,7 @@ module Triggers
       internship_application = create(
         :weekly_internship_application,
         :validated_by_employer,
-        validated_by_employer_at: 2.day.ago + 2.hours,
+        validated_by_employer_at: 2.days.ago,
         student: @student)
       assert_enqueued_jobs 1 do
         @reminder_service.enqueue_all

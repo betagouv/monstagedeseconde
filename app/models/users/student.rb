@@ -68,6 +68,13 @@ module Users
       internship_agreements.merge(InternshipAgreements::MultiInternshipAgreement.all)
     end
 
+    def currently_signing_internship_agreement?
+      return false unless mono_internship_agreements.any? || multi_internship_agreements.any?
+
+      agreement = mono_internship_agreements.any? ? mono_internship_agreements.first : multi_internship_agreements.first
+      agreement.aasm_state.in?(%w[validated signatures_started])
+    end
+
     def age
       ((Time.zone.now - birth_date.to_time) / 1.year.seconds).floor
     end
@@ -141,7 +148,12 @@ module Users
     end
 
     def add_responsible_data
-      responsible = Services::Omogen::Sygne.new.try(:sygne_responsable, ine)
+      responsible = begin
+        Services::Omogen::Sygne.new.sygne_responsable(ine)
+      rescue RuntimeError => e
+        Rails.logger.warn("Skipping Sygne responsible enrichment for student #{id}: #{e.message}")
+        nil
+      end
       return self if responsible.blank?
 
       self.legal_representative_full_name = "#{responsible.civility} #{responsible.first_name} #{responsible.last_name}"
@@ -149,6 +161,28 @@ module Users
       self.legal_representative_phone = responsible.phone
       save
       self
+    end
+
+    def validation_message_for_internship_application(internship_application)
+      return "" unless internship_application.validated_by_employer? && seconde_gt?
+
+      case internship_application.internship_offer.weeks.count
+      when 1
+        school_track_data = SchoolTrack::Seconde.period_collection(school_year: SchoolYear::Current.new)
+        data = internship_application.internship_offer.weeks.first.id == SchoolTrack::Seconde.first_week.id ? school_track_data[:week_1] : school_track_data[:week_2]
+        specific_week_part = "les dates allant du #{data[:start]} au #{data[:end]} #{data[:month]} #{data[:year]}"
+
+        "En choisissant ce stage, <strong>toutes vos autres candidatures qui incluent " \
+        "#{specific_week_part} seront annulées et vous ne pourrez pas revenir " \
+        "en arrière</strong>. Les stages d'une semaine dont les dates correspondent à " \
+        "l'autre semaine seront conservés."
+      when 2
+        "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées " \
+        "et vous ne pourrez pas revenir en arrière</strong>."
+      else
+        "En choisissant ce stage, <strong>toutes vos autres candidatures seront annulées " \
+        "et vous ne pourrez pas revenir en arrière</strong>."
+      end
     end
 
     def anonymize(send_email: true)
@@ -197,10 +231,10 @@ module Users
     end
 
     def compute_weeks_lists
-      school_weeks_list = school&.weeks.presence
-      school_weeks_list ||= (grade == Grade.seconde) ? Week.seconde_weeks : Week.troisieme_weeks
-      preselected_weeks_list = school_weeks_list.in_the_future
-      [school_weeks_list, preselected_weeks_list]
+      default_weeks = (grade == Grade.seconde) ? Week.seconde_weeks : Week.troisieme_weeks
+      school_weeks_list = school&.weeks&.in_the_future.presence || default_weeks
+      preselected_weeks_list = (grade == Grade.seconde) ? school_weeks_list : school_weeks_list.in_the_future
+      [ school_weeks_list, preselected_weeks_list ]
     end
 
     def presenter
@@ -246,10 +280,10 @@ module Users
 
     def log_search_history(search_params)
       search_history = UsersSearchHistory.new(
-        keywords: search_params[:keyword],
+        keywords: search_params[:keyword]&.to_s&.truncate(255),
         latitude: search_params[:latitude],
         longitude: search_params[:longitude],
-        city: search_params[:city],
+        city: search_params[:city]&.to_s&.truncate(165),
         radius: search_params[:radius],
         results_count: search_params[:results_count]&.to_i || 0,
         user: self,

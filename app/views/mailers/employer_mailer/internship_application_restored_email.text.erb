@@ -2,9 +2,12 @@ Bonjour,
 
 <%=@student_prez.formal_name%> a restauré sa candidature pour le stage <%= @internship_offer.title %>.
 
+<% if @internship_application.restored_message.present? %>
 Voici le motif de la restauration :
-<%= @internship_application.restored_message.gsub("\n", "<br>").html_safe %>
-@internship_application.restored_message.gsub("\n", "<br>").html_safe
+<%= @internship_application.restored_message %>
+<% else %>
+La candidature a été restaurée.
+<% end %>
 
 Cliquez sur le lien ci-dessous pour voir la candidature :
 <%= @url %>

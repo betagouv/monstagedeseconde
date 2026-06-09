@@ -16,7 +16,7 @@ class SchoolsController < ApplicationController
     @school.department = department
     if @school.save
       ImportDataFromSygneJob.perform_later(@school) if Rails.env.production? || Rails.env.test?
-      redirect_to rails_admin_path, flash: { success: 'Etablissement créé !' }
+      redirect_to rails_admin_path, flash: { success: "Etablissement créé !" }
     else
       flash[:error] = "Erreur lors de la validation des informations : #{@school.errors.full_messages}"
       render :new
@@ -26,22 +26,22 @@ class SchoolsController < ApplicationController
   private
 
   def school_params
-    params.require(:school)
-          .permit(
-            :zipcode,
-            :code_uai,
-            :city,
-            :street,
-            :name,
-            :visible,
-            :contract_code,
-            :is_public,
-            :school_type,
-            :rep_kind,
-            :qpv,
-            :voie_generale,
-            :voie_techno,
-            coordinates: {}
-          )
+    params.expect(
+      school: [
+        :zipcode,
+        :code_uai,
+        :city,
+        :street,
+        :name,
+        :visible,
+        :contract_code,
+        :is_public,
+        :school_type,
+        :rep_kind,
+        :qpv,
+        :voie_generale,
+        :voie_techno,
+        coordinates: {}
+      ])
   end
 end

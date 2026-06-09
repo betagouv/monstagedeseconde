@@ -10,8 +10,8 @@ module Dashboard
       end
 
       def show
-        authorize! :show, ClassRoom
         @class_room = @school.class_rooms.find(params[:id])
+        authorize! :show, @class_room
       end
 
       def create
@@ -62,8 +62,7 @@ module Dashboard
       private
 
       def class_rooms_params
-        params.require(:class_room)
-              .permit(:name)
+        params.expect(class_room: [:name])
       end
 
     end

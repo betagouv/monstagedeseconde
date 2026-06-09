@@ -55,6 +55,14 @@ class InternshipApplicationsController < ApplicationController
       log_error(object: @internship_application)
       render 'new', status: :bad_request
     end
+  rescue ActiveRecord::RecordNotUnique
+    redirect_to internship_offer_path(@internship_offer),
+                alert: 'Vous avez déjà postulé à cette offre.'
+  rescue CanCan::AccessDenied
+    raise unless current_user&.internship_applications&.exists?(internship_offer_id: @internship_offer&.id)
+
+    redirect_to internship_offer_path(@internship_offer),
+                alert: 'Vous avez déjà postulé à cette offre.'
   end
 
   def completed
@@ -86,7 +94,7 @@ class InternshipApplicationsController < ApplicationController
       destinations = transfer_params[:destinations].split(',').compact.map(&:strip)
       faulty_emails = check_transfer_destinations(destinations)
       if faulty_emails.empty?
-        @internship_application.transfer!
+        @internship_application.transfer! if @internship_application.may_transfer?
         @internship_application.generate_token
 
         destinations.each do |destination|
@@ -163,34 +171,34 @@ class InternshipApplicationsController < ApplicationController
   end
 
   def transfer_params
-    params.require(:application_transfer)
-          .permit(:comment,
-                  :destinations,
-                  :destination,
-                  :destinataires)
+    params.expect(application_transfer: [
+      :comment,
+      :destinations,
+      :destination,
+      :destinataires
+    ])
   end
 
   def create_internship_application_params
-    params.require(:internship_application)
-          .permit(
-            :type,
-            :internship_offer_id,
-            :internship_offer_type,
-            :motivation,
-            :student_phone,
-            :student_email,
-            :student_address,
-            :student_legal_representative_full_name,
-            :student_legal_representative_email,
-            :student_legal_representative_phone,
-            week_ids: [],
-            student_attributes: %i[
-              email
-              phone
-              resume_other
-              resume_languages
-            ]
-          )
+    params.expect(internship_application: [
+      :type,
+      :internship_offer_id,
+      :internship_offer_type,
+      :motivation,
+      :student_phone,
+      :student_email,
+      :student_address,
+      :student_legal_representative_full_name,
+      :student_legal_representative_email,
+      :student_legal_representative_phone,
+      week_ids: [],
+      student_attributes: %i[
+        email
+        phone
+        resume_other
+        resume_languages
+      ]
+   ])
   end
 
   def persist_login_param
@@ -210,10 +218,13 @@ class InternshipApplicationsController < ApplicationController
     student.legal_representative_full_name = internship_application.student_legal_representative_full_name
     student.legal_representative_email = internship_application.student_legal_representative_email
     student.legal_representative_phone = internship_application.student_legal_representative_phone
+    email_already_taken = User.where.not(id: student.id)
+                               .where("LOWER(email) = ?", internship_application.student_email.downcase)
+                               .exists?
     if student.fake_email?
-      student.update_column(:email, internship_application.student_email.downcase)
+      student.update_column(:email, internship_application.student_email.downcase) unless email_already_taken
     else
-      student.email = internship_application.student_email.downcase
+      student.email = internship_application.student_email.downcase unless email_already_taken
     end
     student.phone = internship_application.student_phone
     student.address = internship_application.student_address

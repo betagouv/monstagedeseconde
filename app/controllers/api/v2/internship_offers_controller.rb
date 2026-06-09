@@ -58,9 +58,12 @@ module Api
 
       private
 
+      def restrict_to_operators!
+        render_not_authorized and return unless current_api_user&.operator?
+      end
+
       def create_internship_offer_params
-        params.require(:internship_offer)
-              .permit(
+        params.expect(internship_offer: [
                 :title,
                 :description,
                 :employer_name,
@@ -84,13 +87,12 @@ module Api
                 grades: [],
                 week_ids: [],
                 daily_hours: {},
-                coordinates: {}
-              )
+                coordinates: {} ]
+      )
       end
 
       def update_internship_offer_params
-        params.require(:internship_offer)
-              .permit(
+        params.expect(internship_offer: [
                 :title,
                 :description,
                 :employer_name,
@@ -114,7 +116,7 @@ module Api
                 week_ids: [],
                 daily_hours: {},
                 coordinates: {}
-              )
+              ])
       end
 
       def query_params
@@ -174,8 +176,8 @@ module Api
 
       def format_week_ids(weeks)
         weeks.map do |iso_week|
-          year = iso_week.split('-').first
-          week_number = iso_week.split('-').second.delete('W')
+          year = iso_week.split("-").first
+          week_number = iso_week.split("-").second.delete("W")
           Week.find_by(year: year, number: week_number)&.id
         end.compact
       end
@@ -210,8 +212,8 @@ module Api
         return true unless grade_seconde? && grade_troisieme_or_quatrieme?
 
         raise Api::ValidationError.new(
-          code: 'WRONG_PARAMS',
-          error: 'Grades must be either college or lycee, not both',
+          code: "WRONG_PARAMS",
+          error: "Grades must be either college or lycee, not both",
           status: :unprocessable_entity
         )
       end
@@ -224,8 +226,8 @@ module Api
         return true unless grade_seconde? && !has_all_mandatory_weeks
 
         raise Api::ValidationError.new(
-          code: 'WRONG_PARAMS',
-          error: 'All mandatory weeks must be included for seconde grade',
+          code: "WRONG_PARAMS",
+          error: "All mandatory weeks must be included for seconde grade",
           status: :unprocessable_entity
         )
       end
@@ -233,7 +235,7 @@ module Api
       private
 
       def grade_seconde?
-        params[:internship_offer][:grades].include?('seconde')
+        params[:internship_offer][:grades].include?("seconde")
       end
 
       def grade_troisieme_or_quatrieme?

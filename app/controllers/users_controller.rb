@@ -13,18 +13,23 @@ class UsersController < ApplicationController
     return unless force_select_school? && can_redirect?(redirect_to)
 
     redirect_to(redirect_to,
-                flash: { danger: 'Veuillez rejoindre un etablissement' })
+                flash: { danger: "Veuillez rejoindre un etablissement" })
     nil
   end
 
   def update
     if user_params[:email]&.blank? && !current_user.fake_email?
       current_user.errors.add(:email, :blank,
-                              message: 'Il faut conserver un email valide pour assurer la continuité du service')
+                              message: "Il faut conserver un email valide pour assurer la continuité du service")
       return render :edit, status: :bad_request
     end
 
     user_params[:email] = user_params[:email].downcase if user_params[:email].present?
+
+    if user_params[:email].present? && User.where.not(id: current_user.id).where("LOWER(email) = ?", user_params[:email].downcase.strip).exists?
+      current_user.errors.add(:email, "est déjà utilisée par un autre compte. Merci de choisir une autre adresse email")
+      return render :edit, status: :bad_request
+    end
 
     if current_user.fake_email? && user_params[:email].present?
       current_user.update_column(:email, user_params[:email])
@@ -35,10 +40,21 @@ class UsersController < ApplicationController
       current_user.update!(user_params.except(:email))
     end
 
+    if current_user.student? && user_params[:legal_representative_email].present?
+      synchronize_agreements_with(current_user:, legal_representative_email: user_params[:legal_representative_email])
+    end
+
     redirect_back fallback_location: account_path,
                   flash: { success: current_flash_message }
   rescue ActiveRecord::RecordInvalid
     render :edit, status: :bad_request
+  end
+
+  def internship_agreement
+    authorize! :show_internship_agreement, current_user
+
+    @internship_agreement = current_user.internship_agreements.kept.first
+    render "users/internship_agreement"
   end
 
   def update_password
@@ -50,7 +66,7 @@ class UsersController < ApplicationController
                   flash: { success: current_flash_message }
     else
       redirect_to account_path(section: :password),
-                  flash: { warning: 'impossible de mettre à jour le mot de passe.' }
+                  flash: { warning: "impossible de mettre à jour le mot de passe." }
     end
   rescue ActiveRecord::RecordInvalid
     render :edit, status: :bad_request
@@ -58,7 +74,7 @@ class UsersController < ApplicationController
 
   def transform_input
     authorize! :transform_user, current_user
-    @url = 'utilisateurs/transform_input'
+    @url = "utilisateurs/transform_input"
     @user_mismatch = true
   end
 
@@ -67,15 +83,15 @@ class UsersController < ApplicationController
     @user = User.kept.find_by(**search_hash)
     @user_mismatch = user_mismatch?
     if @user.nil?
-      @error_message = 'Utilisateur inconnu'
+      @error_message = "Utilisateur inconnu"
     elsif @user&.anonymized?
-      @error_message = 'Utilisateur déjà anonymisé'
+      @error_message = "Utilisateur déjà anonymisé"
     elsif !@user.employer?
       @error_message = "Cet utilisateur n'est pas un employeur"
     elsif @user.internship_offers.present?
-      @error_message = 'Impossible de transformer cet employeur, car il a encore des offres'
+      @error_message = "Impossible de transformer cet employeur, car il a encore des offres"
     end
-    render 'users/transform_input'
+    render "users/transform_input"
   end
 
   def transform_user
@@ -83,23 +99,24 @@ class UsersController < ApplicationController
     @error_message = nil
     user_to_transform = User.find(user_params[:id])
     if user_to_transform.internship_offers.present?
-      @error_message = 'Impossible de transformer cet employeur, car il a encore des offres'
-      render 'users/transform'
+      @error_message = "Impossible de transformer cet employeur, car il a encore des offres"
+      render "users/transform"
     elsif user_params[:role].present? && user_params[:school_id].present?
       user_to_transform.update_columns(role: user_params[:role],
                                        school_id: user_params[:school_id])
-      user_to_transform.becomes!(Users::SchoolManagement)
-                       .save!
-      redirect_to '/admin', flash: { success: 'Utilisateur transformé avec succès.' }
+      transformed = user_to_transform.becomes!(Users::SchoolManagement)
+      transformed.authorize_type_change = true
+      transformed.save!
+      redirect_to "/admin", flash: { success: "Utilisateur transformé avec succès." }
     else
-      @error_message = 'Impossible de transformer cet utilisateur à qui il manque une fonction ou une école.'
-      render 'users/transform'
+      @error_message = "Impossible de transformer cet utilisateur à qui il manque une fonction ou une école."
+      render "users/transform"
     end
   end
 
   def anonymize_form
     authorize! :anonymize_user, current_user
-    render 'users/anonymize_form'
+    render "users/anonymize_form"
   end
 
   def identify_user
@@ -108,25 +125,25 @@ class UsersController < ApplicationController
     if @user && (@user.student? || @user.employer?)
       # @url = utilisateurs_anonymiser_path
     else
-      @error_message = 'Utilisateur inconnu'
+      @error_message = "Utilisateur inconnu"
       if User.find_by(search_hash).try(:anonymized?)
-        @error_message = 'Utilisateur déjà anonymisé'
+        @error_message = "Utilisateur déjà anonymisé"
       elsif @user.present? && !@user.employer? && !@user.student?
-        @error_message = 'Ni un élève, ni un employeur'
+        @error_message = "Ni un élève, ni un employeur"
       end
       # @url = utilisateurs_identifier_path
     end
-    render 'users/anonymize_form'
+    render "users/anonymize_form"
   end
 
   def anonymize_user
     authorize! :anonymize_user, current_user
     user_to_anonymize = User.find(user_params[:id])
-    if user_to_anonymize.anonymize(send_email: user_params[:anonymize_with_email] == 'true')
-      redirect_to '/admin', flash: { success: 'Utilisateur anonymisé avec succès.' }
+    if user_to_anonymize.anonymize(send_email: user_params[:anonymize_with_email] == "true")
+      redirect_to "/admin", flash: { success: "Utilisateur anonymisé avec succès." }
     else
-      error_message = 'Impossible d’anonymiser cet utilisateur.'
-      redirect_to '/admin', flash: { danger: error_message }
+      error_message = "Impossible d’anonymiser cet utilisateur."
+      redirect_to "/admin", flash: { danger: error_message }
     end
   end
 
@@ -146,43 +163,48 @@ class UsersController < ApplicationController
   def current_flash_message
     message = if params.dig(:user, :missing_weeks_school_id).present?
               then "Nous allons prévenir votre chef d'établissement pour que vous puissiez postuler"
-              else
-                'Compte mis à jour avec succès.'
-              end
+    else
+                "Compte mis à jour avec succès."
+    end
 
     if current_user.unconfirmed_email
       message += " Pour confirmer le changement d’adresse électronique, \
                   veuillez cliquer sur lien contenu dans le courrier que \
                   vous venez de recevoir sur votre nouvelle adresse électronique."
     end
-    message = 'Etablissement mis à jour avec succès.' if current_user.school_id_previously_changed?
+    message = "Etablissement mis à jour avec succès." if current_user.school_id_previously_changed?
     message
   end
 
   def user_params
-    params.require(:user).permit(:id,
-                                 :school_id,
-                                 :missing_weeks_school_id,
-                                 :agreement_signatorable,
-                                 :first_name,
-                                 :last_name,
-                                 :email,
-                                 :phone,
-                                 :phone_prefix,
-                                 :phone_suffix,
-                                 :department,
-                                 :class_room_id,
-                                 :resume_other,
-                                 :resume_languages,
-                                 :password,
-                                 :role,
-                                 :birth_date,
-                                 :academy_id,
-                                 :academy_region_id,
-                                 :employer_role,
-                                 :phone_or_email,
-                                 :anonymize_with_email,
-                                 :show_modal_info)
+    params.expect(
+      user: [
+        :id,
+        :school_id,
+        :missing_weeks_school_id,
+        :agreement_signatorable,
+        :first_name,
+        :last_name,
+        :email,
+        :phone,
+        :phone_prefix,
+        :phone_suffix,
+        :department,
+        :class_room_id,
+        :resume_other,
+        :resume_languages,
+        :password,
+        :role,
+        :birth_date,
+        :academy_id,
+        :academy_region_id,
+        :employer_role,
+        :phone_or_email,
+        :anonymize_with_email,
+        :legal_representative_email,
+        :legal_representative_full_name,
+        :show_modal_info
+    ])
   end
 
   def current_section
@@ -190,7 +212,7 @@ class UsersController < ApplicationController
   end
 
   def force_select_school?
-    current_user.missing_school? && current_section.to_s != 'school'
+    current_user.missing_school? && current_section.to_s != "school"
   end
 
   def can_redirect?(path)
@@ -213,5 +235,27 @@ class UsersController < ApplicationController
       !@user.employer? ||
       @user.discarded? ||
       @user.internship_offers.present?
+  end
+
+  def synchronize_agreements_with(current_user:, legal_representative_email: nil)
+    return if legal_representative_email&.strip&.empty?
+    return if current_user.internship_agreements.empty?
+
+    current_user.internship_agreements.kept.each do |agreement|
+      next if agreement.student_legal_representative_email == legal_representative_email
+      next if agreement.signed_by_legal_representative?
+
+      current_representative_full_name = current_user.legal_representative_full_name
+      if current_representative_full_name == agreement.student_legal_representative_full_name
+        agreement.update!(student_legal_representative_email: legal_representative_email)
+      elsif current_representative_full_name == agreement.student_legal_representative_2_full_name
+        agreement.update!(student_legal_representative_2_email: legal_representative_email)
+      else
+        agreement.update!(
+          student_legal_representative_full_name: current_representative_full_name,
+          student_legal_representative_email: legal_representative_email
+        )
+      end
+    end
   end
 end

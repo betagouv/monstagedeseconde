@@ -10,7 +10,7 @@ module SchoolTrack
 
     def self.period_labels(school_year:)
       period_collection(school_year:).transform_values do |time_frame|
-        prefix = time_frame[:end] - time_frame[:start] > 10 ? ' stage de 2 semaines' : 'stage de 1 semaine'
+        prefix = time_frame[:end] - time_frame[:start] > 10 ? " stage de 2 semaines" : "stage de 1 semaine"
         "#{prefix} (du #{time_frame[:start]} au #{time_frame[:end]} #{time_frame[:month]} #{time_frame[:year]})"
       end
     end
@@ -50,15 +50,18 @@ module SchoolTrack
       last_june_friday(year:).days_ago(11)
     end
 
+    # school_year is an integer corresponding to the year in june of
+    # the school year (ex: 2025 for the 2024/2025 school year)
     def self.period_collection(school_year:)
       hash = {
         full_time: { start_day: first_monday, end_day: last_friday },
         week_1: { start_day: first_monday, end_day: first_friday },
         week_2: { start_day: last_monday, end_day: last_friday }
       }
+
       hash.each_value do |value|
         value.merge!(
-          month: 'juin',
+          month: "juin",
           year: school_year,
           start: value[:start_day].mday,
           end: value[:end_day].mday
@@ -68,7 +71,7 @@ module SchoolTrack
     end
 
     def self.selectable_from_now_until_end_of_school_year
-      both_weeks.where('id >= ?', Week.current.id)
+      both_weeks.where("id >= ?", Week.current.id)
     end
   end
 end

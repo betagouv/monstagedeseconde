@@ -80,7 +80,7 @@ module Presenters
       if student.with_2_weeks_internships_approved?
         'Vous avez déjà validé un stage pour les deux semaines'
       else
-        'Stage déjà validé sur cette semaine'
+        'Stage déjà validé sur cette période'
       end
     end
 
