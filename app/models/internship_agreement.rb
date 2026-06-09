@@ -89,7 +89,8 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-
+  # Delegations
+  delegate :employer, to: :internship_application
 
   # Callbacks
   after_save :save_delegation_date
@@ -305,10 +306,18 @@ class InternshipAgreement < ApplicationRecord
   def legal_representative_data
     hash = {}
      if student_legal_representative_email.present? && student_legal_representative_full_name.present?
-       hash[:student_legal_representative] = { email: student_legal_representative_email, nr: 1 }
+       hash[:student_legal_representative] = {
+        email: student_legal_representative_email,
+        nr: 1,
+        full_name: student_legal_representative_full_name
+      }
      end
      if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
-       hash[:student_legal_representative_2] = { email: student_legal_representative_2_email, nr: 2 }
+       hash[:student_legal_representative_2] = {
+        email: student_legal_representative_2_email,
+        nr: 2,
+        full_name: student_legal_representative_2_full_name
+      }
      end
     hash
   end
