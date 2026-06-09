@@ -20,7 +20,7 @@ module Services
       InternshipApplication.all.map(&:update_all_counters)
     end
 
-    def self.reset_one_internship_offer_counter(internship_offer: )
+    def self.reset_one_internship_offer_counter(internship_offer:)
       ok = true
       return ok if internship_offer.is_a?(InternshipOffers::Api)
 
@@ -42,10 +42,6 @@ module Services
         end
 
         unless !!res
-          Rails.logger.info '================'
-          Rails.logger.info "reset_one_internship_offer_counter : internship_offer.id : #{internship_offer.id}"
-          Rails.logger.info '================'
-          Rails.logger.info ''
           ok = false
           raise ActiveRecord::Rollback
         end
