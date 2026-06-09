@@ -100,6 +100,20 @@ module Dashboard
         end
       end
 
+      test 'GET class_rooms#index shows SYGNE effectif and registered students columns' do
+        school = create(:school)
+        class_room = create(:class_room, school: school, class_size: 27)
+        3.times { create(:student, school: school, class_room: class_room) }
+
+        sign_in(create(:school_manager, school: school))
+        get dashboard_school_class_rooms_path(school)
+
+        assert_response :success
+        assert_select 'thead th', text: 'Dont élèves inscrits'
+        assert_select ".test-class-room-#{class_room.id} .class-room-effectif", text: '27'
+        assert_select ".test-class-room-#{class_room.id} .class-room-registered", text: '3'
+      end
+
       test 'GET show as SchoolManagement works and only show not archived students' do
         school = create(:school)
         class_room = create(:class_room, school: school)

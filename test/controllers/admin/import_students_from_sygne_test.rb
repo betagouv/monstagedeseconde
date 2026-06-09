@@ -8,23 +8,23 @@ module Admin
       rails_admin.import_students_from_sygne_path(model_name: 'school', id: school.id)
     end
 
-    test 'GET as God enqueues ImportDataFromSygneJob and flashes success' do
+    test 'GET as God enqueues CountStudentsFromSygneJob and flashes success' do
       school = create(:school)
       sign_in(create(:god))
 
-      assert_enqueued_with(job: ImportDataFromSygneJob) do
+      assert_enqueued_with(job: CountStudentsFromSygneJob) do
         get import_path(school)
       end
 
       assert_response :redirect
-      assert_match(/Import des élèves depuis Sygne lancé pour #{Regexp.escape(school.name)}/,
+      assert_match(/Recomptage des effectifs depuis Sygne lancé pour #{Regexp.escape(school.name)}/,
                    flash[:success])
     end
 
     test 'GET not logged in does not enqueue and redirects to sign in' do
       school = create(:school)
 
-      assert_no_enqueued_jobs(only: ImportDataFromSygneJob) do
+      assert_no_enqueued_jobs(only: CountStudentsFromSygneJob) do
         get import_path(school)
       end
       assert_redirected_to new_user_session_path
@@ -34,11 +34,11 @@ module Admin
       school = create(:school, :with_school_manager)
       sign_in(school.school_manager)
 
-      assert_no_enqueued_jobs(only: ImportDataFromSygneJob) do
+      assert_no_enqueued_jobs(only: CountStudentsFromSygneJob) do
         get import_path(school)
       end
       assert_response :redirect
-      assert_not_equal flash[:success], "Import des élèves depuis Sygne lancé pour #{school.name}."
+      assert_not_equal flash[:success], "Recomptage des effectifs depuis Sygne lancé pour #{school.name}."
     end
 
     test "GET on School show page renders the action link for God" do

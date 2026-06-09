@@ -101,7 +101,6 @@ class CallbacksController < ApplicationController
                          'de leurs propres identifiants Éduconnect.' and return
     end
 
-    student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
     school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
 
     unless school.present?
@@ -111,11 +110,14 @@ class CallbacksController < ApplicationController
       redirect_to root_path, alert: alert_message and return
     end
 
-    if student.present?
-      check_for_school_update(student, school) if Flipper.enabled?(:student_update_feature)
-    else
+    # Création/mise à jour du compte élève à la volée à partir de la scolarité SYGNE.
+    student = upsert_student_from_sygne(user_info['FrEduCtEleveINE'])
+
+    if student.nil?
       handle_educonnect_logout(educonnect)
-      redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
+      redirect_to root_path,
+                  alert: "Seuls les élèves de 4e, 3e et 2de GT d'un établissement inscrit " \
+                         'sur 1 élève, 1 stage peuvent se connecter.' and return
     end
 
     student = student.add_responsible_data if student.legal_representative_full_name.blank? && !Rails.env.staging?
@@ -223,44 +225,28 @@ class CallbacksController < ApplicationController
     string.split(separator).first
   end
 
-  def check_for_school_update(student, edu_connect_school)
-    return unless student.school_id != edu_connect_school.id
+  # Récupère la scolarité SYGNE de l'élève (1 appel par INE) et :
+  # - crée le compte si éligible et inexistant ;
+  # - met à jour établissement / classe / niveau si le compte existe déjà.
+  # Renvoie l'élève, ou nil si inéligible / introuvable / SYGNE en erreur.
+  def upsert_student_from_sygne(ine)
+    eleve = Services::Omogen::Sygne.new.sygne_eleve(ine)
+    return nil if eleve.nil? || eleve.school.blank?
+    return nil if eleve.code_mef.blank? || !Grade.code_mef_ok?(code_mef: eleve.code_mef) || eleve.grade.blank?
 
-    student.update_columns(school_id: edu_connect_school.id)
-    update_classroom(student, edu_connect_school)
-  end
-
-  def update_classroom(student, edu_connect_school)
-    begin
-      omogen = Services::Omogen::Sygne.new
-    rescue RuntimeError => e
-      Rails.logger.error("Failed to initialize Services::Omogen::Sygne: #{e.message}")
-      Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
-      return nil
+    student = Users::Student.find_by(ine: ine)
+    if student
+      class_room = eleve.class_room
+      student.update_columns(
+        { school_id: eleve.school.id, grade_id: eleve.grade.id, class_room_id: class_room&.id }.compact
+      )
+      student
+    else
+      ActiveRecord::Base.transaction { eleve.make_student }
+      Users::Student.find_by(ine: ine)
     end
-    begin
-      # Attempt to update the class room
-      # This will throw :class_room_updated if a class room is found and updated
-      catch :class_room_updated do
-        Services::Omogen::Sygne::MEFSTAT4_CODES.each do |niveau|
-          all_school_students = omogen.sygne_eleves(student.school.code_uai, niveau: niveau)
-          next unless all_school_students.present?
-
-          all_school_students.to_a.compact.each do |school_student|
-            next unless student.ine == school_student.ine
-
-            class_room = ClassRoom.find_by(school: edu_connect_school, name: school_student.classe)
-            next if class_room.nil?
-
-            student.update_columns(class_room_id: class_room.id)
-            throw :class_room_updated
-          end
-        end
-      end
-    rescue RuntimeError => e
-      Rails.logger.error("Failed to use Services::Omogen::Sygne in update_class_room: #{e.message}")
-      Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
-      nil
-    end
+  rescue Services::Omogen::SygneApiError, RuntimeError => e
+    Rails.logger.error("upsert_student_from_sygne | ine=#{ine} | #{e.class}: #{e.message}")
+    nil
   end
 end

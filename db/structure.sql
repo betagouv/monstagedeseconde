@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -2186,6 +2187,42 @@ ALTER SEQUENCE public.school_internship_weeks_id_seq OWNED BY public.school_inte
 
 
 --
+-- Name: school_stats; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.school_stats (
+    id bigint NOT NULL,
+    date_reference date NOT NULL,
+    school_id bigint NOT NULL,
+    effectif integer,
+    nb_utilisateurs integer DEFAULT 0 NOT NULL,
+    nb_filles integer DEFAULT 0 NOT NULL,
+    nb_garcons integer DEFAULT 0 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: school_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.school_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: school_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.school_stats_id_seq OWNED BY public.school_stats.id;
+
+
+--
 -- Name: schools; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3069,6 +3106,13 @@ ALTER TABLE ONLY public.school_internship_weeks ALTER COLUMN id SET DEFAULT next
 
 
 --
+-- Name: school_stats id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.school_stats ALTER COLUMN id SET DEFAULT nextval('public.school_stats_id_seq'::regclass);
+
+
+--
 -- Name: schools id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3573,6 +3617,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.school_internship_weeks
     ADD CONSTRAINT school_internship_weeks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: school_stats school_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.school_stats
+    ADD CONSTRAINT school_stats_pkey PRIMARY KEY (id);
 
 
 --
@@ -4499,6 +4551,27 @@ CREATE INDEX index_school_internship_weeks_on_week_id ON public.school_internshi
 
 
 --
+-- Name: index_school_stats_on_date_reference; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_school_stats_on_date_reference ON public.school_stats USING btree (date_reference);
+
+
+--
+-- Name: index_school_stats_on_school_and_date; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_school_stats_on_school_and_date ON public.school_stats USING btree (school_id, date_reference);
+
+
+--
+-- Name: index_school_stats_on_school_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_school_stats_on_school_id ON public.school_stats USING btree (school_id);
+
+
+--
 -- Name: index_schools_on_city_tsv; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5130,6 +5203,14 @@ ALTER TABLE ONLY public.entreprises
 
 
 --
+-- Name: school_stats fk_rails_723c3f6aa3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.school_stats
+    ADD CONSTRAINT fk_rails_723c3f6aa3 FOREIGN KEY (school_id) REFERENCES public.schools(id);
+
+
+--
 -- Name: planning_reserved_schools fk_rails_74c560c462; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5464,6 +5545,7 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260608090000'),
 ('20260526090153'),
 ('20260520214758'),
 ('20260515090000'),

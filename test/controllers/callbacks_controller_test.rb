@@ -148,6 +148,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
   test 'should get educonnect token and confirm student user' do
     educonnect_token_stub
     educonnect_userinfo_stub
+    stub_sygne_eleve(ine: '1234567890', token: @omogen.token, code_uai: '0590121L')
     stub_sygne_responsible(ine: '1234567890', token: @omogen.token)
     educonnect_logout_stub
 
@@ -199,7 +200,7 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     educonnect_token_stub
     educonnect_userinfo_stub
     stub_omogen_auth
-    stub_sygne_eleves(code_uai: '0590121L', token: @omogen.token, ine: '1234567890')
+    stub_sygne_eleve(ine: '1234567890', token: @omogen.token, code_uai: '0590121L', classe: '3E4')
     stub_sygne_responsible(ine: '1234567890', token: @omogen.token)
 
     get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
@@ -208,5 +209,69 @@ class CallbacksControllerTest < ActionDispatch::IntegrationTest
     student.reload
     assert_equal '0590121L', student.school.code_uai
     assert_equal '3E4', student.class_room.name
+  end
+
+  test 'should create student account on the fly when eligible and unknown' do
+    @student.destroy
+    educonnect_token_stub
+    educonnect_userinfo_stub
+    stub_sygne_eleve(ine: '1234567890', token: @omogen.token, code_uai: '0590121L', classe: '3E4')
+    stub_sygne_responsible(ine: '1234567890', token: @omogen.token)
+
+    assert_difference 'Users::Student.count', 1 do
+      get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+    end
+
+    assert_response :redirect
+    student = Users::Student.find_by(ine: '1234567890')
+    assert_equal '0590121L', student.school.code_uai
+    refute_nil student.confirmed_at
+    assert student.created_by_system
+  end
+
+  test 'should reject and not create account when student is unknown to Sygne (404)' do
+    @student.destroy
+    educonnect_token_stub
+    educonnect_userinfo_stub
+    stub_sygne_eleve_not_found(ine: '1234567890', token: @omogen.token)
+    educonnect_logout_stub
+
+    assert_no_difference 'Users::Student.count' do
+      get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+    end
+
+    assert_redirected_to root_path
+    assert_match 'peuvent se connecter', flash[:alert]
+  end
+
+  test 'should reject and not create account when Sygne scolarite is not eligible' do
+    @student.destroy
+    educonnect_token_stub
+    educonnect_userinfo_stub
+    # code_mef 211... => non éligible (hors 4e/3e/2nde GT)
+    stub_sygne_eleve(ine: '1234567890', token: @omogen.token, code_uai: '0590121L', code_mef: '21100019110')
+    educonnect_logout_stub
+
+    assert_no_difference 'Users::Student.count' do
+      get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+    end
+
+    assert_redirected_to root_path
+    assert_match 'peuvent se connecter', flash[:alert]
+  end
+
+  test 'should reject gracefully without 500 when Sygne errors' do
+    @student.destroy
+    educonnect_token_stub
+    educonnect_userinfo_stub
+    stub_sygne_eleve(ine: '1234567890', token: @omogen.token, code_uai: '0590121L', status: 500)
+    educonnect_logout_stub
+
+    assert_no_difference 'Users::Student.count' do
+      get educonnect_callback_path, params: { code: @code, state: @state, nonce: @nonce }
+    end
+
+    assert_response :redirect
+    assert_redirected_to root_path
   end
 end

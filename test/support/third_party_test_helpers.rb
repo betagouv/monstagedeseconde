@@ -316,6 +316,36 @@ module ThirdPartyTestHelpers
     end
   end
 
+  def stub_sygne_eleve(ine:, token:, code_uai: '0590121L', code_mef: '10310019110', classe: '3E4',
+                       niveau: '2211', status: 200, body: nil)
+    default_body = {
+      'ine' => ine,
+      'nom' => 'DOE',
+      'prenom' => 'John',
+      'dateNaissance' => '2010-05-28',
+      'codeSexe' => '1',
+      'codeUai' => code_uai,
+      'anneeScolaire' => 2025,
+      'niveau' => niveau,
+      'libelleNiveau' => '3EME',
+      'codeMef' => code_mef,
+      'libelleLongMef' => 'TROISIEME',
+      'classe' => classe,
+      'codeStatut' => 'ST'
+    }.to_json
+    uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}")
+    stub_request(:get, uri)
+      .with(headers: headers_with_token(token: token, uri: URI(ENV['SYGNE_URL'])))
+      .to_return(status: status, body: (body || default_body), headers: {})
+  end
+
+  def stub_sygne_eleve_not_found(ine:, token:)
+    uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}")
+    stub_request(:get, uri)
+      .with(headers: headers_with_token(token: token, uri: URI(ENV['SYGNE_URL'])))
+      .to_return(status: 404, body: '', headers: {})
+  end
+
   def base_score_uri
     ENV['SCORE_API_URL']
   end
