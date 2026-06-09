@@ -155,11 +155,6 @@ def populate_users
     school: a_parisian_college
   )
 
-  Users::SchoolManagement.each do |school_management|
-    next unless school_management.school
-    UserSchool.find_or_create_by!(user: school_management, school: school_management.school)
-  end
-
   # --- Users::Operator ---
   Operator.all.map do |operator|
     users << Users::Operator.new(email: "#{operator.name.parameterize}@ms2e.fr",
@@ -186,6 +181,11 @@ def populate_users
   users.each do |user|
     user = random_extra_attributes(user)
     user.save!
+  end
+
+  users.select { |u| u.is_a?(Users::SchoolManagement) }.each do |school_management|
+    next unless school_management.school
+    UserSchool.find_or_create_by!(user: school_management, school: school_management.school)
   end
 end
 
