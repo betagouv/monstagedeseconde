@@ -245,6 +245,28 @@ module Services
                      MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
 
+      test ".perform_for_medium_level notifie l'employeur quand l'élève est le premier à signer (F4)" do
+        internship_agreement = create(:mono_internship_agreement, :validated,
+                                      skip_notifications_when_system_creation: false)
+        employer = internship_agreement.employer
+        MailActionItem.where(recipient: employer).delete_all
+
+        create(:signature, :student, internship_agreement: internship_agreement,
+               user_id: internship_agreement.student.id)
+        internship_agreement.sign!
+
+        to_sign_item = internship_agreement.mail_action_items.find_by(action_name: "agreement_to_sign")
+        signed_by_another_item = internship_agreement.mail_action_items.find_by(action_name: "agreement_signed_by_another")
+
+        assert to_sign_item.present?, "precondition: agreement_to_sign doit exister après sign!"
+        assert signed_by_another_item.present?, "precondition: agreement_signed_by_another doit exister après sign!"
+
+        Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
+
+        assert_equal 1, to_sign_item.reload.deliveries_count,
+                     "agreement_to_sign doit être envoyé dans le digest medium"
+      end
+
       test ".perform_for_medium_level does not re-send nor re-count an item already delivered to its max at a lower level" do
         employer = create(:employer)
 

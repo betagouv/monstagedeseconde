@@ -62,14 +62,16 @@ module Services::EmployerActions
       # new_internship_application case
       # ------------------------
       # application which aasm_state is not :submitted are to be set as resolved
+      # Exception: if the application is restored but never seen by employer,
+      # keep new_internship_application so the application still appears in the digest (D2).
       actions = MailActionItem.for_user(user_id)
                               .where(urgency_level:)
                               .where(action_name: "new_internship_application")
       if actions.present?
         actions.each do |mail_action_item|
-          unless mail_action_item&.internship_application&.submitted?
-            application_resolve(mail_action_item.internship_application)
-          end
+          application = mail_action_item&.internship_application
+          next if application&.restored? && !application&.has_ever_been?(%w[read_by_employer])
+          application_resolve(application) unless application&.submitted?
         end
       end
 
@@ -105,6 +107,29 @@ module Services::EmployerActions
       # ------------------------
       # agreement_signed_by_all case
       # ------------------------
+      # Resolved (i.e. not notified) if the employer has signed: they already know.
+      agreement_signed_by_all_items = MailActionItem.for_user(user_id)
+                                                    .where(urgency_level:)
+                                                    .where(action_name: "agreement_signed_by_all")
+      agreement_signed_by_all_items.present? && agreement_signed_by_all_items.each do |item|
+        if item&.internship_agreement&.signed_by_employer?
+          item.update_columns(resolved_at: Time.current)
+          agreement_resolve(item.internship_agreement)
+        end
+      end
+
+      # ------------------------
+      # agreement_signed_by_another case
+      # ------------------------
+      # Resolved once the employer has signed (they no longer need the nudge).
+      agreement_signed_by_another_items = MailActionItem.for_user(user_id)
+                                                        .where(urgency_level:)
+                                                        .where(action_name: "agreement_signed_by_another")
+      agreement_signed_by_another_items.present? && agreement_signed_by_another_items.each do |item|
+        if item&.internship_agreement&.signed_by_employer?
+          item.update_columns(resolved_at: Time.current)
+        end
+      end
 
       # ------------------------
       # agreement_to_sign case
@@ -114,7 +139,7 @@ module Services::EmployerActions
                                               .where(action_name: "agreement_to_sign")
       agreement_to_sign_items.present? && agreement_to_sign_items.each do |item|
         unless item&.internship_agreement&.roles_not_signed_yet&.include?("employer")
-          agreement_resolve(item.internship_agreement)
+          item.update_columns(resolved_at: Time.current)
         end
       end
     end
@@ -139,6 +164,11 @@ module Services::EmployerActions
       restored_internship_application
     ].freeze
 
+    SELF_RESOLVING_AGREEMENT_ACTION_NAMES = %w[
+      agreement_to_sign
+      agreement_signed_by_another
+    ].freeze
+
     def self.application_resolve(application)
       return unless application.present? && application.persisted?
 
@@ -156,7 +186,7 @@ module Services::EmployerActions
       MailActionItem.where(
         action_type: :pending_internship_agreement,
         internship_agreement_id: agreement.id
-      ).each do |item|
+      ).where.not(action_name: SELF_RESOLVING_AGREEMENT_ACTION_NAMES).each do |item|
         item.update_columns(resolved_at: Time.current)
       end
     end

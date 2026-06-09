@@ -145,6 +145,36 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     assert internship_agreement.reload.signed_by_all?
   end
 
+  test "#sign creates agreement_to_sign (medium) and agreement_signed_by_another (low) when employer has not yet signed (F2)" do
+    internship_agreement = create(:mono_internship_agreement, :signed_by_school_manager_only)
+    employer = internship_agreement.employer
+
+    refute internship_agreement.signed_by_employer?,
+           "precondition: l'employeur ne doit pas encore avoir signé"
+    assert internship_agreement.roles_not_signed_yet.include?("employer"),
+           "precondition: la signature employeur doit manquer"
+
+    assert_difference "MailActionItem.count", 2 do
+      internship_agreement.sign!
+    end
+
+    action_names = internship_agreement.mail_action_items.pluck(:action_name)
+    assert_includes action_names, "agreement_to_sign"
+    assert_includes action_names, "agreement_signed_by_another"
+
+    to_sign = internship_agreement.mail_action_items.find_by!(action_name: "agreement_to_sign")
+    assert_equal "pending_internship_agreement", to_sign.action_type
+    assert_equal "medium", to_sign.urgency_level
+    assert_equal employer, to_sign.recipient
+    assert_nil to_sign.resolved_at
+
+    signed_by_another = internship_agreement.mail_action_items.find_by!(action_name: "agreement_signed_by_another")
+    assert_equal "pending_internship_agreement", signed_by_another.action_type
+    assert_equal "low", signed_by_another.urgency_level
+    assert_equal employer, signed_by_another.recipient
+    assert_nil signed_by_another.resolved_at
+  end
+
   test "#notify_employer_agreement_signed_by_all creates a MailActionItem for the employer when agreement is signed by all" do
     internship_agreement = create(:mono_internship_agreement, aasm_state: :signatures_started)
     employer = internship_agreement.employer

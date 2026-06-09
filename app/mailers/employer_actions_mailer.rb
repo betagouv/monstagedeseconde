@@ -106,12 +106,12 @@ class EmployerActionsMailer < ApplicationMailer
     end
 
     # --- Agreement to sign ---
-    @agreement_to_fill_in_rows = all_agreements.select { |item| %w[agreement_to_sign].include?(item.action_name) }
-                                               .filter_map do |item|
-      internship_application = item.internship_application
+    @agreement_to_sign_rows = all_agreements.select { |item| item.action_name == "agreement_to_sign" }
+                                            .filter_map do |item|
+      internship_application = item.internship_application || item.internship_agreement&.internship_application
       next if internship_application.nil?
 
-      agreement = internship_application.internship_agreement
+      agreement = item.internship_agreement || internship_application.internship_agreement
       {
         student_full_name: internship_application.student.presenter.full_name,
         offer_title:       internship_application.internship_offer.title,
@@ -173,7 +173,7 @@ class EmployerActionsMailer < ApplicationMailer
     @agreement_signed_by_another_rows = all_agreements
       .select { |item| item.action_name == "agreement_signed_by_another" }
       .filter_map do |item|
-      internship_application = item.internship_application
+      internship_application = item.internship_application || item.internship_agreement&.internship_application
       next if internship_application.nil?
 
       student = internship_application.student

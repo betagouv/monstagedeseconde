@@ -145,9 +145,10 @@ class InternshipAgreement < ApplicationRecord
                   to: :signatures_started,
                   guard: :roles_not_signed_yet_present?,
                   after: proc { |*_args|
-                    roles_not_signed_yet.present? &&
-                      !skip_notifications_when_system_creation &&
-                      notify_others_signatures_started
+                    unless skip_notifications_when_system_creation
+                      notify_others_signatures_started if roles_not_signed_yet.present?
+                      notify_employer_partial_signature if roles_not_signed_yet.include?("employer")
+                    end
                   }
       transitions from: [ :signatures_started ],
                   to: :signed_by_all,
@@ -283,9 +284,13 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_others_signatures_started
+    # employer is notified by digest email (agreement_to_sign), exclude them here to avoid duplicate
+    recipients = missing_signatures_recipients - [ employer.email ]
+    return if recipients.empty?
+
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,
-      missing_signatures_recipients: missing_signatures_recipients,
+      missing_signatures_recipients: recipients,
       last_signature: signatures&.last
     ).deliver_later
   end
@@ -324,6 +329,11 @@ class InternshipAgreement < ApplicationRecord
     kwargs[:action_type] ||= :pending_internship_agreement
     kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
     MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_employer_partial_signature
+    notify_employer_with_digest_email("agreement_to_sign")
+    notify_employer_with_digest_email("agreement_signed_by_another")
   end
 
   def notify_signatures_enabled
