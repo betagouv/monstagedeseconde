@@ -113,11 +113,9 @@ module Dashboard
 
       if params[:internship_offer].key?(:is_public)
         is_public_value = ActiveModel::Type::Boolean.new.cast(internship_offer_params[:is_public])
-        if is_public_value
-          params[:internship_offer][:sector_id] = Sector.find_by(name: 'Fonction publique').try(:id)
-        else
-          params[:internship_offer][:group_id] = nil
-        end
+        # Le secteur n'est plus forcé pour le public : c'est un choix libre.
+        # On nettoie seulement le ministère pour une offre privée.
+        params[:internship_offer][:group_id] = nil unless is_public_value
       end
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|

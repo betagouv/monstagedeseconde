@@ -238,10 +238,18 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert_includes internship_offer.errors[:group_id], 'Un ministère est requis pour une offre publique'
   end
 
-  test 'public offer must have sector Fonction publique' do
+  test 'public offer keeps its chosen sector (no longer forced to Fonction publique)' do
     group = create(:group, is_public: true)
     other_sector = create(:sector, name: 'Autre secteur')
     internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: group, sector: other_sector)
+    assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
+    assert_equal 'Autre secteur', internship_offer.sector.name
+  end
+
+  test 'public offer can have sector Fonction publique' do
+    group = create(:group, is_public: true)
+    fonction_publique_sector = Sector.find_or_create_by!(name: 'Fonction publique')
+    internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: group, sector: fonction_publique_sector)
     assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
     assert_equal 'Fonction publique', internship_offer.sector.name
   end
