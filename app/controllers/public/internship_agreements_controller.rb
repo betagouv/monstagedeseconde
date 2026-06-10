@@ -1,9 +1,19 @@
 module Public
   class InternshipAgreementsController < ApplicationController
-    layout 'no_link_layout', only: %i[show]
+    layout 'no_link_layout', only: %i[show signed]
 
     def show
       @internship_agreement = find_internship_agreement
+      return render_not_found unless @internship_agreement
+
+      render :show
+    end
+
+    def signed
+      @internship_agreement = InternshipAgreement.find_by(
+        uuid: params[:uuid],
+        aasm_state: %w[signatures_started signed]
+      )
       return render_not_found unless @internship_agreement
 
       render :show
@@ -61,8 +71,7 @@ module Public
 
         @internship_agreement.sign! if @internship_agreement.may_sign?
         @internship_agreement.update_columns(access_token: nil)
-        redirect_to root_path,
-                    notice: 'Vous avez bien signé la convention de stage.' and return
+        redirect_to signed_public_internship_agreement_path(uuid: @internship_agreement.uuid) and return
       end
     rescue ActiveRecord::RecordNotFound
       redirect_to root_path, alert: 'Convention introuvable' and return
