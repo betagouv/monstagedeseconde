@@ -89,7 +89,8 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-
+  # Delegations
+  delegate :employer, to: :internship_application
 
   # Callbacks
   after_save :save_delegation_date
@@ -146,9 +147,10 @@ class InternshipAgreement < ApplicationRecord
                   to: :signatures_started,
                   guard: :roles_not_signed_yet_present?,
                   after: proc { |*_args|
-                    roles_not_signed_yet.present? &&
-                      !skip_notifications_when_system_creation &&
-                      notify_others_signatures_started
+                    unless skip_notifications_when_system_creation
+                      notify_others_signatures_started if roles_not_signed_yet.present?
+                      notify_employer_partial_signature if roles_not_signed_yet.include?("employer")
+                    end
                   }
       transitions from: [ :signatures_started ],
                   to: :signed_by_all,
@@ -285,9 +287,13 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_others_signatures_started
+    # employer is notified by digest email (agreement_to_sign), exclude them here to avoid duplicate
+    recipients = missing_signatures_recipients - [ employer.email ]
+    return if recipients.empty?
+
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,
-      missing_signatures_recipients: missing_signatures_recipients,
+      missing_signatures_recipients: recipients,
       last_signature: signatures&.last
     ).deliver_later
   end
@@ -302,10 +308,18 @@ class InternshipAgreement < ApplicationRecord
   def legal_representative_data
     hash = {}
      if student_legal_representative_email.present? && student_legal_representative_full_name.present?
-       hash[:student_legal_representative] = { email: student_legal_representative_email, nr: 1 }
+       hash[:student_legal_representative] = {
+        email: student_legal_representative_email,
+        nr: 1,
+        full_name: student_legal_representative_full_name
+      }
      end
      if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
-       hash[:student_legal_representative_2] = { email: student_legal_representative_2_email, nr: 2 }
+       hash[:student_legal_representative_2] = {
+        email: student_legal_representative_2_email,
+        nr: 2,
+        full_name: student_legal_representative_2_full_name
+      }
      end
     hash
   end
@@ -343,6 +357,11 @@ class InternshipAgreement < ApplicationRecord
     end
     kwargs = common_kwargs_for_digest_email(name, **kwargs)
     MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_employer_partial_signature
+    notify_employer_with_digest_email("agreement_to_sign")
+    notify_employer_with_digest_email("agreement_signed_by_another")
   end
 
   def notify_signatures_enabled

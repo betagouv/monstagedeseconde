@@ -485,6 +485,27 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     ENV["SIGNATURE_INFO"] = "false"
   end
 
+  test "GET account_path(section: :identity) as student shows legal representative fields" do
+    student = create(:student)
+    sign_in(student)
+    get account_path(section: "identity")
+    assert_response :success
+    assert_template "users/_edit_identity"
+    assert_select 'input[name="user[legal_representative_email]"]'
+    assert_select 'input[name="user[legal_representative_full_name]"]'
+  end
+
+  test "GET account_path(section: :identity) as student shows legal representative data" do
+    student = create(:student,
+                     legal_representative_email: "parent@example.com",
+                     legal_representative_full_name: "Jean Dupont")
+    sign_in(student)
+    get account_path(section: "identity")
+    assert_response :success
+    assert_select 'input[name="user[legal_representative_email]"][value="parent@example.com"]'
+    assert_select 'input[name="user[legal_representative_full_name]"][value="Jean Dupont"]'
+  end
+
   test "GET account_path(section: :identity) as employer does not show legal representative fields" do
     employer = create(:employer)
     sign_in(employer)
@@ -492,5 +513,82 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'input[name="user[legal_representative_email]"]', false
     assert_select 'input[name="user[legal_representative_full_name]"]', false
+  end
+
+  test "PATCH edit as student syncs legal representative email across agreements" do
+    student = create(
+      :student,
+      legal_representative_full_name: "Parent One",
+      legal_representative_email: "before@example.fr"
+    )
+    sign_in(student)
+
+    agreement_primary_match = create(
+      :weekly_internship_application, :approved, student:
+    ).internship_agreement
+
+    agreement_primary_match.update_columns(
+      student_legal_representative_full_name: "Parent One",
+      student_legal_representative_email: "primary-old@example.fr",
+      student_legal_representative_2_full_name: "Other Parent",
+      student_legal_representative_2_email: "other@example.fr"
+    )
+
+    agreement_secondary_match = create(
+      :weekly_internship_application, :approved, student:
+    ).internship_agreement
+
+    agreement_secondary_match.update_columns(
+      student_legal_representative_full_name: "First Parent",
+      student_legal_representative_email: "first@example.fr",
+      student_legal_representative_2_full_name: "Parent One",
+      student_legal_representative_2_email: "secondary-old@example.fr"
+    )
+
+    agreement_no_match = create(
+      :weekly_internship_application, :approved, student:
+    ).internship_agreement
+
+    agreement_no_match.update_columns(
+      student_legal_representative_full_name: "Unknown Parent",
+      student_legal_representative_email: "unknown@example.fr",
+      student_legal_representative_2_full_name: nil,
+      student_legal_representative_2_email: nil
+    )
+
+    agreement_signed = create(
+      :weekly_internship_application, :approved, student:
+    ).internship_agreement
+
+    agreement_signed.update_columns(
+      student_legal_representative_full_name: "Parent One",
+      student_legal_representative_email: "signed-old@example.fr"
+    )
+    create(:signature, :student_legal_representative,
+          internship_agreement: agreement_signed)
+
+    # Les callbacks update_student_profile ont écrasé legal_representative_full_name
+    # avec des valeurs aléatoires de factory — on le rétablit avant le PATCH
+    student.update_column(:legal_representative_full_name, "Parent One")
+
+    patch account_path, params: {
+      user: { legal_representative_email: "new-parent@example.fr" }
+    }
+
+    assert_redirected_to account_path
+
+    assert_equal "new-parent@example.fr",
+                agreement_primary_match.reload.student_legal_representative_email
+
+    assert_equal "new-parent@example.fr",
+                agreement_secondary_match.reload.student_legal_representative_2_email
+
+    assert_equal "Parent One",
+                agreement_no_match.reload.student_legal_representative_full_name
+    assert_equal "new-parent@example.fr",
+                agreement_no_match.student_legal_representative_email
+
+    assert_equal "signed-old@example.fr",
+                agreement_signed.reload.student_legal_representative_email
   end
 end

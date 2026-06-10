@@ -37,7 +37,7 @@
                 .text-muted.small = current_user.email
               li
                 = link_to 'Favoris', favorites_path, class: 'dropdown-item d-flex align-items-center'
-              li.no-border-bottom
+              li
                 = link_to 'Mon profil', account_path, class: 'dropdown-item d-flex align-items-center'
               li.text-center.fr-px-2w.fr-mt-2w
                 = link_to 'Se déconnecter', destroy_user_session_path, method: :delete, class: 'fr-btn fr-btn--tertiary btn-sml dropdown-item d-flex align-items-center fr-icon-logout-box-r-line'

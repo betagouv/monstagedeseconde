@@ -56,6 +56,30 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     end
   end
 
+  test "cancel_by_student_confirmation creates a high-urgency mail action item when employer is aware of the application" do
+    internship_application = create(:weekly_internship_application, :read_by_employer)
+    student = internship_application.student
+
+    assert_difference -> {
+      internship_application.mail_action_items.where(action_name: "cancel_by_student_confirmation").count
+    }, 1 do
+      internship_application.cancel_by_student_confirmation!(student)
+    end
+
+    item = internship_application.mail_action_items.find_by!(action_name: "cancel_by_student_confirmation")
+    assert_equal "high", item.urgency_level
+    assert_nil item.resolved_at
+  end
+
+  test "cancel_by_student_confirmation does not create a mail action item when employer was never aware of the application" do
+    internship_application = create(:weekly_internship_application, :submitted)
+    student = internship_application.student
+
+    assert_no_difference -> { MailActionItem.where(action_name: "cancel_by_student_confirmation").count } do
+      internship_application.cancel_by_student_confirmation!(student)
+    end
+  end
+
   test "transition from submited to validated_by_employer updates its flag" do
     internship_application = create(:weekly_internship_application, :submitted)
 

@@ -244,6 +244,60 @@ module Services
         assert_equal [ item.id ],
                      MailActionItem.where(recipient: employer, deliveries_count: 1).pluck(:id)
       end
+
+      test ".perform_for_medium_level notifie l'employeur quand l'élève est le premier à signer (F4)" do
+        internship_agreement = create(:mono_internship_agreement, :validated,
+                                      skip_notifications_when_system_creation: false)
+        employer = internship_agreement.employer
+        MailActionItem.where(recipient: employer).delete_all
+
+        create(:signature, :student, internship_agreement: internship_agreement,
+               user_id: internship_agreement.student.id)
+        internship_agreement.sign!
+
+        to_sign_item = internship_agreement.mail_action_items.find_by(action_name: "agreement_to_sign")
+        signed_by_another_item = internship_agreement.mail_action_items.find_by(action_name: "agreement_signed_by_another")
+
+        assert to_sign_item.present?, "precondition: agreement_to_sign doit exister après sign!"
+        assert signed_by_another_item.present?, "precondition: agreement_signed_by_another doit exister après sign!"
+
+        Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
+
+        assert_equal 1, to_sign_item.reload.deliveries_count,
+                     "agreement_to_sign doit être envoyé dans le digest medium"
+      end
+
+      test ".perform_for_medium_level does not re-send nor re-count an item already delivered to its max at a lower level" do
+        employer = create(:employer)
+
+        low_item = MailActionItem.create!(
+          recipient: employer,
+          action_name: "internship_offer_unpublished",
+          action_type: :pending_internship_offer,
+          urgency_level: :low,
+          stale_at: 2.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 1,
+          max_deliveries_count: 1
+        )
+
+        medium_item = MailActionItem.create!(
+          recipient: employer,
+          action_name: "new_internship_application",
+          action_type: :pending_internship_application,
+          urgency_level: :medium,
+          stale_at: 2.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 2
+        )
+
+        Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
+
+        assert_equal 1, low_item.reload.deliveries_count,
+                     "an item already delivered to its max must not be re-sent nor re-counted"
+        assert_equal 1, medium_item.reload.deliveries_count
+      end
     end
   end
 end

@@ -353,8 +353,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_student,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
-                    # in order not to loose history
-                    # mail_action_items.destroy_all if has_ever_been?(%w[read_by_employer])
+                    mail_action_items.where(action_name: "canceled_internship_application_by_student").destroy_all
                     notify_employer_with_digest_email("canceled_internship_application_by_student")
                     internship_agreement&.destroy
                     record_state_change user

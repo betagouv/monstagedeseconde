@@ -85,17 +85,16 @@ class MailActionItem < ApplicationRecord
       field :action_name
       field :action_type
       field :urgency_level
-      field :stale_at
       field :resolved_at
+      field :stale_at
+      field :internship_application
+      field :internship_agreement
       field :deliveries_ratio, :string do
         formatted_value { "#{bindings[:object].deliveries_count} / #{bindings[:object].max_deliveries_count}" }
         label "Envois"
-      end
       # make a link to internship_application or internship_agreement if present
-      field :internship_application
-      field :internship_agreement
+      field :last_notified_at
       field :created_at
-      field :updated_at
     end
 
     show do
@@ -113,7 +112,6 @@ class MailActionItem < ApplicationRecord
       field :internship_application
       field :internship_agreement_id
       field :created_at
-      field :updated_at
     end
 
     edit do
