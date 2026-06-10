@@ -87,7 +87,7 @@ class RebuildReviewJob < ApplicationJob
       broadcast_header("Création des données")
       creation_steps
 
-      broadcast_header("✅ THAT'S ALL FOLKS")
+      broadcast_header("✅ OPERATION ACHEVÉE !")
     end
   rescue StandardError => e
     broadcast_error("🚨 Une erreur est survenue : #{e.message}")
@@ -100,7 +100,12 @@ class RebuildReviewJob < ApplicationJob
     # BoardingHouse themselves are not deleted, just like schools are not neither.
 
     broadcast_info(:mail_action_item_removal)
-    MailActionItem.delete_all if defined?(MailActionItem)
+    # TODO simplify when MailActionItem is released in production, by just doing MailActionItem.delete_all
+    if defined?(MailActionItem)
+      MailActionItem.delete_all
+    elsif ActiveRecord::Base.connection.table_exists?(:mail_action_items)
+      ActiveRecord::Base.connection.execute("delete from mail_action_items;")
+    end
 
     broadcast_info(:invitation_removal)
     Invitation.where.not(sent_at: nil).delete_all
