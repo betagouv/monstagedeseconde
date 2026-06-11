@@ -44,7 +44,7 @@ module Users
       term = "%#{query.strip}%"
       joins("LEFT JOIN schools ON schools.id = users.school_id")
         .where(
-          "users.first_name ILIKE :term OR users.last_name ILIKE :term " \
+          "unaccent(users.first_name) ILIKE unaccent(:term) OR unaccent(users.last_name) ILIKE unaccent(:term) " \
           "OR users.email ILIKE :term OR schools.code_uai ILIKE :term",
           term: term
         )

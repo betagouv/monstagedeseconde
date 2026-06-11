@@ -33,6 +33,18 @@ module Users
       assert_includes Users::SchoolManagement.search_by_query("DUPONT"), @sm
     end
 
+    test "search_by_query is accent-insensitive" do
+      sm = create(:school_manager,
+                  first_name: "François",
+                  last_name:  "Garçon",
+                  school:     @school)
+
+      assert_includes Users::SchoolManagement.search_by_query("Francois"), sm
+      assert_includes Users::SchoolManagement.search_by_query("Garcon"), sm
+      assert_includes Users::SchoolManagement.search_by_query("François"), sm
+      assert_includes Users::SchoolManagement.search_by_query("Garçon"), sm
+    end
+
     test "search_by_query returns nothing on non-matching query" do
       assert_empty Users::SchoolManagement.search_by_query("zzzmatch999")
     end
