@@ -791,10 +791,13 @@ class InternshipApplication < ApplicationRecord
   end
 
   def no_other_approved_application?
-    others = student.internship_applications.approved.where.not(id: id)
-    return others.empty? unless student.seconde_gt?
+    # Lock the student row to prevent concurrent approvals from bypassing this check
+    student.with_lock do
+      others = student.internship_applications.approved.where.not(id: id)
+      return others.empty? unless student.seconde_gt?
 
-    others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+      others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+    end
   end
 
   def weekly_conflict_with?(other_offer)

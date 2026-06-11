@@ -436,11 +436,13 @@ class InternshipOffer < ApplicationRecord
   end
 
   def seconde_school_track_week_1?
-    weeks & SchoolTrack::Seconde.both_weeks == [ SchoolTrack::Seconde.first_week ]
+    week_ids = weeks.map(&:id)
+    week_ids.include?(SchoolTrack::Seconde.first_week.id) && !week_ids.include?(SchoolTrack::Seconde.second_week.id)
   end
 
   def seconde_school_track_week_2?
-    weeks & SchoolTrack::Seconde.both_weeks == [ SchoolTrack::Seconde.second_week ]
+    week_ids = weeks.map(&:id)
+    week_ids.include?(SchoolTrack::Seconde.second_week.id) && !week_ids.include?(SchoolTrack::Seconde.first_week.id)
   end
 
   def fits_for_seconde?
