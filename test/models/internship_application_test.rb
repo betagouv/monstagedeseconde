@@ -762,6 +762,41 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     end
   end
 
+  test "concurrent approvals on conflicting weekly offers cannot both succeed" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: "lycee")
+      student = create(:student, :seconde, school:)
+      offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      offer_week_1_bis = create(:weekly_internship_offer_2nde, :week_1)
+      application_1 = create(:weekly_internship_application, :validated_by_employer,
+                             student:, internship_offer: offer_week_1)
+      application_2 = create(:weekly_internship_application, :validated_by_employer,
+                             student:, internship_offer: offer_week_1_bis)
+
+      results = []
+      ready = Concurrent::CountDownLatch.new(2)
+      threads = [ application_1, application_2 ].map do |application|
+        Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection do
+            ready.count_down
+            ready.wait
+            results << begin
+              application.approve!
+              :approved
+            rescue AASM::InvalidTransition
+              :rejected
+            end
+          end
+        end
+      end
+      threads.each(&:join)
+
+      assert_equal [ :approved, :rejected ].sort, results.sort
+      approved_count = [ application_1, application_2 ].count { |a| a.reload.aasm_state == "approved" }
+      assert_equal 1, approved_count
+    end
+  end
+
   test "#is_re_approvable? is true for an expired application with no blocker" do
     application = create(:weekly_internship_application, :expired)
 
