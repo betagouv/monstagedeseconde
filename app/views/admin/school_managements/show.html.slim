@@ -28,23 +28,18 @@ p.fr-text--sm.fr-mb-4w = @school_management.email
     h2.fr-h5 Associer un établissement
 
     p.fr-text--sm.fr-mb-2w
-      | Nom, commune ou code UAI (min. 3 caractères).
+      | Nom, commune ou code UAI 
 
     = form_with url: admin_school_management_path(@school_management),
                 method: :get,
-                data: { controller: "admin-search",
-                        turbo_frame: "school-results",
-                        admin_search_min_length_value: 3,
-                        admin_search_debounce_value: 250 } do |f|
+                data: { turbo_frame: "school-results" } do |f|
       .fr-search-bar.fr-mb-3w role="search"
         = f.label :school_query, "Rechercher un établissement", class: "fr-label fr-sr-only"
         = f.text_field :school_query,
                        value: params[:school_query],
                        class: "fr-input",
                        placeholder: "Nom, commune ou code UAI…",
-                       autocomplete: "off",
-                       data: { admin_search_target: "input",
-                               action: "input->admin-search#search" }
+                       autocomplete: "off"
         button.fr-btn.fr-btn--icon-only type="submit" title="Rechercher" aria-label="Rechercher"
           span.fr-icon-search-line aria-hidden="true"
 
