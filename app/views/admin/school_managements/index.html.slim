@@ -7,10 +7,7 @@ p.fr-text--sm.fr-mb-3w
 
 = form_with url: admin_school_managements_path,
             method: :get,
-            data: { controller: "admin-search",
-                    turbo_frame: "school-management-results",
-                    admin_search_min_length_value: 3,
-                    admin_search_debounce_value: 250 } do |f|
+            data: { turbo_frame: "school-management-results" } do |f|
   .fr-search-bar.fr-mb-4w role="search"
     = f.label :query, "Rechercher un personnel pédagogique", class: "fr-label fr-sr-only"
     = f.text_field :query,
@@ -18,10 +15,8 @@ p.fr-text--sm.fr-mb-3w
                    class: "fr-input",
                    placeholder: "Nom, prénom, email ou code UAI…",
                    autocomplete: "off",
-                   data: { admin_search_target: "input",
-                           action: "input->admin-search#search" }
-    button.fr-btn.fr-btn--icon-only type="submit" title="Rechercher" aria-label="Rechercher"
-      span.fr-icon-search-line aria-hidden="true"
+                   type: "search"
+    = f.button "Rechercher", type: "submit", class: "fr-btn fr-icon-search-line"
 
 = turbo_frame_tag "school-management-results" do
   = render "admin/school_managements/search_results",
