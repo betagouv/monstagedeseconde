@@ -34,10 +34,8 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
 4. **Déclencher** le digest medium.
 5. **Employeur** : vérifier la réception du mail "candidature annulée" dans la
    boîte mail.
-6. Vérifier que le mail "nouvelle candidature" envoyé en étape 1 est toujours
-   présent dans l'historique (pas de disparition liée à l'annulation).
-7. **Déclencher** le digest medium.
-8. Aucun email n'est envoyé, Info Emails est vide
+6. **Déclencher** le digest medium.
+7. Aucun email n'est envoyé, Info Emails est vide
 
 ## Scénario C — Candidature jamais lue puis annulée par l'élève
 
