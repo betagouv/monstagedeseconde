@@ -95,8 +95,7 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
 2. **Déclencher** le digest medium.
 3. **Employeur** : vérifier que le mail contient bien la section "Conventions de
    stage à signer" avec le nom de l'élève et un lien "Voir la convention".
-4. **Employeur** : vérifier que le mail contient aussi la section "Conventions
-   signées par un autre élève" avec le nom de l'élève et le titre de l'offre.
+
 
 ## Scénario G — Absence de notification
 
