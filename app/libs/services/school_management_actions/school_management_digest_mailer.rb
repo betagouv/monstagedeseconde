@@ -1,5 +1,5 @@
-module Services::EmployerActions
-  class EmployerDigestMailer
+module Services::SchoolManagementActions
+  class SchoolManagementDigestMailer
     MailActionItem.urgency_levels.each_key do |urgency_level|
       # define "perform_for_low_level", "perform_for_medium_level", "perform_for_high_level" and "perform_for_critical_level" class methods
       define_singleton_method :"perform_for_#{urgency_level}_level" do |user_id:|
@@ -15,12 +15,11 @@ module Services::EmployerActions
           return
         end
 
-        mail = EmployerActionsMailer.employer_digest_email(
+        SchoolManagementActionsMailer.school_management_digest_email(
           user_id:,
           actions:,
           urgency_levels: urgency_levels
-        )
-        Rails.env.review? && mail.deliver_now || mail.deliver_later
+        ).deliver_later
         manage_actions_post_delivery(actions)
       end
     end

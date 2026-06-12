@@ -27,6 +27,17 @@ class MailActionItemTest < ActiveSupport::TestCase
     end
   end
 
+  test ".create_by_name! is idempotent: calling twice with same key returns the same record" do
+    agreement = create(:internship_agreement)
+    first  = MailActionItem.create_by_name!("agreement_to_sign", recipient: @employer, internship_agreement: agreement)
+    second = MailActionItem.create_by_name!("agreement_to_sign", recipient: @employer, internship_agreement: agreement)
+    assert_equal first.id, second.id
+    assert_equal 1, MailActionItem.where(action_name: "agreement_to_sign",
+                                         recipient_type: @employer.class.name,
+                                         recipient_id: @employer.id,
+                                         internship_agreement_id: agreement.id).count
+  end
+
   test ".create_by_name! kwargs override default stale_at" do
     custom_stale_at = 14.days.from_now
     item = MailActionItem.create_by_name!(

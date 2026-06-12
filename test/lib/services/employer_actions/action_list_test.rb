@@ -1,7 +1,7 @@
 require "test_helper"
 
 module Services
-  module EmployerActions
+  module CommonActions
     class ActionListTest < ActiveSupport::TestCase
       test "#by_levels groups only pending not overdue actions by urgency" do
         employer = create(:employer)
@@ -54,7 +54,7 @@ module Services
           max_deliveries_count: 1
         )
 
-        list = Services::EmployerActions::ActionList.new(user_id: employer.id)
+        list = Services::CommonActions::ActionList.new(user_id: employer.id)
 
         by_levels = list.by_levels
 
@@ -66,7 +66,7 @@ module Services
 
       test "#by_urgency_level returns empty hash when no actions exist for levels" do
         employer = create(:employer)
-        list = Services::EmployerActions::ActionList.new(user_id: employer.id)
+        list = Services::CommonActions::ActionList.new(user_id: employer.id)
 
         assert_equal({}, list.by_urgency_level(urgency_levels: [ "critical" ]))
       end
@@ -98,7 +98,7 @@ module Services
           max_deliveries_count: 1
         )
 
-        list = Services::EmployerActions::ActionList.new(user_id: employer.id)
+        list = Services::CommonActions::ActionList.new(user_id: employer.id)
 
         by_urgency = list.by_urgency_level(urgency_levels: [ "medium", "low" ])
 

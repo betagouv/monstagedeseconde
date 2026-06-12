@@ -1,7 +1,7 @@
 require "test_helper"
 
 module Services
-  module EmployerActions
+  module CommonActions
     class DigestBuilderTest < ActiveSupport::TestCase
       test ".build_digest_by_user_and_urgency_level returns grouped actions" do
         employer = create(:employer)
@@ -18,7 +18,7 @@ module Services
           max_deliveries_count: 1
         )
 
-        digest = Services::EmployerActions::DigestBuilder
+        digest = Services::CommonActions::DigestBuilder
                  .build_digest_by_user_and_urgency_level(
                    user_id: employer.id,
                    urgency_levels: [ "medium" ]
@@ -30,7 +30,7 @@ module Services
       test ".build_digest_by_user_and_urgency_level returns empty hash" do
         employer = create(:employer)
 
-        digest = Services::EmployerActions::DigestBuilder
+        digest = Services::CommonActions::DigestBuilder
                  .build_digest_by_user_and_urgency_level(
                    user_id: employer.id,
                    urgency_levels: [ "high" ]

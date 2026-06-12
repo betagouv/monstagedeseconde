@@ -4414,6 +4414,13 @@ CREATE INDEX index_mail_action_items_on_recipient_type_and_recipient_id ON publi
 
 
 --
+-- Name: index_mail_action_items_uniqueness; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_mail_action_items_uniqueness ON public.mail_action_items USING btree (action_name, recipient_type, recipient_id, internship_agreement_id, internship_application_id);
+
+
+--
 -- Name: index_ministry_groups_on_email_whitelist_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5606,6 +5613,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260603000000'),
 ('20260526090153'),
 ('20260520214758'),
 ('20260515100000'),
@@ -6118,4 +6126,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

@@ -32,7 +32,6 @@ class MailActionItem < ApplicationRecord
   scope :with_urgency_level, ->(level) { where(urgency_level: level) }
   scope :with_urgency_levels, ->(levels) { where(urgency_level: levels) }
   scope :for_recipient, ->(recipient) { where(recipient: recipient) }
-  scope :for_users, -> { where(recipient_type: "User") }
   scope :for_user, ->(user_id) { where(recipient_id: user_id) }
   scope :for_employers, -> { where(recipient_type: "Users::Employer") }
   scope :for_employer, ->(employer_id) { where(recipient_type: "Users::Employer", recipient_id: employer_id) }
@@ -52,15 +51,19 @@ class MailActionItem < ApplicationRecord
                       internship_application internship_application_id
                       internship_agreement internship_agreement_id stale_at]
     attrs.merge!(kwargs.slice(*allowed_keys))
-    record = new(action_name: name, **attrs)
+
+    recipient = attrs.delete(:recipient) || kwargs[:recipient]
+    lookup = { action_name: name,
+               recipient_type: recipient&.class&.name,
+               recipient_id: recipient&.id,
+               internship_agreement_id: attrs[:internship_agreement_id],
+               internship_application_id: attrs[:internship_application_id] }.compact
+    record = find_or_initialize_by(lookup)
+    record.assign_attributes(attrs.merge(action_name: name))
     record.save!
     record
   end
 
-  # class methods
-  def self.involved_user_ids
-    where(recipient_type: "User").pluck(:recipient_id).uniq
-  end
   # instance methods
 
   def presenter
@@ -77,12 +80,16 @@ class MailActionItem < ApplicationRecord
       field :action_name
       field :action_type
       field :urgency_level
-      field :stale_at
       field :resolved_at
-      field :deliveries_count
-      field :max_deliveries_count
-      field :last_notified_at
       field :stale_at
+      field :internship_application
+      field :internship_agreement
+      field :deliveries_ratio, :string do
+        formatted_value { "#{bindings[:object].deliveries_count} / #{bindings[:object].max_deliveries_count}" }
+        label "Envois"
+      end
+      # make a link to internship_application or internship_agreement if present
+      field :last_notified_at
       field :created_at
     end
 
@@ -94,8 +101,12 @@ class MailActionItem < ApplicationRecord
       field :urgency_level
       field :stale_at
       field :resolved_at
-      field :deliveries_count
-      field :max_deliveries_count
+      field :deliveries_ratio, :string do
+        formatted_value { "#{bindings[:object].deliveries_count} / #{bindings[:object].max_deliveries_count}" }
+        label "Envois"
+      end
+      field :internship_application
+      field :internship_agreement_id
       field :created_at
     end
 
