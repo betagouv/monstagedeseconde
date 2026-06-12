@@ -364,6 +364,38 @@ module Dashboard
       end
     end
 
+    test "employer completes agreement for a school without management representative (digest scenario F)" do
+      student = create(:student, school: create(:school))
+      internship_application = create(:weekly_internship_application, student:)
+      internship_agreement = create(:mono_internship_agreement,
+                                     internship_application:,
+                                     aasm_state: :started_by_employer)
+      employer = internship_agreement.employer
+      school = internship_agreement.student.school
+      refute school.management_representative.present?
+
+      sign_in(employer)
+      visit dashboard_internship_agreements_path
+
+      find("a.button-component-cta-button", text: "Valider ma convention").click
+      find("input[name='internship_agreements_mono_internship_agreement[employer_name]']").set("Corporation 42")
+      find("input[name='internship_agreements_mono_internship_agreement[organisation_representative_role]']").set("CEO")
+      find("input[name='internship_agreements_mono_internship_agreement[entreprise_address]']").set("1 rue Jules Charpentier 37000 Tours")
+      find("input[name='internship_agreements_mono_internship_agreement[internship_address]']").set("1 rue Jules Charpentier 37000 Tours")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_weekly_hours_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_weekly_hours_end")
+      fill_in("Pause déjeuner", with: "un repas à la cantine d'entreprise")
+      click_button("Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention").click
+      find("span#alert-text", text: "La convention a été envoyée au chef d'établissement.")
+
+      assert internship_agreement.reload.completed_by_employer?
+      refute MailActionItem.exists?(
+        action_name: "internship_agreement_completed_by_employer",
+        internship_agreement_id: internship_agreement.id
+      )
+    end
+
     test 'school_manager multi_agreements, multiple signs and everything is ok' do
       internship_agreement = create(:multi_internship_agreement, :validated)
       school_manager = internship_agreement.school_manager
