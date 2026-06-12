@@ -158,7 +158,9 @@ class InternshipAgreement < ApplicationRecord
                   after: proc { |*_args|
                            notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
                            notify_employer_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
-                           notify_school_management_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
+                           unless skip_notifications_when_system_creation || school_management_representative_signed_last?
+                             notify_school_management_with_digest_email("agreement_signed_by_all")
+                           end
                          }
     end
   end
@@ -284,6 +286,14 @@ class InternshipAgreement < ApplicationRecord
     return school.management_representative if school.management_representative
 
     nil
+  end
+
+  def school_management_representative_signed_last?
+    last_signature = signatures.last
+    representative = school_management_representative
+
+    last_signature.present? && representative.present? &&
+      last_signature.signator == representative
   end
 
   def notify_others_signatures_started

@@ -412,6 +412,10 @@ fr:
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
             signatures_started: Partiellement signée.
+            signatures_started: 
+              multi_employer: En cours de signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
       internship_agreements/multi_internship_agreement:
         status:

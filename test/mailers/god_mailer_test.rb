@@ -95,6 +95,23 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal internship_agreement, mail_action_item.internship_agreement
   end
 
+  test "notify_others_signatures_finished_email does not notify school_manager when they signed last" do
+    internship_agreement = create(:mono_internship_agreement)
+    create(:signature, :employer, internship_agreement: internship_agreement)
+    create(:signature, :student, internship_agreement: internship_agreement)
+    create(:signature, :school_manager, internship_agreement: internship_agreement)
+
+    assert_no_difference "MailActionItem.where(action_name: 'agreement_signed_by_all').count" do
+      email = GodMailer.notify_others_signatures_finished_email(internship_agreement: internship_agreement)
+      email.deliver_now
+    end
+
+    assert_not_includes(
+      ActionMailer::Base.deliveries.last.to,
+      internship_agreement.school_management_representative.email
+    )
+  end
+
   test "notify_signatures_enabled launches two emails" do
     skip "test will be ok when getting rid of Flipper :student_signature"
     internship_agreement = create(:mono_internship_agreement, :started_by_school_manager)
@@ -174,6 +191,49 @@ class GodMailerTest < ActionMailer::TestCase
     mail_action_item = MailActionItem.last
     assert_equal "signatures_enabled", mail_action_item.action_name
     assert_equal internship_agreement.school_management_representative, mail_action_item.recipient
+    assert_equal internship_agreement, mail_action_item.internship_agreement
+  end
+
+  test "notify_signatures_can_start_email creates a MailActionItem with stale_at set so it is picked up by the digest" do
+    internship_agreement = create(:mono_internship_agreement)
+
+    GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
+
+    mail_action_item = MailActionItem.last
+    assert_equal "signatures_enabled", mail_action_item.action_name
+    assert_not_nil mail_action_item.stale_at
+    assert_includes MailActionItem.not_overdue, mail_action_item
+  end
+
+  test "notify_signatures_can_start_email does not notify the student legal representatives" do
+    internship_agreement = create(:mono_internship_agreement)
+
+    email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
+    email.deliver_now
+
+    assert_not_includes email.to, internship_agreement.student_legal_representative_email
+    assert_not_includes email.to, internship_agreement.student_legal_representative_2_email
+  end
+
+  test "notify_signatures_can_start_email excludes the cpe representative when the school has no school_manager" do
+    internship_agreement = create(:mono_internship_agreement)
+    school = internship_agreement.internship_application.student.school
+    school.users.where(type: "Users::SchoolManagement", role: "school_manager").destroy_all
+    cpe = create(:cpe, school: school)
+
+    assert_equal cpe, internship_agreement.school_management_representative
+
+    assert_difference "MailActionItem.count", 1 do
+      email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
+      email.deliver_now
+    end
+
+    assert_emails 1
+    assert_not_includes ActionMailer::Base.deliveries.last.to, cpe.email
+
+    mail_action_item = MailActionItem.last
+    assert_equal "signatures_enabled", mail_action_item.action_name
+    assert_equal cpe, mail_action_item.recipient
     assert_equal internship_agreement, mail_action_item.internship_agreement
   end
 end

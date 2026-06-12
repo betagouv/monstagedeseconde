@@ -32,7 +32,6 @@ class MailActionItem < ApplicationRecord
   scope :with_urgency_level, ->(level) { where(urgency_level: level) }
   scope :with_urgency_levels, ->(levels) { where(urgency_level: levels) }
   scope :for_recipient, ->(recipient) { where(recipient: recipient) }
-  scope :for_users, -> { where(recipient_type: "User") }
   scope :for_user, ->(user_id) { where(recipient_id: user_id) }
   scope :for_employers, -> { where(recipient_type: "Users::Employer") }
   scope :for_employer, ->(employer_id) { where(recipient_type: "Users::Employer", recipient_id: employer_id) }
@@ -65,10 +64,6 @@ class MailActionItem < ApplicationRecord
     record
   end
 
-  # class methods
-  def self.involved_user_ids
-    where(recipient_type: "User").pluck(:recipient_id).uniq
-  end
   # instance methods
 
   def presenter

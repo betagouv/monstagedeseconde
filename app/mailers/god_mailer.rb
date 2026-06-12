@@ -43,26 +43,6 @@ class GodMailer < ApplicationMailer
     )
   end
 
-  def weekly_expired_applications_email
-    internship_applications = InternshipApplication.expired.where("expired_at > :date", date: 15.days.ago)
-
-    @human_date = I18n.l Date.today, format: "%d %B %Y"
-
-    attachment_name = "export_candidatures_expirees_depuis_15_jours.xlsx"
-    xlsx = render_to_string layout: false,
-                            handlers: [ :axlsx ],
-                            formats: [ :xlsx ],
-                            template: "reporting/internship_applications/expired",
-                            locals: { internship_applications: internship_applications,
-                                      presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
-    attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
-
-    mail(
-      to: ENV["TEAM_EMAIL"],
-      subject: "Monitoring MS2GT : Candidatures expirées depuis 15 jours au #{@human_date}"
-    )
-  end
-
   def employer_global_applications_reminder(employers_count)
     @human_date = I18n.l Date.today, format: "%d %B %Y"
     @employers_count = employers_count
@@ -158,7 +138,7 @@ class GodMailer < ApplicationMailer
 
   def notify_others_signatures_finished_email(internship_agreement:)
     @internship_agreement  = internship_agreement
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = internship_agreement.school_management_representative
     internship_application = internship_agreement.internship_application
     student                = internship_application.student
     @internship_offer      = internship_application.internship_offer
@@ -172,12 +152,17 @@ class GodMailer < ApplicationMailer
     ).html_safe
 
     email_recipients = recipients_email - [ @internship_offer.employer.email ]
-    email_recipients = handle_school_manager_mail_action(
-      internship_agreement: internship_agreement,
-      action_name: "agreement_signed_by_all",
-      email_recipients: email_recipients,
-      school_manager: @school_manager
-    )
+
+    unless internship_agreement.school_management_representative_signed_last?
+      handle_school_manager_mail_action(
+        internship_agreement: internship_agreement,
+        action_name: "agreement_signed_by_all",
+        email_recipients: email_recipients,
+        school_manager: @school_manager
+      )
+    end
+
+    email_recipients -= [ @school_manager.email ] if @school_manager.present?
 
     send_email(
       to: email_recipients,
@@ -192,12 +177,13 @@ class GodMailer < ApplicationMailer
     # employer is notified by digest email when the agreement is ready,
     # so we exclude them from this email to avoid sending two emails at the same time
     recipients_email       = recipients_email_for_signature(
-      internship_agreement: internship_agreement
+      internship_agreement: internship_agreement,
+      with_legal_representatives: false
     ) - [ employer.email ]
     student                = internship_application.student
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = internship_agreement.school_management_representative
     @url = dashboard_internship_agreements_url(
       uuid: internship_agreement.uuid
     ).html_safe
@@ -283,10 +269,12 @@ class GodMailer < ApplicationMailer
                               Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE
 
     if school_roles_not_signed.any? && school_manager.present?
+      stale_at = internship_agreement.internship_application.weeks&.order(:year, :number)&.last&.friday || 30.days.from_now
       MailActionItem.create_by_name!(
         action_name,
         recipient: school_manager,
-        internship_agreement: internship_agreement
+        internship_agreement: internship_agreement,
+        stale_at: stale_at
       )
       return email_recipients - [ school_manager.email ]
     end
