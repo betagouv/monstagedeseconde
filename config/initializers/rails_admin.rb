@@ -153,6 +153,7 @@ RailsAdmin.config do |config|
                               Users::God]
 
   config.navigation_static_links = {
+    'Gestion personnels pédagogiques' => '/admin/school_managements',
     'Ajouter un établissement' => '/ecoles/nouveau',
     'Supprimer un étudiant, un employeur' => '/utilisateurs/anonymiseur',
     'Tranformer un compte' => '/utilisateurs/transform_input',
