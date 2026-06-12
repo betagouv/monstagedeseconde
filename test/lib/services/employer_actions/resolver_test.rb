@@ -445,6 +445,50 @@ module Services
       # agreement_signed_by_all — new behaviour
       # ---------------------------------------------------------------------------
 
+      # ---------------------------------------------------------------------------
+      # agreement_resolve must not leak across recipients (B6 regression)
+      # ---------------------------------------------------------------------------
+
+      test ".call resolving an employer's agreement item does not resolve a school manager's item for the same agreement" do
+        internship_agreement = create(:mono_internship_agreement, :signatures_started)
+        employer = internship_agreement.employer
+        school_manager = internship_agreement.school_management_representative
+
+        refute internship_agreement.draft?,
+               "precondition: la convention ne doit plus être à l'état draft"
+
+        employer_item = MailActionItem.create!(
+          recipient: employer,
+          action_name: "new_agreement_to_fill_in",
+          action_type: :pending_internship_agreement,
+          urgency_level: :medium,
+          stale_at: 30.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 1,
+          internship_agreement: internship_agreement
+        )
+
+        school_manager_item = MailActionItem.create!(
+          recipient: school_manager,
+          action_name: "signatures_enabled",
+          action_type: :pending_internship_agreement,
+          urgency_level: :medium,
+          stale_at: 30.days.from_now,
+          resolved_at: nil,
+          deliveries_count: 0,
+          max_deliveries_count: 2,
+          internship_agreement: internship_agreement
+        )
+
+        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+        assert_raises(ActiveRecord::RecordNotFound) { employer_item.reload }
+        assert_nothing_raised { school_manager_item.reload }
+        assert_nil school_manager_item.reload.resolved_at,
+                   "l'item du chef d'établissement ne doit pas être résolu par le resolver employeur"
+      end
+
       test ".call does not resolve agreement_signed_by_all items whose agreement is nil" do
         employer = create(:employer)
 

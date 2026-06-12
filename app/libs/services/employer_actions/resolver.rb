@@ -71,7 +71,7 @@ module Services::EmployerActions
         actions.each do |mail_action_item|
           application = mail_action_item&.internship_application
           next if application&.restored? && !application&.has_ever_been?(%w[read_by_employer])
-          application_resolve(application) unless application&.submitted?
+          application_resolve(application, user_id:) unless application&.submitted?
         end
       end
 
@@ -84,7 +84,7 @@ module Services::EmployerActions
       )
       actions.present? && actions.each do |item|
         unless item&.internship_application&.canceled_by_student_confirmation?
-          application_resolve(item.internship_application)
+          application_resolve(item.internship_application, user_id:)
         end
       end
 
@@ -101,7 +101,7 @@ module Services::EmployerActions
       new_agreement_to_fill_in_items.present? && new_agreement_to_fill_in_items.each do |item|
         do_not_resolve_conditions = item&.internship_agreement&.kept? &&
                                     item.internship_agreement&.draft?
-        agreement_resolve(item.internship_agreement) unless do_not_resolve_conditions
+        agreement_resolve(item.internship_agreement, user_id:) unless do_not_resolve_conditions
       end
 
       # ------------------------
@@ -114,7 +114,7 @@ module Services::EmployerActions
       agreement_signed_by_all_items.present? && agreement_signed_by_all_items.each do |item|
         if item&.internship_agreement&.signed_by_employer?
           item.update_columns(resolved_at: Time.current)
-          agreement_resolve(item.internship_agreement)
+          agreement_resolve(item.internship_agreement, user_id:)
         end
       end
 
@@ -169,24 +169,26 @@ module Services::EmployerActions
       agreement_signed_by_another
     ].freeze
 
-    def self.application_resolve(application)
+    def self.application_resolve(application, user_id:)
       return unless application.present? && application.persisted?
 
-      MailActionItem.where(
-        action_type: :pending_internship_application,
-        internship_application_id: application.id,
-      ).where.not(action_name: SELF_RESOLVING_ACTION_NAMES).each do |item|
+      MailActionItem.for_user(user_id)
+                    .where(
+                      action_type: :pending_internship_application,
+                      internship_application_id: application.id,
+                    ).where.not(action_name: SELF_RESOLVING_ACTION_NAMES).each do |item|
         item.update_columns(resolved_at: Time.current)
       end
     end
 
-    def self.agreement_resolve(agreement)
+    def self.agreement_resolve(agreement, user_id:)
       return unless agreement.present? && agreement.persisted?
 
-      MailActionItem.where(
-        action_type: :pending_internship_agreement,
-        internship_agreement_id: agreement.id
-      ).where.not(action_name: SELF_RESOLVING_AGREEMENT_ACTION_NAMES).each do |item|
+      MailActionItem.for_user(user_id)
+                    .where(
+                      action_type: :pending_internship_agreement,
+                      internship_agreement_id: agreement.id
+                    ).where.not(action_name: SELF_RESOLVING_AGREEMENT_ACTION_NAMES).each do |item|
         item.update_columns(resolved_at: Time.current)
       end
     end
