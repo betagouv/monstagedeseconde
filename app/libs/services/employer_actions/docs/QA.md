@@ -48,6 +48,7 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
 ## Scénario D — Candidature restaurée après annulation
 
 ### D1. Lue → annulée → restaurée (mail attendu)
+
 1. **Élève** : postuler.
 2. **Employeur** : ouvrir la candidature.
 3. **Élève** : annuler puis restaurer la candidature depuis son espace.
@@ -55,6 +56,7 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
 5. **Employeur** : vérifier la réception du mail de restauration. Il doit y avoir un message de candidature, mais rien sur l'annulation/restauration
 
 ### D2. Jamais lue → annulée → restaurée (pas de mail)
+
 1. **Élève** : postuler.
 (2. **Employeur** : ne jamais ouvrir la candidature.)
 3. **Élève** : annuler puis restaurer la candidature.
@@ -62,12 +64,14 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
 5. **Employeur** : vérifier qu'**aucun** mail de restauration n'est reçu, mais que la candidature est signalée dans le digest
 
 ### D3. Lue → annulée → restaurée → ré-annulée avant le digest
+
 1. Reprendre les étapes du D1 jusqu'à la restauration.
 2. **Élève** : annuler à nouveau la candidature, avant de déclencher le digest.
 3. **Déclencher** le digest medium.
 4. **Employeur** : vérifier qu'**aucun** mail de restauration n'est reçu, mais qu'il y a signalement de l'annulation, mais une seule fois.
 
 ## Scénario E — Confirmation d'annulation par l'élève (urgence haute)
+
 1. **Élève** : postuler, puis engager le flux d'annulation jusqu'à
    confirmation explicite ("confirmer l'annulation").
 2. **Déclencher** le digest high (ou critical selon la temporisation).
@@ -75,6 +79,7 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
    urgent dans son contenu/objet.
 
 ## Scénario F — Cycle de vie d'une convention de stage
+
 1. **Employeur/Élève** : générer une convention de stage à compléter pour la
    candidature acceptée.
 2. **Déclencher** le digest medium, vérifier le mail "convention à compléter".
@@ -89,13 +94,12 @@ Ce document-ci ne décrit que les **actions à réaliser dans l'UI**.
    - L'item `agreement_signed_by_all` créé par la dernière signature est également
      résolu (l'employeur sait qu'il vient de signer : pas besoin de le notifier).
 
-### F2b — Élève signe en premier (cas particulier)
+### F2 — Élève signe en premier (cas particulier)
 
 1. **Élève** : signer la convention avant l'employeur.
 2. **Déclencher** le digest medium.
 3. **Employeur** : vérifier que le mail contient bien la section "Conventions de
    stage à signer" avec le nom de l'élève et un lien "Voir la convention".
-
 
 ## Scénario G — Absence de notification
 
