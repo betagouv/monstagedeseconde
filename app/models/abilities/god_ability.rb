@@ -23,6 +23,7 @@ module Abilities
       can %i[index_and_filter], Reporting::InternshipOffer
       can :manage, InternshipAgreement
       can :manage, MailActionItem
+      can :manage, :digest_mailers
       can %i[ show_modal_info
               switch_user
               read

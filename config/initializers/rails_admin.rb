@@ -161,7 +161,8 @@ RailsAdmin.config do |config|
     "Internats" => "/reporting/internats",
     "Sidekiq" => "/sidekiq",
     "Feature flip" => "/admin/flipper/",
-    "AB Testing" => "/split"
+    "AB Testing" => "/split",
+    "Mails récapitulatifs" => "/digest_mailers/new"
   }
   if ENV.fetch("ENABLE_REVIEW_DATA_RESET", "false") == "true" && !Rails.env.production?
     config.navigation_static_links.merge!(
