@@ -21,8 +21,7 @@ bien le bon comportement côté mail.
   niveau égal ou supérieur au niveau déclenché (ex : "medium" inclut medium,
   high, critical).
 
-## Scénario A — Convention complétée par l'employeur - ok local
-
+## Scénario A — Convention complétée par l'employeur
 1. **Élève** : postuler à l'offre, candidature acceptée par l'employeur.
 2. **Employeur** : remplir/compléter la convention de stage jusqu'à l'état
    "complétée par l'employeur".
@@ -38,8 +37,7 @@ bien le bon comportement côté mail.
    - un lien "Editer la convention" qui mène à la page d'édition de la
      convention.
 
-## Scénario B — Convention en attente de la signature de l'établissement - ok local
-
+## Scénario B — Convention en attente de la signature de l'établissement
 1. Reprendre la convention du scénario A, la compléter entièrement côté
    établissement/employeur jusqu'à activer les signatures
 2. **Déclencher** le digest medium
@@ -66,8 +64,7 @@ bien le bon comportement côté mail.
    - un lien "Signer la convention de stage" menant à la page de la
      convention.
 
-## Scénario C — Convention prête à être signée (signature démarrée par une autre partie) - ok local
-
+## Scénario C — Convention prête à être signée (signature démarrée par une autre partie)
 1. Reprendre une convention dont les signatures sont activées et où il manque
    encore la signature de l'établissement.
 2. Faire signer une première partie (élève ou employeur).
@@ -83,8 +80,7 @@ bien le bon comportement côté mail.
    - un lien "Signer la convention de stage" menant à la page de la
      convention.
 
-## Scénario D — Convention signée par toutes les parties - ok local
-
+## Scénario D — Convention signée par toutes les parties
 1. Reprendre une convention en cours de signature.
 2. Faire signer toutes les parties manquantes, **y compris** la signature de
    l'établissement, jusqu'à ce que la convention passe à l'état "signée par
@@ -100,7 +96,6 @@ bien le bon comportement côté mail.
    - un lien "Voir la convention signée" menant à la convention.
 
 ## Scénario E — Convention déjà signée par l'établissement (pas de doublon)
-
 1. Reprendre le scénario C, mais où la **dernière** signature manquante est
    celle de l'établissement (l'établissement signe en dernier).
 2. **Chef d'établissement** : signer la convention (dernière signature).
@@ -111,9 +106,8 @@ bien le bon comportement côté mail.
    Aucun email n'est envoyé au chef d'établissement.
 
 ## Scénario F — Établissement sans représentant identifié
-
 1. Préparer une convention de stage pour un élève rattaché à un
-   établissement de test **sans** compte `school_manager`/`cpe`/etc. associé.
+   établissement de test **sans** compte pour la totalité du lycée associé.
 2. Faire avancer la convention jusqu'à l'étape "complétée par l'employeur"
    (déclenche normalement `internship_agreement_completed_by_employer`).
 3. **Déclencher** le digest medium.
@@ -137,7 +131,7 @@ bien le bon comportement côté mail.
 - [ ] Tous les mails de digest "chef d'établissement" attendus ont bien été
       reçus, avec le bon contenu (nom de l'élève, employeur, offre, période)
       et les bons liens vers les conventions.
-- [ ] Aucun mail de digest n'est envoyé pour un établissement sans
+- [ ] Aucun mail de digest n'est envoyé pour un établissement 
       représentant identifié (warning loggé à la place).
 - [ ] Les mails directs (`GodMailer`) liés à la signature
       (`notify_others_signatures_started_email`,
