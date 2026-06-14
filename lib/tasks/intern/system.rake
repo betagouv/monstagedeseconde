@@ -128,15 +128,21 @@ namespace :sys do
 
   desc "upload a local production database copy to CleverCloud with a specified filename (should be a dump file)"
   task :upl_filename_to_local_db, [ :filename ] => :environment do |t, args|
+    # use as:
+    # bundle exec rake "sys:upl_filename_to_local_db[.../Téléchargements/review.dump]"
+    puts "filename given : #{args[:filename]}"
     next unless File.exist?(args[:filename])
     puts "ok file exists, dump testing"
     next unless args[:filename].end_with?(".dump")
     puts "ok file is a dump, rails env testing"
     next unless Rails.env.development?
     puts "ok environment is development"
+    system("bin/rails db:environment:set RAILS_ENV=development db:drop db:create")
     PrettyConsole.announce_task "Uploading production database dump" do
-      system("pg_restore -h localhost " \
+      pg_restore_bin = File.exist?("/usr/lib/postgresql/17/bin/pg_restore") ? "/usr/lib/postgresql/17/bin/pg_restore" : "pg_restore"
+      system("#{pg_restore_bin} -h localhost " \
              "-d monstage " \
+             "--clean --if-exists " \
              "--no-owner --no-privileges " \
              "#{args[:filename]}")
     end
