@@ -17,7 +17,7 @@ class ReportingDashboardTest < ApplicationSystemTestCase
   end
 
   test 'Offers deleted are displayed' do
-    travel_to(Date.new(2020, 9, 3)) do
+    travel_to(Date.new(2024, 9, 3)) do
       3.times do
         create(:weekly_internship_offer_2nde,
                zipcode: 60_000,
@@ -27,7 +27,7 @@ class ReportingDashboardTest < ApplicationSystemTestCase
              zipcode: 60_000,
              group: @group1).discard!
       sign_in(@statistician)
-      visit reporting_dashboards_path(department: @department, school_year: 2020)
+      visit reporting_dashboards_path(department: @department, school_year: 2024)
 
       find_link('Tableau de bord').click
     end

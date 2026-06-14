@@ -158,15 +158,18 @@ class GodMailer < ApplicationMailer
     ).html_safe
 
     send_email(
-      to: recipients_email,
+      to: recipients_email - [ @internship_offer.employer.email ], # the employer has already been notified when the last signature was done
       subject: "Une convention de stage est signée par tous"
     )
   end
 
   def notify_signatures_can_start_email(internship_agreement:)
     internship_application = internship_agreement.internship_application
-    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement, with_legal_representatives: false)
     @internship_offer      = internship_application.internship_offer
+    employer               = @internship_offer.employer
+    # employer is notified by digest email when the agreement is ready,
+    # so we exclude them from this email to avoid sending two emails at the same time
+    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement) - [ employer.email ]
     student                = internship_application.student
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer

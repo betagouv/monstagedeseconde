@@ -88,9 +88,39 @@ Pour chaque action testée :
   reçu par l'employeur.
 
 ### 4. Candidature restaurée après annulation
-- Annuler puis restaurer une candidature. Vérifier la création de
-  `restored_internship_application` et son comportement de résolution selon que la
-  candidature a été lue ou non par l'employeur (même logique que le scénario 2/3).
+
+La résolution de `restored_internship_application` dépend de deux conditions
+(voir `Resolver#resolve`) : l'item est marqué résolu (sans envoi de mail) si la
+candidature **n'est plus à l'état `restored`** (`not_restored`) **ou** si elle
+**n'a jamais été lue par l'employeur** (`never_seen_by_employer`). Il faut donc
+dérouler séparément les sous-cas où chaque condition bascule.
+
+#### 4a. Candidature lue, annulée puis restaurée → mail de restauration
+- L'employeur ouvre/lit la candidature (`read_by_employer`), l'élève l'annule,
+  puis la candidature est restaurée (`aasm_state: restored`).
+- Vérifier la création de `restored_internship_application` (medium), son
+  maintien en attente (`resolved_at: nil` car `not_restored` et
+  `never_seen_by_employer` sont tous deux faux), et la réception du mail au
+  prochain digest medium.
+- **Non-régression** : comme au scénario 2, vérifier que les items liés
+  (`canceled_internship_application_by_student`, etc.) déjà résolus sur cette
+  même candidature ne sont pas affectés et que `restored_internship_application`
+  est traité indépendamment.
+
+#### 4b. Candidature jamais lue, annulée puis restaurée → pas de mail de restauration
+- L'élève postule, l'employeur **ne consulte jamais** la candidature, l'élève
+  l'annule, puis elle est restaurée.
+- Vérifier que `restored_internship_application` est créé puis marqué
+  `resolved_at` (résolu via `never_seen_by_employer`) avant tout envoi, et
+  qu'**aucun** mail de restauration n'est reçu par l'employeur.
+
+#### 4c. Candidature restaurée puis ré-annulée avant l'envoi du digest → pas de mail
+- Restaurer une candidature lue par l'employeur (cf. 4a), puis l'annuler à
+  nouveau avant le passage du digest, de sorte que `aasm_state` ne soit plus
+  `restored`.
+- Vérifier que `restored_internship_application` est marqué résolu via
+  `not_restored` (même si la candidature a bien été lue), et qu'aucun mail de
+  restauration n'est envoyé.
 
 ### 5. Confirmation d'annulation par l'élève
 - Dérouler le flux de confirmation d'annulation (`cancel_by_student_confirmation`,

@@ -1,8 +1,8 @@
 # postgis type
-require 'nested_form/engine'
-require 'nested_form/builder_mixin'
-require 'school_year/base'
-require 'school_year/current'
+require "nested_form/engine"
+require "nested_form/builder_mixin"
+require "school_year/base"
+require "school_year/current"
 class RailsAdmin::Config::Fields::Types::Geography < RailsAdmin::Config::Fields::Types::Hidden
   RailsAdmin::Config::Fields::Types.register(self)
 end
@@ -45,7 +45,7 @@ class RailsAdmin::Config::Fields::Types::String
       required: required?,
       maxlength: length,
       size: input_size,
-      autocomplete: 'off'
+      autocomplete: "off"
     }
   end
 end
@@ -56,13 +56,13 @@ class RailsAdmin::Config::Fields::Types::Password
       required: required?,
       maxlength: length,
       size: input_size,
-      autocomplete: 'new-password'
+      autocomplete: "new-password"
     }
   end
 end
 
 %w[kpi.rb switch_user.rb publish.rb import_students_from_sygne.rb].each do |action|
-  require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
+  require Rails.root.join("lib", "rails_admin", "config", "actions", action)
 end
 stats_path = "/reporting/dashboards?school_year=#{SchoolYear::Current.new.offers_beginning_of_period.year}"
 
@@ -75,14 +75,14 @@ RailsAdmin.config do |config|
     warden.authenticate! scope: :user
   end
   config.current_user_method(&:current_user)
-  config.main_app_name = ['1élève1stage']
+  config.main_app_name = [ "1élève1stage" ]
 
   ## == CancanCan ==
   config.authorize_with :cancancan
 
-  config.parent_controller = 'AdminController'
-  config.model 'User' do
-    navigation_icon 'fas fa-user'
+  config.parent_controller = "AdminController"
+  config.model "User" do
+    navigation_icon "fas fa-user"
   end
 
   ## == PaperTrail ==
@@ -113,15 +113,15 @@ RailsAdmin.config do |config|
     end
 
     switch_user do
-      except ['Users::God']
+      except [ "Users::God" ]
     end
 
     export
     publish do
-      only ['InternshipOffers::WeeklyFramed']
+      only [ "InternshipOffers::WeeklyFramed" ]
     end
     import_students_from_sygne do
-      only ['School']
+      only [ "School" ]
     end
   end
 
@@ -141,6 +141,7 @@ RailsAdmin.config do |config|
                               InternshipAgreement
                               Operator
                               InappropriateOffer
+                              MailActionItem
                               Users::Student
                               Users::SchoolManagement
                               Users::PrefectureStatistician
@@ -153,26 +154,27 @@ RailsAdmin.config do |config|
                               Users::God]
 
   config.navigation_static_links = {
-    'Gestion personnels pédagogiques' => '/admin/school_managements',
-    'Ajouter un établissement' => '/ecoles/nouveau',
-    'Supprimer un étudiant, un employeur' => '/utilisateurs/anonymiseur',
-    'Tranformer un compte' => '/utilisateurs/transform_input',
-    'Stats' => stats_path,
-    'Internats' => '/reporting/internats',
-    'Sidekiq' => '/sidekiq',
-    'Feature flip' => '/admin/flipper/',
-    'AB Testing' => '/split'
+    "Gestion personnels pédagogiques" => "/admin/school_managements",
+    "Ajouter un établissement" => "/ecoles/nouveau",
+    "Supprimer un étudiant, un employeur" => "/utilisateurs/anonymiseur",
+    "Tranformer un compte" => "/utilisateurs/transform_input",
+    "Stats" => stats_path,
+    "Internats" => "/reporting/internats",
+    "Sidekiq" => "/sidekiq",
+    "Feature flip" => "/admin/flipper/",
+    "AB Testing" => "/split",
+    "Mails récapitulatifs" => "/digest_mailers/new"
   }
   # letter_thief n'est monté qu'en development et review (cf. config/routes.rb) :
   # on n'affiche le lien que là, sinon il pointerait dans le vide en prod/staging.
   if Rails.env.development? || Rails.env.review?
     config.navigation_static_links.merge!(
-      'Letter Thief' => '/letter_thief'
+      "Letter Thief" => "/letter_thief"
     )
   end
-  if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' && !Rails.env.production?
+  if ENV.fetch("ENABLE_REVIEW_DATA_RESET", "false") == "true" && !Rails.env.production?
     config.navigation_static_links.merge!(
-      'Reset des données de review' => '/reset_review_data/new'
+      "Reset des données de review" => "/reset_review_data/new"
     )
   end
 end

@@ -7,13 +7,13 @@ module Dashboard
     class InternshipApplicationsControllerTest < ActionDispatch::IntegrationTest
       include Devise::Test::IntegrationHelpers
 
-      test "GET internship_applications#index not connected responds with redireciton" do
+      test "GET internship_applications#index not connected responds with redirection" do
         student = create(:student)
         get dashboard_students_internship_applications_path(student)
         assert_response :redirect
       end
 
-      test "GET internship_applications#index as another student responds with redireciton" do
+      test "GET internship_applications#index as another student responds with redirection" do
         student_1 = create(:student)
         sign_in(student_1)
         get dashboard_students_internship_applications_path(create(:student))

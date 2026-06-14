@@ -325,6 +325,7 @@ Rails.application.routes.draw do
   get "/utilisateurs/choisir_connexion", to: redirect("/professionnels/connexion")
 
   authenticate :user, ->(u) { u.god? } do
+    resources :digest_mailers, only: %i[new create]
     resources :reset_review_data, only: %i[new create] if ENV.fetch("ENABLE_REVIEW_DATA_RESET", "false") == "true"
     resources :inappropriate_offers, path: "signalements", only: [] do
       member do
