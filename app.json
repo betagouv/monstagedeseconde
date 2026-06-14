@@ -50,7 +50,7 @@
         }, {
           "plan": "scheduler:standard"
         }, {
-          "plan": "mailtrap:unpaid"
+          "plan": "heroku-redis:mini"
         }
       ]
     }

@@ -5606,6 +5606,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260604000000'),
 ('20260526090153'),
 ('20260520214758'),
 ('20260515100000'),
@@ -6118,4 +6119,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

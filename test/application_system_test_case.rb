@@ -48,6 +48,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     captcha_stub
   end
 
+  def confirm_next_dialog
+    evaluate_script("Turbo.setConfirmMethod(() => Promise.resolve(true))")
+  end
+
   def after_teardown
     super
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)

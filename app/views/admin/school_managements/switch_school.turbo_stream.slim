@@ -1,0 +1,21 @@
+- if @error
+  = turbo_stream.replace "flash-admin" do
+    #flash-admin
+      .fr-alert.fr-alert--error.fr-mb-2w role="alert"
+        p = @error
+- else
+  = turbo_stream.replace "primary-school" do
+    #primary-school
+      .fr-callout.fr-mb-3w
+        p.fr-callout__title Établissement principal
+        p.fr-mb-0 = @school_management.current_school.name
+        p.fr-text--sm.fr-mb-0 = "Code UAI : #{@school_management.current_school.code_uai}"
+  = turbo_stream.replace "extra-schools" do
+    #extra-schools
+      = render "admin/user_schools/list",
+               school_management: @school_management,
+               extra_schools: @extra_schools
+  = turbo_stream.replace "flash-admin" do
+    #flash-admin
+      .fr-alert.fr-alert--success.fr-mb-2w role="alert"
+        p Établissement principal mis à jour.
