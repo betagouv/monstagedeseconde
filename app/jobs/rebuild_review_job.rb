@@ -11,6 +11,7 @@ class RebuildReviewJob < ApplicationJob
   include ReviewRebuild::InvitationsCreationSteps
   include ReviewRebuild::TeamsCreationSteps
   include ReviewRebuild::BoardingHousesCreationSteps
+  include ReviewRebuild::CleaningCreationSteps
   queue_as :default
   sidekiq_options retry: false
 
@@ -57,7 +58,8 @@ class RebuildReviewJob < ApplicationJob
     [ :offers, "Création des offres", 30, "addition" ],
     [ :applications, "Création des candidatures", 69, "addition" ],
     [ :agreements, "Création des conventions", 15, "addition" ],
-    [ :boarding_houses, "Création des internats", 200, "addition" ]
+    [ :boarding_houses, "Création des internats", 200, "addition" ],
+    [ :cleaning, "Nettoyage des données", 1, "addition" ]
   ].freeze
   # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
