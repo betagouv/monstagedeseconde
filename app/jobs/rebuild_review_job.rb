@@ -77,6 +77,11 @@ class RebuildReviewJob < ApplicationJob
       time_value = @total.zero? ? 0 : (duration.to_f / @total * 100).round(2)
       hash[sym] = { text => time_value }
     end
+
+    rounding_error = 100 - @rebuilt_steps_hash.values.sum { |value| value.values.first }
+    last_sym, last_value = @rebuilt_steps_hash.to_a.last
+    last_text = last_value.keys.first
+    @rebuilt_steps_hash[last_sym] = { last_text => (last_value[last_text] + rounding_error).round(2) }
   end
 
   # ------------
