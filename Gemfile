@@ -123,9 +123,15 @@ group :development do
   gem "activerecord-explain-analyze"
   # gem "ffi-rzmq"
   # gem "jupyter_on_rails"
+  gem "spring", "3.0.0"
+end
+
+# letter_thief intercepte les emails sortants et les stocke en base (consultables sur
+# /letter_thief). Disponible en review pour remplacer Mailtrap. launchy est requis pour
+# l'ouverture automatique du navigateur en développement.
+group :development, :review do
   gem "letter_thief"
   gem "launchy"
-  gem "spring", "3.0.0"
 end
 
 group :test do
@@ -143,10 +149,6 @@ group :test do
   gem "minitest-stub-const"
   gem "rails-controller-testing"
   gem "webdrivers"
-end
-
-group :review do
-  gem "rest-client" # used by mailtrap for review apps
 end
 
 group :staging do
