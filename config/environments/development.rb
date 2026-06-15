@@ -23,15 +23,15 @@ Rails.application.configure do
 
     # default cache store is 100 Mb
     config.cache_store = :redis_cache_store,
-                         { url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/1'),
-                           'maxmemory-policy': 'allkeys-lfu' }
+                         { url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
+                           'maxmemory-policy': "allkeys-lfu" }
     config.public_file_server.headers = { "cache-control" => "public, max-age=#{2.days.to_i}" }
   else
     config.action_controller.perform_caching = false
   end
 
   # Change to :null_store to avoid any caching.
-  config.cache_store = :null_store #:memory_store
+  config.cache_store = :null_store # :memory_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :clevercloud
@@ -41,8 +41,8 @@ Rails.application.configure do
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-  config.action_mailer.smtp_settings = { address: 'localhost', port: 1025 }
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.smtp_settings = { address: "localhost", port: 1025 }
   config.action_mailer.delivery_method = :letter_thief
   config.action_mailer.perform_deliveries = true
   config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
@@ -80,13 +80,13 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
   # Mount Action Cable outside main process or domain
-  host_or_default = ENV.fetch('HOST') { 'ws://localhost/' }
+  host_or_default = ENV.fetch("HOST") { "ws://localhost/" }
   host_uri = URI(host_or_default)
-  domain_without_www = host_uri.host.gsub('www.', '')
+  domain_without_www = host_uri.host.gsub("www.", "")
 
-  config.action_cable.mount_path = '/action_cable'
+  config.action_cable.mount_path = "/action_cable"
   config.action_cable.url = "wss://#{host_uri.host}"
-  config.action_cable.allowed_request_origins = [host_uri.to_s]
+  config.action_cable.allowed_request_origins = [ host_uri.to_s ]
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
@@ -104,5 +104,16 @@ Rails.application.configure do
     Bullet.sentry = true
     Bullet.console = true
     Bullet.rails_logger = true
+
+    # Time travelling
+    if ENV["DAYS_SHIFT_COUNT"].present?
+      require "active_support/testing/time_helpers"
+      extend ActiveSupport::Testing::TimeHelpers
+
+      days_shift_count = ENV.fetch("DAYS_SHIFT_COUNT").to_i
+      travel_to Date.current + days_shift_count.days
+
+      puts "⏳ [Time Travel] L'application a voyagé dans le temps ! Heure actuelle : #{Time.current}"
+    end
   end
 end

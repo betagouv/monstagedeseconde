@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.configure do
-  HOST = ENV.fetch('HOST') do
+  HOST = ENV.fetch("HOST") do
     "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
   end
 
@@ -31,11 +31,11 @@ Rails.application.configure do
 
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
-  config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
 
   config.public_file_server.headers = {
-    'Cache-Control' => 'public, s-maxage=31536000, max-age=15552000',
-    'Expires' => 1.year.from_now.to_formatted_s(:rfc822)
+    "Cache-Control" => "public, s-maxage=31536000, max-age=15552000",
+    "Expires" => 1.year.from_now.to_formatted_s(:rfc822)
   }
 
   # Compress JavaScripts and CSS.
@@ -60,11 +60,11 @@ Rails.application.configure do
 
   # Mount Action Cable outside main process or domain
   host_uri = URI(HOST)
-  domain_without_www = host_uri.host.gsub('www.', '')
+  domain_without_www = host_uri.host.gsub("www.", "")
 
   config.action_cable.mount_path = nil
   config.action_cable.url = "wss://#{host_uri.host}"
-  config.action_cable.allowed_request_origins = [host_uri.to_s]
+  config.action_cable.allowed_request_origins = [ host_uri.to_s ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
@@ -74,15 +74,15 @@ Rails.application.configure do
   config.log_level = :debug
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [:request_id]
+  config.log_tags = [ :request_id ]
 
   # Use a different cache store in production.
 
   # Heroku Redis impose TLS (URL en rediss://) avec un certificat auto-signé : on désactive
   # la vérification du certificat, mais uniquement dans ce cas (inoffensif en local / non-TLS).
-  redis_cache_ssl = ENV.fetch('REDIS_URL', '').start_with?('rediss://') ? { ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE } } : {}
+  redis_cache_ssl = ENV.fetch("REDIS_URL", "").start_with?("rediss://") ? { ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE } } : {}
   config.cache_store = :redis_cache_store,
-                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu', **redis_cache_ssl }
+                       { url: ENV.fetch("REDIS_URL"), 'maxmemory-policy': "allkeys-lfu", **redis_cache_ssl }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
@@ -124,4 +124,17 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.after_initialize do
+    # Time travelling
+    if ENV["DAYS_SHIFT_COUNT"].present?
+      require "active_support/testing/time_helpers"
+      extend ActiveSupport::Testing::TimeHelpers
+
+      days_shift_count = ENV.fetch("DAYS_SHIFT_COUNT").to_i
+      travel_to Date.current + days_shift_count.days
+
+      puts "⏳ [Time Travel] L'application a voyagé dans le temps ! Heure actuelle : #{Time.current}"
+    end
+  end
 end
