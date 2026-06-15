@@ -8,7 +8,8 @@ module Dashboard
     before_action :set_internship_offer,
                   only: %i[edit update destroy republish]
 
-    helper_method :order_direction, :troisieme_duplication_forbidden?, :troisieme_duplication_forbidden_message
+    helper_method :order_direction, :troisieme_duplication_forbidden?, :troisieme_duplication_forbidden_message,
+                  :troisieme_no_dates_available?, :troisieme_no_dates_available_message
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 

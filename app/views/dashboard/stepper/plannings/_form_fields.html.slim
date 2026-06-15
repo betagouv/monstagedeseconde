@@ -42,9 +42,10 @@
       .row
         .col-6
           hr
+    - forbidden = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?
+    - targets_troisieme = new_record || form.object.grades.to_a.include?(Grade.troisieme)
     - if new_record
       / Troisiemes
-      - forbidden = duplication && respond_to?(:troisieme_duplication_forbidden?) && troisieme_duplication_forbidden?
       .row
         .col-6
           = render 'inputs/dsfr_checkbox_field',
@@ -59,8 +60,14 @@
                               action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
                               :'select-weeks-target' => 'gradeCollege'  } }
           - if forbidden
-            p.fr-error-text.fr-mt-1w = troisieme_duplication_forbidden_message
-    - if new_record || !new_record && form.object.grades.to_a.include?(Grade.troisieme)
+            .fr-highlight.fr-mt-1w
+              p = troisieme_no_dates_available_message
+    - elsif forbidden && targets_troisieme
+      .row
+        .col-6
+          .fr-highlight.fr-mt-1w
+            p = troisieme_no_dates_available_message
+    - if !forbidden && targets_troisieme
       .row data-grade-target="troisiemeContainer"
         .col-6
           = render partial: "weeks/checkbox_inputs",

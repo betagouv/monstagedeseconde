@@ -10,6 +10,15 @@ module TroisiemeDuplicationPeriod
     today.between?(troisieme_duplication_forbidden_start, Date.new(today.year, 7, 1))
   end
 
+  def troisieme_no_dates_available?
+    troisieme_duplication_forbidden?
+  end
+
+  def troisieme_no_dates_available_message
+    "Aucune date de stage n'est actuellement disponible pour les élèves de 3ème (et 4ème). " \
+    "Les semaines de stage pour la prochaine année scolaire seront ouvertes à partir du 1er juillet."
+  end
+
   def troisieme_duplication_forbidden_start
     Date.new(Date.current.year, 5, 31).beginning_of_week(:monday)
   end

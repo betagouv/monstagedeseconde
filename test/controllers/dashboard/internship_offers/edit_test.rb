@@ -29,6 +29,17 @@ module Dashboard::InternshipOffers
       end
     end
 
+    test 'GET #edit on a troisieme offer during troisieme no dates available period shows the alert message' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2)
+        get edit_dashboard_internship_offer_path(internship_offer.to_param)
+        assert_response :success
+        assert_select '.fr-highlight', text: /Aucune date de stage n.est actuellement disponible/
+      end
+    end
+
     test 'GET #edit post offer render selectable week of past year' do
       skip 'Not clear what this test is testing'
       travel_to(Date.new(Date.today.year, 7, 1)) do

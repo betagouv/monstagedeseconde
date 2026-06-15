@@ -3,6 +3,10 @@
 module Dashboard::Stepper
   # Step 3 of internship offer creation: fill planning info
   class PlanningsController < ApplicationController
+    include TroisiemeDuplicationPeriod
+
+    helper_method :troisieme_no_dates_available?, :troisieme_no_dates_available_message
+
     before_action :authenticate_user!
     before_action :fetch_planning, only: %i[edit update]
     before_action :fetch_entreprise, only: %i[new create]
