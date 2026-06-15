@@ -26,7 +26,7 @@ class TroisiemeDuplicationPeriodTest < ActiveSupport::TestCase
   test "troisieme_no_dates_available_message explains when dates reopen" do
     travel_to Date.new(2026, 6, 10) do
       assert_equal(
-        "Aucune date de stage n'est actuellement disponible pour les élèves de 3ème (et 4ème). " \
+        "Aucune semaine de stage n'est actuellement disponible pour les élèves de 3ème (et 4ème). " \
         "Les semaines de stage pour la prochaine année scolaire seront ouvertes à partir du 1er juillet.",
         @dummy.troisieme_no_dates_available_message
       )

@@ -47,7 +47,8 @@ module Dashboard::InternshipOffers
         internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2)
         get edit_dashboard_internship_offer_path(internship_offer.to_param)
         assert_response :success
-        assert_select ".fr-highlight", text: /Aucune semaine de stage n.est actuellement disponible/, count: 2
+        assert_select ".fr-notice--info", text: /Aucune semaine de stage n.est actuellement disponible/
+        assert_select ".fr-highlight", text: /Aucune semaine de stage n.est actuellement disponible/
         assert_select "input[type=submit][disabled]"
       end
     end

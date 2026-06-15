@@ -53,7 +53,7 @@ module Dashboard::Stepper
         end
 
         assert_response :bad_request
-        assert_select '.fr-highlight', text: /Aucune date de stage n.est actuellement disponible/
+        assert_select '.fr-highlight', text: /Aucune semaine de stage n.est actuellement disponible/
         assert_select '.fr-errors-summary, .fr-alert--error', text: /Vous devez sélectionner au moins une classe/
       end
     end
@@ -83,7 +83,7 @@ module Dashboard::Stepper
 
         assert_response :success
         assert_select "input#planning_grade_college[disabled]", count: 0
-        assert_select '.fr-highlight', text: /Aucune date de stage n.est actuellement disponible/, count: 0
+        assert_select '.fr-highlight', text: /Aucune semaine de stage n.est actuellement disponible/, count: 0
       end
     end
 
