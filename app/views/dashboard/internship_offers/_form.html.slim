@@ -7,7 +7,7 @@
 
   - troisieme_forbidden = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available? && @internship_offer.grades.to_a.include?(Grade.troisieme)
   - if troisieme_forbidden
-    .fr-notice.fr-notice--info
+    .fr-notice.fr-notice--info.fr-mb-2w
       .fr-container
         .fr-notice__body
           p
