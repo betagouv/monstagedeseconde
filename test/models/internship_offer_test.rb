@@ -132,6 +132,31 @@ class InternshipOfferTest < ActiveSupport::TestCase
     refute internship_offer.two_weeks_long?
   end
 
+  test '.seconde_school_track_week_1? and .seconde_school_track_week_2?' do
+    offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+    assert offer_week_1.seconde_school_track_week_1?
+    refute offer_week_1.seconde_school_track_week_2?
+
+    offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
+    refute offer_week_2.seconde_school_track_week_1?
+    assert offer_week_2.seconde_school_track_week_2?
+
+    offer_both = create(:weekly_internship_offer_2nde, :both_weeks)
+    refute offer_both.seconde_school_track_week_1?
+    refute offer_both.seconde_school_track_week_2?
+  end
+
+  test '.seconde_school_track_week_1? compares week ids, not cached week instances' do
+    offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+
+    # Reload offer.weeks through a fresh association so the Week instances are
+    # different object instances than SchoolTrack::Seconde.first_week, but
+    # represent the same record (same id)
+    reloaded_offer = InternshipOffer.find(offer_week_1.id)
+
+    assert reloaded_offer.seconde_school_track_week_1?
+  end
+
   test "factory 'multi'" do
     internship_offer = build(:multi_internship_offer)
     assert internship_offer.valid?
