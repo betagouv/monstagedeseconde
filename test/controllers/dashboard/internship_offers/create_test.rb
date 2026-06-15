@@ -116,6 +116,35 @@ module Dashboard::InternshipOffers
       end
     end
 
+    test 'POST #create (duplicate) of a college offer is blocked during the closed college period' do
+      employer = create(:employer)
+      school = create(:school)
+      # Build the source offer outside the closed window, duplicate it inside.
+      original = travel_to(Date.new(2025, 3, 1)) { create(:weekly_internship_offer_3eme, employer:) }
+
+      travel_to(Date.new(2025, 6, 15)) do
+        sign_in(employer)
+        params = original
+                 .attributes
+                 .merge('type' => InternshipOffers::WeeklyFramed.name,
+                        'coordinates' => { latitude: 1, longitude: 1 },
+                        'school_id' => school.id,
+                        'description' => '<div>description</div>',
+                        'employer_description' => 'hop+employer_description',
+                        'week_ids' => original.weeks.ids,
+                        'grade_ids' => original.grades.ids,
+                        'max_candidates' => 1,
+                        'employer_id' => original.employer_id,
+                        'duplicate_id' => original.id,
+                        'employer_type' => 'Users::Employer')
+                 .deep_symbolize_keys
+        assert_no_difference('InternshipOffer.count') do
+          post(dashboard_internship_offers_path, params: { internship_offer: params })
+        end
+        assert_response :bad_request
+      end
+    end
+
     test 'POST #create (duplicate) /InternshipOffers::WeeklyFramed as ministry statistican creates the post' do
       travel_to(Date.new(2024, 9, 1)) do
         school = create(:school)

@@ -99,6 +99,13 @@ module SchoolYear
       last_friday_before(Date.new(current_year, MONTH_OF_3EME_YEAR_END, FIRST))
     end
 
+    # True between the end of the current troisieme period (last friday before
+    # June 1st) and July 1st, when no troisieme week is selectable anymore and
+    # the next school year deposit has not opened yet.
+    def college_period_closed?
+      troisieme_end_of_period < date
+    end
+
     def deposit_end_of_period
       deposit_beginning_of_period + 1.year
     end

@@ -5,6 +5,10 @@ module SchoolYear
   class Current < Base
     # 2024/2025 2025 is year_in_june
 
+    def self.college_period_closed?
+      new.college_period_closed?
+    end
+
     attr_reader :date
 
     private

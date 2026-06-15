@@ -24,13 +24,29 @@ module Dto
     end
 
     def manage_grades
-      return if !params_offer_for_seconde? && !params_offer_for_troisieme_or_quatrieme? # grades is unchanged
+      # grades is unchanged, unless we must drop college grades carried over (e.g.
+      # via grade_ids on duplication/renewal) while the college period is closed.
+      return if !params_offer_for_seconde? && !params_offer_for_troisieme_or_quatrieme? && !strip_closed_college_grades?
 
       instance.grades = []
-      instance.grades.append Grade.troisieme_et_quatrieme.to_a if params_offer_for_troisieme_or_quatrieme?
+      instance.grades.append Grade.troisieme_et_quatrieme.to_a if college_grades_allowed?
       return unless params_offer_for_seconde?
 
       instance.grades.append Grade.seconde
+    end
+
+    # Between late May and July 1st no troisieme week is selectable: collegiens
+    # offers can't be deposited (current year stages are over, next one not open yet).
+    def college_grades_allowed?
+      params_offer_for_troisieme_or_quatrieme? && !SchoolYear::Current.college_period_closed?
+    end
+
+    # Only when creating: editing an existing college offer during the closed
+    # period must keep its grades untouched (the edit form omits grade checkboxes).
+    def strip_closed_college_grades?
+      instance.new_record? &&
+        SchoolYear::Current.college_period_closed? &&
+        instance.grades.any?(&:troisieme_or_quatrieme?)
     end
 
     def manage_weeks

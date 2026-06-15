@@ -43,18 +43,23 @@
         .col-6
           hr
     - if new_record
+      - college_closed = SchoolYear::Current.college_period_closed?
+      - college_options = { data: {:'grade-target' => 'gradeCollege', action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick', :'select-weeks-target' => 'gradeCollege' } }
+      - college_options = college_options.merge(disabled: true, checked: false) if college_closed
       / Troisiemes
       .row
         .col-6
+          - if college_closed
+            .fr-alert.fr-alert--info.fr-alert--sm.fr-mb-2w
+              p
+                | Vous ne pouvez pas proposer d'offre aux collégiens entre fin mai et le 1er juillet : les stages de l'année en cours sont terminés et ceux de l'année prochaine ne sont pas encore ouverts au dépôt.
           = render 'inputs/dsfr_checkbox_field',
             form: form,
             field: :grade_college,
             title: '',
             label: 'Collégiens (4ème et 3ème)',
             extra_header_classes: 'fr-h6',
-            options: { data: {:'grade-target' => 'gradeCollege',
-                              action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
-                              :'select-weeks-target' => 'gradeCollege'  } }
+            options: college_options
     - if new_record || !new_record && form.object.grades.to_a.include?(Grade.troisieme)
       .row data-grade-target="troisiemeContainer"
         .col-6

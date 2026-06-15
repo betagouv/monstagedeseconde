@@ -64,7 +64,10 @@ export default class extends Controller {
 
   connect() {
     this.initialGradesValue.split(',').forEach((grade) => {
-      if (grade === 'troisieme' || grade === 'quatrieme') {
+      if (
+        (grade === 'troisieme' || grade === 'quatrieme') &&
+        !this.gradeCollegeTarget.disabled
+      ) {
         this.gradeCollegeTarget.checked = true;
       }
       if (grade === 'seconde') {

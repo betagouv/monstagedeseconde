@@ -74,6 +74,38 @@ module Dashboard::Stepper
       end
     end
 
+    test 'cannot post a college-only planning during the closed college period' do
+      travel_to Date.new(2025, 6, 15) do
+        employer = create(:employer)
+        school = create(:school, city: 'Paris', zipcode: '75001')
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:, code_ape: '99.XXX')
+
+        sign_in(employer)
+        planning = {
+          all_year_long: true,
+          grade_college: '1',
+          grade_2e: '0',
+          max_candidates: 2,
+          period: '11',
+          lunch_break: 'test de lunch break',
+          daily_hours: { 'lundi' => ['08:00', '15:00'] },
+          school_ids: [school.id]
+        }
+
+        assert_no_difference('Planning.count') do
+          post(
+            dashboard_stepper_plannings_path(entreprise_id: entreprise.id),
+            params: { planning: }
+          )
+        end
+        assert_response :bad_request
+        # The re-rendered form disables the college checkbox and explains why.
+        assert_select 'input#planning_grade_college[disabled]'
+        assert_select '.fr-alert--info', text: /collégiens entre fin mai et le 1er juillet/
+      end
+    end
+
     test 'post a valid planning troisieme form' do
       skip 'leak suspicion'
       travel_to Date.new(2025, 1, 1) do
