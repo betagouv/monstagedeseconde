@@ -14,6 +14,21 @@ namespace :db do
     File.write(filename, sql)
   end
 
+  # PostgreSQL 17's pg_dump emits `SET transaction_timeout = 0;`, a parameter that
+  # does not exist on older PostgreSQL (CI/prod), so the structure load fails.
+  # Strip these unsupported SET statements after dump.
+  task :strip_unsupported_set_statements do
+    filename = ENV["SCHEMA"] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "structure.sql")
+    next unless File.exist?(filename)
+
+    sql = File.read(filename)
+              .each_line
+              .grep_v(/\ASET transaction_timeout\b/)
+              .join
+
+    File.write(filename, sql)
+  end
+
   namespace :seed do
     desc 'create weeks fixture file'
     task weeks: :environment do
@@ -35,5 +50,10 @@ end
 # schema:format=:sql dumps through `db:schema:dump` (and per-db variants);
 # `db:structure:dump` is kept for back-compat.
 %w[db:schema:dump db:structure:dump].each do |task_name|
-  Rake::Task[task_name].enhance { Rake::Task["db:strip_extension_comments"].invoke } if Rake::Task.task_defined?(task_name)
+  next unless Rake::Task.task_defined?(task_name)
+
+  Rake::Task[task_name].enhance do
+    Rake::Task["db:strip_extension_comments"].invoke
+    Rake::Task["db:strip_unsupported_set_statements"].invoke
+  end
 end
