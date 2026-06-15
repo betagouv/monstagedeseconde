@@ -47,5 +47,18 @@ module Dashboard::InternshipOffers
       #   text: "Renouveler l'offre pour l'année en cours"
       # }
     end
+
+    test 'GET #new as Employer with duplicate_id for a troisieme offer during troisieme no dates available period shows grade_college checkbox disabled and unchecked' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2,
+                                                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '#internship_offer_grade_college[disabled]'
+        assert_select '#internship_offer_grade_college[checked]', count: 0
+      end
+    end
   end
 end

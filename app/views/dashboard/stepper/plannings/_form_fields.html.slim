@@ -55,6 +55,7 @@
             label: 'Collégiens (4ème et 3ème)',
             extra_header_classes: 'fr-h6',
             options: { disabled: forbidden,
+                       checked: forbidden ? false : form.object.grade_college,
                        data: {:'grade-target' => 'gradeCollege',
                               :'grade-forbidden-value' => forbidden.to_s,
                               action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
