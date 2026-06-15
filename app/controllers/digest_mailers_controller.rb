@@ -3,6 +3,10 @@
 class DigestMailersController < ApplicationController
   before_action -> { authorize!(:manage, :digest_mailers) }
 
+  rescue_from CanCan::AccessDenied do
+    redirect_to root_path
+  end
+
   RAKE_TASKS = {
     low: 'digest_mailers:send_low_urgency_emails',
     medium: 'digest_mailers:send_medium_urgency_emails',
