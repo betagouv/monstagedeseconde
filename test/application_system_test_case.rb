@@ -45,6 +45,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
       .to_return(status: 200, body: '')
   end
 
+  def confirm_next_dialog
+    evaluate_script("Turbo.setConfirmMethod(() => Promise.resolve(true))")
+  end
+
   def after_teardown
     super
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)
