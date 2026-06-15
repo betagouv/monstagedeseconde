@@ -16,9 +16,10 @@ module Dashboard::Stepper
     DEFAULT_SCHOOL_RADIUS = 60_000 # 60km
 
     def new
+      grade_college_default = troisieme_no_dates_available? ? '0' : '1'
       @planning = Planning.new(
         all_year_long: true,
-        grade_college: '1',
+        grade_college: grade_college_default,
         grade_2e: '1',
         entreprise_id: params[:entreprise_id]
       )

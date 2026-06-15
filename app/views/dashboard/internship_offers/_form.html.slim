@@ -5,6 +5,15 @@
              data: { turbo: false }) do |form|
   = render "layouts/form_errors", resource: @internship_offer, resource_name: :internship_offer
 
+  - troisieme_forbidden = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available? && @internship_offer.grades.to_a.include?(Grade.troisieme)
+  - if troisieme_forbidden
+    .fr-notice.fr-notice--info
+      .fr-container
+        .fr-notice__body
+          p
+            span.fr-notice__title Un peu de patience : 
+            span.fr-notice__desc = troisieme_no_dates_available_message
+
   // used when
   = form.hidden_field :employer_id, value: current_user.id
   = form.hidden_field :employer_type, value: "User"
@@ -61,7 +70,7 @@
   .actions
     .row.fr-mb-8w
       .col-8.text-center
-        = form.submit submit_text, class: 'fr-btn'
+        = form.submit submit_text, class: 'fr-btn', disabled: troisieme_forbidden
       .col-4 style="display: flex;align-items: center"
         = link_to "Annuler",
                   dashboard_internship_offers_path,

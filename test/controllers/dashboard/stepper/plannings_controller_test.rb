@@ -22,7 +22,8 @@ module Dashboard::Stepper
 
         assert_response :success
         assert_select "input#planning_grade_college[disabled]"
-        assert_select '.fr-highlight', text: /Aucune date de stage n.est actuellement disponible/
+        # Verify the checkbox is unchecked (not selected) when forbidden
+        assert_select "input#planning_grade_college:not([checked])"
       end
     end
 
