@@ -62,19 +62,17 @@
   = render 'dashboard/stepper/plannings/form_fields',
            { resource: @internship_offer,
              duplication: @duplication,
+             duplication_submit_text: @duplication ? submit_text : nil,
              form: form,
              show_resume: false,
              submit_button: false }
 
 
-  - both_grades = @internship_offer.grades.to_a.include?(Grade.seconde) && @internship_offer.grades.to_a.any? { |g| g.short_name.in?(%w[troisieme quatrieme]) }
-  - if @duplication && both_grades
-    = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: troisieme_forbidden
-
   .actions
     .row.fr-mb-8w
       .col-8.text-center
-        = form.submit submit_text, class: 'fr-btn', disabled: troisieme_forbidden
+        - unless @duplication && !troisieme_forbidden
+          = form.submit submit_text, class: 'fr-btn', disabled: troisieme_forbidden
       .col-4 style="display: flex;align-items: center"
         = link_to "Annuler",
                   dashboard_internship_offers_path,

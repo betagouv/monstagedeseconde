@@ -161,4 +161,10 @@
                     data: { :'mandatory-fields-target' => "disabledField",
                             action: "grade#onValidate"}  do
           = "Publier l'offre"
+    - elsif duplication
+      = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: forbidden
+      - if defined?(duplication_submit_text) && duplication_submit_text && !forbidden
+        .fr-mt-6w
+          button.fr-btn[type="button" data-action="grade#onValidate"]
+            = duplication_submit_text
 
