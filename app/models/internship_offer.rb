@@ -445,6 +445,10 @@ class InternshipOffer < ApplicationRecord
     week_ids.include?(SchoolTrack::Seconde.second_week.id) && !week_ids.include?(SchoolTrack::Seconde.first_week.id)
   end
 
+  def targets_both_school_tracks?
+    grades.to_a.include?(Grade.seconde) && grades.to_a.any?(&:troisieme_or_quatrieme?)
+  end
+
   def fits_for_seconde?
     grades.select { |grade| grade.seconde? }.any? &&
       weeks.any? { |w| w.id.in?(SchoolTrack::Seconde.both_weeks.map(&:id)) }

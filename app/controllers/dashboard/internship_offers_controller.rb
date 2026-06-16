@@ -306,8 +306,7 @@ module Dashboard
     def duplicate_with_double_grades?
       return false unless params[:duplicate_id].present?
 
-      grades = @internship_offer.grades.map(&:short_name)
-      grades.include?("seconde") && grades.any? { |grade| grade.in?(%w[troisieme quatrieme]) }
+      @internship_offer.targets_both_school_tracks?
     end
   end
 end
