@@ -20,7 +20,8 @@
           h3.fr-callout__title En cas de problème lié à la connexion sur la plateforme
           p.fr-py-1w.fr-callout__text
             strong &#x2192; Pour les élèves
-            | : contactez votre établissement scolaire.
+            '  :
+            = link_to "consultez la FAQ Educonnect", 'https://educonnect.education.gouv.fr/educt-aide/aide/', target: '_blank'
           p.fr-py-1w.fr-callout__text
             strong &#x2192; Pour les équipes pédagogiques
             | : contactez votre chef d'établissement.
@@ -28,5 +29,5 @@
             strong &#x2192; Pour les chefs d'établissement
             | : contactez votre guichet académique.
           p.fr-py-4w.fr-callout__text
-            | Avant de contacter le support, merci de vérifier si la réponse à votre question est présente dans notre 
-            = link_to "centre d'aide.", 'https://uneleveunstage.crisp.help/fr/', target: '_blank'
+            ' Avant de nous contacter, merci de vérifier si la réponse à votre question est présente dans
+            = link_to "notre FAQ", 'https://docs.numerique.gouv.fr/docs/cf1cdc70-a30b-4800-b504-d73fda995783/', target: '_blank'
