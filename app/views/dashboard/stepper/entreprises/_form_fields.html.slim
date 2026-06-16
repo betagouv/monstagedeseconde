@@ -79,8 +79,13 @@
             .col-12
               label.fr-label[for="group-choice"] Type d’employeur public *
 
+              - selected_group_id = resource.group.try(:id)
+              - if @duplication
+                - duplicate_id = params[:duplicate_id] || params.dig(:internship_offer, :duplicate_id)
+                - selected_group_id = InternshipOffer.find_by(id: duplicate_id)&.group&.id
+
               = form.select :group_id,
-                            options_for_select(options_for_public_groups, @duplication ? InternshipOffer.find(params[:duplicate_id]).group.try(:id) : resource.group.try(:id) ),
+                            options_for_select(options_for_public_groups, selected_group_id),
                             { prompt: 'Sélectionnez un employeur public' },
                             class: "fr-select",
                             id: "group-choice",

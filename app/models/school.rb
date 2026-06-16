@@ -74,6 +74,10 @@ class School < ApplicationRecord
   }
 
   scope :with_preloads, -> { includes(:department, :school_managers) }
+  scope :search_by_query, lambda { |query|
+    term = "%#{query.strip}%"
+    where("name ILIKE :term OR city ILIKE :term OR code_uai ILIKE :term", term: term)
+  }
 
   def self.nearby_school_weeks(latitude:, longitude:, radius:)
     internship_weeks_nearby(latitude:, longitude:, radius:)

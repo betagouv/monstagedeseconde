@@ -108,6 +108,24 @@ namespace :sys do
     end
   end
 
+  # TODO remove when review-3 test is over
+  desc "upload a local production database dump to review 3 on CleverCloud"
+  task :upl_prod_to_review_3, [] => :environment do
+    PrettyConsole.announce_task "Uploading production database dump for review platform" do
+      system({ "PGPASSWORD" => ENV["CLEVER_REVIEW_3_DB_PASSWORD"] },
+             "pg_restore",
+             "--clean",
+             "--if-exists",
+             "--no-owner",
+             "--no-privileges",
+             "-h", ENV["CLEVER_REVIEW_3_HOST"],
+             "-p", ENV["CLEVER_REVIEW_3_DB_PORT"],
+             "-U", ENV["CLEVER_REVIEW_3_DB_USER"],
+             "-d", ENV["CLEVER_REVIEW_3_DB_NAME"],
+             "storage/tmp/current_production.dump")
+    end
+  end
+
   desc "upload a local production database copy to CleverCloud with a specified filename (should be a dump file)"
   task :upl_filename_to_local_db, [ :filename ] => :environment do |t, args|
     next unless File.exist?(args[:filename])
@@ -118,8 +136,10 @@ namespace :sys do
     puts "ok environment is development"
     PrettyConsole.announce_task "Uploading production database dump" do
       system("pg_restore -h localhost " \
-             "-d monstage " \
+             "--clean " \
+             "--if-exists " \
              "--no-owner --no-privileges " \
+             "-d monstage " \
              "#{args[:filename]}")
     end
   end
