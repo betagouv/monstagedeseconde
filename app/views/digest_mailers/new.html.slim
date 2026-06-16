@@ -1,0 +1,11 @@
+.container
+  h1.fr-my-8w Lancement des emails récapitulatifs
+
+  .fr-highlight.fr-mb-6w
+    p 
+    | Il faut être Administrateur pour accéder à ces fonctionnalités. 
+
+  - { low: "mails d'urgence faible", medium: "mails d'urgence moyenne", high: "mails d'urgence forte", critical: "mails d'urgence critique" }.each do |urgency_level, label|
+    = form_with url: digest_mailers_path, method: :post, class: "fr-mb-2w" do |f|
+      = hidden_field_tag :urgency_level, urgency_level
+      = f.submit label, class: "fr-btn fr-btn--primary"

@@ -162,7 +162,8 @@ RailsAdmin.config do |config|
     "Internats" => "/reporting/internats",
     "Sidekiq" => "/sidekiq",
     "Feature flip" => "/admin/flipper/",
-    "AB Testing" => "/split"
+    "AB Testing" => "/split",
+    "Mails récapitulatifs" => "/digest_mailers/new"
   }
   # letter_thief n'est monté qu'en development et review (cf. config/routes.rb) :
   # on n'affiche le lien que là, sinon il pointerait dans le vide en prod/staging.

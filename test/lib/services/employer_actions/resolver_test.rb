@@ -7,45 +7,53 @@ module Services
       # pending_application — existing behaviour
       # ---------------------------------------------------------------------------
       test ".call resolves pending_application items whose application is no longer submitted" do
-        employer = create(:employer)
-        internship_application = create(:weekly_internship_application, :approved)
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          employer = create(:employer)
+          internship_application = create(:weekly_internship_application, :approved)
 
-        item = MailActionItem.create!(
-          recipient: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_internship_application,
-          urgency_level: :medium,
-          stale_at: 5.days.from_now,
-          resolved_at: nil,
-          deliveries_count: 0,
-          max_deliveries_count: 1,
-          internship_application: internship_application
-        )
+          item = MailActionItem.create!(
+            recipient: employer,
+            action_name: "new_internship_application",
+            action_type: :pending_internship_application,
+            urgency_level: :medium,
+            stale_at: 5.days.from_now,
+            resolved_at: nil,
+            deliveries_count: 0,
+            max_deliveries_count: 1,
+            internship_application: internship_application
+          )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium])
 
-        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+          assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+        end
       end
 
       test ".call does not resolve pending_application items whose application is still submitted" do
-        employer = create(:employer)
-        internship_application = create(:weekly_internship_application)
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          employer = create(:employer)
+          internship_application = create(:weekly_internship_application)
 
-        item = MailActionItem.create!(
-          recipient: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_internship_application,
-          urgency_level: :medium,
-          stale_at: 5.days.from_now,
-          resolved_at: nil,
-          deliveries_count: 0,
-          max_deliveries_count: 1,
-          internship_application: internship_application
-        )
+          item = MailActionItem.create!(
+            recipient: employer,
+            action_name: "new_internship_application",
+            action_type: :pending_internship_application,
+            urgency_level: :medium,
+            stale_at: 5.days.from_now,
+            resolved_at: nil,
+            deliveries_count: 0,
+            max_deliveries_count: 1,
+            internship_application: internship_application
+          )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[low medium])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels:  %w[low medium])
 
-        assert_nil item.reload.resolved_at
+          assert_nil item.reload.resolved_at
+        end
       end
 
       # ---------------------------------------------------------------------------
@@ -53,111 +61,131 @@ module Services
       # ---------------------------------------------------------------------------
 
       test ".call does not resolve new_internship_application when application is restored and never seen by employer (D2)" do
-        internship_application = create(:weekly_internship_application, :restored)
-        employer = internship_application.internship_offer.employer
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :restored)
+          employer = internship_application.internship_offer.employer
 
-        refute internship_application.has_ever_been?(%w[read_by_employer]),
-               "precondition: application must never have been seen by employer"
+          refute internship_application.has_ever_been?(%w[read_by_employer]),
+                 "precondition: application must never have been seen by employer"
 
-        new_item = MailActionItem.create!(
-          recipient: employer,
-          action_name: "new_internship_application",
-          action_type: :pending_internship_application,
-          urgency_level: :medium,
-          stale_at: 5.days.from_now,
-          resolved_at: nil,
-          deliveries_count: 0,
-          max_deliveries_count: 1,
-          internship_application: internship_application
-        )
+          new_item = MailActionItem.create!(
+            recipient: employer,
+            action_name: "new_internship_application",
+            action_type: :pending_internship_application,
+            urgency_level: :medium,
+            stale_at: 5.days.from_now,
+            resolved_at: nil,
+            deliveries_count: 0,
+            max_deliveries_count: 1,
+            internship_application: internship_application
+          )
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_nothing_raised { new_item.reload }
-        assert_nil new_item.reload.resolved_at,
-                   "new_internship_application doit rester dans le digest quand l'application est restaurée et jamais lue"
+          assert_nothing_raised { new_item.reload }
+          assert_nil new_item.reload.resolved_at,
+                     "new_internship_application doit rester dans le digest quand l'application est restaurée et jamais lue"
+        end
       end
 
       test ".call resolves restored_internship_application when application was never seen by employer" do
-        internship_application = create(:weekly_internship_application, :restored)
-        employer = internship_application.internship_offer.employer
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :restored)
+          employer = internship_application.internship_offer.employer
 
-        refute internship_application.has_ever_been?(%w[approved read_by_employer validated_by_employer]),
-               "precondition: application must never have been seen by employer"
+          refute internship_application.has_ever_been?(%w[approved read_by_employer validated_by_employer]),
+                 "precondition: application must never have been seen by employer"
 
-        item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
+          item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+          assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+        end
       end
 
       test ".call does not resolve restored_internship_application when application was previously read_by_employer in its history" do
-        internship_application = create(:weekly_internship_application, :restored)
-        employer = internship_application.internship_offer.employer
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :restored)
+          employer = internship_application.internship_offer.employer
 
-        create(:internship_application_state_change,
-               internship_application: internship_application,
-               from_state: "submitted",
-               to_state: "read_by_employer",
-               author: employer)
+          create(:internship_application_state_change,
+                 internship_application: internship_application,
+                 from_state: "submitted",
+                 to_state: "read_by_employer",
+                 author: employer)
 
-        item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
+          item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_nothing_raised { item.reload }
-        assert_nil item.reload.resolved_at
+          assert_nothing_raised { item.reload }
+          assert_nil item.reload.resolved_at
+        end
       end
 
       test ".call does not resolve restored_internship_application as collateral damage from new_internship_application resolution when application was read, canceled, then restored" do
-        internship_application = create(:weekly_internship_application, :read_by_employer)
-        employer = internship_application.internship_offer.employer
-        student = internship_application.student
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :read_by_employer)
+          employer = internship_application.internship_offer.employer
+          student = internship_application.student
 
-        internship_application.cancel_by_student!(student)
-        internship_application.restore!(student)
+          internship_application.cancel_by_student!(student)
+          internship_application.restore!(student)
 
-        assert internship_application.has_ever_been?(%w[read_by_employer]),
-               "precondition: application must have been seen by employer"
+          assert internship_application.has_ever_been?(%w[read_by_employer]),
+                 "precondition: application must have been seen by employer"
 
-        item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
+          item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_nothing_raised { item.reload }
-        assert_nil item.reload.resolved_at
+          assert_nothing_raised { item.reload }
+          assert_nil item.reload.resolved_at
+        end
       end
 
       test ".call resolves restored_internship_application when application was read, canceled, restored, then re-canceled before digest (D3)" do
-        internship_application = create(:weekly_internship_application, :read_by_employer)
-        employer = internship_application.internship_offer.employer
-        student = internship_application.student
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :read_by_employer)
+          employer = internship_application.internship_offer.employer
+          student = internship_application.student
 
-        internship_application.cancel_by_student!(student)
-        internship_application.restore!(student)
-        internship_application.cancel_by_student!(student)
+          internship_application.cancel_by_student!(student)
+          internship_application.restore!(student)
+          internship_application.cancel_by_student!(student)
 
-        assert internship_application.has_ever_been?(%w[read_by_employer]),
-               "precondition: application must have been seen by employer"
-        refute_equal "restored", internship_application.aasm_state,
-                     "precondition: application must no longer be in restored state"
+          assert internship_application.has_ever_been?(%w[read_by_employer]),
+                 "precondition: application must have been seen by employer"
+          refute_equal "restored", internship_application.aasm_state,
+                       "precondition: application must no longer be in restored state"
 
-        restored_item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
-        canceled_items = internship_application.mail_action_items.where(action_name: "canceled_internship_application_by_student")
+          restored_item = internship_application.mail_action_items.find_by!(action_name: "restored_internship_application")
+          canceled_items = internship_application.mail_action_items.where(action_name: "canceled_internship_application_by_student")
 
-        assert_equal 1, canceled_items.count,
-                     "precondition: exactement un item d'annulation doit exister"
+          assert_equal 1, canceled_items.count,
+                       "precondition: exactement un item d'annulation doit exister"
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_raises(ActiveRecord::RecordNotFound) { restored_item.reload }
+          assert_raises(ActiveRecord::RecordNotFound) { restored_item.reload }
 
-        surviving_canceled = internship_application.mail_action_items.where(action_name: "canceled_internship_application_by_student")
-        assert_equal 1, surviving_canceled.count,
-                     "l'annulation doit être signalée exactement une fois dans le digest"
-        assert_nil surviving_canceled.first.resolved_at,
-                   "l'item d'annulation ne doit pas être résolu"
+          surviving_canceled = internship_application.mail_action_items.where(action_name: "canceled_internship_application_by_student")
+          assert_equal 1, surviving_canceled.count,
+                       "l'annulation doit être signalée exactement une fois dans le digest"
+          assert_nil surviving_canceled.first.resolved_at,
+                     "l'item d'annulation ne doit pas être résolu"
+        end
       end
 
       # ---------------------------------------------------------------------------
@@ -165,38 +193,46 @@ module Services
       # ---------------------------------------------------------------------------
 
       test ".call resolves canceled_internship_application_by_student when application was never seen by employer" do
-        internship_application = create(:weekly_internship_application, :submitted)
-        employer = internship_application.internship_offer.employer
-        student = internship_application.student
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :submitted)
+          employer = internship_application.internship_offer.employer
+          student = internship_application.student
 
-        internship_application.cancel_by_student!(student)
+          internship_application.cancel_by_student!(student)
 
-        refute internship_application.has_ever_been?(%w[read_by_employer]),
-               "precondition: application must never have been seen by employer"
+          refute internship_application.has_ever_been?(%w[read_by_employer]),
+                 "precondition: application must never have been seen by employer"
 
-        item = internship_application.mail_action_items.find_by!(action_name: "canceled_internship_application_by_student")
+          item = internship_application.mail_action_items.find_by!(action_name: "canceled_internship_application_by_student")
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+          assert_raises(ActiveRecord::RecordNotFound) { item.reload }
+        end
       end
 
       test ".call does not resolve canceled_internship_application_by_student when application was previously read_by_employer" do
-        internship_application = create(:weekly_internship_application, :read_by_employer)
-        employer = internship_application.internship_offer.employer
-        student = internship_application.student
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :read_by_employer)
+          employer = internship_application.internship_offer.employer
+          student = internship_application.student
 
-        internship_application.cancel_by_student!(student)
+          internship_application.cancel_by_student!(student)
 
-        assert internship_application.has_ever_been?(%w[read_by_employer]),
-               "precondition: application must have been seen by employer"
+          assert internship_application.has_ever_been?(%w[read_by_employer]),
+                 "precondition: application must have been seen by employer"
 
-        item = internship_application.mail_action_items.find_by!(action_name: "canceled_internship_application_by_student")
+          item = internship_application.mail_action_items.find_by!(action_name: "canceled_internship_application_by_student")
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_nothing_raised { item.reload }
-        assert_nil item.reload.resolved_at
+          assert_nothing_raised { item.reload }
+          assert_nil item.reload.resolved_at
+        end
       end
 
       # ---------------------------------------------------------------------------
@@ -204,18 +240,22 @@ module Services
       # ---------------------------------------------------------------------------
 
       test ".call does not resolve cancel_by_student_confirmation as collateral damage from new_internship_application resolution" do
-        internship_application = create(:weekly_internship_application, :read_by_employer)
-        employer = internship_application.internship_offer.employer
-        student = internship_application.student
+        # travel_to ensures the weekly application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
+          internship_application = create(:weekly_internship_application, :read_by_employer)
+          employer = internship_application.internship_offer.employer
+          student = internship_application.student
 
-        internship_application.cancel_by_student_confirmation!(student)
+          internship_application.cancel_by_student_confirmation!(student)
 
-        item = internship_application.mail_action_items.find_by!(action_name: "cancel_by_student_confirmation")
+          item = internship_application.mail_action_items.find_by!(action_name: "cancel_by_student_confirmation")
 
-        Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+          Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
 
-        assert_nothing_raised { item.reload }
-        assert_nil item.reload.resolved_at
+          assert_nothing_raised { item.reload }
+          assert_nil item.reload.resolved_at
+        end
       end
 
       # ---------------------------------------------------------------------------
