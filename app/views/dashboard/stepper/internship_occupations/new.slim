@@ -8,7 +8,15 @@
   .col
     h1.h2 Déposer une offre de stage
 
-= render "form",
-         show_resume: true,
-         submit_button: true ,
-         model: model, method: method, url: url
+- if seconde_no_new_offers?
+  .fr-notice.fr-notice--info.fr-mb-2w.seconde-no-new-offers-message
+    .fr-container
+      .fr-notice__body
+        p
+          span.fr-notice__title Création temporairement indisponible :
+          span.fr-notice__desc = seconde_no_new_offers_message
+- else
+  = render "form",
+           show_resume: true,
+           submit_button: true,
+           model: model, method: method, url: url

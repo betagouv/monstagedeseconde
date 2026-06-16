@@ -75,7 +75,7 @@
   .actions
     .row.fr-mb-8w
       .col-8.text-center
-        - unless @duplication && !troisieme_forbidden
+        - unless @duplication
           = form.submit submit_text, class: 'fr-btn', disabled: troisieme_forbidden
       .col-4 style="display: flex;align-items: center"
         = link_to "Annuler",

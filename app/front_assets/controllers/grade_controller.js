@@ -11,6 +11,7 @@ export default class extends Controller {
     'dialogContainer',
     'maxCandidatesSource',
     'maxCandidatesDisplay',
+    'submitButton',
   ];
 
   static values = { initialGrades: String };
@@ -46,6 +47,10 @@ export default class extends Controller {
     if (event !== undefined) {
       toggleContainer(this.alertContainerTarget, this.noGradeOffer());
     }
+    // En période interdite 3ème, débloquer le bouton si 2nde est cochée
+    if (this.hasSubmitButtonTarget && this.isTroisiemeForbidden()) {
+      this.submitButtonTarget.disabled = !this.grade2eTarget.checked;
+    }
   }
 
   onConfirm() {
@@ -62,10 +67,10 @@ export default class extends Controller {
 
     if (this.noGradeOffer()) {
       toggleContainer(this.alertContainerTarget, true);
-    } else if (this.gradeCollegeTarget.checked && this.isTroisiemeForbidden()) {
+    } else if (this.gradeCollegeTarget.checked && this.isTroisiemeForbidden() && !this.grade2eTarget.checked) {
       event.preventDefault();
       event.stopPropagation();
-    } else if (this.isDoubleGradeOffer()) {
+    } else if (this.isDoubleGradeOffer() && !this.isTroisiemeForbidden()) {
       this.maxCandidatesDisplayTarget.textContent = ` (${this.maxCandidatesSourceTarget.value})`;
       openDsfrModal(this.dialogContainerTarget);
     } else {

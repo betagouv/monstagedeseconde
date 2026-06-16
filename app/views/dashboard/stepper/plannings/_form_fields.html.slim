@@ -163,8 +163,8 @@
           = "Publier l'offre"
     - elsif duplication
       = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: forbidden
-      - if defined?(duplication_submit_text) && duplication_submit_text && !forbidden
+      - if defined?(duplication_submit_text) && duplication_submit_text
         .fr-mt-6w
-          button.fr-btn[type="button" data-action="grade#onValidate"]
+          button.fr-btn[type="button" data-action="grade#onValidate" data-grade-target="submitButton" disabled=forbidden || nil]
             = duplication_submit_text
 

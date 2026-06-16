@@ -15,23 +15,27 @@ p.fr-badge.fr-badge--error.d-none data-grade-target="alertContainer"
 fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend radio-hint-messages"
   legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-text--lg font-weight-bold" id="radio-hint-legend"
     | Sur quelle période proposez-vous ce stage pour les lycéens ?
+  - only_week_2 = respond_to?(:seconde_first_week_unavailable?) && seconde_first_week_unavailable?
+  - dates_locked = respond_to?(:seconde_no_new_offers?) && seconde_no_new_offers?
   .fr-fieldset__element
-    .fr-radio-group.fr-pb-1v
+    .fr-radio-group.fr-pb-1v class=("fr-hidden" if only_week_2)
       = form.radio_button :period_field,
                           2,
                           id: 'period_field_full_time',
                           checked: both_weeks,
+                          disabled: dates_locked,
                           data: {:'select-weeks-target' => :period,
                                  action: 'select-weeks#onPeriodClick'}
 
       = form.label :period_field,
                     labels[:full_time],
                     for: 'period_field_full_time'
-    .fr-radio-group.fr-py-1v
+    .fr-radio-group.fr-py-1v class=("fr-hidden" if only_week_2)
       = form.radio_button :period_field,
                           11,
                           id: 'period_field_week_1',
                           checked: week_1,
+                          disabled: dates_locked,
                           data: {:'select-weeks-target' => :period,
                                  action: 'select-weeks#onPeriodClick'}
 
@@ -44,6 +48,7 @@ fieldset class="fr-fieldset" id="radio-hint" aria-labelledby="radio-hint-legend 
                           12,
                           id: 'period_field_week_2',
                           checked: week_2,
+                          disabled: dates_locked,
                           data: {:'select-weeks-target' => :period,
                                  action: 'select-weeks#onPeriodClick'}
 

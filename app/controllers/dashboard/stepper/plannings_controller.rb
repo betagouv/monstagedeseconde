@@ -4,8 +4,10 @@ module Dashboard::Stepper
   # Step 3 of internship offer creation: fill planning info
   class PlanningsController < ApplicationController
     include TroisiemeDuplicationPeriod
+    include SecondeLimitedPeriod
 
-    helper_method :troisieme_no_dates_available?, :troisieme_no_dates_available_message
+    helper_method :troisieme_no_dates_available?, :troisieme_no_dates_available_message,
+                  :seconde_first_week_unavailable?, :seconde_no_new_offers?, :seconde_no_new_offers_message
 
     before_action :authenticate_user!
     before_action :fetch_planning, only: %i[edit update]

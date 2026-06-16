@@ -76,5 +76,15 @@ module Dashboard::Stepper
       )
       assert_response :bad_request
     end
+    test 'GET new during seconde_no_new_offers period shows blocking message and hides form' do
+      travel_to Date.new(2026, 6, 23) do
+        employer = create(:employer)
+        sign_in(employer)
+        get new_dashboard_stepper_internship_occupation_path
+        assert_response :success
+        assert_select '.seconde-no-new-offers-message'
+        assert_select 'form.seconde-no-new-offers-hidden', count: 0
+      end
+    end
   end
 end

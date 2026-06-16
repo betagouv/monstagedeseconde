@@ -72,6 +72,37 @@ module Dashboard::Stepper
       end
     end
 
+    test 'GET new during seconde_first_week_unavailable period hides full_time and week_1 radio buttons' do
+      travel_to Date.new(2026, 6, 16) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select '.fr-hidden #period_field_full_time'
+        assert_select '.fr-hidden #period_field_week_1'
+        assert_select '#period_field_week_2'
+        assert_select '.fr-hidden #period_field_week_2', count: 0
+      end
+    end
+
+    test 'GET new during troisieme no dates available period hides REP checkbox' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select '.fr-hidden input#planning_rep'
+      end
+    end
+
     test 'GET new outside troisieme no dates available period keeps college checkbox enabled' do
       travel_to Date.new(2026, 7, 2) do
         employer = create(:employer)

@@ -3,6 +3,10 @@
 module Dashboard::Stepper
   # Step 1 of internship offer creation: fill in company info
   class InternshipOccupationsController < ApplicationController
+    include SecondeLimitedPeriod
+
+    helper_method :seconde_no_new_offers?, :seconde_no_new_offers_message
+
     before_action :authenticate_user!
     before_action :clean_params, :sanitize_content, only: %i[create update]
     before_action :fetch_internship_occupation, only: %i[edit update]

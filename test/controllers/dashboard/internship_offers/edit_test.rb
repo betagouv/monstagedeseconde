@@ -40,6 +40,30 @@ module Dashboard::InternshipOffers
       end
     end
 
+    test "GET #edit on a seconde offer during seconde_no_new_offers period disables period radio buttons" do
+      travel_to Date.new(2026, 6, 23) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_2nde, employer:, max_candidates: 2)
+        get edit_dashboard_internship_offer_path(internship_offer.to_param)
+        assert_response :success
+        assert_select '#period_field_full_time[disabled]'
+        assert_select '#period_field_week_1[disabled]'
+        assert_select '#period_field_week_2[disabled]'
+      end
+    end
+
+    test "GET #edit on a troisieme offer during troisieme no dates available period hides REP checkbox" do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2)
+        get edit_dashboard_internship_offer_path(internship_offer.to_param)
+        assert_response :success
+        assert_select '.fr-hidden input#internship_offer_rep'
+      end
+    end
+
     test "GET #edit on a troisieme offer during troisieme no dates available period shows the alert message at the top of the form and disables the submit button" do
       travel_to Date.new(2026, 6, 10) do
         employer = create(:employer)
