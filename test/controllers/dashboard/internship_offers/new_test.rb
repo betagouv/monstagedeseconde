@@ -48,6 +48,20 @@ module Dashboard::InternshipOffers
       # }
     end
 
+    test 'GET #new as Employer with duplicate_id for an offer targeting both grades during standard period shows double grades dialog' do
+      travel_to Date.new(2026, 3, 1) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer,
+                                  employer:,
+                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '#double-grades-modal-action'
+        assert_select 'h2#double-grades-modal-action-title', text: /deux offres distinctes/
+      end
+    end
+
     test 'GET #new as Employer with duplicate_id for a troisieme offer during troisieme no dates available period shows grade_college checkbox disabled and unchecked' do
       travel_to Date.new(2026, 6, 10) do
         employer = create(:employer)

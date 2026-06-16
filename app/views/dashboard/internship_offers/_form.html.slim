@@ -67,6 +67,10 @@
              submit_button: false }
 
 
+  - both_grades = @internship_offer.grades.to_a.include?(Grade.seconde) && @internship_offer.grades.to_a.any? { |g| g.short_name.in?(%w[troisieme quatrieme]) }
+  - if @duplication && both_grades
+    = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: troisieme_forbidden
+
   .actions
     .row.fr-mb-8w
       .col-8.text-center
