@@ -42,7 +42,7 @@
       .row
         .col-6
           hr
-    - forbidden = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?
+    - forbidden = defined?(duplication_forbidden) ? duplication_forbidden : (respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?)
     - targets_troisieme = new_record || form.object.grades.to_a.include?(Grade.troisieme)
     - if new_record
       / Troisiemes
@@ -119,7 +119,7 @@
                                    existingSchools: form.object&.schools&.as_json})
     .row.fr-mt-6w
       .col-6
-        .row
+        .row class=("fr-hidden" if forbidden)
           .col-12
             = render 'inputs/dsfr_checkbox_field',
               form: form,

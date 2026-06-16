@@ -5,8 +5,11 @@
              data: { turbo: false }) do |form|
   = render "layouts/form_errors", resource: @internship_offer, resource_name: :internship_offer
 
-  - troisieme_forbidden = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available? && @internship_offer.grades.to_a.include?(Grade.troisieme)
-  - if troisieme_forbidden
+  - troisieme_no_dates = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?
+  - targets_troisieme = @internship_offer.grades.to_a.include?(Grade.troisieme)
+  - targets_troisieme_only = targets_troisieme && !@internship_offer.grades.to_a.include?(Grade.seconde)
+  - troisieme_forbidden = troisieme_no_dates && (@duplication ? targets_troisieme_only : targets_troisieme)
+  - if troisieme_no_dates && targets_troisieme
     .fr-notice.fr-notice--info.fr-mb-2w
       .fr-container
         .fr-notice__body
@@ -63,6 +66,7 @@
            { resource: @internship_offer,
              duplication: @duplication,
              duplication_submit_text: @duplication ? submit_text : nil,
+             duplication_forbidden: troisieme_forbidden,
              form: form,
              show_resume: false,
              submit_button: false }
