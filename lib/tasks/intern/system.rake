@@ -144,6 +144,7 @@ namespace :sys do
              "-d monstage " \
              "--clean --if-exists " \
              "--no-owner --no-privileges " \
+             "-d monstage " \
              "#{args[:filename]}")
     end
   end

@@ -15,6 +15,10 @@ export default class extends Controller {
 
   static values = { initialGrades: String };
 
+  isTroisiemeForbidden() {
+    return this.gradeCollegeTarget.dataset.gradeForbiddenValue === 'true';
+  }
+
   gradeCollegeTargetConnected() {
     this.onClick();
   }
@@ -54,6 +58,9 @@ export default class extends Controller {
 
     if (this.noGradeOffer()) {
       toggleContainer(this.alertContainerTarget, true);
+    } else if (this.gradeCollegeTarget.checked && this.isTroisiemeForbidden()) {
+      event.preventDefault();
+      event.stopPropagation();
     } else if (this.isDoubleGradeOffer()) {
       this.maxCandidatesDisplayTarget.textContent = ` (${this.maxCandidatesSourceTarget.value})`;
       openDsfrModal(this.dialogContainerTarget);
@@ -63,6 +70,8 @@ export default class extends Controller {
   }
 
   connect() {
+    if (!this.hasGradeCollegeTarget || !this.hasGrade2eTarget) return;
+
     this.initialGradesValue.split(',').forEach((grade) => {
       if (grade === 'troisieme' || grade === 'quatrieme') {
         this.gradeCollegeTarget.checked = true;
@@ -71,6 +80,7 @@ export default class extends Controller {
         this.grade2eTarget.checked = true;
       }
     });
+
     this.onClick();
   }
 }
