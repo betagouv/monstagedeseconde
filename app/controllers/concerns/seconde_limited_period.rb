@@ -18,6 +18,6 @@ module SecondeLimitedPeriod
   end
 
   def seconde_no_new_offers_message
-    "Les offres pour la prochaine année scolaire seront ouvertes à partir du 1er juillet."
+    "Le dépôt des offres pour la prochaine année scolaire sera ouvert à partir du 1er juillet."
   end
 end
