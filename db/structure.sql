@@ -1642,6 +1642,39 @@ ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_
 
 
 --
+-- Name: mail_action_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.mail_action_configs (
+    id bigint NOT NULL,
+    action_name character varying NOT NULL,
+    urgency_level character varying NOT NULL,
+    max_deliveries_count integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: mail_action_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.mail_action_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: mail_action_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.mail_action_configs_id_seq OWNED BY public.mail_action_configs.id;
+
+
+--
 -- Name: mail_action_items; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3025,6 +3058,13 @@ ALTER TABLE ONLY public.letter_thief_email_messages ALTER COLUMN id SET DEFAULT 
 
 
 --
+-- Name: mail_action_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_configs ALTER COLUMN id SET DEFAULT nextval('public.mail_action_configs_id_seq'::regclass);
+
+
+--
 -- Name: mail_action_items id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3512,6 +3552,14 @@ ALTER TABLE ONLY public.invitations
 
 ALTER TABLE ONLY public.letter_thief_email_messages
     ADD CONSTRAINT letter_thief_email_messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mail_action_configs mail_action_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_configs
+    ADD CONSTRAINT mail_action_configs_pkey PRIMARY KEY (id);
 
 
 --
@@ -4376,6 +4424,13 @@ CREATE INDEX index_invitations_on_user_id ON public.invitations USING btree (use
 --
 
 CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.letter_thief_email_messages USING btree (intercepted_at);
+
+
+--
+-- Name: index_mail_action_configs_on_action_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_mail_action_configs_on_action_name ON public.mail_action_configs USING btree (action_name);
 
 
 --
@@ -5613,6 +5668,7 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260616000000'),
 ('20260604000000'),
 ('20260603000000'),
 ('20260526090153'),

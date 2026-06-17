@@ -70,20 +70,19 @@ module MailActionConfigurable
       }
     }.transform_values { |v| v.merge(action_type: :pending_internship_agreement) }.freeze
 
-    PENDING_INTERNSHIP_OFFER_CONFIGS = {
-      "internship_offer_unpublished" => {
-        urgency_level: "low",
-        max_deliveries_count: 1
-      },
-      "internship_offer_removed" => {
-        urgency_level: "high",
-        max_deliveries_count: 1
-      }
-    }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
+    # PENDING_INTERNSHIP_OFFER_CONFIGS = {
+    #   "internship_offer_unpublished" => {
+    #     urgency_level: "low",
+    #     max_deliveries_count: 1
+    #   },
+    #   "internship_offer_removed" => {
+    #     urgency_level: "high",
+    #     max_deliveries_count: 1
+    #   }
+    # }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
 
     ACTION_CONFIGS = PENDING_APPLICATION_CONFIGS
                        .merge(PENDING_AGREEMENT_CONFIGS)
-                       .merge(PENDING_INTERNSHIP_OFFER_CONFIGS)
                        .freeze
   end
 end

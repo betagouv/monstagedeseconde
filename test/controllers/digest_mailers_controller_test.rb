@@ -38,6 +38,57 @@ class DigestMailersControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "GET new exposes action_configs to the view" do
+    god = create(:god)
+    sign_in(god)
+
+    get new_digest_mailer_path
+
+    assert_response :success
+    assert_not_nil assigns(:action_configs)
+    assert_includes assigns(:action_configs).keys,
+                    "new_internship_application"
+  end
+
+  test "POST create with config params saves configs and redirects" do
+    god = create(:god)
+    sign_in(god)
+
+    post digest_mailers_path, params: {
+      mail_action_configs: {
+        "new_internship_application" => {
+          urgency_level: "high",
+          max_deliveries_count: "3"
+        }
+      }
+    }
+
+    assert_redirected_to new_digest_mailer_path
+    assert_equal "high",
+                 MailActionConfig.find_by(
+                   action_name: "new_internship_application"
+                 ).urgency_level
+  end
+
+  test "POST create with reset param deletes the record and redirects" do
+    god = create(:god)
+    sign_in(god)
+    MailActionConfig.create!(
+      action_name: "new_internship_application",
+      urgency_level: "critical",
+      max_deliveries_count: 5
+    )
+
+    post digest_mailers_path, params: {
+      reset_action: "new_internship_application"
+    }
+
+    assert_redirected_to new_digest_mailer_path
+    assert_nil MailActionConfig.find_by(
+      action_name: "new_internship_application"
+    )
+  end
+
   private
 
   def assert_rake_task_runs(task_name)
