@@ -39,6 +39,14 @@ module Dashboard::Stepper
     def create
       @planning = Planning.new(planning_params.merge(entreprise_id: params[:entreprise_id]))
       authorize! :create, @planning
+
+      if seconde_no_new_offers? && planning_params[:grade_2e] == "1"
+        @internship_occupation = @entreprise.internship_occupation
+        @available_weeks = @planning.available_weeks || []
+        @planning.errors.add(:base, seconde_no_new_offers_message)
+        return render :new, status: :bad_request
+      end
+
       adapter = Dto::PlanningAdapter.new(instance: @planning, params: planning_params, current_user:)
                                     .manage_planning_associations
       @planning = adapter.instance

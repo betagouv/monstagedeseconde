@@ -14,6 +14,7 @@
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if new_record && !duplication
           = render 'dashboard/stepper/summary_card', form: form
+      - seconde_blocked = respond_to?(:seconde_no_new_offers?) && seconde_no_new_offers?
       - if new_record || !new_record && form.object.grades.to_a.include?(Grade.seconde)
         .col-md-6.order-md-1.order-2
           / Secondes
@@ -28,9 +29,14 @@
                   field: :grade_2e,
                   title: '',
                   label: 'Lycéens de 2de générale et technologique',
-                  options: { data: {:'grade-target' => 'grade2e',
-                                    action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
-                                    :'select-weeks-target' => 'grade2e' } }
+                  options: { disabled: seconde_blocked,
+                             checked: seconde_blocked ? false : form.object.grade_2e,
+                             data: {:'grade-target' => 'grade2e',
+                                   action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                                   :'select-weeks-target' => 'grade2e' } }
+                - if seconde_blocked
+                  .fr-highlight.fr-mt-1w
+                    p = seconde_no_new_offers_message
               - else
                 p.h5.fr-mb-4w.fr-mt-0 Lycéens de 2de générale et technologique
           .row data-grade-target="secondeContainer"

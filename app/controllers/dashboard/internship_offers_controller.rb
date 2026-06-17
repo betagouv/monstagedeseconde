@@ -81,6 +81,14 @@ module Dashboard
         end
       end
 
+      if seconde_no_new_offers? && internship_offer_params[:grade_2e] == "1"
+        @internship_offer = InternshipOffer.new
+        @available_weeks = Week.both_school_track_selectable_weeks
+        set_internship_offer_attributes(@internship_offer)
+        @internship_offer.errors.add(:base, seconde_no_new_offers_message)
+        return render :new, status: :unprocessable_entity
+      end
+
       create_params = internship_offer_params.merge(employer_id: current_user.id)
       internship_offer_builder.create(params: create_params) do |on|
         on.success do |created_internship_offer|

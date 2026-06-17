@@ -6,16 +6,17 @@
   = render "layouts/form_errors", resource: @internship_offer, resource_name: :internship_offer
 
   - troisieme_no_dates = respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?
+  - seconde_no_new = respond_to?(:seconde_no_new_offers?) && seconde_no_new_offers?
   - targets_troisieme = @internship_offer.grades.to_a.include?(Grade.troisieme)
   - targets_troisieme_only = targets_troisieme && !@internship_offer.grades.to_a.include?(Grade.seconde)
-  - troisieme_forbidden = troisieme_no_dates && (@duplication ? targets_troisieme_only : targets_troisieme)
-  - if troisieme_no_dates && targets_troisieme
+  - troisieme_forbidden = (troisieme_no_dates || seconde_no_new) && (@duplication ? targets_troisieme_only : targets_troisieme)
+  - if (troisieme_no_dates || seconde_no_new) && targets_troisieme
     .fr-notice.fr-notice--info.fr-mb-2w
       .fr-container
         .fr-notice__body
           p
-            span.fr-notice__title Bientôt disponible : 
-            span.fr-notice__desc = troisieme_no_dates_available_message
+            span.fr-notice__title Bientôt disponible :
+            span.fr-notice__desc = seconde_no_new && !troisieme_no_dates ? seconde_no_new_offers_message : troisieme_no_dates_available_message
 
   // used when
   = form.hidden_field :employer_id, value: current_user.id
