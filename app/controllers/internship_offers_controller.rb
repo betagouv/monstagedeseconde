@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 class InternshipOffersController < ApplicationController
+  include SecondeLimitedPeriod
+
   OPTIONAL_SEARCH_PARAMS = %i[keyword sector_ids].freeze
 
   layout 'search', only: :index
+
+  helper_method :seconde_no_new_offers?
 
   before_action :prepare_search_data, only: %i[index search]
 
