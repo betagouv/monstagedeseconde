@@ -130,9 +130,10 @@ Rails.application.configure do
     days_shift_count = ENV.fetch("DAYS_SHIFT_COUNT", "0").to_i
     if days_shift_count.nonzero?
       require "active_support/testing/time_helpers"
-      extend ActiveSupport::Testing::TimeHelpers
 
-      travel_to Time.current + days_shift_count.days
+      helper = Object.new
+      helper.extend(ActiveSupport::Testing::TimeHelpers)
+      helper.travel_to(Time.current + days_shift_count.days)
 
       puts "⏳ [Time Travel] L'application a voyagé dans le temps ! Heure actuelle : #{Time.current}"
     end
