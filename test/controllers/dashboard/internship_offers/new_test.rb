@@ -141,5 +141,29 @@ module Dashboard::InternshipOffers
         assert_select 'input[type=submit][disabled]', count: 0
       end
     end
+
+    # Scénario 8 : duplication d'une offre 3ème+2nde pendant la période A (Seconde)
+    # Les 2ndes : restriction sur les semaines (seule "Semaine 2" proposable)
+    # Les 3èmes : case grisée avec message car duplication 3ème impossible en Période A
+    test 'GET #new as Employer with duplicate_id for a both-grades offer during seconde_first_week_unavailable period restricts weeks and shows dialog' do
+      travel_to Date.new(2026, 6, 16) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer,
+                                  employer:,
+                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        # Vérifier restriction 2nde Période A : seule Semaine 2 visible
+        assert_select '.fr-hidden #period_field_full_time'
+        assert_select '.fr-hidden #period_field_week_1'
+        assert_select '#period_field_week_2'
+        assert_select '.fr-hidden #period_field_week_2', count: 0
+        # Vérifier affichage du dialogue pour les 2 publics
+        assert_select '#double-grades-modal-action'
+        # Vérifier case Collégiens grisée en Période A
+        assert_select '#internship_offer_grade_college[disabled]'
+      end
+    end
   end
 end

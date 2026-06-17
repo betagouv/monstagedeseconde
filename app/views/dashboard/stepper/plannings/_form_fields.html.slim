@@ -49,6 +49,8 @@
         .col-6
           hr
     - forbidden = defined?(duplication_forbidden) ? duplication_forbidden : (respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?)
+    - seconde_period_a_blocks_college = respond_to?(:seconde_first_week_unavailable?) && seconde_first_week_unavailable?
+    - forbidden = forbidden || seconde_period_a_blocks_college
     - targets_troisieme = new_record || form.object.grades.to_a.include?(Grade.troisieme)
     - if new_record
       / Troisiemes
