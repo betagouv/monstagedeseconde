@@ -188,13 +188,17 @@ class GodMailerTest < ActionMailer::TestCase
       internship_agreement.school_management_representative.email
     )
 
-    school_manager_item = MailActionItem.find_by(action_name: "signatures_enabled")
+    school_manager = internship_agreement.school_management_representative
+    school_manager_item = MailActionItem.find_by(action_name: "signatures_enabled",
+                                                  recipient_type: school_manager.class.name,
+                                                  recipient_id: school_manager.id)
     assert_not_nil school_manager_item
-    assert_equal internship_agreement.school_management_representative, school_manager_item.recipient
+    assert_equal school_manager, school_manager_item.recipient
     assert_equal internship_agreement, school_manager_item.internship_agreement
 
     student_item = MailActionItem.find_by(action_name: "agreement_to_sign",
-                                          recipient: internship_agreement.internship_application.student)
+                                          recipient_id: internship_agreement.internship_application.student.id,
+                                          recipient_type: "Users::Student")
     assert_not_nil student_item
     assert_equal internship_agreement, student_item.internship_agreement
   end
@@ -204,8 +208,11 @@ class GodMailerTest < ActionMailer::TestCase
 
     GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
 
-    mail_action_item = MailActionItem.last
-    assert_equal "signatures_enabled", mail_action_item.action_name
+    school_manager = internship_agreement.school_management_representative
+    mail_action_item = MailActionItem.find_by(action_name: "signatures_enabled",
+                                              recipient_type: school_manager.class.name,
+                                              recipient_id: school_manager.id)
+    assert_not_nil mail_action_item
     assert_not_nil mail_action_item.stale_at
     assert_includes MailActionItem.not_overdue, mail_action_item
   end
@@ -228,7 +235,10 @@ class GodMailerTest < ActionMailer::TestCase
 
     assert_equal cpe, internship_agreement.school_management_representative
 
-    assert_difference "MailActionItem.count", 1 do
+    # Le mailer crée 2 MailActionItems :
+    # 1. "signatures_enabled" → pour le school_management_representative (CPE)
+    # 2. "agreement_to_sign" → pour l'étudiant
+    assert_difference "MailActionItem.count", 2 do
       email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
       email.deliver_now
     end
@@ -236,8 +246,10 @@ class GodMailerTest < ActionMailer::TestCase
     assert_emails 1
     assert_not_includes ActionMailer::Base.deliveries.last.to, cpe.email
 
-    mail_action_item = MailActionItem.last
-    assert_equal "signatures_enabled", mail_action_item.action_name
+    mail_action_item = MailActionItem.find_by(action_name: "signatures_enabled",
+                                              recipient_type: cpe.class.name,
+                                              recipient_id: cpe.id)
+    assert_not_nil mail_action_item
     assert_equal cpe, mail_action_item.recipient
     assert_equal internship_agreement, mail_action_item.internship_agreement
   end
