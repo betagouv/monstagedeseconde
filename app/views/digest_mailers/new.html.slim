@@ -17,7 +17,7 @@
   hr.fr-mt-6w.fr-mb-6w
 
   h2.fr-mb-4w ⚙️ Configuration des fréquences et envois des emails récapitulatifs
-  h3.fr-mb-2w Niveaux d'urgence
+  p.fr-h5.fr-mb-2w Niveaux d'urgence
   .fr-highlight
     ul
       li Urgence faible : deux fois par semaine
@@ -27,7 +27,7 @@
 
   = form_with url: digest_mailers_path, method: :post, id: "config-form" do |f|
     - @presenter.sections.each do |section_title, action_names|
-      h4.fr-my-3w = section_title
+      h3.fr-my-3w = section_title
       table.fr-table.fr-mb-6w style="width:100%"
         thead
           tr
