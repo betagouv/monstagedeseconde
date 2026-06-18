@@ -13,7 +13,7 @@ module Presenters
       "internship_application_transfered"          => "Candidature transférée",
       "internship_agreement_completed_by_employer" => "Convention complétée par l'employeur",
       "new_agreement_to_fill_in"                   => "Nouvelle convention à compléter",
-      "agreement_signed_by_another"                => "Convention signée par un autre élève",
+      "agreement_signed_by_another"                => "Convention signée par un autre usager",
       "agreement_to_sign"                          => "Convention à signer",
       "signatures_enabled"                         => "Signatures électroniques ouvertes",
       "agreement_signed_by_all"                    => "Convention signée par toutes les parties"
