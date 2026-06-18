@@ -106,7 +106,7 @@ Rails.application.configure do
     Bullet.rails_logger = true
 
     # Time travelling
-    if ENV["DAYS_SHIFT_COUNT"].present?
+    if ENV["DAYS_SHIFT_COUNT"].present? && ENV.fetch("DAYS_SHIFT_COUNT", "0").to_i.nonzero?
       require "active_support/testing/time_helpers"
       extend ActiveSupport::Testing::TimeHelpers
 
