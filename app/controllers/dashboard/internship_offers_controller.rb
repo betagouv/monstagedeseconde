@@ -2,23 +2,19 @@
 
 module Dashboard
   class InternshipOffersController < ApplicationController
+    include TroisiemeDuplicationPeriod
+
     before_action :authenticate_user!
     before_action :set_internship_offer,
                   only: %i[edit update destroy republish]
 
-    helper_method :order_direction
+    helper_method :order_direction, :troisieme_duplication_forbidden?, :troisieme_duplication_forbidden_message
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 
-    # Define allowed stats columns for ordering: update with correct column names
-    ALLOWED_STATS_COLUMNS = %w[
-      submitted_applications_count
-      viewed_count
-      # add other allowed statistics columns here
-    ].freeze
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
-      authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
+      authorize! :index, :internship_offer_dashboard
 
       return if params[:order] && !valid_order_column? && (redirect_to(dashboard_internship_offers_path, flash: { danger: "Impossible de trier par #{params[:order]}" }); true)
 
@@ -27,7 +23,7 @@ module Dashboard
       if order_column_from_stats?
         # Only allow ordering by whitelisted columns/directions (defended in order_column/order_direction)
         stats_column = order_column
-        direction = order_direction&.upcase == 'ASC' ? 'ASC' : 'DESC'
+        direction = order_direction&.upcase == "ASC" ? "ASC" : "DESC"
         @internship_offers = @internship_offers.joins(:stats)
         # Add the column to the GROUP BY to avoid the PostgreSQL error
         @internship_offers = @internship_offers.group("internship_offers.id, internship_offer_stats.#{stats_column}")
@@ -41,7 +37,7 @@ module Dashboard
       return unless params[:search].present?
 
       @internship_offers = @internship_offers.where(
-        'title ILIKE :search OR employer_name ILIKE :search OR city ILIKE :search',
+        "title ILIKE :search OR employer_name ILIKE :search OR city ILIKE :search",
         search: "%#{params[:search]}%"
       )
     end
@@ -68,19 +64,30 @@ module Dashboard
     def create
       @duplication = true
       authorize! :create, InternshipOffer
-      internship_offer_builder.create(params: internship_offer_params) do |on|
+
+      if params[:duplicate_id].present? && internship_offer_params[:grade_college] == "1" && troisieme_duplication_forbidden?
+        @internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+        @available_weeks = Week.both_school_track_selectable_weeks
+        set_internship_offer_attributes(@internship_offer)
+        @internship_offer.errors.add(:base, troisieme_duplication_forbidden_message)
+        return render :new, status: :unprocessable_entity
+      end
+
+      create_params = internship_offer_params.merge(employer_id: current_user.id)
+      internship_offer_builder.create(params: create_params) do |on|
         on.success do |created_internship_offer|
           @internship_offer = created_internship_offer
           @internship_offer = Dto::PlanningAdapter.new(instance: @internship_offer, params: internship_offer_params,
                                                        current_user:)
                                                   .manage_planning_associations
                                                   .instance
+          @internship_offer.split_offer if duplicate_with_double_grades?
           @available_weeks = Week.troisieme_weeks
-          success_message = if params[:commit] == 'Renouveler l\'offre'
-                              'Votre offre de stage a été renouvelée pour cette année scolaire.'
+          success_message = if params[:commit] == "Renouveler l'offre"
+                              "Votre offre de stage a été renouvelée pour cette année scolaire."
           else
                               "L'offre de stage a été dupliquée en tenant compte" \
-                              ' de vos éventuelles modifications.'
+                              " de vos éventuelles modifications."
           end
           redirect_to(internship_offer_path(created_internship_offer, stepper: true),
                       flash: { success: success_message })
@@ -119,7 +126,7 @@ module Dashboard
       if params[:internship_offer].key?(:is_public)
         is_public_value = ActiveModel::Type::Boolean.new.cast(internship_offer_params[:is_public])
         if is_public_value
-          params[:internship_offer][:sector_id] = Sector.find_by(name: 'Fonction publique').try(:id)
+          params[:internship_offer][:sector_id] = Sector.find_by(name: "Fonction publique").try(:id)
         else
           params[:internship_offer][:group_id] = nil
         end
@@ -130,8 +137,8 @@ module Dashboard
           respond_to do |format|
             format.turbo_stream
             format.html do
-              redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                          flash: { success: 'Votre annonce a bien été modifiée' }
+              redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                          flash: { success: "Votre annonce a bien été modifiée" }
             end
           end
         end
@@ -157,7 +164,7 @@ module Dashboard
       internship_offer_builder.discard(instance: @internship_offer) do |on|
         on.success do
           redirect_to(dashboard_internship_offers_path,
-                      flash: { success: 'Votre annonce a bien été supprimée' })
+                      flash: { success: "Votre annonce a bien été supprimée" })
         end
         on.failure do |_failed_internship_offer|
           redirect_to(dashboard_internship_offers_path,
@@ -173,8 +180,8 @@ module Dashboard
         republish
       else
         @internship_offer.publish! unless @internship_offer.published?
-        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                    flash: { success: 'Votre annonce a bien été publiée' }
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { success: "Votre annonce a bien été publiée" }
       end
     end
 
@@ -183,22 +190,22 @@ module Dashboard
       authorize! :update, @internship_offer
       if @internship_offer.may_unpublish?
         @internship_offer.unpublish!
-        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                    flash: { success: 'Votre annonce a bien été dépubliée' }
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { success: "Votre annonce a bien été dépubliée" }
       else
-        redirect_to dashboard_internship_offers_path(origine: 'dashboard'),
-                    flash: { warning: 'Votre annonce n\'a pas pu être dépubliée' }
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { warning: "Votre annonce n'a pas pu être dépubliée" }
       end
     end
 
     def republish
-      anchor = 'max_candidates_fields'
+      anchor = "max_candidates_fields"
       warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
 
-      if @internship_offer.remaining_seats_count.zero?
+      if @internship_offer.remaining_seats_count <= 0
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
       elsif @internship_offer.remaining_seats_count > 0
-        anchor = 'weeks_container'
+        anchor = "weeks_container"
         warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
       end
       redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: anchor),
@@ -246,10 +253,10 @@ module Dashboard
     end
 
     def order_column
-      if params[:order] && ALLOWED_STATS_COLUMNS.include?(params[:order])
+      if params[:order] && VALID_ORDER_COLUMNS.include?(params[:order])
         params[:order]
       else
-        'submitted_applications_count'
+        "submitted_applications_count"
       end
     end
 
@@ -267,20 +274,20 @@ module Dashboard
     def internship_offer_params
       params.expect(
         internship_offer: [
-          :academy, :aasm_state, :city, :contact_phone, :all_year_long,
-          :department, :description, :employer_chosen_name, :employer_id,
+          :academy, :city, :contact_phone, :all_year_long,
+          :department, :description, :employer_chosen_name,
           :employer_name, :employer_type, :entreprise_chosen_full_address,
           :entreprise_city,
           :entreprise_coordinates_longitude, :entreprise_coordinates_latitude,
           :entreprise_full_address,
-          :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
+          :entreprise_street, :entreprise_zipcode, :entreprise_id, :grade_2e, :grade_college,
           :group_id, :internship_address_manual_enter, :internship_offer_area_id,
           :is_public, :lunch_break, :max_candidates,
-          :period, :period_field, :published_at, :region, :renewed, :republish, :school_id,
-          :sector_id, :shall_publish, :siret, :street, :title, :type, :workspace_conditions,
+          :period, :period_field, :published_at, :region, :renewed, :republish,
+          :sector_id, :shall_publish, :siret, :street, :title, :workspace_conditions,
           :workspace_accessibility, :user_update, :verb, :zipcode, :code_ape, :qpv, :rep,
           entreprise_coordinates: {}, coordinates: {},
-          week_ids: [], grade_ids: [], daily_hours: {}, weekly_hours: [], school_ids: []]
+          week_ids: [], grade_ids: [], daily_hours: {}, weekly_hours: [], school_ids: [] ]
       )
     end
 
@@ -289,10 +296,17 @@ module Dashboard
     end
 
     def set_internship_offer_attributes(internship_offer)
-      @internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? '1' : '0'
-      @internship_offer.grade_2e = internship_offer.fits_for_seconde? ? '1' : '0'
+      @internship_offer.grade_college = internship_offer.fits_for_troisieme_or_quatrieme? ? "1" : "0"
+      @internship_offer.grade_2e = internship_offer.fits_for_seconde? ? "1" : "0"
       @internship_offer.all_year_long = internship_offer.all_year_long?
       @internship_offer.entreprise_chosen_full_address = internship_offer.entreprise_full_address
+    end
+
+    def duplicate_with_double_grades?
+      return false unless params[:duplicate_id].present?
+
+      grades = @internship_offer.grades.map(&:short_name)
+      grades.include?("seconde") && grades.any? { |grade| grade.in?(%w[troisieme quatrieme]) }
     end
   end
 end

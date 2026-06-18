@@ -8,4 +8,5 @@ nav.fr-breadcrumb aria-label=("vous êtes ici :") role="navigation"
           li= link_to link[1], link[0], class: 'fr-breadcrumb__link'
         - else
           li
-            a.fr-breadcrumb__link aria-current="page" #{link[1]}
+            a.fr-breadcrumb__link aria-current="page"
+              = link.is_a?(Hash) ? link[:name] : link[1]

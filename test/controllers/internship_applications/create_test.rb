@@ -54,9 +54,17 @@ module InternshipApplications
     end
 
     test 'GET #new internship application as student with no weeks set by the school works' do
-      travel_to Time.zone.local(2025, 3, 1) do
-        troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
-        internship_offer = create(:weekly_internship_offer_3eme, weeks: troisieme_weeks)
+#       <<<<<<< HEAD
+#       travel_to Time.zone.local(2025, 3, 1) do
+#         troisieme_weeks = Week.troisieme_selectable_weeks.presence || SchoolTrack::Troisieme.selectable_on_school_year_weeks
+#         internship_offer = create(:weekly_internship_offer_3eme, weeks: troisieme_weeks)
+# =======
+#       travel_to Time.zone.local(2025, 10, 1) do
+#         internship_offer = create(:weekly_internship_offer_3eme)
+# >>>>>>> MGF-1684-emails-resumes-pour-chefs-etablissements
+    end
+      travel_to Time.zone.local(2025, 10, 1) do
+        internship_offer = create(:weekly_internship_offer_3eme)
         school = create(:school, school_type: 'college')
         school.weeks = []
         student = create(:student, school:, class_room: create(:class_room, school:))
@@ -469,6 +477,38 @@ module InternshipApplications
           post(internship_offer_internship_applications_path(internship_offer), params: valid_params)
           assert_response :redirect
         end
+      end
+    end
+
+    test 'POST #create as student who already applied redirects to the offer with a friendly alert' do
+      travel_to Date.new(2023, 10, 1) do
+        internship_offer = create(:weekly_internship_offer_3eme)
+        school = create(:school)
+        student = create(:student, school:, class_room: create(:class_room, school:))
+        create(:weekly_internship_application, internship_offer:, student:)
+
+        sign_in(student)
+
+        # Mimics a double-submit / page reload: a second POST while an application already exists.
+        # authorize! :apply now fails; we must redirect to the offer with a friendly message
+        # instead of bouncing to root with "Vous n'êtes pas autorisé à effectuer cette action.".
+        assert_no_difference('InternshipApplication.count') do
+          post(
+            internship_offer_internship_applications_path(internship_offer),
+            params: {
+              internship_application: {
+                motivation: 'Je suis trop motivé wesh',
+                user_id: student.id,
+                internship_offer_id: internship_offer.id,
+                internship_offer_type: InternshipOffer.name,
+                type: InternshipApplications::WeeklyFramed.name
+              }
+            }
+          )
+        end
+
+        assert_redirected_to internship_offer_path(internship_offer)
+        assert_equal 'Vous avez déjà postulé à cette offre.', flash[:alert]
       end
     end
   end

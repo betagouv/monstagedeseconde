@@ -1,0 +1,15 @@
+- if @error
+  = turbo_stream.replace "flash-admin" do
+    #flash-admin
+      .fr-alert.fr-alert--error.fr-mb-2w role="alert"
+        p = @error
+- else
+  = turbo_stream.replace "extra-schools" do
+    #extra-schools
+      = render "admin/user_schools/list",
+               school_management: @school_management,
+               extra_schools: @extra_schools
+  = turbo_stream.replace "flash-admin" do
+    #flash-admin
+      .fr-alert.fr-alert--success.fr-mb-2w role="alert"
+        p = @notice

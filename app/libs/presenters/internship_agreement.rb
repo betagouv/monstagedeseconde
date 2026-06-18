@@ -6,6 +6,7 @@ module Presenters
     delegate :signature_started?,  to: :internship_agreement
     delegate :signed_by?,  to: :internship_agreement
     delegate :signed_by_team_member?,  to: :internship_agreement
+    delegate :roles_not_signed_yet, to: :internship_agreement
     delegate :internship_application, to: :internship_agreement
 
     delegate :student, to: :internship_application
@@ -29,7 +30,7 @@ module Presenters
     end
 
     def internship_offer_address
-      internship_offer.presenter.address || 'Adresse non renseignée'
+      internship_offer.presenter.address || "Adresse non renseignée"
     end
 
     def str_weeks
@@ -41,7 +42,7 @@ module Presenters
         internship_offer.corporations
                         .pluck(:corporation_name)
                         .map { |name| name.truncate(20) }
-                        .join(' | ')
+                        .join(" | ")
                         .truncate(100)
       else
         internship_offer.employer_name
@@ -49,8 +50,8 @@ module Presenters
     end
 
     def role
-      return 'employer' if current_user.employer_like?
-      return 'school_manager' if current_user.school_management?
+      return "employer" if current_user.employer_like?
+      return "school_manager" if current_user.school_management?
 
       nil
     end
@@ -65,7 +66,7 @@ module Presenters
     end
 
     def inline_status_label
-      translation_path = translation_path(current_user.role || 'employer')
+      translation_path = translation_path(current_user.role || "employer")
       common_status_label(translation_path)
     end
 
@@ -73,7 +74,7 @@ module Presenters
       ::Signature.where(
         internship_agreement_id: internship_agreement.id,
         user_id: reader.id,
-        signatory_role: 'student'
+        signatory_role: "student"
       ).exists?
     end
 
@@ -82,21 +83,21 @@ module Presenters
       # action_label stands for action button content
       action_path = { path: internship_agreement_path }
       case internship_agreement.aasm_state.to_s
-      when 'validated'
+      when "validated"
         { label: "en attente de signatures",
-          button_type: '',
-          badge: 'info',
-          actions: []}# [action_path.merge(label: action_label, level: action_level)] }
-      when 'signatures_started'
+          button_type: "",
+          badge: "info",
+          actions: [] }# [action_path.merge(label: action_label, level: action_level)] }
+      when "signatures_started"
         { label: "partiellement signée",
-          button_type: 'fr-btn--secondary',
-          badge: 'info',
-          actions: []}
-      when 'signed_by_all'
+          button_type: "fr-btn--secondary",
+          badge: "info",
+          actions: [] }
+      when "signed_by_all"
         { label: "signée de tous",
-          button_type: 'fr-btn--secondary',
-          badge: 'success',
-          actions: []}
+          button_type: "fr-btn--secondary",
+          badge: "success",
+          actions: [] }
       else
         {}
       end
@@ -108,20 +109,20 @@ module Presenters
         corporation_id: corporation_id
       )
       if corporation_internship_agreement.nil?
-        {status: "N/A",
-        to_be_signed: false}
+        { status: "N/A",
+        to_be_signed: false }
       elsif corporation_internship_agreement.signed
         { status: "Signée",
-          to_be_signed: false}
+          to_be_signed: false }
       else
         { status: "En attente de signature",
-         to_be_signed: true}
+         to_be_signed: true }
       end
     end
 
     def corporations_info
       internship_offer.corporations.tap do |corporations|
-        corporations_signed_ids = corporations.map{|c| c.corporation_internship_agreement_for(internship_agreement)}
+        corporations_signed_ids = corporations.map { |c| c.corporation_internship_agreement_for(internship_agreement) }
                                               .select(&:signed)
                                               .map(&:corporation_id)
         signed_count = corporations_signed_ids.count
@@ -143,8 +144,8 @@ module Presenters
         signed: cia.signed,
         employer_name: corporation.employer_name,
         employer_email: corporation.employer_email,
-        icon: cia.signed ? 'fr-badge--success' : 'fr-badge--warning',
-        label: cia.signed ? 'Signée' : 'En attente',
+        icon: cia.signed ? "fr-badge--success" : "fr-badge--warning",
+        label: cia.signed ? "Signée" : "En attente",
         id: corporation.id
       }
     end
@@ -180,13 +181,31 @@ module Presenters
       if internship_agreement.from_multi? && current_user.employer_like? && internship_agreement.signatures_started?
         I18n.t("#{translation_path}.multi_employer")
       elsif internship_agreement.signatures_started? &&
+          current_user.school_management? &&
+          roles_not_signed_yet == [ "employer" ] &&
+          internship_agreement.signed_by_team_member?(user: current_user)
+        "Vous avez déjà signé. En attente de la signature du représentant de l'entreprise."
+      elsif internship_agreement.signatures_started? &&
           (internship_agreement.signed_by_team_member?(user: current_user) ||
             internship_agreement.signed_by?(user: current_user.try(:school).try(:school_manager)))
         I18n.t("#{translation_path}.already_signed")
       elsif internship_agreement.signatures_started?
-        I18n.t("#{translation_path}.not_signed_yet")
+        signatures_started_label
       else
         I18n.t(translation_path)
+      end
+    end
+
+    def signatures_started_label
+      current_user_signed = current_user_signed?
+      remaining = internship_agreement.roles_not_signed_yet
+
+      if !current_user_signed
+        "Convention partiellement signée. En attente de votre signature."
+      elsif remaining.size == 1
+        "Vous avez déjà signé. En attente de la signature de #{human_signatory_role(remaining.first)}."
+      else
+        "Vous avez déjà signé. En attente des autres signatures."
       end
     end
 
@@ -194,6 +213,22 @@ module Presenters
       Rails.application.routes.url_helpers.dashboard_internship_agreement_path(
         uuid: internship_agreement.uuid
       )
+    end
+
+    def current_user_signed?
+      if current_user.school_management?
+        internship_agreement.signed_by?(user: current_user)
+      else
+        internship_agreement.signed_by_team_member?(user: current_user)
+      end
+    end
+
+    def human_signatory_role(role)
+      if ::Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE.include?(role)
+        "l'équipe pédagogique"
+      else
+        ::Signature::FR_SIGNATORY_ROLE[role.to_sym]&.downcase || role
+      end
     end
   end
 end

@@ -333,7 +333,12 @@ export default function SirenInput({
           groupChoice.value = "";
         }
         sectorBlocClassList.remove("fr-hidden");
-        sector.value = "";
+        // Auto-select sector from NAF mapping if available
+        if (selection.sectorId && sector) {
+          sector.value = selection.sectorId;
+        } else {
+          sector.value = "";
+        }
       }
     }
     if (isFaulty && formerPublicValue) {

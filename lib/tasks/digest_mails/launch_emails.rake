@@ -1,19 +1,17 @@
 namespace :digest_mailers do
-  desc "send digest mails for low urgency level"
-  task send_low_urgency_emails: :environment do
-    user_ids = MailActionItem.for_users
-                             .with_urgency_levels(%w[low medium high critical])
-                             .not_overdue
-                             .pending
-                             .pluck(:recipient_id)
-                             .uniq
+  def send_digest_emails(scope:, levels:, mailer:, perform_method:, label:)
+    user_ids = scope.with_urgency_levels(levels)
+                    .not_overdue
+                    .pending
+                    .pluck(:recipient_id)
+                    .uniq
     if user_ids.any?
       user_ids.each do |user_id|
-        ::Services::EmployerActions::EmployerDigestMailer.perform_for_low_level(user_id: user_id)
+        mailer.public_send(perform_method, user_id: user_id)
       end
     else
       Rails.logger.info "=" * 50
-      Rails.logger.info "No low urgency emails to send"
+      Rails.logger.info "No #{label} emails to send"
       Rails.logger.info "=" * 50
     end
 
@@ -50,156 +48,63 @@ namespace :digest_mailers do
     end
   end
 
+  desc "send digest mails for low urgency level"
+  task send_low_urgency_emails: :environment do
+    send_digest_emails(scope: MailActionItem.for_employers,
+                        levels: %w[low medium high critical],
+                        mailer: ::Services::EmployerActions::EmployerDigestMailer,
+                        perform_method: :perform_for_low_level,
+                        label: "low urgency employer")
+
+    send_digest_emails(scope: MailActionItem.for_school_management_team,
+                        levels: %w[low medium high critical],
+                        mailer: ::Services::SchoolManagementActions::SchoolManagementDigestMailer,
+                        perform_method: :perform_for_low_level,
+                        label: "low urgency school management")
+  end
+
   desc "send digest mails for medium urgency level"
   task send_medium_urgency_emails: :environment do
-    user_ids = MailActionItem.for_users
-                             .with_urgency_levels(%w[medium high critical])
-                             .not_overdue
-                             .pending
-                             .pluck(:recipient_id)
-                             .uniq
-    if user_ids.any?
-      user_ids.each do |user_id|
-        ::Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No medium urgency emails to send"
-      Rails.logger.info "=" * 50
-    end
+    send_digest_emails(scope: MailActionItem.for_employers,
+                        levels: %w[medium high critical],
+                        mailer: ::Services::EmployerActions::EmployerDigestMailer,
+                        perform_method: :perform_for_medium_level,
+                        label: "medium urgency employer")
 
-    school_management_ids = MailActionItem.for_school_management_team
-                                          .with_urgency_levels(%w[medium high critical])
-                                          .not_overdue
-                                          .pending
-                                          .pluck(:recipient_id)
-                                          .uniq
-    if school_management_ids.any?
-      school_management_ids.each do |user_id|
-        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_medium_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No medium urgency school management emails to send"
-      Rails.logger.info "=" * 50
-    end
-
-    student_ids = MailActionItem.for_students
-                                .with_urgency_levels(%w[medium high critical])
-                                .not_overdue
-                                .pending
-                                .pluck(:recipient_id)
-                                .uniq
-    if student_ids.any?
-      student_ids.each do |user_id|
-        ::Services::StudentActions::StudentDigestMailer.perform_for_medium_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No medium urgency student emails to send"
-      Rails.logger.info "=" * 50
-    end
+    send_digest_emails(scope: MailActionItem.for_school_management_team,
+                      levels: %w[medium high critical],
+                      mailer: ::Services::SchoolManagementActions::SchoolManagementDigestMailer,
+                      perform_method: :perform_for_medium_level,
+                      label: "medium urgency school management")
   end
 
   desc "send digest mails for high urgency level"
   task send_high_urgency_emails: :environment do
-    user_ids = MailActionItem.for_users
-                             .with_urgency_levels(%w[high critical])
-                             .not_overdue
-                             .pending
-                             .pluck(:recipient_id)
-                             .uniq
-    if user_ids.any?
-      user_ids.each do |user_id|
-        ::Services::EmployerActions::EmployerDigestMailer.perform_for_high_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No high urgency emails to send"
-      Rails.logger.info "=" * 50
-    end
+    send_digest_emails(scope: MailActionItem.for_employers,
+                        levels: %w[high critical],
+                        mailer: ::Services::EmployerActions::EmployerDigestMailer,
+                        perform_method: :perform_for_high_level,
+                        label: "high urgency employer")
 
-    school_management_ids = MailActionItem.for_school_management_team
-                                          .with_urgency_levels(%w[high critical])
-                                          .not_overdue
-                                          .pending
-                                          .pluck(:recipient_id)
-                                          .uniq
-    if school_management_ids.any?
-      school_management_ids.each do |user_id|
-        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_high_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No high urgency school management emails to send"
-      Rails.logger.info "=" * 50
-    end
-
-    student_ids = MailActionItem.for_students
-                                .with_urgency_levels(%w[high critical])
-                                .not_overdue
-                                .pending
-                                .pluck(:recipient_id)
-                                .uniq
-    if student_ids.any?
-      student_ids.each do |user_id|
-        ::Services::StudentActions::StudentDigestMailer.perform_for_high_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No high urgency student emails to send"
-      Rails.logger.info "=" * 50
-    end
+    send_digest_emails(scope: MailActionItem.for_school_management_team,
+                        levels: %w[high critical],
+                        mailer: ::Services::SchoolManagementActions::SchoolManagementDigestMailer,
+                        perform_method: :perform_for_high_level,
+                        label: "high urgency school management")
   end
 
   desc "send digest mails for critical urgency level"
   task send_critical_urgency_emails: :environment do
-    user_ids = MailActionItem.for_users
-                             .with_urgency_levels(%w[critical])
-                             .not_overdue
-                             .pending
-                             .pluck(:recipient_id)
-                             .uniq
-    if user_ids.any?
-      user_ids.each do |user_id|
-        ::Services::EmployerActions::EmployerDigestMailer.perform_for_critical_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No critical urgency emails to send"
-      Rails.logger.info "=" * 50
-    end
+    send_digest_emails(scope: MailActionItem.for_employers,
+                        levels: %w[critical],
+                        mailer: ::Services::EmployerActions::EmployerDigestMailer,
+                        perform_method: :perform_for_critical_level,
+                        label: "critical urgency employer")
 
-    school_management_ids = MailActionItem.for_school_management_team
-                                          .with_urgency_levels(%w[critical])
-                                          .not_overdue
-                                          .pending
-                                          .pluck(:recipient_id)
-                                          .uniq
-    if school_management_ids.any?
-      school_management_ids.each do |user_id|
-        ::Services::SchoolManagementActions::SchoolManagementDigestMailer.perform_for_critical_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No critical urgency school management emails to send"
-      Rails.logger.info "=" * 50
-    end
-
-    student_ids = MailActionItem.for_students
-                                .with_urgency_levels(%w[critical])
-                                .not_overdue
-                                .pending
-                                .pluck(:recipient_id)
-                                .uniq
-    if student_ids.any?
-      student_ids.each do |user_id|
-        ::Services::StudentActions::StudentDigestMailer.perform_for_critical_level(user_id: user_id)
-      end
-    else
-      Rails.logger.info "=" * 50
-      Rails.logger.info "No critical urgency student emails to send"
-      Rails.logger.info "=" * 50
-    end
+    send_digest_emails(scope: MailActionItem.for_school_management_team,
+                        levels: %w[critical],
+                        mailer: ::Services::SchoolManagementActions::SchoolManagementDigestMailer,
+                        perform_method: :perform_for_critical_level,
+                        label: "critical urgency school management")
   end
 end

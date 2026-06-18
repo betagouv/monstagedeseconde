@@ -6,7 +6,7 @@ module MailActionConfigurable
   included do
     # ACTION_CONFIGS: single source of truth for create_by_name! defaults.
     # Keys are action names; each value must include :action_type, :urgency_level,
-    # :max_deliveries_count and :stale_at (as a lambda).
+    # :max_deliveries_count.
     # To add a new action: add one entry here + the value to the enum in MailActionItem.
     PENDING_APPLICATION_CONFIGS = {
       "new_internship_application" => {
@@ -82,20 +82,19 @@ module MailActionConfigurable
       }
     }.transform_values { |v| v.merge(action_type: :pending_internship_agreement) }.freeze
 
-    PENDING_INTERNSHIP_OFFER_CONFIGS = {
-      "internship_offer_unpublished" => {
-        urgency_level: "low",
-        max_deliveries_count: 1
-      },
-      "internship_offer_removed" => {
-        urgency_level: "high",
-        max_deliveries_count: 1
-      }
-    }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
+    # PENDING_INTERNSHIP_OFFER_CONFIGS = {
+    #   "internship_offer_unpublished" => {
+    #     urgency_level: "low",
+    #     max_deliveries_count: 1
+    #   },
+    #   "internship_offer_removed" => {
+    #     urgency_level: "high",
+    #     max_deliveries_count: 1
+    #   }
+    # }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
 
     ACTION_CONFIGS = PENDING_APPLICATION_CONFIGS
                        .merge(PENDING_AGREEMENT_CONFIGS)
-                       .merge(PENDING_INTERNSHIP_OFFER_CONFIGS)
                        .freeze
   end
 end

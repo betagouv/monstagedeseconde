@@ -1,7 +1,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -21,7 +20,6 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
 -- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
 
 
 --
@@ -35,7 +33,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
@@ -49,7 +46,6 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
 
 
 --
@@ -63,7 +59,6 @@ CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
 -- Name: EXTENSION unaccent; Type: COMMENT; Schema: -; Owner: -
 --
 
--- COMMENT ON EXTENSION unaccent IS 'text search dictionary that removes accents';
 
 
 --
@@ -1647,6 +1642,39 @@ ALTER SEQUENCE public.letter_thief_email_messages_id_seq OWNED BY public.letter_
 
 
 --
+-- Name: mail_action_configs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.mail_action_configs (
+    id bigint NOT NULL,
+    action_name character varying NOT NULL,
+    urgency_level character varying NOT NULL,
+    max_deliveries_count integer NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: mail_action_configs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.mail_action_configs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: mail_action_configs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.mail_action_configs_id_seq OWNED BY public.mail_action_configs.id;
+
+
+--
 -- Name: mail_action_items; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3030,6 +3058,13 @@ ALTER TABLE ONLY public.letter_thief_email_messages ALTER COLUMN id SET DEFAULT 
 
 
 --
+-- Name: mail_action_configs id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_configs ALTER COLUMN id SET DEFAULT nextval('public.mail_action_configs_id_seq'::regclass);
+
+
+--
 -- Name: mail_action_items id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -3517,6 +3552,14 @@ ALTER TABLE ONLY public.invitations
 
 ALTER TABLE ONLY public.letter_thief_email_messages
     ADD CONSTRAINT letter_thief_email_messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mail_action_configs mail_action_configs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.mail_action_configs
+    ADD CONSTRAINT mail_action_configs_pkey PRIMARY KEY (id);
 
 
 --
@@ -4055,17 +4098,17 @@ CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.intern
 
 
 --
+-- Name: index_internship_agreements_on_application_id_unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_internship_agreements_on_application_id_unique ON public.internship_agreements USING btree (internship_application_id) WHERE (discarded_at IS NULL);
+
+
+--
 -- Name: index_internship_agreements_on_discarded_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_internship_agreements_on_discarded_at ON public.internship_agreements USING btree (discarded_at);
-
-
---
--- Name: index_internship_agreements_on_internship_application_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internship_agreements_on_internship_application_id ON public.internship_agreements USING btree (internship_application_id);
 
 
 --
@@ -4384,6 +4427,13 @@ CREATE INDEX index_letter_thief_email_messages_on_intercepted_at ON public.lette
 
 
 --
+-- Name: index_mail_action_configs_on_action_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_mail_action_configs_on_action_name ON public.mail_action_configs USING btree (action_name);
+
+
+--
 -- Name: index_mail_action_items_on_internship_agreement_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4416,6 +4466,13 @@ CREATE INDEX index_mail_action_items_on_recipient_pl_action_urgency_resolved ON 
 --
 
 CREATE INDEX index_mail_action_items_on_recipient_type_and_recipient_id ON public.mail_action_items USING btree (recipient_type, recipient_id);
+
+
+--
+-- Name: index_mail_action_items_uniqueness; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_mail_action_items_uniqueness ON public.mail_action_items USING btree (action_name, recipient_type, recipient_id, internship_agreement_id, internship_application_id);
 
 
 --
@@ -4885,6 +4942,13 @@ CREATE INDEX internship_offer_keywords_trgm ON public.internship_offer_keywords 
 --
 
 CREATE UNIQUE INDEX uniq_applications_per_internship_offer_week ON public.internship_applications USING btree (user_id, internship_offer_week_id);
+
+
+--
+-- Name: uniq_applications_per_user_offer; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX uniq_applications_per_user_offer ON public.internship_applications USING btree (user_id, internship_offer_id);
 
 
 --
@@ -5604,6 +5668,11 @@ ALTER TABLE ONLY public.mail_action_items
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260616000000'),
+('20260604000000'),
+('20260603000000'),
+('20260526090153'),
+('20260520214758'),
 ('20260515100000'),
 ('20260515090000'),
 ('20260507100000'),
@@ -6114,3 +6183,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

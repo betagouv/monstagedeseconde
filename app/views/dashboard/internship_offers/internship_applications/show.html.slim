@@ -129,6 +129,8 @@
                 fa_icon: "fr-icon-check-line",
                 token: nil,
                 opened_modal: defined?(opened_modal) ? opened_modal == 'accept' : false
+            - elsif InternshipApplication::RE_APPROVABLE_STATES.include?(@internship_application.aasm_state)
+              p.fr-callout__text= re_approval_blocked_message(@internship_application)
             - elsif @internship_application.rejectable?
               = render "dashboard/internship_offers/internship_applications/action_modal",
                 internship_application: @internship_application,

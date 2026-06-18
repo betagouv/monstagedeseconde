@@ -1,6 +1,7 @@
 - opts = {}
 - target ||= false
-- opts = { target: target} if target 
+- kind ||= :file
+- opts = { target: target} if target
 .col-lg-4.col-md-12.d-flex.fr-mt-2w.fr-px-2w
   .fr-card.fr-card-with-arrow.fr-enlarge-link.flex-fill
     .fr-card__body.fr-pt-2w
@@ -8,8 +9,15 @@
         h3.fr-card__title.fr-mb-2w
           = link_to link_title, file, **opts
     .fr-card__header
-      .fr-card__img
-        = image_tag asset_pack_path('media/images/homepage/dl_resource.png'), class: 'fr-responsive-img', alt: "Télécharger la ressource"
+      - if kind == :url
+        .fr-card__img.d-flex.align-items-center.justify-content-center style="background-color: #F5F5FE; aspect-ratio: 570 / 321;"
+          span.fr-icon-eye-line aria-hidden="true" style="color: var(--background-flat-success); font-size: 4rem; --icon-size: 4rem;"
+      - else
+        .fr-card__img
+          = image_tag asset_pack_path('media/images/homepage/dl_resource.png'), class: 'fr-responsive-img', alt: "Télécharger la ressource"
       ul.fr-badges-group.fr-p-4w
         li
-          p.fr-badge.fr-badge--purple-glycine = badge
+          - if kind == :url
+            p.fr-badge.fr-badge--green-emeraude Lien
+          - else
+            p.fr-badge.fr-badge--purple-glycine = badge

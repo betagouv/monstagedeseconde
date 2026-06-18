@@ -163,6 +163,115 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     assert_match "Voir la convention", text_body
   end
 
+  test "digest_email renders agreement_to_sign rows in 'Conventions à signer' section (F2)" do
+    employer = create(:employer)
+    internship_agreement = create(:mono_internship_agreement, :signatures_started)
+    internship_application = internship_agreement.internship_application
+
+    item = MailActionItem.create!(
+      recipient: employer,
+      action_name: "agreement_to_sign",
+      action_type: :pending_internship_agreement,
+      urgency_level: :medium,
+      stale_at: 30.days.from_now,
+      resolved_at: nil,
+      deliveries_count: 0,
+      max_deliveries_count: 1,
+      internship_application: internship_application,
+      internship_agreement: internship_agreement
+    )
+
+    actions = { "pending_internship_agreement" => [ item ] }
+
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
+    email.deliver_now
+
+    assert_emails 1
+    html_body = email.html_part.body.to_s
+    text_body = email.text_part.body.to_s
+
+    assert_match "Conventions de stage à signer", html_body,
+                 "la section 'Conventions à signer' doit apparaître dans le mail"
+    assert_match internship_application.student.presenter.full_name, html_body
+    assert_match "Voir la convention", html_body
+
+    assert_match "Conventions de stage à signer", text_body
+    assert_match internship_application.student.presenter.full_name, text_body
+    assert_match "Voir la convention", text_body
+  end
+
+  test "digest_email renders agreement_to_sign rows when item only has internship_agreement_id (no internship_application_id) — cas élève signe en premier (F2b)" do
+    internship_agreement = create(:mono_internship_agreement, :signatures_started)
+    employer = internship_agreement.employer
+    internship_application = internship_agreement.internship_application
+
+    item = MailActionItem.create!(
+      recipient: employer,
+      action_name: "agreement_to_sign",
+      action_type: :pending_internship_agreement,
+      urgency_level: :medium,
+      stale_at: 30.days.from_now,
+      resolved_at: nil,
+      deliveries_count: 0,
+      max_deliveries_count: 1,
+      internship_application: nil,
+      internship_agreement: internship_agreement
+    )
+
+    actions = { "pending_internship_agreement" => [ item ] }
+
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "medium" ])
+    email.deliver_now
+
+    assert_emails 1
+    html_body = email.html_part.body.to_s
+    text_body = email.text_part.body.to_s
+
+    assert_match "Conventions de stage à signer", html_body,
+                 "la section doit apparaître même sans internship_application_id sur l'item"
+    assert_match internship_application.student.presenter.full_name, html_body
+    assert_match "Voir la convention", html_body
+
+    assert_match "Conventions de stage à signer", text_body
+    assert_match internship_application.student.presenter.full_name, text_body
+    assert_match "Voir la convention", text_body
+  end
+
+  test "digest_email renders agreement_signed_by_another rows in 'Conventions signées par un autre élève' section" do
+    internship_agreement = create(:mono_internship_agreement, :signatures_started)
+    employer = internship_agreement.employer
+    internship_application = internship_agreement.internship_application
+
+    item = MailActionItem.create!(
+      recipient: employer,
+      action_name: "agreement_signed_by_another",
+      action_type: :pending_internship_agreement,
+      urgency_level: :low,
+      stale_at: 30.days.from_now,
+      resolved_at: nil,
+      deliveries_count: 0,
+      max_deliveries_count: 1,
+      internship_application: nil,
+      internship_agreement: internship_agreement
+    )
+
+    actions = { "pending_internship_agreement" => [ item ] }
+
+    email = EmployerActionsMailer.employer_digest_email(user_id: employer.id, actions: actions, urgency_levels: [ "low" ])
+    email.deliver_now
+
+    assert_emails 1
+    html_body = email.html_part.body.to_s
+    text_body = email.text_part.body.to_s
+
+    assert_match "Conventions signées par un autre élève", html_body
+    assert_match internship_application.student.presenter.full_name, html_body
+    assert_match internship_application.internship_offer.title, html_body
+
+    assert_match "Conventions signées par un autre élève", text_body
+    assert_match internship_application.student.presenter.full_name, text_body
+  end
+
   test "digest_email renders new_agreement_to_fill_in rows in agreement section" do
     employer = create(:employer)
     internship_agreement = create(:mono_internship_agreement, :draft)

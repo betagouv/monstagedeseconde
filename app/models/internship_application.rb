@@ -39,6 +39,11 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
+  RE_APPROVABLE_BLOCKED_REASONS = {
+    anonymized: "Le compte de cet élève n'existe plus.",
+    conflicting: "L'élève a déjà accepté un stage sur cette période.",
+    no_seats_left: "Le nombre de places maximum pour ce stage a déjà été atteint."
+  }.freeze
   REJECTABLE_STATES = %w[submitted read_by_employer transfered]
   CANCELABLE_STATES = %w[restored validated_by_employer approved]
   VALID_TRANSITIONS = %w[
@@ -346,6 +351,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_student,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
+                    mail_action_items.where(action_name: "canceled_internship_application_by_student").destroy_all
                     notify_employer_with_digest_email("canceled_internship_application_by_student")
                     internship_agreement&.destroy
                     record_state_change user
@@ -358,9 +364,8 @@ class InternshipApplication < ApplicationRecord
                   guard: :no_weeks_overlap?,
                   after: proc { |user, *_args|
                     update!(restored_at: Time.now.utc)
-                    if has_ever_been?(%w[approved read_by_employer validated_by_employer])
-                      notify_employer_with_digest_email("restored_internship_application")
-                    end
+                    # mail_action_items.where(action_name: "canceled_internship_application_by_student").destroy_all
+                    notify_employer_with_digest_email("restored_internship_application")
                     record_state_change user
                   }
     end
@@ -396,15 +401,6 @@ class InternshipApplication < ApplicationRecord
 
   def from_doubling_task?
     internship_offer.from_doubling_task?
-  end
-
-  def notify_users
-    notify_employer_with_digest_email("new_internship_application", stale_at: weeks.last.monday - 2.days)
-
-    return if student.internship_applications.count == 0
-
-    Triggered::SingleApplicationReminderJob.set(wait: 2.days).perform_later(student.id)
-    Triggered::SingleApplicationSecondReminderJob.set(wait: 5.days).perform_later(student.id)
   end
 
   def internship_application_aasm_message_builder(aasm_target:)
@@ -486,12 +482,15 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_re_approvable?
-    # false if student is anonymised or student has an approved application
-    return false if student.anonymized? ||
-                    student.internship_applications.where(aasm_state: "approved").any? ||
-                    internship_offer.remaining_seats_count.zero?
+    re_approval_blocked_reason.nil? && RE_APPROVABLE_STATES.include?(aasm_state)
+  end
 
-    RE_APPROVABLE_STATES.include?(aasm_state)
+  def re_approval_blocked_reason
+    return :anonymized if student.anonymized?
+    return :conflicting unless no_other_approved_application?
+    return :no_seats_left if internship_offer.remaining_seats_count <= 0
+
+    nil
   end
 
   def cancelable?
@@ -530,27 +529,13 @@ class InternshipApplication < ApplicationRecord
 
   def create_agreement
     return unless internship_agreement_creation_allowed?
+    return if InternshipAgreement.kept.exists?(internship_application_id: id)
 
     agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
                                                     .new_from_application(self)
     agreement.skip_validations_for_system = true
     agreement.save!
 
-    notify_employer_with_digest_email(
-      "new_agreement_to_fill_in",
-      internship_agreement_id: agreement.id,
-      action_type: :pending_internship_agreement
-    )
-  end
-
-  def create_multi_agreement
-    return unless internship_agreement_creation_allowed?
-
-    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
-                                                    .new_from_application(self)
-    agreement.skip_validations_for_system = true
-    agreement.save!
-    # TODO notify coordinator and employers
     notify_employer_with_digest_email(
       "new_agreement_to_fill_in",
       internship_agreement_id: agreement.id,
@@ -685,7 +670,7 @@ class InternshipApplication < ApplicationRecord
   end
 
   def notify_users
-    EmployerMailer.internship_application_submitted_email(internship_application: self).deliver_later(wait: 1.second)
+    notify_employer_with_digest_email("new_internship_application", stale_at: weeks.last.monday - 2.days)
 
     return if student.internship_applications.count == 0
 
@@ -812,10 +797,13 @@ class InternshipApplication < ApplicationRecord
   end
 
   def no_other_approved_application?
-    others = student.internship_applications.approved.where.not(id: id)
-    return others.empty? unless student.seconde_gt?
+    # Lock the student row to prevent concurrent approvals from bypassing this check
+    student.with_lock do
+      others = student.internship_applications.approved.where.not(id: id)
+      return others.empty? unless student.seconde_gt?
 
-    others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+      others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+    end
   end
 
   def weekly_conflict_with?(other_offer)

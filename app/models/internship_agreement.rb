@@ -14,6 +14,11 @@ class InternshipAgreement < ApplicationRecord
   MIN_PRESENCE_DAYS = 4
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
+  # index croissant = convention plus avancée (utilisé pour dé-dupliquer les candidatures)
+  ORDERED_STATES_INDEX = %w[
+    draft started_by_employer completed_by_employer started_by_school_manager
+    validated signatures_started signed_by_all
+  ].freeze
   TO_BE_SIGNED_STATES = %i[validated signatures_started].freeze
   EXPECTED_ACTION_FROM_EMPLOYER_STATES = %i[draft started_by_employer].freeze
   EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
@@ -21,6 +26,10 @@ class InternshipAgreement < ApplicationRecord
   has_many :signatures, dependent: :destroy
   has_many :mail_action_items, dependent: :nullify
   belongs_to :internship_application, optional: false
+
+  validates :internship_application_id,
+            uniqueness: { conditions: -> { kept } },
+            if: :kept?
 
   after_create :generate_token, unless: :access_token?
 
@@ -80,7 +89,8 @@ class InternshipAgreement < ApplicationRecord
               format: { with: /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/,
                         message: "Veuillez suivre les exemples ci-après : '0611223344' ou '+330611223344'" }
   end
-
+  # Delegations
+  delegate :employer, to: :internship_application
 
   # Callbacks
   after_save :save_delegation_date
@@ -137,9 +147,10 @@ class InternshipAgreement < ApplicationRecord
                   to: :signatures_started,
                   guard: :roles_not_signed_yet_present?,
                   after: proc { |*_args|
-                    roles_not_signed_yet.present? &&
-                      !skip_notifications_when_system_creation &&
-                      notify_others_signatures_started
+                    unless skip_notifications_when_system_creation
+                      notify_others_signatures_started if roles_not_signed_yet.present?
+                      notify_employer_partial_signature if roles_not_signed_yet.include?("employer")
+                    end
                   }
       transitions from: [ :signatures_started ],
                   to: :signed_by_all,
@@ -147,7 +158,9 @@ class InternshipAgreement < ApplicationRecord
                   after: proc { |*_args|
                            notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
                            notify_employer_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
-                           notify_school_management_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
+                           unless skip_notifications_when_system_creation || school_management_representative_signed_last?
+                             notify_school_management_with_digest_email("agreement_signed_by_all")
+                           end
                          }
     end
   end
@@ -275,10 +288,22 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
+  def school_management_representative_signed_last?
+    last_signature = signatures.last
+    representative = school_management_representative
+
+    last_signature.present? && representative.present? &&
+      last_signature.signator == representative
+  end
+
   def notify_others_signatures_started
+    # employer is notified by digest email (agreement_to_sign), exclude them here to avoid duplicate
+    recipients = missing_signatures_recipients - [ employer.email ]
+    return if recipients.empty?
+
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,
-      missing_signatures_recipients: missing_signatures_recipients,
+      missing_signatures_recipients: recipients,
       last_signature: signatures&.last
     ).deliver_later
   end
@@ -293,10 +318,18 @@ class InternshipAgreement < ApplicationRecord
   def legal_representative_data
     hash = {}
      if student_legal_representative_email.present? && student_legal_representative_full_name.present?
-       hash[:student_legal_representative] = { email: student_legal_representative_email, nr: 1 }
+       hash[:student_legal_representative] = {
+        email: student_legal_representative_email,
+        nr: 1,
+        full_name: student_legal_representative_full_name
+      }
      end
      if student_legal_representative_2_email.present? && student_legal_representative_2_full_name.present?
-       hash[:student_legal_representative_2] = { email: student_legal_representative_2_email, nr: 2 }
+       hash[:student_legal_representative_2] = {
+        email: student_legal_representative_2_email,
+        nr: 2,
+        full_name: student_legal_representative_2_full_name
+      }
      end
     hash
   end
@@ -334,6 +367,11 @@ class InternshipAgreement < ApplicationRecord
     end
     kwargs = common_kwargs_for_digest_email(name, **kwargs)
     MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_employer_partial_signature
+    notify_employer_with_digest_email("agreement_to_sign")
+    notify_employer_with_digest_email("agreement_signed_by_another")
   end
 
   def notify_signatures_enabled

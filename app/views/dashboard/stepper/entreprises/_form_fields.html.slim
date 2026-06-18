@@ -49,7 +49,7 @@
               / - if current_user.ministry_statistician?
               /   = form.hidden_field :is_public, value: true
               / - else
-              fieldset.fr-fieldset#radio-hint aria-labelledby="radio-hint-legend radio-hint-messages"
+              fieldset.fr-fieldset#entreprise-radio-hint aria-labelledby="entreprise-radio-hint-legend entreprise-radio-hint-messages"
                 legend.label
                   | Vous êtes une structure publique ? *
                 .fr-fieldset__element
@@ -74,14 +74,18 @@
                                  'Non',
                                  class: 'fr-label',
                                  data: { action: 'ministry-fields#handleClickIsPublic' }
-                .fr-messages-group#radio-hint-messages aria-live="assertive"
+                .fr-messages-group#entreprise-radio-hint-messages aria-live="assertive"
           #ministry-block.row.fr-mt-3w.bloc-tooggle[data-ministry-fields-target="groupNamePublic"]
             .col-12
-              = form.label :'group-choice', class: 'fr-label' do
-                = "Type d’employeur public *"
+              label.fr-label[for="group-choice"] Type d’employeur public *
+
+              - selected_group_id = resource.group.try(:id)
+              - if @duplication
+                - duplicate_id = params[:duplicate_id] || params.dig(:internship_offer, :duplicate_id)
+                - selected_group_id = InternshipOffer.find_by(id: duplicate_id)&.group&.id
 
               = form.select :group_id,
-                            options_for_select(options_for_public_groups, @duplication ? InternshipOffer.find(params[:duplicate_id]).group.try(:id) : resource.group.try(:id) ),
+                            options_for_select(options_for_public_groups, selected_group_id),
                             { prompt: 'Sélectionnez un employeur public' },
                             class: "fr-select",
                             id: "group-choice",

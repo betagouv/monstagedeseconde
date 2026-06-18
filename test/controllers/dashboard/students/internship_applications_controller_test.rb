@@ -161,6 +161,24 @@ module Dashboard
         assert_redirected_to dashboard_students_internship_applications_path(student)
       end
 
+      test "#resend_application as another student is forbidden" do
+        victim = create(:student)
+        attacker = create(:student)
+        sign_in(attacker)
+        internship_application = create(
+          :weekly_internship_application,
+          :submitted,
+          student: victim
+        )
+        assert_no_changes -> { internship_application.reload.dunning_letter_count } do
+          post resend_application_dashboard_students_internship_application_path(
+            student_id: victim.id,
+            uuid: internship_application.uuid
+          ), params: {}
+        end
+        assert_redirected_to root_path
+      end
+
       test "#show with a magic link" do
         student = create(:student)
         sgid = ""
@@ -210,6 +228,85 @@ module Dashboard
           assert_select ".internship-offer-title", text: internship_application_1.internship_offer.title
           assert_select ".internship-offer-title", text: internship_application_2.internship_offer.title
         end
+      end
+
+      test "#relaunch_legal_representative_sign_email sends emails to legal representatives" do
+        student = create(:student)
+        sign_in(student)
+        internship_application = create(:weekly_internship_application, :approved, student:)
+        internship_agreement = internship_application.internship_agreement
+        internship_agreement.update_columns(aasm_state: "signatures_started")
+
+        assert_emails 2 do
+          post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+            student_id: student.id,
+            uuid: internship_agreement.uuid
+          )
+        end
+        assert_redirected_to dashboard_students_internship_application_path(
+          student_id: student.id,
+          uuid: internship_application.uuid
+        )
+        assert_equal flash[:notice], "Les emails de relance ont bien été envoyés"
+      end
+
+      test "#relaunch_legal_representative_sign_email redirects with alert when agreement already signed by legal representative" do
+        travel_to Date.new(2024, 2, 1) do
+          student = create(:student)
+          sign_in(student)
+          internship_application = create(:weekly_internship_application, :approved, student:)
+          internship_agreement = internship_application.internship_agreement
+          internship_agreement.update_columns(aasm_state: "signatures_started")
+          create(:signature, :student_legal_representative, internship_agreement:)
+
+          assert_no_emails do
+            post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+              student_id: student.id,
+              uuid: internship_agreement.uuid
+            )
+          end
+          assert_redirected_to dashboard_students_internship_application_path(
+            student_id: student.id,
+            uuid: internship_application.uuid
+          )
+          assert_equal flash[:alert], "La convention a déjà été signée par le représentant légal"
+        end
+      end
+
+        test "#relaunch_legal_representative_sign_email redirects with alert when no legal representative email" do
+          student = create(:student)
+          sign_in(student)
+          internship_application = create(:weekly_internship_application, :approved, student:)
+          internship_agreement = internship_application.internship_agreement
+          internship_agreement.update_columns(
+            aasm_state: "signatures_started",
+            student_legal_representative_email: nil,
+            student_legal_representative_2_email: nil
+          )
+
+          assert_no_emails do
+            post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+              student_id: student.id,
+              uuid: internship_agreement.uuid
+            )
+          end
+          assert_redirected_to dashboard_students_internship_application_path(
+            student_id: student.id,
+            uuid: internship_application.uuid
+          )
+          assert_equal flash[:alert], "Aucun représentant légal trouvé pour cette convention"
+        end
+
+      test "#relaunch_legal_representative_sign_email is not accessible when not signed in" do
+        student = create(:student)
+        internship_application = create(:weekly_internship_application, :approved, student:)
+        internship_agreement = internship_application.internship_agreement
+
+        post relaunch_legal_representative_sign_email_dashboard_students_internship_application_path(
+          student_id: student.id,
+          uuid: internship_agreement.uuid
+        )
+        assert_response :redirect
       end
 
       test "student cannot validate his own application" do

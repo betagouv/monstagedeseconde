@@ -56,6 +56,7 @@ module Dashboard
       end
 
       def resend_application
+        authorize! :internship_application_edit, @internship_application
         if @internship_application.max_dunning_letter_count_reached?
           redirect_to dashboard_students_internship_applications_path(@current_student),
                       alert: "Vous avez atteint le nombre maximum de relances pour cette candidature"
@@ -67,7 +68,68 @@ module Dashboard
         end
       end
 
+      def relaunch_legal_representative_sign_email
+        internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+        authorize! :relaunch_legal_representative_sign_email, internship_agreement
+
+        legal_representative_data = synchronize_legal_representative_data(internship_agreement, current_user)
+        @internship_application = internship_agreement.internship_application
+
+        if internship_agreement.nil? || legal_representative_data.blank? || legal_representative_data.values.all? { |rep| rep[:email].blank? }
+          redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                      alert: "Aucun représentant légal trouvé pour cette convention"
+        elsif internship_agreement.signed_by_legal_representative?
+          redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                      alert: "La convention a déjà été signée par le représentant légal"
+        else
+          representative_count = legal_representative_data.keys.count
+          if representative_count.zero?
+            redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                        alert: "Aucun représentant légal trouvé pour cette convention. Rendez-vous dans 'mon compte'"
+          else
+            legal_representative_data.values.each do |rep|
+              if rep.present? && rep[:email].present? && rep[:email].strip.present?
+                GodMailer.notify_student_legal_representatives_can_sign_email(
+                  internship_agreement: internship_agreement,
+                  representative: rep
+                ).deliver_now
+              end
+            end
+            redirect_to dashboard_students_internship_application_path(student_id: @current_student.id, uuid: @internship_application.uuid),
+                        notice: "Les emails de relance ont bien été envoyés"
+          end
+        end
+      end
+
       private
+
+      def synchronize_legal_representative_data(internship_agreement, current_user)
+        legal_representative_data = internship_agreement&.legal_representative_data || {}
+        return legal_representative_data if legal_representative_data.blank?
+
+        current_email = current_user.legal_representative_email
+        return legal_representative_data if current_email.blank?
+        return legal_representative_data if current_email.in?(
+          legal_representative_data.values.map { |rep| rep[:email] }
+        )
+
+        representative = {
+          full_name: current_user.legal_representative_full_name,
+          email: current_email
+        }
+
+        primary_representative = legal_representative_data[:student_legal_representative]
+
+        if primary_representative.blank? || primary_representative[:full_name].blank?
+          legal_representative_data[:student_legal_representative] = representative.merge(nr: 1)
+        elsif primary_representative[:full_name] == current_user.legal_representative_full_name
+          primary_representative[:email] = current_email
+        else
+          legal_representative_data[:student_legal_representative_2] = representative.merge(nr: 2)
+        end
+
+        legal_representative_data
+      end
 
       def magic_fetch_student
         GlobalID::Locator.locate_signed(params[:sgid])
@@ -78,7 +140,13 @@ module Dashboard
       end
 
       def set_internship_application
-        @internship_application = @current_student.internship_applications.find_by!(uuid: params[:uuid])
+        internship_agreement = InternshipAgreement.find_by(uuid: params[:uuid])
+        if internship_agreement.present?
+          @internship_application = internship_agreement.internship_application
+        else
+          @internship_application = @current_student.internship_applications.find_by(uuid: params[:uuid])
+        end
+        raise ActiveRecord::RecordNotFound if @internship_application.nil?
       end
 
       def increase_dunning_letter_count
