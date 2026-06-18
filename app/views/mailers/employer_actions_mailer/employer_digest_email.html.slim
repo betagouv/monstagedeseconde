@@ -237,7 +237,7 @@ p style=p_cyclop_styles({color: '#000000'})
 / ─── Convention signée par un autre élève ──────────────────────────────────
 - if @agreement_signed_by_another_rows&.any?
 	p style=h3_cyclop_styles
-		| Conventions signées par un autre élève :
+		| Conventions signées par un tiers :
 
 	- @agreement_signed_by_another_rows.each_with_index do |row, index|
 		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"

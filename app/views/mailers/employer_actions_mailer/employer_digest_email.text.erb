@@ -105,7 +105,7 @@ Conventions signées par toutes les parties :
 <% end %>
 
 <% if @agreement_signed_by_another_rows&.any? %>
-Conventions signées par un autre élève :
+Conventions signées par un tiers :
 
 <% @agreement_signed_by_another_rows.each_with_index do |row, index| %>
 <%= index + 1 %>. <%= row[:student_full_name] %>
