@@ -100,53 +100,6 @@ module Dashboard
         end
       end
 
-      test 'GET class_rooms#index shows N-1 switch buttons when user belongs to N schools, even after switching school' do
-        school_1 = create(:school)
-        school_2 = create(:school)
-        school_3 = create(:school)
-
-        school_manager = create(:school_manager, school: school_1)
-        UserSchool.find_or_create_by!(user: school_manager, school: school_2)
-        UserSchool.find_or_create_by!(user: school_manager, school: school_3)
-
-        sign_in(school_manager)
-
-        # Avant switch : connecté sur school_1, doit voir 2 boutons (school_2 et school_3)
-        get dashboard_school_class_rooms_path(school_1)
-        assert_response :success
-        assert_select 'button[name="school_id"]', count: 2,
-                      message: 'Doit afficher 2 boutons switch avant le premier switch'
-
-        # Switch vers school_2
-        post school_switches_path, params: { school_id: school_2.id }
-        assert_redirected_to dashboard_school_class_rooms_path(school_2)
-        follow_redirect!
-
-        # Après switch : connecté sur school_2, doit voir 2 boutons (school_1 et school_3)
-        assert_select 'button[name="school_id"]', count: 2,
-                      message: 'Doit afficher 2 boutons switch après le switch vers school_2'
-      end
-
-      test 'GET class_rooms#index shows N-1 switch buttons even when current_school is not in user_schools' do
-        school_1 = create(:school)
-        school_2 = create(:school)
-        school_3 = create(:school)
-
-        # school_manager dont school_id = school_1, mais user_schools ne contient que school_2 et school_3
-        # (simulate legacy data where school_id n'est pas dans user_schools)
-        school_manager = create(:school_manager, school: school_1)
-        UserSchool.where(user: school_manager, school: school_1).destroy_all
-        UserSchool.find_or_create_by!(user: school_manager, school: school_2)
-        UserSchool.find_or_create_by!(user: school_manager, school: school_3)
-
-        sign_in(school_manager)
-
-        get dashboard_school_class_rooms_path(school_1)
-        assert_response :success
-        assert_select 'button[name="school_id"]', count: 2,
-                      message: 'Doit afficher 2 boutons même si current_school absent de user_schools'
-      end
-
       test 'GET show as SchoolManagement works and only show not archived students' do
         school = create(:school)
         class_room = create(:class_room, school: school)

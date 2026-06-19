@@ -216,11 +216,10 @@ module Dashboard::Stepper
       end
     end
 
-    test 'POST create public entreprise with group_id and chosen sector succeeds' do
+    test 'POST create public entreprise with group_id succeeds' do
       employer = create(:employer)
       internship_occupation = create(:internship_occupation, employer:)
       group = create(:group, is_public: true)
-      sector = create(:sector, name: 'Informatique et réseaux')
       sign_in(employer)
 
       assert_difference('Entreprise.count', 1) do
@@ -238,7 +237,6 @@ module Dashboard::Stepper
               contact_phone: '0123456789',
               is_public: true,
               group_id: group.id,
-              sector_id: sector.id,
               workspace_conditions: 'Environnement de travail',
               workspace_accessibility: 'Accessibilité du poste'
             }
@@ -250,8 +248,7 @@ module Dashboard::Stepper
       entreprise = Entreprise.last
       assert entreprise.is_public
       assert_equal group.id, entreprise.group_id
-      # Le secteur choisi est conservé : il n'est plus forcé à "Fonction publique"
-      assert_equal sector.id, entreprise.sector_id
+      assert_equal 'Fonction publique', entreprise.sector.name
     end
 
     test 'POST create private entreprise with group_id fails' do
@@ -398,151 +395,7 @@ module Dashboard::Stepper
       entreprise.reload
       assert entreprise.is_public
       assert_equal group.id, entreprise.group_id
-      # Le passage en public ne force plus le secteur : le secteur choisi est conservé
-      assert_equal 'Informatique', entreprise.sector.name
-    end
-
-    # --- Création : toutes les combinaisons public/privé × secteur ---
-
-    test 'POST create public entreprise with sector Fonction publique succeeds' do
-      employer = create(:employer)
-      internship_occupation = create(:internship_occupation, employer:)
-      group = create(:group, is_public: true)
-      fonction_publique = Sector.find_by(name: 'Fonction publique')
-      sign_in(employer)
-
-      assert_difference('Entreprise.count', 1) do
-        post(
-          dashboard_stepper_entreprises_path(internship_occupation_id: internship_occupation.id),
-          params: {
-            entreprise: {
-              internship_occupation_id: internship_occupation.id,
-              siret: '12345678901234',
-              employer_name: 'Ministère Test',
-              entreprise_full_address: '1 rue de Paris 75001 Paris',
-              entreprise_chosen_full_address: '1 rue de Paris 75001 Paris',
-              entreprise_coordinates_longitude: '2.35',
-              entreprise_coordinates_latitude: '48.85',
-              contact_phone: '0123456789',
-              is_public: true,
-              group_id: group.id,
-              sector_id: fonction_publique.id,
-              workspace_conditions: 'Environnement de travail',
-              workspace_accessibility: 'Accessibilité du poste'
-            }
-          }
-        )
-      end
-      entreprise = Entreprise.last
-      assert entreprise.is_public
-      assert_equal group.id, entreprise.group_id
       assert_equal 'Fonction publique', entreprise.sector.name
-    end
-
-    # --- Édition : toutes les combinaisons public/privé × secteur ---
-
-    test 'PATCH update from public to private clears the group and keeps the sector' do
-      employer = create(:employer)
-      internship_occupation = create(:internship_occupation, employer:)
-      sector = create(:sector, name: 'Informatique')
-      group = create(:group, is_public: true)
-      entreprise = create(:entreprise, internship_occupation:, is_public: true, group:, sector:)
-      sign_in(employer)
-
-      patch(
-        dashboard_stepper_entreprise_path(entreprise),
-        params: {
-          entreprise: {
-            is_public: false,
-            entreprise_chosen_full_address: entreprise.entreprise_full_address,
-            entreprise_coordinates_longitude: entreprise.entreprise_coordinates.longitude,
-            entreprise_coordinates_latitude: entreprise.entreprise_coordinates.latitude
-          }
-        }
-      )
-      assert_response :redirect
-      entreprise.reload
-      refute entreprise.is_public
-      assert_nil entreprise.group_id
-      assert_equal 'Informatique', entreprise.sector.name
-    end
-
-    test 'PATCH update public entreprise changing sector keeps the chosen sector' do
-      employer = create(:employer)
-      internship_occupation = create(:internship_occupation, employer:)
-      group = create(:group, is_public: true)
-      sector = create(:sector, name: 'Informatique')
-      other_sector = create(:sector, name: 'Banque et assurance')
-      entreprise = create(:entreprise, internship_occupation:, is_public: true, group:, sector:)
-      sign_in(employer)
-
-      patch(
-        dashboard_stepper_entreprise_path(entreprise),
-        params: {
-          entreprise: {
-            is_public: true,
-            group_id: group.id,
-            sector_id: other_sector.id,
-            entreprise_chosen_full_address: entreprise.entreprise_full_address,
-            entreprise_coordinates_longitude: entreprise.entreprise_coordinates.longitude,
-            entreprise_coordinates_latitude: entreprise.entreprise_coordinates.latitude
-          }
-        }
-      )
-      assert_response :redirect
-      entreprise.reload
-      assert entreprise.is_public
-      assert_equal other_sector.id, entreprise.sector_id
-    end
-
-    test 'PATCH update public entreprise can set sector Fonction publique' do
-      employer = create(:employer)
-      internship_occupation = create(:internship_occupation, employer:)
-      group = create(:group, is_public: true)
-      sector = create(:sector, name: 'Informatique')
-      fonction_publique = Sector.find_by(name: 'Fonction publique')
-      entreprise = create(:entreprise, internship_occupation:, is_public: true, group:, sector:)
-      sign_in(employer)
-
-      patch(
-        dashboard_stepper_entreprise_path(entreprise),
-        params: {
-          entreprise: {
-            is_public: true,
-            group_id: group.id,
-            sector_id: fonction_publique.id,
-            entreprise_chosen_full_address: entreprise.entreprise_full_address,
-            entreprise_coordinates_longitude: entreprise.entreprise_coordinates.longitude,
-            entreprise_coordinates_latitude: entreprise.entreprise_coordinates.latitude
-          }
-        }
-      )
-      assert_response :redirect
-      assert_equal 'Fonction publique', entreprise.reload.sector.name
-    end
-
-    test 'PATCH update private entreprise to sector Fonction publique fails' do
-      employer = create(:employer)
-      internship_occupation = create(:internship_occupation, employer:)
-      sector = create(:sector, name: 'Informatique')
-      fonction_publique = Sector.find_by(name: 'Fonction publique')
-      entreprise = create(:entreprise, :private, internship_occupation:, sector:)
-      sign_in(employer)
-
-      patch(
-        dashboard_stepper_entreprise_path(entreprise),
-        params: {
-          entreprise: {
-            is_public: false,
-            sector_id: fonction_publique.id,
-            entreprise_chosen_full_address: entreprise.entreprise_full_address,
-            entreprise_coordinates_longitude: entreprise.entreprise_coordinates.longitude,
-            entreprise_coordinates_latitude: entreprise.entreprise_coordinates.latitude
-          }
-        }
-      )
-      assert_response :bad_request
-      refute_equal 'Fonction publique', entreprise.reload.sector.name
     end
   end
 end

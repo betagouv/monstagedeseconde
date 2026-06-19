@@ -53,7 +53,6 @@ class RebuildReviewJob < ApplicationJob
     [ :users_operators, "Création des opérateurs", 6, "addition" ],
     [ :students, "Création des élèves", 157, "addition" ],
     [ :users_school_management, "Création des équipes pédagogiques", 42, "addition" ],
-    [ :school_management_updates, "Association établissements / personnels pédagogiques", 5, "addition" ],
     [ :api_offers, "Création des offres API", 10, "addition" ],
     [ :offers, "Création des offres", 30, "addition" ],
     [ :applications, "Création des candidatures", 69, "addition" ],

@@ -339,7 +339,7 @@ const InternshipOfferResults = ({
                       <div>
                         {(paginateLinks && paginateLinks.totalPages != 0) ? <Paginator paginateLinks={paginateLinks} /> : ''}
                       </div>
-                      {paginateLinks && (paginateLinks.isLastPage || paginateLinks.totalPages === 0) && <ImmersionFaciliteeCard />}
+                      {(paginateLinks.isLastPage || paginateLinks.totalPages === 0) && <ImmersionFaciliteeCard />}
                     </div>
                     )
                   }

@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'rest_client'
+require 'json'
+
 Rails.application.configure do
   HOST = ENV.fetch('HOST') do
     "https://#{ENV.fetch('HEROKU_APP_NAME')}.herokuapp.com"
@@ -78,32 +81,50 @@ Rails.application.configure do
 
   # Use a different cache store in production.
 
-  # Heroku Redis impose TLS (URL en rediss://) avec un certificat auto-signé : on désactive
-  # la vérification du certificat, mais uniquement dans ce cas (inoffensif en local / non-TLS).
-  redis_cache_ssl = ENV.fetch('REDIS_URL', '').start_with?('rediss://') ? { ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE } } : {}
   config.cache_store = :redis_cache_store,
-                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu', **redis_cache_ssl }
+                       { url: ENV.fetch('REDIS_URL'), 'maxmemory-policy': 'allkeys-lfu' }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "monstage_#{Rails.env}"
 
   # config.action_mailer.preview_path  = "#{Rails.root}/whatever"
-  # Les emails sortants ne sont pas envoyés vers l'extérieur : la delivery method :test
-  # n'effectue aucun envoi réel. letter_thief (gem présent dans le groupe :review) enregistre
-  # automatiquement son Observer (car delivery_method != :letter_thief) et stocke chaque email
-  # en base. Ils sont consultables via l'engine monté sur /letter_thief (cf. config/routes.rb).
-  # Cela remplace l'ancien service Mailtrap.
-  config.action_mailer.delivery_method = :test
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = true
   config.action_mailer.show_previews = true
-  # L'Observer de letter_thief rescue déjà ses propres erreurs : on évite de bloquer une
-  # livraison si l'attache d'une pièce jointe ActiveStorage échoue.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: HOST }
   config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
 
+  # To choose port read https://help.heroku.com/IR3S6I5X/problem-in-sending-e-mails-through-smtp and then https://fr.mailjet.com/blog/news/port-smtp/
+  # and https://stackoverflow.com/questions/26166032/rails-4-netreadtimeout-when-calling-actionmailer
+  config.action_mailer.smtp_settings = {
+    user_name: ENV['SMTP_USERNAME'],
+    password: ENV['SMTP_PASSWORD'],
+    domain: ENV['SMTP_DOMAIN'] || 'smtp.mailtrap.io',
+    address: ENV['SMTP_ADDRESS'] || 'smtp.mailtrap.io',
+    port: ENV['SMTP_PORT'] || '2525',
+    authentication: ENV['SMTP_AUTHENTICATION'] || 'cram_md5',
+    enable_starttls_auto: true
+  }
+
+  # remove following after may 1st 2022
+
+  # response = RestClient.get "https://mailtrap.io/api/v1/inboxes.json?api_token=#{ENV['MAILTRAP_API_TOKEN']}"
+  # first_inbox = JSON.parse(response)[0] # get first inbox
+  # ActionMailer::Base.smtp_settings = {
+  #                                      user_name: first_inbox['username'],
+  #                                      password: first_inbox['password'],
+  #                                      address: first_inbox['domain'],
+  #                                      domain: first_inbox['domain'],
+  #                                      port: 587,
+  #                                      authentication: :plain
+  #                                    }
+
+  # Ignore bad email addresses and do not raise email delivery errors.
+  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
+  # config.action_mailer.raise_delivery_errors = false
   # ----------------------------
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

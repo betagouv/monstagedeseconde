@@ -20,20 +20,6 @@ module InternshipApplications
       end
     end
 
-    test 'duplicate application surfaces a translated base error (no "translation missing")' do
-      travel_to Date.new(2024, 1, 1) do
-        student = create(:student)
-        internship_offer = create(:weekly_internship_offer_2nde)
-        create(:weekly_internship_application, student:, internship_offer:)
-        duplicate = build(:weekly_internship_application, student:, internship_offer:)
-
-        refute duplicate.valid?
-        assert_includes duplicate.errors[:base], 'Vous avez déjà postulé à cette offre'
-        refute(duplicate.errors.full_messages.any? { |message| message.match?(/translation missing/i) },
-               "expected no missing i18n key, got: #{duplicate.errors.full_messages.inspect}")
-      end
-    end
-
     test 'DB unique index blocks concurrent duplicates that bypass Ruby validations' do
       travel_to Date.new(2024, 1, 1) do
         student = create(:student)

@@ -25,15 +25,9 @@ module InternshipApplicationsHelper
   def callout_title(internship_application)
     if internship_application.is_re_approvable?
       'Vous souhaitez retenir cette candidature ?'
-    elsif InternshipApplication::RE_APPROVABLE_STATES.include?(internship_application.aasm_state)
-      'Cette candidature ne peut pas être retenue'
     else
       'Vous ne souhaitez plus retenir cette candidature ?'
     end
-  end
-
-  def re_approval_blocked_message(internship_application)
-    InternshipApplication::RE_APPROVABLE_BLOCKED_REASONS[internship_application.re_approval_blocked_reason]
   end
 
   # not used

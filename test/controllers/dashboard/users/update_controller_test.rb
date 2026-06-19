@@ -16,8 +16,7 @@ module Dashboard::Users
           user_id: employer.id
         }
       }
-      # Hors-production (env de test) : aucun SMS n'est envoyé, le code 000000 suffit.
-      assert_enqueued_jobs 0, only: SendSmsJob do
+      assert_enqueued_jobs 1, only: SendSmsJob do
         patch dashboard_user_path( format: :turbo_stream, id: employer.id),
               params: params
       end
@@ -38,8 +37,7 @@ module Dashboard::Users
           user_id: school_manager.id
         }
       }
-      # Hors-production (env de test) : aucun SMS n'est envoyé, le code 000000 suffit.
-      assert_enqueued_jobs 0, only: SendSmsJob do
+      assert_enqueued_jobs 1, only: SendSmsJob do
         patch dashboard_user_path( format: :turbo_stream, id: school_manager.id),
               params: params
       end

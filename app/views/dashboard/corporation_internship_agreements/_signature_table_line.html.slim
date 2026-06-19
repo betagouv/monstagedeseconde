@@ -39,6 +39,6 @@
             = "Signée"
       div
         = link_to "Télécharger la convention (PDF)",
-                  dashboard_internship_agreement_path(uuid: internship_agreement.uuid, format: :pdf),
+                  upload_public_internship_agreement_path(uuid: internship_agreement.uuid, multi: true, format: :pdf),
                   class: "fr-btn fr-btn--sm fr-btn--secondary fr-mt-2w",
                   target: "_blank"

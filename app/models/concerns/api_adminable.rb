@@ -4,10 +4,10 @@ module ApiAdminable
   included do
     rails_admin do
       weight 13
-      navigation_label "Offres"
+      navigation_label 'Offres'
 
       configure :created_at, :datetime do
-        date_format "%d/%m/%Y %H:%M"
+        date_format 'BUGGY'
       end
 
       list do

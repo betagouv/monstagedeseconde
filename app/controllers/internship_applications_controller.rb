@@ -58,11 +58,6 @@ class InternshipApplicationsController < ApplicationController
   rescue ActiveRecord::RecordNotUnique
     redirect_to internship_offer_path(@internship_offer),
                 alert: 'Vous avez déjà postulé à cette offre.'
-  rescue CanCan::AccessDenied
-    raise unless current_user&.internship_applications&.exists?(internship_offer_id: @internship_offer&.id)
-
-    redirect_to internship_offer_path(@internship_offer),
-                alert: 'Vous avez déjà postulé à cette offre.'
   end
 
   def completed

@@ -17,13 +17,6 @@
                             class: 'float-right fr-raw-link fr-text--sm  fr-ml-2w blue-france',
                             aria: {label: "Modifier le numero de téléphone"} do
         span.fr-icon-edit-fill.fr-icon--sm.fr-mb-1v
-    - unless Rails.env.production?
-      .fr-alert.fr-alert--info.fr-alert--sm.fr-my-2w
-        p
-          | Environnement de test : utilisez le code
-          =< ' '
-          strong 000000
-          | &nbsp;(aucun SMS n'est envoyé).
     div id="error-messages"
   .fr-modal__footer
     = form_with(model: current_user,

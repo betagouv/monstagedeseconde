@@ -15,10 +15,6 @@ export default class extends Controller {
 
   static values = { initialGrades: String };
 
-  isTroisiemeForbidden() {
-    return this.gradeCollegeTarget.dataset.gradeForbiddenValue === 'true';
-  }
-
   gradeCollegeTargetConnected() {
     this.onClick();
   }
@@ -45,24 +41,19 @@ export default class extends Controller {
   }
 
   onConfirm() {
-    if (this.submitting) return;
-    this.submitting = true;
     this.element.closest('form').submit();
   }
 
   onValidate(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (this.submitting) return;
-
     if (this.noGradeOffer()) {
-      toggleContainer(this.alertContainerTarget, true);
-    } else if (this.gradeCollegeTarget.checked && this.isTroisiemeForbidden()) {
+      // Prevent submission if no grade is selected, SNO
       event.preventDefault();
       event.stopPropagation();
+      toggleContainer(this.alertContainerTarget, true);
     } else if (this.isDoubleGradeOffer()) {
       this.maxCandidatesDisplayTarget.textContent = ` (${this.maxCandidatesSourceTarget.value})`;
+      event.preventDefault();
+      event.stopPropagation();
       openDsfrModal(this.dialogContainerTarget);
     } else {
       this.onConfirm();
@@ -70,8 +61,6 @@ export default class extends Controller {
   }
 
   connect() {
-    if (!this.hasGradeCollegeTarget || !this.hasGrade2eTarget) return;
-
     this.initialGradesValue.split(',').forEach((grade) => {
       if (grade === 'troisieme' || grade === 'quatrieme') {
         this.gradeCollegeTarget.checked = true;
@@ -80,7 +69,6 @@ export default class extends Controller {
         this.grade2eTarget.checked = true;
       }
     });
-
     this.onClick();
   }
 }

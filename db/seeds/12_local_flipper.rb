@@ -8,7 +8,6 @@ def import_flipper_local_file
   seed.disable(:application_inhibited)
   seed.disable(:disable_students_connexion_button)
   seed.disable(:flag_internship_offer)
-  seed.disable(:maintenance_mode)
 
   seed.enable(:multi_offer)
   seed.enable(:student_signature)

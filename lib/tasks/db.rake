@@ -2,8 +2,6 @@ namespace :db do
   # heroku hack: strip `COMMENT ON EXTENSION` lines from structure.sql after dump,
   # because the Heroku Postgres user is not the extension owner and the load fails.
   # see: https://www.thinbug.com/q/44168957
-  # Also strip `SET transaction_timeout` (emitted by pg_dump 17+): the Heroku
-  # review apps run PostgreSQL 15, which rejects this parameter and aborts the load.
   task :strip_extension_comments do
     filename = ENV["SCHEMA"] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "structure.sql")
     next unless File.exist?(filename)
@@ -11,7 +9,6 @@ namespace :db do
     sql = File.read(filename)
               .each_line
               .grep_v(/\ACOMMENT ON EXTENSION.+/)
-              .grep_v(/\ASET transaction_timeout/)
               .join
 
     File.write(filename, sql)

@@ -41,10 +41,6 @@ class Planning < ApplicationRecord
     planning_weeks.to_a.count
   end
 
-  # A planning is never created through the API (the API builds offers directly),
-  # but StepperProxy::Planning validations reference `from_api?`, so define it here.
-  def from_api? = false
-
   def is_fully_editable? = true
 
   def weekly_planning?

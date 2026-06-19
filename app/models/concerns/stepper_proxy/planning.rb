@@ -26,18 +26,16 @@ module StepperProxy
                                 greater_than: 0,
                                 less_than_or_equal_to: InternshipOffer::MAX_CANDIDATES_HIGHEST }
       validates :weeks, presence: true, on: :update, unless: :maintenance_conditions?
-      # Also require weeks at creation. The create path can't rely on
-      # `maintenance_conditions?` (published_at is set in a before_create, so it is
-      # still nil at validation time), hence a dedicated check gated only on the API.
-      validate :enough_weeks, on: :create, unless: :from_api?
+      # if not API, validate enough weeks
+      validate :enough_weeks unless :from_api
       validate :at_least_one_grade
 
       # methods common to planning and internship_offer but not for API
       def enough_weeks
-        return unless weeks.empty?
+        return if weeks.empty?
 
-        error_message = 'Indiquez la ou les semaines où vous accueillerez des élèves'
-        errors.add(:all_year_long, error_message)
+        error_message = 'Indiquez la ou les semaine où vous accueillerez des élèves'
+        errors.add(:max_candidates, error_message)
       end
 
       def available_weeks

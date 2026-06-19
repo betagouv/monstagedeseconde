@@ -85,16 +85,16 @@ FactoryBot.define do
       sequence(:title) { |n| "Stage de 3eme - #{n}" }
       weeks { Week.troisieme_weeks }
       grades { [Grade.troisieme] }
-      first_date { SchoolTrack::Troisieme.first_week&.monday || Week.troisieme_weeks.first&.monday }
-      last_date { SchoolTrack::Troisieme.last_week&.friday || Week.troisieme_weeks.last&.friday }
+      first_date { weeks.first.monday }
+      last_date { weeks.last.friday }
       targeted_grades { :troisieme_or_quatrieme }
     end
 
     trait :both_school_tracks_internship_offer do
       weeks { Week.both_school_tracks_weeks }
       grades { [Grade.seconde, Grade.troisieme] }
-      first_date { SchoolTrack::Troisieme.first_week&.monday || Week.both_school_tracks_weeks.first&.monday }
-      last_date { SchoolTrack::Troisieme.last_week&.friday || Week.both_school_tracks_weeks.last&.friday }
+      first_date { weeks.first.monday }
+      last_date { weeks.last.friday }
       targeted_grades { :seconde_troisieme_or_quatrieme }
     end
 
@@ -178,7 +178,7 @@ FactoryBot.define do
                                                            class: 'InternshipOffers::WeeklyFramed',
                                                            parent: :internship_offer
     # Both school tracks :
-    factory :api_internship_offer, traits: %i[api_internship_offer week_1],
+    factory :api_internship_offer, traits: %i[api_internship_offer both_school_tracks_internship_offer],
                                    class: 'InternshipOffers::Api',
                                    parent: :internship_offer
 

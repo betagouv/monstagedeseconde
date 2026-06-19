@@ -6,8 +6,7 @@ module Dashboard::Users
 
     test 'when employer request for a sms code resend succeeds' do
       internship_agreement = create(:mono_internship_agreement)
-      # Hors-production (env de test) : aucun SMS n'est envoyé, le code 000000 suffit.
-      assert_enqueued_jobs 0, only: SendSmsJob do
+      assert_enqueued_jobs 1, only: SendSmsJob do
         employer = internship_agreement.employer
         employer.update(phone: '+330602030405')
         sign_in(employer)
@@ -46,8 +45,7 @@ module Dashboard::Users
       school_manager = internship_agreement.school_manager
       school_manager.update(phone: '+330602030405')
       sign_in(school_manager)
-      # Hors-production (env de test) : aucun SMS n'est envoyé, le code 000000 suffit.
-      assert_enqueued_jobs 0, only: SendSmsJob do
+      assert_enqueued_jobs 1, only: SendSmsJob do
 
         post resend_sms_code_dashboard_user_path(
                 format: :turbo_stream,

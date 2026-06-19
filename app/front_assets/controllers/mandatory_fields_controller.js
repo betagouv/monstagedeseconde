@@ -118,15 +118,7 @@ export default class extends Controller {
     modal.removeAttribute('aria-modal')
   }
 
-  submitForm(event) {
-    if (this.submitting) return; // ignore les clics suivants (anti double-clic)
-    this.submitting = true;
-
-    if (event && event.currentTarget) {
-      event.currentTarget.disabled = true;
-      event.currentTarget.setAttribute('aria-busy', 'true');
-    }
-
+  submitForm() {
     const form = document.getElementById('new_internship_application')
     form.submit()
   }

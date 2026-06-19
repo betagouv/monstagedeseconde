@@ -7,22 +7,7 @@ export default class extends Controller {
   static values = {
     newRecord: Boolean,
     isEntreprisePublic: Boolean,
-    fonctionPubliqueSectorId: Number,
   };
-
-  connect() {
-    this.sectorSelect = document.querySelector(".sector_list");
-    // référence à l'option "Fonction publique" pour pouvoir l'activer/désactiver
-    this.fonctionPubliqueOption = this.findFonctionPubliqueOption();
-    this.publicPrivateAction(this.isEntreprisePublicValue);
-  }
-
-  findFonctionPubliqueOption() {
-    if (!this.sectorSelect || !this.hasFonctionPubliqueSectorIdValue) return null;
-    return Array.from(this.sectorSelect.options).find(
-      (option) => option.value === String(this.fonctionPubliqueSectorIdValue)
-    );
-  }
 
   handleClickIsPublic(event) {
     const isPublic = event.target.value === "true";
@@ -31,59 +16,67 @@ export default class extends Controller {
   }
 
   publicPrivateAction(isPublic) {
-    isPublic ? this.applyPublic() : this.applyPrivate();
+    isPublic
+      ? this.selectPublicSectorAndHide()
+      : this.selectPrivateSectorAndShow();
   }
 
-  // Structure publique : ministère requis, secteur libre (y compris "Fonction publique")
-  applyPublic() {
+  selectPublicSectorAndHide() {
+    // set public state
     this.isEntreprisePublicValue = true;
 
-    const ministry = document.querySelector("#ministry-block");
-    const entrepriseGroup = document.querySelector("#group-choice");
-    if (ministry) ministry.classList.remove("fr-hidden");
-    if (entrepriseGroup) entrepriseGroup.setAttribute("required", "true");
+    // MINISTRY
+    // show the ministry choice block
+    this.groupNamePublicTarget.classList.remove("fr-hidden");
+    this.groupNamePublicTarget.removeAttribute("hidden");
 
-    this.showSectorBlock();
-    this.enableFonctionPubliqueOption();
+    // set required to true to the entreprise_group_id
+    const entrepriseGroup = document.querySelector("#group-choice");
+    const ministry = document.querySelector("#ministry-block");
+    const ministryVisible = !['d-none', 'hidden', 'fr-hidden'].some(className => ministry.classList.contains(className));
+    if (entrepriseGroup && ministryVisible) {
+
+      entrepriseGroup.required = true;
+      ministry.classList.remove("fr-hidden");
+    }
+
+    ministry.classList.remove("fr-hidden");
+    entrepriseGroup.setAttribute("required", "true");
+
+    // SECTOR
+    // set required to false to the sector_id
+    const selectElement = document.querySelector(".sector_list");
+    if (selectElement) {
+      selectElement.required = false;
+    }
+
+    // hide the sector choice block
+    toggleHideContainer(this.sectorBlockTarget, false);
   }
 
-  // Structure privée : ministère masqué/reset, secteur libre sauf "Fonction publique"
-  applyPrivate() {
+  selectPrivateSectorAndShow() {
+    // set public state
     this.isEntreprisePublicValue = false;
-
+    // set ministry group to '', required to false and hide
     const ministrySelect = document.querySelector("#group-choice");
     const ministryBlock = document.querySelector("#ministry-block");
-    if (ministrySelect) {
-      ministrySelect.value = "";
-      ministrySelect.required = false;
-    }
-    if (ministryBlock) ministryBlock.classList.add("fr-hidden");
+    ministrySelect.value = "";
+    ministrySelect.required = false;
+    ministryBlock.classList.add("fr-hidden");
 
-    this.showSectorBlock();
-    this.disableFonctionPubliqueOption();
-  }
 
-  showSectorBlock() {
+    // show the sector choice block
     this.sectorBlockTarget.classList.remove("fr-hidden");
     this.sectorBlockTarget.removeAttribute("hidden");
-    toggleHideContainer(this.sectorBlockTarget, true);
-    if (this.sectorSelect) this.sectorSelect.required = true;
-  }
 
-  enableFonctionPubliqueOption() {
-    if (!this.fonctionPubliqueOption) return;
-    this.fonctionPubliqueOption.disabled = false;
-    this.fonctionPubliqueOption.hidden = false;
-  }
-
-  disableFonctionPubliqueOption() {
-    if (!this.fonctionPubliqueOption || !this.sectorSelect) return;
-    // si "Fonction publique" était sélectionnée, on remet le choix à zéro
-    if (this.sectorSelect.value === this.fonctionPubliqueOption.value) {
-      this.sectorSelect.value = "";
+    // set required to true to the sector_id
+    const sectorChoice = document.querySelector("#sector_id");
+    if (sectorChoice) {
+      sectorChoice.required = true;
+      sectorChoice.value = "";
     }
-    this.fonctionPubliqueOption.disabled = true;
-    this.fonctionPubliqueOption.hidden = true;
+    // show the sector choice block
+    toggleHideContainer(this.sectorBlockTarget, true);
   }
 
   async isElementLoaded(selector) {
@@ -109,5 +102,9 @@ export default class extends Controller {
 
   groupNamePublicTargetConnected(element) {
     this.toggleGroupNames(!!this.isEntreprisePublicValue);
+  }
+
+  connect() {
+    this.publicPrivateAction(this.isEntreprisePublicValue);
   }
 }

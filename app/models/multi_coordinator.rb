@@ -11,21 +11,10 @@ class MultiCoordinator < ApplicationRecord
 
   belongs_to :multi_activity
   belongs_to :sector, optional: true
-  belongs_to :group, -> { where(is_public: true) }, optional: true
   has_one :multi_corporation, dependent: :destroy
   has_one :multi_planning, dependent: :destroy
 
   attr_accessor :presentation_siret
-
-  validates :is_public, inclusion: [true, false]
-  # Le ministère (group_id) est lié à is_public, pas au secteur
-  with_options if: :is_public do
-    validates :group_id, presence: { message: 'Un ministère est requis pour une offre publique' }
-  end
-  with_options unless: :is_public do
-    validates :group_id, absence: { message: "Il n'y a pas de ministère à associer à une structure privée" }
-  end
-  validate :sector_consistency_with_is_public
 
   validates :employer_chosen_name, presence: true, length: { maximum: EMPLOYER_NAME_MAX_LENGTH }
   validates :employer_chosen_address, presence: true, length: { maximum: EMPLOYER_ADDRESS_MAX_LENGTH }
@@ -50,17 +39,6 @@ class MultiCoordinator < ApplicationRecord
   end
 
   private
-
-  # Seule contrainte entre is_public et le secteur : une structure privée
-  # ne peut pas porter le secteur "Fonction publique".
-  def sector_consistency_with_is_public
-    fonction_publique_sector = Sector.find_by(name: 'Fonction publique')
-    return if fonction_publique_sector.nil?
-
-    if !is_public && sector_id == fonction_publique_sector.id
-      errors.add(:sector_id, "Le secteur 'Fonction publique' n'est pas autorisé pour une offre privée")
-    end
-  end
 
   def phone_format
     return if phone.blank?

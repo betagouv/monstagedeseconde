@@ -44,7 +44,6 @@
           hr
     - if new_record
       / Troisiemes
-      - forbidden = duplication && respond_to?(:troisieme_duplication_forbidden?) && troisieme_duplication_forbidden?
       .row
         .col-6
           = render 'inputs/dsfr_checkbox_field',
@@ -53,13 +52,9 @@
             title: '',
             label: 'Collégiens (4ème et 3ème)',
             extra_header_classes: 'fr-h6',
-            options: { disabled: forbidden,
-                       data: {:'grade-target' => 'gradeCollege',
-                              :'grade-forbidden-value' => forbidden.to_s,
+            options: { data: {:'grade-target' => 'gradeCollege',
                               action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
                               :'select-weeks-target' => 'gradeCollege'  } }
-          - if forbidden
-            p.fr-error-text.fr-mt-1w = troisieme_duplication_forbidden_message
     - if new_record || !new_record && form.object.grades.to_a.include?(Grade.troisieme)
       .row data-grade-target="troisiemeContainer"
         .col-6
@@ -142,7 +137,7 @@
                 peuvent candidater à votre offre
 
     - if submit_button
-      = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: forbidden
+      = render 'dashboard/stepper_multi_or_single/double_grades_dialog'
 
       .fr-mt-6w
         = link_to 'Précédent',

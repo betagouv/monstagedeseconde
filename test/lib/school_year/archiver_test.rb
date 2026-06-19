@@ -5,7 +5,6 @@ module SchoolYear
   class ArchiverTest < ActiveSupport::TestCase
     test "cleaning:year_end task" do
       skip "failing test on CI but passing locally" if ENV.fetch("CI") == "true"
-
       internship_offer = nil
       next_week        = nil
       final_week_id    = 0

@@ -1,4 +1,3 @@
-- forbidden ||= false
 dialog.fr-modal id="double-grades-modal-action" aria-labelledby="double-grades-modal-action-title" data-grade-target="dialogContainer"
   .fr-container.fr-container--fluid.fr-container-md
     .fr-grid-row.fr-grid-row--center
@@ -6,7 +5,7 @@ dialog.fr-modal id="double-grades-modal-action" aria-labelledby="double-grades-m
         .fr-modal__body
           .fr-modal__header
             button.fr-btn--close.fr-btn aria-controls="double-grades-modal-action" title="Fermer" type="button"
-              |  Fermer
+              | Fermer
           .fr-modal__content
             h2 id="double-grades-modal-action-title" class="fr-modal__title"
               span.fr-icon-arrow-right-line.fr-icon--lg aria-hidden="true"
@@ -28,7 +27,7 @@ dialog.fr-modal id="double-grades-modal-action" aria-labelledby="double-grades-m
                   | Chacune de ces deux offres aura le même nombre de places,
               |<
                 correspondant au
-                nombre que vous avez indiqué dans le champ « Nombre total d'élèves que
+                nombre que vous avez indiqué dans le champ « Nombre total d’élèves que
                 vous souhaitez accueillir sur la période de stage »
               span data-grade-target="maxCandidatesDisplay"
                 | tt
@@ -36,21 +35,14 @@ dialog.fr-modal id="double-grades-modal-action" aria-labelledby="double-grades-m
               | Vous pourrez ensuite
               span
                 strong
-                  |< modifier ce nombre de places séparément
-              |< pour chaque offre, directement depuis l'édition des offres créées.
-            - if forbidden
-              .fr-alert.fr-alert--warning.fr-mt-2w
-                p = respond_to?(:troisieme_duplication_forbidden_message) ? troisieme_duplication_forbidden_message : ''
+                  |< modifier ce nombre de places séparément 
+              |< pour chaque offre, directement depuis l’édition des offres créées.
           / -- Zone d'action de la modale --
           .fr-modal__footer
             ul.fr-btns-group.fr-btns-group--right.fr-btns-group--inline-reverse.fr-btns-group--inline-lg.fr-btns-group--icon-left
               li
-                - if forbidden
-                  button.fr-btn[type="button" disabled aria-disabled="true"]
-                    | Publier 2 offres
-                - else
-                  button.fr-btn[type="button" data-action="grade#onConfirm"]
-                    | Publier 2 offres
+                button.fr-btn[type="button" data-action="grade#onConfirm"]
+                  | Publier 2 offres
 
               li
                 button.fr-btn.fr-btn--secondary[type="button" aria-controls="double-grades-modal-action"]

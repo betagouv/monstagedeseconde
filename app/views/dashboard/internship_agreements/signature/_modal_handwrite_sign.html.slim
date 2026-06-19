@@ -5,9 +5,8 @@
     h1#fr-modal-signature-title.fr-modal__title
       span.fr-fi-arrow-right-line.fr-fi--lg aria-hidden="true"
       | Apposez votre signature
-    .d-flex.flex-column
+    .d-flex.flex-row
       div.fr-pt-1v Pour finaliser la signature, merci d'apposer votre signature manuscrite ci-dessous.
-      span.fr-hint-text.fr-mt-1v Formats acceptés : PNG ou JPEG, jusqu'à #{Signature::MAX_SIGNATURE_IMAGE_SIZE / 1.megabyte} Mo.
   .fr-modal__footer.w-100
     = form_with(model: current_user,
                 scope: :user,

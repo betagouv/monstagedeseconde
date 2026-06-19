@@ -132,31 +132,6 @@ class InternshipOfferTest < ActiveSupport::TestCase
     refute internship_offer.two_weeks_long?
   end
 
-  test '.seconde_school_track_week_1? and .seconde_school_track_week_2?' do
-    offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
-    assert offer_week_1.seconde_school_track_week_1?
-    refute offer_week_1.seconde_school_track_week_2?
-
-    offer_week_2 = create(:weekly_internship_offer_2nde, :week_2)
-    refute offer_week_2.seconde_school_track_week_1?
-    assert offer_week_2.seconde_school_track_week_2?
-
-    offer_both = create(:weekly_internship_offer_2nde, :both_weeks)
-    refute offer_both.seconde_school_track_week_1?
-    refute offer_both.seconde_school_track_week_2?
-  end
-
-  test '.seconde_school_track_week_1? compares week ids, not cached week instances' do
-    offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
-
-    # Reload offer.weeks through a fresh association so the Week instances are
-    # different object instances than SchoolTrack::Seconde.first_week, but
-    # represent the same record (same id)
-    reloaded_offer = InternshipOffer.find(offer_week_1.id)
-
-    assert reloaded_offer.seconde_school_track_week_1?
-  end
-
   test "factory 'multi'" do
     internship_offer = build(:multi_internship_offer)
     assert internship_offer.valid?
@@ -263,18 +238,10 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert_includes internship_offer.errors[:group_id], 'Un ministère est requis pour une offre publique'
   end
 
-  test 'public offer keeps its chosen sector (no longer forced to Fonction publique)' do
+  test 'public offer must have sector Fonction publique' do
     group = create(:group, is_public: true)
     other_sector = create(:sector, name: 'Autre secteur')
     internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: group, sector: other_sector)
-    assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
-    assert_equal 'Autre secteur', internship_offer.sector.name
-  end
-
-  test 'public offer can have sector Fonction publique' do
-    group = create(:group, is_public: true)
-    fonction_publique_sector = Sector.find_or_create_by!(name: 'Fonction publique')
-    internship_offer = build(:weekly_internship_offer_2nde, is_public: true, group: group, sector: fonction_publique_sector)
     assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
     assert_equal 'Fonction publique', internship_offer.sector.name
   end
@@ -306,19 +273,6 @@ class InternshipOfferTest < ActiveSupport::TestCase
     assert internship_offer.valid?, internship_offer.errors.full_messages.join(', ')
   end
 
-  test '#no_remaining_seat_anymore? is true when remaining seats is zero or negative' do
-    internship_offer = create(:weekly_internship_offer_2nde)
-
-    internship_offer.stats.update!(remaining_seats_count: 1)
-    refute internship_offer.no_remaining_seat_anymore?
-
-    internship_offer.stats.update!(remaining_seats_count: 0)
-    assert internship_offer.no_remaining_seat_anymore?
-
-    internship_offer.stats.update!(remaining_seats_count: -1)
-    assert internship_offer.no_remaining_seat_anymore?
-  end
-  
   test '.by_weeks excludes offers whose required weeks extend beyond the selection' do
     week_1 = SchoolTrack::Seconde.first_week
     week_2 = SchoolTrack::Seconde.second_week

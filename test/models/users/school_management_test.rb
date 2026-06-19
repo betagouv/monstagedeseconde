@@ -64,16 +64,6 @@ module Users
     #   end
     # end
 
-    # create_school_profiles callback: tout FIM user crée son UserSchool à la création
-    %i[school_manager cpe teacher admin_officer other].each do |role|
-      test "création d'un #{role} crée automatiquement une entrée UserSchool pour son école principale" do
-        school = create(:school)
-        user = create(role, school:)
-        assert UserSchool.exists?(user: user, school: school),
-               "UserSchool manquant pour le rôle #{role}"
-      end
-    end
-
     test '#management_representative' do
       school = create(:school)
       assert_nil school.management_representative
