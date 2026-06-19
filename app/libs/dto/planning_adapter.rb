@@ -16,7 +16,7 @@ module Dto
     end
 
     def employer_chose_whole_year?
-      params[:all_year_long] == 'true'
+      params[:all_year_long] == "true"
     end
 
     def period_field
@@ -34,8 +34,8 @@ module Dto
     end
 
     def manage_weeks
-      troisieme_only = (instance.grades.map(&:id) - [Grade.troisieme, Grade.quatrieme].map(&:id)).empty?
-      seconde_only = (instance.grades.map(&:id) - [Grade.seconde.id]).empty?
+      troisieme_only = (instance.grades.map(&:id) - [ Grade.troisieme, Grade.quatrieme ].map(&:id)).empty?
+      seconde_only = (instance.grades.map(&:id) - [ Grade.seconde.id ]).empty?
       troisieme_and_seconde = !troisieme_only && !seconde_only
       if seconde_only
         manage_seconde_weeks
@@ -85,8 +85,8 @@ module Dto
       return if period_field.blank? && instance.persisted?
 
       weeks = []
-      weeks << SchoolTrack::Seconde.first_week if period_field.in?([PERIOD[:two_weeks], PERIOD[:first_week]])
-      weeks << SchoolTrack::Seconde.second_week if period_field.in?([PERIOD[:two_weeks], PERIOD[:second_week]])
+      weeks << SchoolTrack::Seconde.first_week if period_field.in?([ PERIOD[:two_weeks], PERIOD[:first_week] ])
+      weeks << SchoolTrack::Seconde.second_week if period_field.in?([ PERIOD[:two_weeks], PERIOD[:second_week] ])
       add_weeks_to_planning(weeks)
     end
 

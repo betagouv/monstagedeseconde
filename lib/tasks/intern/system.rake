@@ -136,8 +136,10 @@ namespace :sys do
     puts "ok environment is development"
     PrettyConsole.announce_task "Uploading production database dump" do
       system("pg_restore -h localhost " \
-             "-d monstage " \
+             "--clean " \
+             "--if-exists " \
              "--no-owner --no-privileges " \
+             "-d monstage " \
              "#{args[:filename]}")
     end
   end
