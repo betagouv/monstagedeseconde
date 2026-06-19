@@ -1,10 +1,10 @@
-def student_maker(school:, class_room:, grade: nil )
+def student_maker(school:, class_room:, grade: nil)
   first_name = FFaker::NameFR.first_name
   first_name = 'Kilian' if first_name.include?(' ')
   last_name = FFaker::NameFR.unique.last_name
   last_name = 'Ploquin' if last_name.include?(' ')
-  grades = [Grade.troisieme, Grade.seconde]
-  student_grade_id = grade.nil? ? ([Grade.seconde] * 4 + [Grade.troisieme] * 4).sample : grade.id
+  grades = [ Grade.troisieme, Grade.seconde ]
+  student_grade_id = grade.nil? ? ([ Grade.seconde ] * 4 + [ Grade.troisieme ] * 4).sample : grade.id
   email_domain = student_grade_id == Grade.troisieme.id ? 'ms3e.fr' : 'ms2e.fr'
   email = "#{first_name.gsub(/[éèê]/, 'e')}.#{last_name.gsub(/[éèê]/, 'e')}@#{email_domain}"
   Users::Student.new(
@@ -31,9 +31,9 @@ end
 def random_class_room(type: :college)
   class_rooms = if type == :college
                   a_parisian_college.class_rooms
-                else
+  else
                   a_parisian_lycee.class_rooms
-                end
+  end
   class_rooms.sample
 end
 
@@ -182,6 +182,11 @@ def populate_users
     user = random_extra_attributes(user)
     user.save!
   end
+
+  users.select { |u| u.is_a?(Users::SchoolManagement) }.each do |school_management|
+    next unless school_management.school
+    UserSchool.find_or_create_by!(user: school_management, school: school_management.school)
+  end
 end
 
 def populate_students
@@ -245,7 +250,7 @@ def populate_students
   )
   2.times { users << student_maker(school: lycee, class_room: random_class_room(type: :lycee), grade: Grade.seconde) }
 
-    # collèges
+  # collèges
   7.times { users << student_maker(school: college, class_room: random_class_room(type: :college), grade: Grade.troisieme) }
   users << Users::Student.new(
     ine: make_ine,

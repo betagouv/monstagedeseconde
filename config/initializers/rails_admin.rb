@@ -37,6 +37,30 @@ class RailsAdmin::Config::Fields::Base
   end
 end
 
+# Prevent Chrome from autofilling the current admin's credentials into edit forms
+# (e.g. phone field getting filled with the logged-in user's email).
+class RailsAdmin::Config::Fields::Types::String
+  register_instance_option :html_attributes do
+    {
+      required: required?,
+      maxlength: length,
+      size: input_size,
+      autocomplete: 'off'
+    }
+  end
+end
+
+class RailsAdmin::Config::Fields::Types::Password
+  register_instance_option :html_attributes do
+    {
+      required: required?,
+      maxlength: length,
+      size: input_size,
+      autocomplete: 'new-password'
+    }
+  end
+end
+
 %w[kpi.rb switch_user.rb publish.rb import_students_from_sygne.rb].each do |action|
   require Rails.root.join('lib', 'rails_admin', 'config', 'actions', action)
 end
@@ -129,6 +153,7 @@ RailsAdmin.config do |config|
                               Users::God]
 
   config.navigation_static_links = {
+    'Gestion personnels pédagogiques' => '/admin/school_managements',
     'Ajouter un établissement' => '/ecoles/nouveau',
     'Supprimer un étudiant, un employeur' => '/utilisateurs/anonymiseur',
     'Tranformer un compte' => '/utilisateurs/transform_input',
@@ -138,6 +163,13 @@ RailsAdmin.config do |config|
     'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split'
   }
+  # letter_thief n'est monté qu'en development et review (cf. config/routes.rb) :
+  # on n'affiche le lien que là, sinon il pointerait dans le vide en prod/staging.
+  if Rails.env.development? || Rails.env.review?
+    config.navigation_static_links.merge!(
+      'Letter Thief' => '/letter_thief'
+    )
+  end
   if ENV.fetch('ENABLE_REVIEW_DATA_RESET', 'false') == 'true' && !Rails.env.production?
     config.navigation_static_links.merge!(
       'Reset des données de review' => '/reset_review_data/new'

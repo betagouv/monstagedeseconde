@@ -761,4 +761,112 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_equal "validated_by_employer", application_full.reload.aasm_state
     end
   end
+
+  test "concurrent approvals on conflicting weekly offers cannot both succeed" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: "lycee")
+      student = create(:student, :seconde, school:)
+      offer_week_1 = create(:weekly_internship_offer_2nde, :week_1)
+      offer_week_1_bis = create(:weekly_internship_offer_2nde, :week_1)
+      application_1 = create(:weekly_internship_application, :validated_by_employer,
+                             student:, internship_offer: offer_week_1)
+      application_2 = create(:weekly_internship_application, :validated_by_employer,
+                             student:, internship_offer: offer_week_1_bis)
+
+      results = []
+      ready = Concurrent::CountDownLatch.new(2)
+      threads = [ application_1, application_2 ].map do |application|
+        Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection do
+            ready.count_down
+            ready.wait
+            results << begin
+              application.approve!
+              :approved
+            rescue AASM::InvalidTransition
+              :rejected
+            end
+          end
+        end
+      end
+      threads.each(&:join)
+
+      assert_equal [ :approved, :rejected ].sort, results.sort
+      approved_count = [ application_1, application_2 ].count { |a| a.reload.aasm_state == "approved" }
+      assert_equal 1, approved_count
+    end
+  end
+
+  test "#is_re_approvable? is true for an expired application with no blocker" do
+    application = create(:weekly_internship_application, :expired)
+
+    assert application.is_re_approvable?
+    assert_nil application.re_approval_blocked_reason
+  end
+
+  test "#re_approval_blocked_reason is :anonymized when student is anonymized" do
+    application = create(:weekly_internship_application, :expired)
+    application.student.update_columns(anonymized: true)
+
+    assert_equal :anonymized, application.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
+  test "#re_approval_blocked_reason is :no_seats_left when the offer has no seat left" do
+    application = create(:weekly_internship_application, :expired)
+    application.internship_offer.stats.update!(remaining_seats_count: 0)
+
+    assert_equal :no_seats_left, application.reload.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
+  test "#re_approval_blocked_reason is :no_seats_left when the offer is over capacity" do
+    application = create(:weekly_internship_application, :expired)
+    application.internship_offer.stats.update!(remaining_seats_count: -1)
+
+    assert_equal :no_seats_left, application.reload.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
+
+  test "#re_approval_blocked_reason is :conflicting when student already has a conflicting approved application" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: "lycee")
+      student = create(:student, :seconde, school:)
+      week = SchoolTrack::Seconde.both_weeks.first
+      conflicting_offer = create(:weekly_internship_offer_2nde, :week_1)
+      expired_offer = create(:weekly_internship_offer_2nde, :week_1)
+      create(:weekly_internship_application, :approved,
+             student:, internship_offer: conflicting_offer, weeks: [week])
+      expired_application = create(:weekly_internship_application, :expired,
+                                   student:, internship_offer: expired_offer, weeks: [week])
+
+      assert_equal :conflicting, expired_application.re_approval_blocked_reason
+      refute expired_application.is_re_approvable?
+    end
+  end
+
+  test "#is_re_approvable? is true for a seconde gt expired application with an approved application on a different week" do
+    travel_to Time.zone.local(2025, 3, 1) do
+      school = create(:school, school_type: "lycee")
+      student = create(:student, :seconde, school:)
+      week_1 = SchoolTrack::Seconde.both_weeks.first
+      week_2 = SchoolTrack::Seconde.both_weeks.second
+      approved_offer = create(:weekly_internship_offer_2nde, :week_1)
+      expired_offer = create(:weekly_internship_offer_2nde, :week_2)
+      create(:weekly_internship_application, :approved,
+             student:, internship_offer: approved_offer, weeks: [week_1])
+      expired_application = create(:weekly_internship_application, :expired,
+                                   student:, internship_offer: expired_offer, weeks: [week_2])
+
+      assert_nil expired_application.re_approval_blocked_reason
+      assert expired_application.is_re_approvable?
+    end
+  end
+
+  test "#is_re_approvable? is false for a submitted application even with no blocker" do
+    application = create(:weekly_internship_application, :submitted)
+
+    assert_nil application.re_approval_blocked_reason
+    refute application.is_re_approvable?
+  end
 end

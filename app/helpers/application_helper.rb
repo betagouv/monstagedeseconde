@@ -21,6 +21,19 @@ module ApplicationHelper
   #       .any?
   # end
 
+  # Le lien "Contactez-nous" (formulaire de contact) ne cible que les offreurs,
+  # personnels pédagogiques et référents
+  def display_footer_contact_link?
+    return true if user_signed_in? && !current_user.student?
+
+    [
+      pro_login_path,
+      school_management_login_path,
+      statistician_login_path,
+      new_user_session_path
+    ].any? { |path| current_page?(path) }
+  end
+
   def account_controller?(user:)
     [
       current_page?(account_path),

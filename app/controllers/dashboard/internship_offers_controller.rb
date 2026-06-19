@@ -2,17 +2,19 @@
 
 module Dashboard
   class InternshipOffersController < ApplicationController
+    include TroisiemeDuplicationPeriod
+
     before_action :authenticate_user!
     before_action :set_internship_offer,
                   only: %i[edit update destroy republish]
 
-    helper_method :order_direction
+    helper_method :order_direction, :troisieme_duplication_forbidden?, :troisieme_duplication_forbidden_message
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 
     def index
       @internship_offer_areas = current_user.internship_offer_areas if current_user.employer_like?
-      authorize! :index, Acl::InternshipOfferDashboard.new(user: current_user)
+      authorize! :index, :internship_offer_dashboard
 
       return if params[:order] && !valid_order_column? && (redirect_to(dashboard_internship_offers_path, flash: { danger: "Impossible de trier par #{params[:order]}" }); true)
 
@@ -62,6 +64,15 @@ module Dashboard
     def create
       @duplication = true
       authorize! :create, InternshipOffer
+
+      if params[:duplicate_id].present? && internship_offer_params[:grade_college] == "1" && troisieme_duplication_forbidden?
+        @internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+        @available_weeks = Week.both_school_track_selectable_weeks
+        set_internship_offer_attributes(@internship_offer)
+        @internship_offer.errors.add(:base, troisieme_duplication_forbidden_message)
+        return render :new, status: :unprocessable_entity
+      end
+
       create_params = internship_offer_params.merge(employer_id: current_user.id)
       internship_offer_builder.create(params: create_params) do |on|
         on.success do |created_internship_offer|
@@ -70,6 +81,7 @@ module Dashboard
                                                        current_user:)
                                                   .manage_planning_associations
                                                   .instance
+          @internship_offer.split_offer if duplicate_with_double_grades?
           @available_weeks = Week.troisieme_weeks
           success_message = if params[:commit] == "Renouveler l'offre"
                               "Votre offre de stage a été renouvelée pour cette année scolaire."
@@ -113,11 +125,9 @@ module Dashboard
 
       if params[:internship_offer].key?(:is_public)
         is_public_value = ActiveModel::Type::Boolean.new.cast(internship_offer_params[:is_public])
-        if is_public_value
-          params[:internship_offer][:sector_id] = Sector.find_by(name: "Fonction publique").try(:id)
-        else
-          params[:internship_offer][:group_id] = nil
-        end
+        # Le secteur n'est plus forcé pour le public : c'est un choix libre.
+        # On nettoie seulement le ministère pour une offre privée.
+        params[:internship_offer][:group_id] = nil unless is_public_value
       end
       internship_offer_builder.update(instance: @internship_offer,
                                       params: internship_offer_params) do |on|
@@ -183,13 +193,16 @@ module Dashboard
       authorize! :update, @internship_offer
       if @internship_offer.may_unpublish?
         @internship_offer.unpublish!
-      end
-      respond_to do |format|
-        format.turbo_stream
-        format.html do
-          redirect_to dashboard_internship_offers_path(origine: "dashboard"),
-                      flash: { success: "Votre annonce a bien été dépubliée" }
+        respond_to do |format|
+          format.turbo_stream
+          format.html do
+            redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                        flash: { success: "Votre annonce a bien été dépubliée" }
+          end
         end
+      else
+        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                    flash: { warning: "Votre annonce n'a pas pu être dépubliée" }
       end
     end
 
@@ -271,7 +284,7 @@ module Dashboard
           :entreprise_city,
           :entreprise_coordinates_longitude, :entreprise_coordinates_latitude,
           :entreprise_full_address,
-          :entreprise_street, :entreprise_zipcode, :grade_2e, :grade_college,
+          :entreprise_street, :entreprise_zipcode, :entreprise_id, :grade_2e, :grade_college,
           :group_id, :internship_address_manual_enter, :internship_offer_area_id,
           :is_public, :lunch_break, :max_candidates,
           :period, :period_field, :published_at, :region, :renewed, :republish,
@@ -311,6 +324,13 @@ module Dashboard
       warnings << "vous devez dupliquer votre offre car aucune semaine n'est disponible cette année" if republish_blocking_reasons.include?(:must_duplicate)
       warnings << "vous devez ajouter des places à ce stage pour le republier" if republish_blocking_reasons.include?(:seats)
       warnings.join(" et ")
+    end
+
+    def duplicate_with_double_grades?
+      return false unless params[:duplicate_id].present?
+
+      grades = @internship_offer.grades.map(&:short_name)
+      grades.include?("seconde") && grades.any? { |grade| grade.in?(%w[troisieme quatrieme]) }
     end
   end
 end
