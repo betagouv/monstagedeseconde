@@ -12,6 +12,7 @@ class InternshipAgreement < ApplicationRecord
   include Api::AuthV2
 
   MIN_PRESENCE_DAYS = 4
+  AGREEMENT_SIGNED_BY_ALL_STALE_DAYS = 40
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
   # index croissant = convention plus avancée (utilisé pour dé-dupliquer les candidatures)
@@ -349,7 +350,7 @@ class InternshipAgreement < ApplicationRecord
     kwargs[:internship_agreement_id] ||= id
     kwargs[:action_type] ||= name
     if name == "agreement_signed_by_all"
-      kwargs[:stale_at] ||= 40.days.from_now
+      kwargs[:stale_at] ||= AGREEMENT_SIGNED_BY_ALL_STALE_DAYS.days.from_now
     else
       kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
     end
