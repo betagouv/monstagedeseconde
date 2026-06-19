@@ -20,6 +20,12 @@ module StudentAdmin
         field :birth_date
         field :school
         field :gender
+        field :grade_id, :enum do
+          label 'Niveau'
+          enum do
+            Grade.all.map { |g| [g.name, g.id] }
+          end
+        end
       end
 
       show do

@@ -163,6 +163,9 @@ fr:
         zipcode: Code postal
         city: Commune
         phone: Téléphone
+        sector_id: Secteur d'activité
+        is_public: Secteur public/privé
+        group_id: Type d'employeur public
       school:
         name: Nom
         kind: Type
@@ -228,6 +231,8 @@ fr:
       entreprise: &entreprises_fields
         siret: Siret
         is_public: Secteur public/privé
+        sector_id: Secteur d'activité
+        group_id: Type d'employeur public
         employer_name: Nom de l'employeur(issu du siret)
         employer_chosen_name: Nom de l'employeur
         entreprise_coordinates: Coordonnées GPS de l'entreprise
@@ -297,47 +302,38 @@ fr:
             signatures_started: Partiellement signée
             signed_by_all: Signée par toutes les parties.
           ministry_statistician: &ministry_statistician_status
-            draft: En attente de l'offreur.
-            started_by_employer: En attente de l'offreur.
-            completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
+            draft: En attente de l’offreur.
+            started_by_employer: En attente de l’offreur.
+            completed_by_employer: Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
-            signatures_started:
-              already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
-              not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
-              multi_employer: En cours de signature.
+            signatures_started: Partiellement signée.
             signed_by_all: Signée par toutes les parties.
           admin_officer:
             <<: *ministry_statistician_status
           cpe:
-            draft: En attente de l'offreur.
-            started_by_employer: En attente de l'offreur.
-            completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
+            draft: En attente de l’offreur.
+            started_by_employer: En attente de l’offreur.
+            completed_by_employer: Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
-            signatures_started:
-              already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
-              not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
+            signatures_started: Partiellement signée.
             signed_by_all: Signée par toutes les parties.
           other:
-            draft: En attente de l'offreur.
-            started_by_employer: En attente de l'offreur.
-            completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
+            draft: En attente de l’offreur.
+            started_by_employer: En attente de l’offreur.
+            completed_by_employer: Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
-            signatures_started:
-              already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
-              not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
+            signatures_started: Partiellement signée.
             signed_by_all: Signée par toutes les parties.
           teacher:
-            draft: En attente de l'offreur.
-            started_by_employer: En attente de l'offreur.
-            completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
+            draft: En attente de l’offreur.
+            started_by_employer: En attente de l’offreur.
+            completed_by_employer: Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
-            signatures_started:
-              already_signed: Le chef d'établissement a déjà signé. En attente de la signature de l’employeur.
-              not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
+            signatures_started: Partiellement signée.
             signed_by_all: Signée par toutes les parties.
           employer:
             draft: À remplir par les deux parties.
@@ -394,14 +390,12 @@ fr:
               not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
           school_manager:
-            draft: En attente de l'offreur.
-            started_by_employer: En attente de l'offreur.
-            completed_by_employer: Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.
+            draft: En attente de l’offreur.
+            started_by_employer: En attente de l’offreur.
+            completed_by_employer: Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
-            signatures_started:
-              already_signed: Vous avez déjà signé. En attente de la signature de l’employeur.
-              not_signed_yet: L'employeur a déjà signé. En attente de votre signature.
+            signatures_started: Partiellement signée.
             signed_by_all: Signée par toutes les parties.
       internship_agreements/multi_internship_agreement:
         status:
@@ -784,6 +778,8 @@ fr:
 
         internship_application:
           attributes:
+            base:
+              duplicate: "Vous avez déjà postulé à cette offre"
             user_id:
               duplicate: "Vous êtes déjà candidat pour cette offre"
             internship_offer:
@@ -792,9 +788,6 @@ fr:
               blank: Veuillez renseigner vos motivations
             student:
               taken: 'Vous ne pouvez pas postuler deux fois à la même offre'
-        internship_applications/weekly_framed:
-          attributes:
-            duplicate: Duplicat internship_address_manual_enter
   student: "Élève"
   student legal representative: "Représentant légal"
   admin:

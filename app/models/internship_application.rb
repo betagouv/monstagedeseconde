@@ -39,6 +39,11 @@ class InternshipApplication < ApplicationRecord
     approved
   ]
   RE_APPROVABLE_STATES = %w[rejected canceled_by_employer expired]
+  RE_APPROVABLE_BLOCKED_REASONS = {
+    anonymized: "Le compte de cet élève n'existe plus.",
+    conflicting: "L'élève a déjà accepté un stage sur cette période.",
+    no_seats_left: "Le nombre de places maximum pour ce stage a déjà été atteint."
+  }.freeze
   REJECTABLE_STATES = %w[submitted read_by_employer transfered]
   CANCELABLE_STATES = %w[restored validated_by_employer approved]
   VALID_TRANSITIONS = %w[
@@ -452,12 +457,15 @@ class InternshipApplication < ApplicationRecord
   end
 
   def is_re_approvable?
-    # false if student is anonymised or student has an approved application
-    return false if student.anonymized? ||
-                    student.internship_applications.where(aasm_state: "approved").any? ||
-                    internship_offer.remaining_seats_count.zero?
+    re_approval_blocked_reason.nil? && RE_APPROVABLE_STATES.include?(aasm_state)
+  end
 
-    RE_APPROVABLE_STATES.include?(aasm_state)
+  def re_approval_blocked_reason
+    return :anonymized if student.anonymized?
+    return :conflicting unless no_other_approved_application?
+    return :no_seats_left if internship_offer.remaining_seats_count <= 0
+
+    nil
   end
 
   def cancelable?
@@ -764,10 +772,13 @@ class InternshipApplication < ApplicationRecord
   end
 
   def no_other_approved_application?
-    others = student.internship_applications.approved.where.not(id: id)
-    return others.empty? unless student.seconde_gt?
+    # Lock the student row to prevent concurrent approvals from bypassing this check
+    student.with_lock do
+      others = student.internship_applications.approved.where.not(id: id)
+      return others.empty? unless student.seconde_gt?
 
-    others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+      others.none? { |other| weekly_conflict_with?(other.internship_offer) }
+    end
   end
 
   def weekly_conflict_with?(other_offer)

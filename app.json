@@ -5,7 +5,7 @@
 
   "repository": "https://github.com/betagouv/monstagedeseconde",
 
-  "stack": "heroku-24",
+  "stack": "heroku-26",
   "buildpacks": [{
       "url": "heroku/nodejs"
     }, {
@@ -50,7 +50,7 @@
         }, {
           "plan": "scheduler:standard"
         }, {
-          "plan": "mailtrap:unpaid"
+          "plan": "heroku-redis:mini"
         }
       ]
     }
