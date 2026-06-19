@@ -156,10 +156,11 @@ class InternshipAgreement < ApplicationRecord
                   to: :signed_by_all,
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
-                           notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
-                           notify_employer_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
-                           unless skip_notifications_when_system_creation || school_management_representative_signed_last?
-                             notify_school_management_with_digest_email("agreement_signed_by_all")
+                           unless skip_notifications_when_system_creation
+                             notify_others_signatures_finished(self)
+                             notify_employer_with_digest_email("agreement_signed_by_all")
+                             notify_student_with_digest_email("agreement_signed_by_all")
+                             notify_school_management_with_digest_email("agreement_signed_by_all") unless school_management_representative_signed_last?
                            end
                          }
     end
@@ -297,8 +298,8 @@ class InternshipAgreement < ApplicationRecord
   end
 
   def notify_others_signatures_started
-    # employer is notified by digest email (agreement_to_sign), exclude them here to avoid duplicate
-    recipients = missing_signatures_recipients - [ employer.email ]
+    # employer and student are notified by digest email, exclude them here to avoid duplicate
+    recipients = missing_signatures_recipients - [ employer.email, internship_application.student.email ]
     return if recipients.empty?
 
     GodMailer.notify_others_signatures_started_email(
@@ -349,6 +350,12 @@ class InternshipAgreement < ApplicationRecord
     kwargs[:action_type] ||= name
     kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
     kwargs
+  end
+
+  def notify_student_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= internship_application.student
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
   end
 
   def notify_employer_with_digest_email(name, **kwargs)

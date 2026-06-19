@@ -144,14 +144,13 @@ class GodMailer < ApplicationMailer
     @internship_offer      = internship_application.internship_offer
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    recipients_email       = recipients_email_for_signature(
-      internship_agreement: internship_agreement
-    )
-    @url = dashboard_internship_agreements_url(
-      uuid: internship_agreement.uuid
-    ).html_safe
+    @url = dashboard_internship_agreements_url(uuid: internship_agreement.uuid).html_safe
 
-    email_recipients = recipients_email - [ @internship_offer.employer.email ]
+    email_recipients = recipients_email_for_signature(internship_agreement: internship_agreement)
+                         .excluding(
+                          @internship_offer.employer.email,
+                          student.email,
+                          @school_manager&.email)
 
     unless internship_agreement.school_management_representative_signed_last?
       handle_school_manager_mail_action(
@@ -161,8 +160,6 @@ class GodMailer < ApplicationMailer
         school_manager: @school_manager
       )
     end
-
-    email_recipients -= [ @school_manager.email ] if @school_manager.present?
 
     send_email(
       to: email_recipients,
