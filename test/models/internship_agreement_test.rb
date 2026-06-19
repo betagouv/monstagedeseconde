@@ -189,7 +189,7 @@ class InternshipAgreementTest < ActiveSupport::TestCase
       create(:signature, :employer, internship_agreement_id: internship_agreement.id,
              user_id: employer.id)
 
-      assert_difference "MailActionItem.count", 2 do
+      assert_difference "MailActionItem.count", 4 do
         # one for the school_manager, one for the employer
         internship_agreement.sign!
       end
@@ -230,7 +230,7 @@ class InternshipAgreementTest < ActiveSupport::TestCase
 
     assert internship_agreement.school_management_representative_signed_last?
 
-    assert_difference "MailActionItem.count", 1 do
+    assert_difference "MailActionItem.count", 2 do
       # only the employer gets agreement_signed_by_all
       internship_agreement.sign!
     end

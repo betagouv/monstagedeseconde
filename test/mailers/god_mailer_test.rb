@@ -203,18 +203,21 @@ class GodMailerTest < ActionMailer::TestCase
     assert_equal internship_agreement, student_item.internship_agreement
   end
 
-  test "notify_signatures_can_start_email creates a MailActionItem with stale_at set so it is picked up by the digest" do
-    internship_agreement = create(:mono_internship_agreement)
+  test "notify_signatures_can_start_email creates a MailActionItem" \
+       "with stale_at set so it is picked up by the digest" do
+    travel_to(SchoolTrack::Seconde.both_weeks.first.monday - 1.week) do
+      internship_agreement = create(:mono_internship_agreement)
 
-    GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
+      GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
 
-    school_manager = internship_agreement.school_management_representative
-    mail_action_item = MailActionItem.find_by(action_name: "signatures_enabled",
-                                              recipient_type: school_manager.class.name,
-                                              recipient_id: school_manager.id)
-    assert_not_nil mail_action_item
-    assert_not_nil mail_action_item.stale_at
-    assert_includes MailActionItem.not_overdue, mail_action_item
+      school_manager = internship_agreement.school_management_representative
+      mail_action_item = MailActionItem.find_by(action_name: "signatures_enabled",
+                                                recipient_type: school_manager.class.name,
+                                                recipient_id: school_manager.id)
+      assert_not_nil mail_action_item
+      assert_not_nil mail_action_item.stale_at
+      assert_includes MailActionItem.not_overdue, mail_action_item
+    end
   end
 
   test "notify_signatures_can_start_email does not notify the student legal representatives" do
