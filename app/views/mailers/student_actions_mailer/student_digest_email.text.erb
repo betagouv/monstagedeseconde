@@ -24,6 +24,18 @@ Conventions en attente de votre signature :
 <% end %>
 <% end %>
 
+<% if @agreement_signed_by_all_rows&.any? %>
+Conventions signées par toutes les parties :
+
+<% @agreement_signed_by_all_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- La convention de stage a été signée par toutes les parties.
+- Voir la convention signée : <%= row[:agreement_url] %>
+
+<% end %>
+<% end %>
+
 <% if @rejected_rows&.any? %>
 Candidatures refusées :
 

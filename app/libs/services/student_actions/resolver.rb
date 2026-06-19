@@ -49,7 +49,9 @@ module Services::StudentActions
         agreement = item.internship_agreement
         next if agreement.nil?
 
-        agreement_resolve(agreement) unless agreement.roles_not_signed_yet.include?("student")
+        unless agreement.roles_not_signed_yet.include?("student")
+          agreement_resolve(agreement, exclude_action_names: [ "agreement_signed_by_all" ])
+        end
       end
     end
 
@@ -68,13 +70,15 @@ module Services::StudentActions
       ).each { |item| item.update_columns(resolved_at: Time.current) }
     end
 
-    def self.agreement_resolve(agreement)
+    def self.agreement_resolve(agreement, exclude_action_names: [])
       return unless agreement&.persisted?
 
-      MailActionItem.where(
+      query = MailActionItem.where(
         action_type: :pending_internship_agreement,
         internship_agreement_id: agreement.id
-      ).each { |item| item.update_columns(resolved_at: Time.current) }
+      )
+      query = query.where.not(action_name: exclude_action_names) if exclude_action_names.any?
+      query.each { |item| item.update_columns(resolved_at: Time.current) }
     end
   end
 end

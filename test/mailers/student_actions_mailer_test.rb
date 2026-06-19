@@ -165,4 +165,46 @@ class StudentActionsMailerTest < ActionMailer::TestCase
     assert_match offer.title, text_body
     assert_match "Voir la convention", text_body
   end
+
+  test "student_digest_email renders agreement_signed_by_all rows" do
+    internship_agreement = create(:mono_internship_agreement)
+    internship_application = internship_agreement.internship_application
+    student = internship_application.student
+
+    item = MailActionItem.create!(
+      recipient: student,
+      action_name: "agreement_signed_by_all",
+      action_type: :pending_internship_agreement,
+      urgency_level: :medium,
+      stale_at: 5.days.from_now,
+      resolved_at: nil,
+      deliveries_count: 0,
+      max_deliveries_count: 1,
+      internship_agreement: internship_agreement
+    )
+
+    actions = { "pending_internship_agreement" => [ item ] }
+
+    email = StudentActionsMailer.student_digest_email(
+      user_id: student.id,
+      actions: actions,
+      urgency_levels: [ "medium" ]
+    )
+    email.deliver_now
+
+    assert_emails 1
+    assert_includes email.to, student.email
+
+    html_body = email.html_part.body.to_s
+    text_body = email.text_part.body.to_s
+    offer     = internship_application.internship_offer
+
+    assert_match "Conventions signées par toutes les parties", html_body
+    assert_match offer.title, html_body
+    assert_match "Voir la convention", html_body
+
+    assert_match "Conventions signées par toutes les parties", text_body
+    assert_match offer.title, text_body
+    assert_match "Voir la convention", text_body
+  end
 end
