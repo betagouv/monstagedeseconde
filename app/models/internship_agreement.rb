@@ -348,7 +348,11 @@ class InternshipAgreement < ApplicationRecord
   def common_kwargs_for_digest_email(name, **kwargs)
     kwargs[:internship_agreement_id] ||= id
     kwargs[:action_type] ||= name
-    kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    if name == "agreement_signed_by_all"
+      kwargs[:stale_at] ||= 40.days.from_now
+    else
+      kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    end
     kwargs
   end
 
