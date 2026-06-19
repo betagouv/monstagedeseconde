@@ -33,6 +33,7 @@ class StudentActionsMailer < ApplicationMailer
         {
           offer_title:      application.internship_offer.title,
           employer_name:    application.internship_offer.employer_name,
+          date_range:       application.presenter(@user).date_range,
           application_url:  dashboard_students_internship_application_url(
             sgid: sgid,
             student_id: @user.id,
@@ -69,6 +70,26 @@ class StudentActionsMailer < ApplicationMailer
           offer_title:      application.internship_offer.title,
           employer_name:    application.internship_offer.employer_name,
           agreement_url:    public_internship_agreement_url(
+            uuid: agreement.uuid,
+            access_token: agreement.access_token.presence || ""
+          )
+        }
+      end
+
+    # --- Convention signée par toutes les parties ---
+    @agreement_signed_by_all_rows = all_agreements
+      .select { |item| item.action_name == "agreement_signed_by_all" }
+      .filter_map do |item|
+        agreement = item.internship_agreement
+        next if agreement.nil?
+
+        application = agreement.internship_application
+        next if application.nil?
+
+        {
+          offer_title:   application.internship_offer.title,
+          employer_name: application.internship_offer.employer_name,
+          agreement_url: public_internship_agreement_url(
             uuid: agreement.uuid,
             access_token: agreement.access_token.presence || ""
           )
