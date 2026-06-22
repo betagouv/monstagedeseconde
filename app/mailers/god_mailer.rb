@@ -192,7 +192,7 @@ class GodMailer < ApplicationMailer
       school_manager: @school_manager
     )
 
-    handle_student_mail_action(
+    recipients_email = handle_student_mail_action(
       internship_agreement: internship_agreement,
       student: student,
       email_recipients: recipients_email
