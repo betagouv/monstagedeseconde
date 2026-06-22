@@ -195,14 +195,16 @@ class GodMailerTest < ActionMailer::TestCase
   end
 
   test "notify_signatures_can_start_email creates a MailActionItem with stale_at set so it is picked up by the digest" do
-    internship_agreement = create(:mono_internship_agreement)
+    travel_to Time.zone.local(2024, 5, 1, 12, 0, 0) do
+      internship_agreement = create(:mono_internship_agreement)
 
-    GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
+      GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
 
-    mail_action_item = MailActionItem.last
-    assert_equal "signatures_enabled", mail_action_item.action_name
-    assert_not_nil mail_action_item.stale_at
-    assert_includes MailActionItem.not_overdue, mail_action_item
+      mail_action_item = MailActionItem.last
+      assert_equal "signatures_enabled", mail_action_item.action_name
+      assert_not_nil mail_action_item.stale_at
+      assert_includes MailActionItem.not_overdue, mail_action_item
+    end
   end
 
   test "notify_signatures_can_start_email does not notify the student legal representatives" do
