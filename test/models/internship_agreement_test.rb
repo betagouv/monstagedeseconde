@@ -189,27 +189,31 @@ class InternshipAgreementTest < ActiveSupport::TestCase
       create(:signature, :employer, internship_agreement_id: internship_agreement.id,
              user_id: employer.id)
 
-      assert_difference "MailActionItem.count", 4 do
-        # one for the school_manager, one for the employer
+      assert_difference "MailActionItem.count", 3 do
+        # one for the employer, one for the student, one for the school_manager
         internship_agreement.sign!
       end
 
-      item = MailActionItem.last(2).first
-      assert_equal "agreement_signed_by_all", item.action_name
-      assert_equal "pending_internship_agreement", item.action_type
-      assert_equal employer, item.recipient
-      assert_equal internship_agreement.id, item.internship_agreement_id
-      assert_equal "medium", item.urgency_level
-      assert_equal 1, item.max_deliveries_count
-      assert item.stale_at > Time.current
-      item = MailActionItem.last(2).last
-      assert_equal "agreement_signed_by_all", item.action_name
-      assert_equal "pending_internship_agreement", item.action_type
-      assert_equal internship_agreement.student.school.management_representative, item.recipient
-      assert_equal internship_agreement.id, item.internship_agreement_id
-      assert_equal "medium", item.urgency_level
-      assert_equal 1, item.max_deliveries_count
-      assert item.stale_at > Time.current
+      employer_item = MailActionItem.find_by(action_name: "agreement_signed_by_all",
+                                             recipient_type: employer.class.name,
+                                             recipient_id: employer.id)
+      assert_not_nil employer_item
+      assert_equal "pending_internship_agreement", employer_item.action_type
+      assert_equal internship_agreement.id, employer_item.internship_agreement_id
+      assert_equal "medium", employer_item.urgency_level
+      assert_equal 1, employer_item.max_deliveries_count
+      assert employer_item.stale_at > Time.current
+
+      school_manager = internship_agreement.student.school.management_representative
+      school_manager_item = MailActionItem.find_by(action_name: "agreement_signed_by_all",
+                                                   recipient_type: school_manager.class.name,
+                                                   recipient_id: school_manager.id)
+      assert_not_nil school_manager_item
+      assert_equal "pending_internship_agreement", school_manager_item.action_type
+      assert_equal internship_agreement.id, school_manager_item.internship_agreement_id
+      assert_equal "medium", school_manager_item.urgency_level
+      assert_equal 1, school_manager_item.max_deliveries_count
+      assert school_manager_item.stale_at > Time.current
     end
   end
 
