@@ -33,7 +33,7 @@ module MailActionConfigurable
         urgency_level: "medium",
           max_deliveries_count: 1
       },
-      "canceled_internship_application" => {
+      "canceled_internship_application_by_employer" => {
         urgency_level: "low",
         max_deliveries_count: 1
       },

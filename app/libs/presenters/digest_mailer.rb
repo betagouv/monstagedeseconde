@@ -12,7 +12,7 @@ module Presenters
       "cancel_by_student_confirmation"               => "Confirmation d'annulation par l'élève",
       "candidate_chose_another_internship"           => "Élève ayant choisi un autre stage",
       "candidate_restored_by_student"                => "Candidature réactivée par l'élève",
-      "canceled_internship_application"              => "Candidature annulée (employeur)",
+      "canceled_internship_application_by_employer"   => "Candidature annulée (employeur)",
       "internship_application_transfered"            => "Candidature transférée",
       "internship_agreement_completed_by_employer"   => "Convention complétée par l'employeur",
       "new_agreement_to_fill_in"                     => "Nouvelle convention à compléter",

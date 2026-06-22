@@ -54,7 +54,7 @@ Pour chaque action testée :
 | `cancel_by_student_confirmation` | pending_internship_application | high | élève confirme l'annulation |
 | `candidate_chose_another_internship` | pending_internship_application | high | élève choisit un autre stage |
 | `candidate_restored_by_student` | pending_internship_application | medium | élève restaure sa candidature |
-| `canceled_internship_application` | pending_internship_application | low | candidature annulée (côté employeur/système) |
+| `canceled_internship_application_by_employer` | pending_internship_application | low | candidature annulée (côté employeur/système) |
 | `internship_application_transfered` | pending_internship_application | medium | candidature transférée |
 | `new_agreement_to_fill_in` | pending_internship_agreement | medium | nouvelle convention à compléter |
 | `agreement_signed_by_another` | pending_internship_agreement | low | convention signée par une autre partie |
