@@ -76,6 +76,20 @@ class StudentActionsMailer < ApplicationMailer
         }
       end
 
+    # --- Candidature annulée par l'employeur ---
+    @canceled_rows = all_applications
+      .select { |item| item.action_name == "canceled_internship_application" }
+      .filter_map do |item|
+        application = item.internship_application
+        next if application.nil?
+
+        {
+          offer_title:   application.internship_offer.title,
+          employer_name: application.internship_offer.employer_name,
+          search_url:    internship_offers_url
+        }
+      end
+
     # --- Convention signée par toutes les parties ---
     @agreement_signed_by_all_rows = all_agreements
       .select { |item| item.action_name == "agreement_signed_by_all" }
@@ -96,6 +110,6 @@ class StudentActionsMailer < ApplicationMailer
         }
       end
 
-    send_email(to: @user.email, subject: "Résumé de vos candidatures")
+    send_email(to: @user.email, subject: "Résumé de vos candidatures et conventions en cours")
   end
 end

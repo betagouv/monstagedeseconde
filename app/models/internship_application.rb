@@ -331,11 +331,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_employer,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
-                    if student.email.present?
-                      deliver_later_with_additional_delay do
-                        StudentMailer.internship_application_canceled_by_employer_email(internship_application: self)
-                      end
-                    end
+                    notify_student_with_digest_email("canceled_internship_application")
                     internship_agreement&.destroy
                     record_state_change user
                   }

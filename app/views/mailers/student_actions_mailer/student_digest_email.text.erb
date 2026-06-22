@@ -48,6 +48,18 @@ Candidatures refusées :
 <% end %>
 <% end %>
 
+<% if @canceled_rows&.any? %>
+Candidatures annulées par l'employeur :
+
+<% @canceled_rows.each_with_index do |row, index| %>
+<%= index + 1 %>. <%= row[:offer_title] %>
+- Employeur : <%= row[:employer_name] %>
+- L'employeur a annulé votre candidature. N'hésitez pas à postuler à d'autres offres.
+- Trouver d'autres offres : <%= row[:search_url] %>
+
+<% end %>
+<% end %>
+
 <% if @expired_rows&.any? %>
 Candidatures expirées :
 
