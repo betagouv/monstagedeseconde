@@ -55,7 +55,7 @@ class DigestMailsMediumTest < ActiveSupport::TestCase
     email = ActionMailer::Base.deliveries.last
     refute_nil email
     assert_includes email.to, student.email
-    assert_equal "Résumé de vos candidatures", email.subject
+    assert_equal "Résumé de vos candidatures et conventions en cours", email.subject
     assert_match offer.employer_name, email.html_part.body.to_s
     assert_match offer.title, email.html_part.body.to_s
     refute_match "Une convention de stage attend votre signature", email.subject

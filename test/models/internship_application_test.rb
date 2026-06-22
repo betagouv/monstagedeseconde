@@ -340,19 +340,17 @@ class InternshipApplicationTest < ActiveSupport::TestCase
        "aasm_state from approved to rejected" do
     internship_application = create(:weekly_internship_application, :approved)
     assert_changes -> { internship_application.reload.aasm_state },
-                   from: "approved",
-                   to: "canceled_by_employer" do
+                  from: "approved",
+                  to: "canceled_by_employer" do
       freeze_time do
         assert_changes -> { internship_application.reload.canceled_at },
-                       from: nil,
-                       to: Time.now.utc do
-          mock_mail = Minitest::Mock.new
-          mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-          StudentMailer.stub :internship_application_canceled_by_employer_email,
-                             mock_mail do
+                      from: nil,
+                      to: Time.now.utc do
+          assert_difference "MailActionItem.count", 1 do
             internship_application.cancel_by_employer!
           end
-          mock_mail.verify
+          assert_equal "canceled_internship_application_by_employer",
+                       MailActionItem.last.action_name
         end
       end
     end

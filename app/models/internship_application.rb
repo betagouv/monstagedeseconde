@@ -331,7 +331,7 @@ class InternshipApplication < ApplicationRecord
                   to: :canceled_by_employer,
                   after: proc { |user, *_args|
                     update!("canceled_at": Time.now.utc)
-                    notify_student_with_digest_email("canceled_internship_application")
+                    notify_student_with_digest_email("canceled_internship_application_by_employer")
                     internship_agreement&.destroy
                     record_state_change user
                   }

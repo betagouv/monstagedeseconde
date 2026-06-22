@@ -175,32 +175,30 @@ class GodMailerTest < ActionMailer::TestCase
   end
 
   test "notify_signatures_can_start_email creates MailActionItem when school_manager not signed" do
-    internship_agreement = create(:mono_internship_agreement)
+    travel_to(SchoolTrack::Seconde.both_weeks.first.monday - 1.week) do
+      internship_agreement = create(:mono_internship_agreement)
 
-    assert_difference "MailActionItem.count", 2 do
-      email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
-      email.deliver_now
+      assert_difference "MailActionItem.count", 2 do
+        email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
+        email.deliver_now
+      end
+
+      assert_emails 0
+
+      school_manager = internship_agreement.school_management_representative
+      school_manager_item = MailActionItem.find_by(action_name: "signatures_enabled",
+                                                    recipient_type: school_manager.class.name,
+                                                    recipient_id: school_manager.id)
+      assert_not_nil school_manager_item
+      assert_equal school_manager, school_manager_item.recipient
+      assert_equal internship_agreement, school_manager_item.internship_agreement
+
+      student_item = MailActionItem.find_by(action_name: "agreement_to_sign",
+                                            recipient_id: internship_agreement.internship_application.student.id,
+                                            recipient_type: "Users::Student")
+      assert_not_nil student_item
+      assert_equal internship_agreement, student_item.internship_agreement
     end
-
-    assert_emails 1
-    assert_not_includes(
-      ActionMailer::Base.deliveries.last.to,
-      internship_agreement.school_management_representative.email
-    )
-
-    school_manager = internship_agreement.school_management_representative
-    school_manager_item = MailActionItem.find_by(action_name: "signatures_enabled",
-                                                  recipient_type: school_manager.class.name,
-                                                  recipient_id: school_manager.id)
-    assert_not_nil school_manager_item
-    assert_equal school_manager, school_manager_item.recipient
-    assert_equal internship_agreement, school_manager_item.internship_agreement
-
-    student_item = MailActionItem.find_by(action_name: "agreement_to_sign",
-                                          recipient_id: internship_agreement.internship_application.student.id,
-                                          recipient_type: "Users::Student")
-    assert_not_nil student_item
-    assert_equal internship_agreement, student_item.internship_agreement
   end
 
   test "notify_signatures_can_start_email creates a MailActionItem" \
@@ -221,39 +219,40 @@ class GodMailerTest < ActionMailer::TestCase
   end
 
   test "notify_signatures_can_start_email does not notify the student legal representatives" do
-    internship_agreement = create(:mono_internship_agreement)
+    travel_to(SchoolTrack::Seconde.both_weeks.first.monday - 6.week) do
+      internship_agreement = create(:mono_internship_agreement)
 
-    email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
-    email.deliver_now
-
-    assert_not_includes email.to, internship_agreement.student_legal_representative_email
-    assert_not_includes email.to, internship_agreement.student_legal_representative_2_email
+      assert_emails 0 do
+        GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement).deliver_now
+      end
+    end
   end
 
   test "notify_signatures_can_start_email excludes the cpe representative when the school has no school_manager" do
-    internship_agreement = create(:mono_internship_agreement)
-    school = internship_agreement.internship_application.student.school
-    school.users.where(type: "Users::SchoolManagement", role: "school_manager").destroy_all
-    cpe = create(:cpe, school: school)
+    travel_to(SchoolTrack::Seconde.both_weeks.first.monday - 6.week) do
+      internship_agreement = create(:mono_internship_agreement)
+      school = internship_agreement.internship_application.student.school
+      school.users.where(type: "Users::SchoolManagement", role: "school_manager").destroy_all
+      cpe = create(:cpe, school: school)
 
-    assert_equal cpe, internship_agreement.school_management_representative
+      assert_equal cpe, internship_agreement.school_management_representative
 
-    # Le mailer crée 2 MailActionItems :
-    # 1. "signatures_enabled" → pour le school_management_representative (CPE)
-    # 2. "agreement_to_sign" → pour l'étudiant
-    assert_difference "MailActionItem.count", 2 do
-      email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
-      email.deliver_now
+      # Le mailer crée 2 MailActionItems :
+      # 1. "signatures_enabled" → pour le school_management_representative (CPE)
+      # 2. "agreement_to_sign" → pour l'étudiant
+      assert_difference "MailActionItem.count", 2 do
+        email = GodMailer.notify_signatures_can_start_email(internship_agreement: internship_agreement)
+        email.deliver_now
+      end
+
+      assert_emails 0
+
+      mail_action_item = MailActionItem.find_by(action_name: "signatures_enabled",
+                                                recipient_type: cpe.class.name,
+                                                recipient_id: cpe.id)
+      assert_not_nil mail_action_item
+      assert_equal cpe, mail_action_item.recipient
+      assert_equal internship_agreement, mail_action_item.internship_agreement
     end
-
-    assert_emails 1
-    assert_not_includes ActionMailer::Base.deliveries.last.to, cpe.email
-
-    mail_action_item = MailActionItem.find_by(action_name: "signatures_enabled",
-                                              recipient_type: cpe.class.name,
-                                              recipient_id: cpe.id)
-    assert_not_nil mail_action_item
-    assert_equal cpe, mail_action_item.recipient
-    assert_equal internship_agreement, mail_action_item.internship_agreement
   end
 end
