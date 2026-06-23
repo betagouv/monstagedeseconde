@@ -16,6 +16,11 @@ namespace :digest_mailers do
     end
   end
 
+  def purge_stale_items
+    count = MailActionItem.overdue.delete_all
+    Rails.logger.info "Purged #{count} stale MailActionItems" if count > 0
+  end
+
   def send_digest_emails_for_all_roles(levels:, perform_method:, label:)
     send_digest_emails(scope: MailActionItem.for_employers,
                       levels:,
@@ -38,6 +43,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for low urgency level"
   task send_low_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails_for_all_roles(
       levels: %w[low medium high critical],
       perform_method: :perform_for_low_level,
@@ -47,6 +53,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for medium urgency level"
   task send_medium_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails_for_all_roles(
       levels: %w[medium high critical],
       perform_method: :perform_for_medium_level,
@@ -56,6 +63,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for high urgency level"
   task send_high_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails_for_all_roles(
       levels: %w[high critical],
       perform_method: :perform_for_high_level,
@@ -65,6 +73,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for critical urgency level"
   task send_critical_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails_for_all_roles(
       levels: %w[critical],
       perform_method: :perform_for_critical_level,
