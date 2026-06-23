@@ -16,8 +16,14 @@ namespace :digest_mailers do
     end
   end
 
+  def purge_stale_items
+    count = MailActionItem.overdue.delete_all
+    Rails.logger.info "Purged #{count} stale MailActionItems" if count > 0
+  end
+
   desc "send digest mails for low urgency level"
   task send_low_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails(scope: MailActionItem.for_employers,
                         levels: %w[low medium high critical],
                         mailer: ::Services::EmployerActions::EmployerDigestMailer,
@@ -33,6 +39,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for medium urgency level"
   task send_medium_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails(scope: MailActionItem.for_employers,
                         levels: %w[medium high critical],
                         mailer: ::Services::EmployerActions::EmployerDigestMailer,
@@ -63,6 +70,7 @@ namespace :digest_mailers do
 
   desc "send digest mails for critical urgency level"
   task send_critical_urgency_emails: :environment do
+    purge_stale_items
     send_digest_emails(scope: MailActionItem.for_employers,
                         levels: %w[critical],
                         mailer: ::Services::EmployerActions::EmployerDigestMailer,
