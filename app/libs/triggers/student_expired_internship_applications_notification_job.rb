@@ -1,4 +1,4 @@
-module Triggered
+module Triggers
   class StudentExpiredInternshipApplicationsNotificationJob < ApplicationJob
     queue_as :default
 
