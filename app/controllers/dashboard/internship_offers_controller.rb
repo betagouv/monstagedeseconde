@@ -18,7 +18,7 @@ module Dashboard
 
       return if params[:order] && !valid_order_column? && (redirect_to(dashboard_internship_offers_path, flash: { danger: "Impossible de trier par #{params[:order]}" }); true)
 
-      @internship_offers = finder.all
+      @internship_offers = finder.all.where.not(aasm_state: :removed)
 
       if order_column_from_stats?
         # Only allow ordering by whitelisted columns/directions (defended in order_column/order_direction)
