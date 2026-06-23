@@ -73,22 +73,25 @@ class MailActionItem < ApplicationRecord
 
     list do
       field :id
-      field :recipient
+      field :recipient do
+        label "Destinataire"
+      end
       field :action_name
-      field :action_type
       field :urgency_level
       field :stale_at
       field :resolved_at
       field :deliveries_count
       field :max_deliveries_count
       field :last_notified_at
-      field :stale_at
+      field :action_type
       field :created_at
     end
 
     show do
       field :id
-      field :recipient
+      field :recipient do
+        label "Destinataire"
+      end
       field :action_name
       field :action_type
       field :urgency_level
@@ -101,6 +104,7 @@ class MailActionItem < ApplicationRecord
 
     edit do
       field :recipient do
+        label "Destinataire"
         read_only true
         help "The recipient of the action item (cannot be changed after creation)"
       end
