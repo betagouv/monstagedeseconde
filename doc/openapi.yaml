@@ -308,7 +308,7 @@ components:
           description: Identifiant de l'offre de stage chez le partenaire
           example: A156548-H
         description:
-          maxLength: 500
+          maxLength: 1500
           type: string
           description: Description de l'offre de stage
         title:

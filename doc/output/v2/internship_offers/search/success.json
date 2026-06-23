@@ -12,11 +12,11 @@
   },
   "internshipOffers": [
     {
-      "id": 221,
+      "id": 6,
       "title": "Stage de 2de - 1",
       "description": "Lorem ipsum dolor weekly_internship_offer",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/221?page=2&utm_source=operator-2",
+      "url": "http://www.example.com/offres-de-stage/6?page=2&utm_source=operator-1",
       "city": "Paris",
       "zipcode": "75001",
       "street": "1 rue du poulet",
