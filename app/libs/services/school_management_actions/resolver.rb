@@ -1,20 +1,5 @@
 module Services::SchoolManagementActions
-  class Resolver
-    # TODO maybe remove the action_type parameter and just resolve
-    #  all action types for the given user and urgency level
-    def self.call(user_id:, urgency_levels:)
-      urgency_levels = Array(urgency_levels)
-      urgency_levels.each do |urgency_level|
-        extra_resolver(user_id:, urgency_level:)
-        standard_resolver(user_id:, urgency_level:)
-      end
-      MailActionItem.for_user(user_id)
-                    .resolved
-                    .delete_all
-    end
-
-    # Helpers
-
+  class Resolver < ::Services::CommonActions::BaseResolver
     def self.extra_resolver(user_id:, urgency_level:)
       # School managers only manage internship agreements, not applications.
       # =======================================================
@@ -72,16 +57,6 @@ module Services::SchoolManagementActions
           item.update_columns(resolved_at: Time.current)
         end
       end
-    end
-
-    def self.standard_resolver(user_id:, urgency_level:)
-      mail_action_items_base = MailActionItem.for_user(user_id)
-                                             .where(urgency_level: urgency_level)
-      # Only delete stale or over-delivered items, not items just resolved
-      mail_action_items_base.where("stale_at < ?", Time.current)
-                            .delete_all
-      mail_action_items_base.where("deliveries_count >= max_deliveries_count")
-                            .delete_all
     end
 
     def self.agreement_resolve(agreement, user_id:)

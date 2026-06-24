@@ -1,28 +1,7 @@
 module Services::EmployerActions
   # Resolver clears mail_action_items which are either stale (stale_at in the past)
   # or over-delivered (deliveries_count >= max_deliveries_count)
-  class Resolver
-    # TODO maybe remove the action_type parameter and just resolve
-    # Resolver.call is currently called in two different contexts: internship applications and agreements;
-    # the purpose is to resolve pending actions for a given user by checking the state of the related.
-    # When resolved pending actions are flagged as resolved by setting resolved_at, and then removed,
-    # just before proceeding to email sending.
-    def self.call(user_id:, urgency_levels:)
-      #  standard and extra aim to set resolved_at for items, which flags them
-      #  as resoved and then removed from queue
-      urgency_levels = Array(urgency_levels)
-      urgency_levels.each do |urgency_level|
-        # order matters here as some actions require specific checks before being resolved
-        extra_resolver(user_id:, urgency_level:)
-        standard_resolver(user_id:, urgency_level:)
-      end
-      MailActionItem.for_user(user_id)
-                    .resolved
-                    .delete_all
-    end
-
-    # Helpers
-
+  class Resolver < ::Services::CommonActions::BaseResolver
     def self.extra_resolver(user_id:, urgency_level:)
       # ------------------------
       # canceled_internship_application_by_student case
@@ -142,16 +121,6 @@ module Services::EmployerActions
           item.update_columns(resolved_at: Time.current)
         end
       end
-    end
-
-    def self.standard_resolver(user_id:, urgency_level:)
-      mail_action_items_base = MailActionItem.for_user(user_id)
-                                             .where(urgency_level: urgency_level)
-      # Only delete stale or over-delivered items, not items just resolved
-      mail_action_items_base.where("stale_at < ?", Time.current)
-                            .delete_all
-      mail_action_items_base.where("deliveries_count >= max_deliveries_count")
-                            .delete_all
     end
 
     private
