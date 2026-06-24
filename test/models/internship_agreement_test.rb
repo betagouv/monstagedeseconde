@@ -176,30 +176,32 @@ class InternshipAgreementTest < ActiveSupport::TestCase
   end
 
   test "#notify_employer_agreement_signed_by_all creates a MailActionItem for the employer when agreement is signed by all" do
-    internship_agreement = create(:mono_internship_agreement, aasm_state: :signatures_started)
-    employer = internship_agreement.employer
+    travel_to DateTime.new(2024, 5, 1) do
+      internship_agreement = create(:mono_internship_agreement, aasm_state: :signatures_started)
+      employer = internship_agreement.employer
 
-    create(:signature, :school_manager, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.school_manager.id)
-    create(:signature, :student, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.student.id)
-    create(:signature, :student_legal_representative, internship_agreement_id: internship_agreement.id,
-           user_id: internship_agreement.student.id)
-    create(:signature, :employer, internship_agreement_id: internship_agreement.id,
-           user_id: employer.id)
+      create(:signature, :school_manager, internship_agreement_id: internship_agreement.id,
+            user_id: internship_agreement.school_manager.id)
+      create(:signature, :student, internship_agreement_id: internship_agreement.id,
+            user_id: internship_agreement.student.id)
+      create(:signature, :student_legal_representative, internship_agreement_id: internship_agreement.id,
+            user_id: internship_agreement.student.id)
+      create(:signature, :employer, internship_agreement_id: internship_agreement.id,
+            user_id: employer.id)
 
-    assert_difference "MailActionItem.count", 1 do
-      internship_agreement.sign!
+      assert_difference "MailActionItem.count", 1 do
+        internship_agreement.sign!
+      end
+
+      item = MailActionItem.last
+      assert_equal "agreement_signed_by_all", item.action_name
+      assert_equal "pending_internship_agreement", item.action_type
+      assert_equal employer, item.recipient
+      assert_equal internship_agreement.id, item.internship_agreement_id
+      assert_equal "medium", item.urgency_level
+      assert_equal 1, item.max_deliveries_count
+      assert item.stale_at > Time.current
     end
-
-    item = MailActionItem.last
-    assert_equal "agreement_signed_by_all", item.action_name
-    assert_equal "pending_internship_agreement", item.action_type
-    assert_equal employer, item.recipient
-    assert_equal internship_agreement.id, item.internship_agreement_id
-    assert_equal "medium", item.urgency_level
-    assert_equal 1, item.max_deliveries_count
-    assert item.stale_at > Time.current
   end
 
   test "#finalize creates a signatures_enabled MailActionItem for the employer" do
