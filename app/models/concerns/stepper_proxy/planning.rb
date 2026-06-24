@@ -13,7 +13,7 @@ module StepperProxy
 
       has_many :planning_grades,
                dependent: :destroy,
-               class_name: 'PlanningGrade',
+               class_name: "PlanningGrade",
                foreign_key: :planning_id
       has_many :grades, through: :planning_grades
 
@@ -36,7 +36,7 @@ module StepperProxy
       def enough_weeks
         return unless weeks.empty?
 
-        error_message = 'Indiquez la ou les semaines où vous accueillerez des élèves'
+        error_message = "Indiquez la ou les semaines où vous accueillerez des élèves"
         errors.add(:all_year_long, error_message)
       end
 
@@ -51,8 +51,8 @@ module StepperProxy
       end
 
       def all_year_long?
-        all_troisieme_weeks = Week.selectable_from_now_until_next_school_year # TODO: remove un july 2025 SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
-        offer_week_list = weeks & SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        all_troisieme_weeks = SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
+        offer_week_list = weeks & all_troisieme_weeks
         return true if all_troisieme_weeks.empty?
 
         all_troisieme_weeks[1..-1].map(&:id).sort == offer_week_list.map(&:id).sort
@@ -69,7 +69,7 @@ module StepperProxy
       def at_least_one_grade
         return if grades.present?
 
-        errors.add(:grades, 'Vous devez sélectionner au moins une classe')
+        errors.add(:grades, "Vous devez sélectionner au moins une classe")
       end
     end
   end
