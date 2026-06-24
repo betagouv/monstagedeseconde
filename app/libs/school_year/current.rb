@@ -10,7 +10,7 @@ module SchoolYear
     private
 
     def initialize
-      @date = Date.today
+      @date = Date.current
     end
   end
 end

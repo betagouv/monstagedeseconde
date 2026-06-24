@@ -47,5 +47,123 @@ module Dashboard::InternshipOffers
       #   text: "Renouveler l'offre pour l'année en cours"
       # }
     end
+
+    test 'GET #new as Employer with duplicate_id for an offer targeting both grades during standard period shows double grades dialog' do
+      travel_to Date.new(2026, 3, 1) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer,
+                                  employer:,
+                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '#double-grades-modal-action'
+        assert_select 'h2#double-grades-modal-action-title', text: /deux offres distinctes/
+      end
+    end
+
+    # Scénario 6 : duplication d'une offre 3ème pendant la période interdite
+    test 'GET #new as Employer with duplicate_id for a troisieme offer during troisieme no dates available period shows grade_college checkbox disabled and unchecked' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2,
+                                                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '#internship_offer_grade_college[disabled]'
+        assert_select '#internship_offer_grade_college[checked]', count: 0
+      end
+    end
+
+    test 'GET #new as Employer with duplicate_id for a troisieme offer during troisieme no dates available period shows unavailability message' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2,
+                                                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '.fr-notice--info .fr-notice__desc'
+      end
+    end
+
+    test 'GET #new as Employer with duplicate_id for a troisieme offer during troisieme no dates available period shows submit button disabled' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2,
+                                                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select 'button[data-action="grade#onValidate"][disabled]'
+      end
+    end
+
+    test 'GET #new as Employer with duplicate_id for a troisieme offer during troisieme no dates available period hides REP checkbox' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2,
+                                                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '.fr-hidden input#internship_offer_rep'
+      end
+    end
+
+    test 'GET #new as Employer with duplicate_id for a troisieme-only offer during troisieme no dates available period shows grade_college checkbox disabled AND unchecked' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_3eme, employer:, max_candidates: 2,
+                                                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '#internship_offer_grade_college[disabled]'
+        assert_select '#internship_offer_grade_college[checked]', count: 0
+      end
+    end
+
+    # Scénario 6bis : duplication d'une offre 3ème+2nde pendant la période interdite
+    # La 3ème est bloquée mais la 2nde ne l'est pas → le bouton de soumission doit rester actif
+    test 'GET #new as Employer with duplicate_id for a both-grades offer during troisieme no dates available period shows unavailability message but submit button is active' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer,
+                                  employer:,
+                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        assert_select '.fr-notice--info .fr-notice__desc'
+        assert_select 'button[data-action="grade#onValidate"]'
+        assert_select 'input[type=submit][disabled]', count: 0
+      end
+    end
+
+    # Scénario 8 : duplication d'une offre 3ème+2nde pendant la période A (Seconde)
+    # Les 2ndes : restriction sur les semaines (seule "Semaine 2" proposable)
+    # Les 3èmes : case grisée avec message car duplication 3ème impossible en Période A
+    test 'GET #new as Employer with duplicate_id for a both-grades offer during seconde_first_week_unavailable period restricts weeks and shows dialog' do
+      travel_to Date.new(2026, 6, 16) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer, :both_school_tracks_internship_offer,
+                                  employer:,
+                                  internship_offer_area: employer.current_area)
+        get new_dashboard_internship_offer_path(duplicate_id: internship_offer.id)
+        assert_response :success
+        # Vérifier restriction 2nde Période A : seule Semaine 2 visible
+        assert_select '.fr-hidden #period_field_full_time'
+        assert_select '.fr-hidden #period_field_week_1'
+        assert_select '#period_field_week_2'
+        assert_select '.fr-hidden #period_field_week_2', count: 0
+        # Vérifier affichage du dialogue pour les 2 publics
+        assert_select '#double-grades-modal-action'
+        # Vérifier case Collégiens grisée en Période A
+        assert_select '#internship_offer_grade_college[disabled]'
+      end
+    end
   end
 end

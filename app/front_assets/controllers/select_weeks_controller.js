@@ -67,6 +67,8 @@ export default class extends Controller {
   }
 
   connect() {
+    if (!this.hasAllYearLongTarget) return;
+
     if (this.allYearLongTarget.checked) {
       this.showAllYearLong();
     } else {

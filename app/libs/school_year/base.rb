@@ -22,6 +22,7 @@ module SchoolYear
 
     def year_in_june = deposit_end_of_period.year
     def self.year_in_june = new.year_in_june
+    def self.deposit_end_of_period = Current.new.deposit_end_of_period
 
     # ------------- offers visibility limits -------------
     def current_year_limits

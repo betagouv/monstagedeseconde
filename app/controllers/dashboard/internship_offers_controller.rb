@@ -3,12 +3,15 @@
 module Dashboard
   class InternshipOffersController < ApplicationController
     include TroisiemeDuplicationPeriod
+    include SecondeLimitedPeriod
 
     before_action :authenticate_user!
     before_action :set_internship_offer,
                   only: %i[edit update destroy republish]
 
-    helper_method :order_direction, :troisieme_duplication_forbidden?, :troisieme_duplication_forbidden_message
+    helper_method :order_direction, :troisieme_duplication_forbidden?, :troisieme_duplication_forbidden_message,
+                  :troisieme_no_dates_available?, :troisieme_no_dates_available_message,
+                  :seconde_no_new_offers?, :seconde_first_week_unavailable?
 
     DEFAULT_RADIUS_TO_SCHOOLS_IN_KM = 60
 
@@ -66,10 +69,23 @@ module Dashboard
       authorize! :create, InternshipOffer
 
       if params[:duplicate_id].present? && internship_offer_params[:grade_college] == "1" && troisieme_duplication_forbidden?
-        @internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+        if internship_offer_params[:grade_2e] == "1"
+          # 6bis : offre 3ème+2nde en période interdite → on crée uniquement l'offre 2nde
+          params[:internship_offer][:grade_college] = "0"
+        else
+          @internship_offer = current_user.internship_offers.find(params[:duplicate_id]).duplicate
+          @available_weeks = Week.both_school_track_selectable_weeks
+          set_internship_offer_attributes(@internship_offer)
+          @internship_offer.errors.add(:base, troisieme_duplication_forbidden_message)
+          return render :new, status: :unprocessable_entity
+        end
+      end
+
+      if seconde_no_new_offers? && internship_offer_params[:grade_2e] == "1"
+        @internship_offer = InternshipOffer.new
         @available_weeks = Week.both_school_track_selectable_weeks
         set_internship_offer_attributes(@internship_offer)
-        @internship_offer.errors.add(:base, troisieme_duplication_forbidden_message)
+        @internship_offer.errors.add(:base, seconde_no_new_offers_message)
         return render :new, status: :unprocessable_entity
       end
 
@@ -303,8 +319,7 @@ module Dashboard
     def duplicate_with_double_grades?
       return false unless params[:duplicate_id].present?
 
-      grades = @internship_offer.grades.map(&:short_name)
-      grades.include?("seconde") && grades.any? { |grade| grade.in?(%w[troisieme quatrieme]) }
+      @internship_offer.targets_both_school_tracks?
     end
   end
 end

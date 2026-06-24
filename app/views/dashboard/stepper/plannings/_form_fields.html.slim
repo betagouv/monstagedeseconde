@@ -14,6 +14,7 @@
       .col-md-6.order-md-2.order-1.d-none.d-md-block
         - if new_record && !duplication
           = render 'dashboard/stepper/summary_card', form: form
+      - seconde_blocked = respond_to?(:seconde_no_new_offers?) && seconde_no_new_offers?
       - if new_record || !new_record && form.object.grades.to_a.include?(Grade.seconde)
         .col-md-6.order-md-1.order-2
           / Secondes
@@ -28,9 +29,14 @@
                   field: :grade_2e,
                   title: '',
                   label: 'Lycéens de 2de générale et technologique',
-                  options: { data: {:'grade-target' => 'grade2e',
-                                    action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
-                                    :'select-weeks-target' => 'grade2e' } }
+                  options: { disabled: seconde_blocked,
+                             checked: seconde_blocked ? false : form.object.grade_2e,
+                             data: {:'grade-target' => 'grade2e',
+                                   action: 'grade#onClick click->select-weeks#onGrade2ndeClick' ,
+                                   :'select-weeks-target' => 'grade2e' } }
+                - if seconde_blocked
+                  .fr-highlight.fr-mt-1w
+                    p = seconde_no_new_offers_message
               - else
                 p.h5.fr-mb-4w.fr-mt-0 Lycéens de 2de générale et technologique
           .row data-grade-target="secondeContainer"
@@ -42,9 +48,12 @@
       .row
         .col-6
           hr
+    - forbidden = defined?(duplication_forbidden) ? duplication_forbidden : (respond_to?(:troisieme_no_dates_available?) && troisieme_no_dates_available?)
+    - seconde_period_a_blocks_college = respond_to?(:seconde_first_week_unavailable?) && seconde_first_week_unavailable?
+    - forbidden = forbidden || seconde_period_a_blocks_college
+    - targets_troisieme = new_record || form.object.grades.to_a.include?(Grade.troisieme)
     - if new_record
       / Troisiemes
-      - forbidden = duplication && respond_to?(:troisieme_duplication_forbidden?) && troisieme_duplication_forbidden?
       .row
         .col-6
           = render 'inputs/dsfr_checkbox_field',
@@ -54,13 +63,20 @@
             label: 'Collégiens (4ème et 3ème)',
             extra_header_classes: 'fr-h6',
             options: { disabled: forbidden,
+                       checked: forbidden ? false : form.object.grade_college,
                        data: {:'grade-target' => 'gradeCollege',
                               :'grade-forbidden-value' => forbidden.to_s,
                               action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
                               :'select-weeks-target' => 'gradeCollege'  } }
           - if forbidden
-            p.fr-error-text.fr-mt-1w = troisieme_duplication_forbidden_message
-    - if new_record || !new_record && form.object.grades.to_a.include?(Grade.troisieme)
+            .fr-highlight.fr-mt-1w
+              p = troisieme_no_dates_available_message
+    - elsif forbidden && targets_troisieme
+      .row
+        .col-6
+          .fr-highlight.fr-mt-1w
+            p = troisieme_no_dates_available_message
+    - if !forbidden && targets_troisieme
       .row data-grade-target="troisiemeContainer"
         .col-6
           = render partial: "weeks/checkbox_inputs",
@@ -111,7 +127,7 @@
                                    existingSchools: form.object&.schools&.as_json})
     .row.fr-mt-6w
       .col-6
-        .row
+        .row class=("fr-hidden" if forbidden)
           .col-12
             = render 'inputs/dsfr_checkbox_field',
               form: form,
@@ -153,4 +169,10 @@
                     data: { :'mandatory-fields-target' => "disabledField",
                             action: "grade#onValidate"}  do
           = "Publier l'offre"
+    - elsif duplication
+      = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: forbidden
+      - if defined?(duplication_submit_text) && duplication_submit_text
+        .fr-mt-6w
+          button.fr-btn[type="button" data-action="grade#onValidate" data-grade-target="submitButton" disabled=forbidden || nil]
+            = duplication_submit_text
 

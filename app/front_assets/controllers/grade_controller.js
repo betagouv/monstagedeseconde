@@ -11,6 +11,7 @@ export default class extends Controller {
     'dialogContainer',
     'maxCandidatesSource',
     'maxCandidatesDisplay',
+    'submitButton',
   ];
 
   static values = { initialGrades: String };
@@ -36,11 +37,19 @@ export default class extends Controller {
   }
 
   onClick(event) {
-    toggleContainer(this.troisiemeContainerTarget, this.gradeCollegeTarget.checked);
-    toggleContainer(this.secondeContainerTarget, this.grade2eTarget.checked);
+    if (this.hasTroisiemeContainerTarget) {
+      toggleContainer(this.troisiemeContainerTarget, this.gradeCollegeTarget.checked);
+    }
+    if (this.hasSecondeContainerTarget) {
+      toggleContainer(this.secondeContainerTarget, this.grade2eTarget.checked);
+    }
     // At least One Choice Between 3e/4e and 2e
     if (event !== undefined) {
       toggleContainer(this.alertContainerTarget, this.noGradeOffer());
+    }
+    // En période interdite 3ème, débloquer le bouton si 2nde est cochée
+    if (this.hasSubmitButtonTarget && this.isTroisiemeForbidden()) {
+      this.submitButtonTarget.disabled = !this.grade2eTarget.checked;
     }
   }
 
@@ -58,10 +67,10 @@ export default class extends Controller {
 
     if (this.noGradeOffer()) {
       toggleContainer(this.alertContainerTarget, true);
-    } else if (this.gradeCollegeTarget.checked && this.isTroisiemeForbidden()) {
+    } else if (this.gradeCollegeTarget.checked && this.isTroisiemeForbidden() && !this.grade2eTarget.checked) {
       event.preventDefault();
       event.stopPropagation();
-    } else if (this.isDoubleGradeOffer()) {
+    } else if (this.isDoubleGradeOffer() && !this.isTroisiemeForbidden()) {
       this.maxCandidatesDisplayTarget.textContent = ` (${this.maxCandidatesSourceTarget.value})`;
       openDsfrModal(this.dialogContainerTarget);
     } else {
@@ -74,7 +83,9 @@ export default class extends Controller {
 
     this.initialGradesValue.split(',').forEach((grade) => {
       if (grade === 'troisieme' || grade === 'quatrieme') {
-        this.gradeCollegeTarget.checked = true;
+        if (!this.gradeCollegeTarget.disabled) {
+          this.gradeCollegeTarget.checked = true;
+        }
       }
       if (grade === 'seconde') {
         this.grade2eTarget.checked = true;

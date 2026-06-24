@@ -3,6 +3,12 @@
 module Dashboard::Stepper
   # Step 3 of internship offer creation: fill planning info
   class PlanningsController < ApplicationController
+    include TroisiemeDuplicationPeriod
+    include SecondeLimitedPeriod
+
+    helper_method :troisieme_no_dates_available?, :troisieme_no_dates_available_message,
+                  :seconde_first_week_unavailable?, :seconde_no_new_offers?, :seconde_no_new_offers_message
+
     before_action :authenticate_user!
     before_action :fetch_planning, only: %i[edit update]
     before_action :fetch_entreprise, only: %i[new create]
@@ -12,9 +18,10 @@ module Dashboard::Stepper
     DEFAULT_SCHOOL_RADIUS = 60_000 # 60km
 
     def new
+      grade_college_default = troisieme_no_dates_available? ? '0' : '1'
       @planning = Planning.new(
         all_year_long: true,
-        grade_college: '1',
+        grade_college: grade_college_default,
         grade_2e: '1',
         entreprise_id: params[:entreprise_id]
       )
@@ -32,6 +39,14 @@ module Dashboard::Stepper
     def create
       @planning = Planning.new(planning_params.merge(entreprise_id: params[:entreprise_id]))
       authorize! :create, @planning
+
+      if seconde_no_new_offers? && planning_params[:grade_2e] == "1"
+        @internship_occupation = @entreprise.internship_occupation
+        @available_weeks = @planning.available_weeks || []
+        @planning.errors.add(:base, seconde_no_new_offers_message)
+        return render :new, status: :bad_request
+      end
+
       adapter = Dto::PlanningAdapter.new(instance: @planning, params: planning_params, current_user:)
                                     .manage_planning_associations
       @planning = adapter.instance

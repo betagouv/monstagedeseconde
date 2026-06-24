@@ -11,6 +11,113 @@ module Dashboard::Stepper
       assert_redirected_to user_session_path
     end
 
+    test 'GET new during troisieme no dates available period disables college checkbox and shows message' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select "input#planning_grade_college[disabled]"
+        # Verify the checkbox is unchecked (not selected) when forbidden
+        assert_select "input#planning_grade_college:not([checked])"
+      end
+    end
+
+    test 'POST with no grade selected during troisieme no dates available period shows at least one grade error' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        planning = {
+          all_year_long: true,
+          grade_college: '0',
+          grade_2e: '0',
+          max_candidates: 2,
+          lunch_break: 'test',
+          daily_hours: {
+            'lundi' => ['08:00', '15:00']
+          }
+        }
+
+        assert_no_difference('Planning.count') do
+          post(
+            dashboard_stepper_plannings_path(entreprise_id: entreprise.id),
+            params: { planning: }
+          )
+        end
+
+        assert_response :bad_request
+        assert_select '.fr-highlight', text: /Aucune semaine de stage n.est actuellement disponible/
+        assert_select '.fr-errors-summary, .fr-alert--error', text: /Vous devez sélectionner au moins une classe/
+      end
+    end
+
+    test 'GET new during troisieme no dates available period hides college period selection and weeks panel' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select '[data-grade-target="troisiemeContainer"]', count: 0
+      end
+    end
+
+    test 'GET new during seconde_first_week_unavailable period hides full_time and week_1 radio buttons' do
+      travel_to Date.new(2026, 6, 16) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select '.fr-hidden #period_field_full_time'
+        assert_select '.fr-hidden #period_field_week_1'
+        assert_select '#period_field_week_2'
+        assert_select '.fr-hidden #period_field_week_2', count: 0
+      end
+    end
+
+    test 'GET new during troisieme no dates available period hides REP checkbox' do
+      travel_to Date.new(2026, 6, 10) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select '.fr-hidden input#planning_rep'
+      end
+    end
+
+    test 'GET new outside troisieme no dates available period keeps college checkbox enabled' do
+      travel_to Date.new(2026, 7, 2) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select "input#planning_grade_college[disabled]", count: 0
+        assert_select '.fr-highlight', text: /Aucune semaine de stage n.est actuellement disponible/, count: 0
+      end
+    end
+
     test 'post a valid seconde planning form' do
       travel_to Date.new(2025, 1, 1) do
         employer = create(:employer)
@@ -128,6 +235,52 @@ module Dashboard::Stepper
             assert_equal Week.troisieme_selectable_weeks.last.id, planning.weeks.to_a.sort_by(&:id).last.id
           end
         end
+      end
+    end
+
+    test 'GET new during seconde_no_new_offers period disables seconde checkbox and shows message' do
+      travel_to Date.new(2026, 6, 23) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        get new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+
+        assert_response :success
+        assert_select "input#planning_grade_2e[disabled]"
+        # Verify the checkbox is unchecked (not selected) when forbidden
+        assert_select "input#planning_grade_2e:not([checked])"
+      end
+    end
+
+    test 'POST seconde offer during seconde_no_new_offers period returns error' do
+      travel_to Date.new(2026, 6, 23) do
+        employer = create(:employer)
+        internship_occupation = create(:internship_occupation, employer:)
+        entreprise = create(:entreprise, internship_occupation:)
+
+        sign_in(employer)
+        planning = {
+          all_year_long: true,
+          grade_college: '0',
+          grade_2e: '1',
+          max_candidates: 2,
+          lunch_break: 'test',
+          daily_hours: {
+            'lundi' => ['08:00', '15:00']
+          }
+        }
+
+        assert_no_difference('Planning.count') do
+          post(
+            dashboard_stepper_plannings_path(entreprise_id: entreprise.id),
+            params: { planning: }
+          )
+        end
+
+        assert_response :bad_request
+        assert_match(/dépôt des offres pour la prochaine année scolaire sera ouvert/, response.body)
       end
     end
   end

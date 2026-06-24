@@ -79,6 +79,20 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
     )
   end
 
+  test "Employer cannot see duplicate button during seconde_no_new_offers period" do
+    employer = create(:employer)
+    current_internship_offer = create(
+      :weekly_internship_offer_2nde,
+      employer:,
+      internship_offer_area_id: employer.current_area_id
+    )
+    sign_in(employer)
+    travel_to(Date.new(2026, 6, 22)) do
+      visit internship_offer_path(current_internship_offer)
+      assert_selector(".test-duplicate-button", count: 0)
+    end
+  end
+
   test "Employer can split a duplicated internship offer across both publics" do
     travel_to(Date.new(2025, 3, 1)) do
       employer = create(:employer)

@@ -120,7 +120,7 @@ module Dashboard::InternshipOffers
       end
     end
 
-    test "POST #create - duplicate with both publics is blocked during forbidden period (late May to July 1st)" do
+    test "POST #create - duplicate troisieme-only offer is blocked during forbidden period (late May to July 1st)" do
       travel_to(Date.new(2025, 6, 10)) do
         school = create(:school)
         employer = create(:employer)
@@ -138,7 +138,7 @@ module Dashboard::InternshipOffers
                         "week_ids" => original_internship_offer.weeks.ids,
                         "all_year_long" => "false",
                         "period_field" => 2,
-                        "grade_2e" => "1",
+                        "grade_2e" => "0",
                         "grade_college" => "1",
                         "max_candidates" => 1,
                         "employer_id" => original_internship_offer.employer_id,
@@ -151,6 +151,43 @@ module Dashboard::InternshipOffers
                params: { duplicate_id: original_internship_offer.id, internship_offer: params })
         end
         assert_response :unprocessable_entity
+      end
+    end
+
+    # Scénario 6bis : offre 3ème+2nde dupliquée pendant la période interdite
+    # → seule l'offre 2nde est créée, la 3ème est ignorée
+    test "POST #create - duplicate with both publics during forbidden period creates only the seconde offer" do
+      travel_to(Date.new(2026, 6, 10)) do
+        employer = create(:employer)
+        original_internship_offer = create(:weekly_internship_offer_3eme,
+                                           employer:,
+                                           internship_offer_area: employer.current_area)
+
+        sign_in(employer)
+        params = original_internship_offer
+                 .attributes
+                 .merge("type" => InternshipOffers::WeeklyFramed.name,
+                        "coordinates" => { latitude: 1, longitude: 1 },
+                        "description" => "<div>description</div>",
+                        "employer_description" => "hop+employer_description",
+                        "week_ids" => [],
+                        "all_year_long" => "false",
+                        "period_field" => 2,
+                        "grade_2e" => "1",
+                        "grade_college" => "1",
+                        "max_candidates" => 1,
+                        "employer_id" => employer.id,
+                        "duplicate_id" => original_internship_offer.id,
+                        "employer_type" => "Users::Employer")
+                 .deep_symbolize_keys
+
+        assert_difference("InternshipOffer.count", 1) do
+          post(dashboard_internship_offers_path,
+               params: { duplicate_id: original_internship_offer.id, internship_offer: params })
+        end
+
+        new_offer = InternshipOffer.order(:id).last
+        assert_equal [Grade.seconde.id], new_offer.grades.ids
       end
     end
 
