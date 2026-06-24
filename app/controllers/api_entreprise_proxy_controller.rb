@@ -23,7 +23,7 @@ class ApiEntrepriseProxyController < ApplicationController
         sector = NafSectorMapping.find_sector_by_code_naf(code_ape)
         etablissements << {
           siret: siege['siret'],
-          is_public: etablissement['complements']['est_service_public'] == true,
+          is_public: public_legal_entity?(etablissement),
           codeApe: code_ape,
           sectorId: sector&.id,
           uniteLegale: {
@@ -44,5 +44,16 @@ class ApiEntrepriseProxyController < ApplicationController
   rescue JSON::ParserError
     Rails.logger.error "Failed to parse API response: #{body} in ApiEntrepriseProxyController#search"
     { etablissements: [] }
+  end
+
+  private
+
+  # La nature juridique INSEE (catégorie juridique niveau 1 == "7") identifie les
+  # personnes morales de droit public. C'est la même règle que le proxy SIRET
+  # (categorieJuridiqueUniteLegale.first == '7'). On garde est_service_public en
+  # repli, mais recherche-entreprises le renvoie souvent à null (ex. ANCT).
+  def public_legal_entity?(etablissement)
+    etablissement['nature_juridique'].to_s.start_with?('7') ||
+      etablissement.dig('complements', 'est_service_public') == true
   end
 end

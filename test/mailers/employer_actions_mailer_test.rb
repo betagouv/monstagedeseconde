@@ -237,7 +237,7 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     assert_match "Voir la convention", text_body
   end
 
-  test "digest_email renders agreement_signed_by_another rows in 'Conventions signées par un autre élève' section" do
+  test "digest_email renders agreement_signed_by_another rows in 'Conventions signées par un tiers' section" do
     internship_agreement = create(:mono_internship_agreement, :signatures_started)
     employer = internship_agreement.employer
     internship_application = internship_agreement.internship_application
@@ -264,11 +264,11 @@ class EmployerActionsMailerTest < ActionMailer::TestCase
     html_body = email.html_part.body.to_s
     text_body = email.text_part.body.to_s
 
-    assert_match "Conventions signées par un autre élève", html_body
+    assert_match "Conventions signées par un tiers", html_body
     assert_match internship_application.student.presenter.full_name, html_body
     assert_match internship_application.internship_offer.title, html_body
 
-    assert_match "Conventions signées par un autre élève", text_body
+    assert_match "Conventions signées par un tiers", text_body
     assert_match internship_application.student.presenter.full_name, text_body
   end
 

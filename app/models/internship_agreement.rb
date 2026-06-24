@@ -115,7 +115,8 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
                   after: proc { |*_args|
-                           notify_school_management_of_employer_completion(self)
+                           notify_school_management_with_digest_email(
+                            "internship_agreement_completed_by_employer")
                          }
     end
 
@@ -157,6 +158,9 @@ class InternshipAgreement < ApplicationRecord
                   after: proc { |*_args|
                            notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
                            notify_employer_with_digest_email("agreement_signed_by_all") unless skip_notifications_when_system_creation
+                           unless skip_notifications_when_system_creation || school_management_representative_signed_last?
+                             notify_school_management_with_digest_email("agreement_signed_by_all")
+                           end
                          }
     end
   end
@@ -284,6 +288,14 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
+  def school_management_representative_signed_last?
+    last_signature = signatures.last
+    representative = school_management_representative
+
+    last_signature.present? && representative.present? &&
+      last_signature.signator == representative
+  end
+
   def notify_others_signatures_started
     # employer is notified by digest email (agreement_to_sign), exclude them here to avoid duplicate
     recipients = missing_signatures_recipients - [ employer.email ]
@@ -332,11 +344,28 @@ class InternshipAgreement < ApplicationRecord
 
   private
 
+  def common_kwargs_for_digest_email(name, **kwargs)
+    kwargs[:internship_agreement_id] ||= id
+    kwargs[:action_type] ||= name
+    kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    kwargs
+  end
+
   def notify_employer_with_digest_email(name, **kwargs)
     kwargs[:recipient] ||= internship_application.internship_offer.employer
-    kwargs[:internship_agreement_id] ||= id
-    kwargs[:action_type] ||= :pending_internship_agreement
-    kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_school_management_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= school&.management_representative
+    if kwargs[:recipient].nil?
+      Rails.logger.warn "-------------------"
+      Rails.logger.warn "No recipient found for school management digest email for agreement #{id}"
+      Rails.logger.warn "-------------------"
+      return
+    end
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
     MailActionItem.create_by_name!(name, **kwargs)
   end
 
@@ -361,12 +390,6 @@ class InternshipAgreement < ApplicationRecord
   def notify_others_signatures_finished(agreement)
     GodMailer.notify_others_signatures_finished_email(internship_agreement: agreement)
              .deliver_later
-  end
-
-  def notify_school_management_of_employer_completion(agreement)
-    SchoolManagerMailer.internship_agreement_completed_by_employer_email(
-      internship_agreement: agreement
-    ).deliver_later
   end
 
   rails_admin do

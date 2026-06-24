@@ -38,7 +38,7 @@ module Services::EmployerActions
     end
 
     def self.find_actions(user_id:, urgency_levels:)
-      actions = DigestBuilder.build_digest_by_user_and_urgency_level(
+      actions = ::Services::CommonActions::DigestBuilder.build_digest_by_user_and_urgency_level(
         user_id: user_id,
         urgency_levels: urgency_levels
       )

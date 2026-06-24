@@ -67,7 +67,7 @@ module Services
           "agreement_to_sign" => []
         }
 
-        Services::EmployerActions::DigestBuilder.stub(
+        Services::CommonActions::DigestBuilder.stub(
           :build_digest_by_user_and_urgency_level,
           fake_actions
         ) do
@@ -80,7 +80,7 @@ module Services
       end
 
       test "#find_actions returns empty hash when digest is empty" do
-        Services::EmployerActions::DigestBuilder.stub(
+        Services::CommonActions::DigestBuilder.stub(
           :build_digest_by_user_and_urgency_level,
           {}
         ) do
@@ -246,14 +246,16 @@ module Services
       end
 
       test ".perform_for_medium_level notifie l'employeur quand l'élève est le premier à signer (F4)" do
-        travel_to Date.new(2025, 1, 1) do
+        # travel_to ensures the internship_application's stale_at (derived from its
+        # week's monday) is safely in the future, regardless of when this test runs
+        travel_to Date.new(SchoolTrack::Seconde.current_year, 3, 1) do
           internship_agreement = create(:mono_internship_agreement, :validated,
                                         skip_notifications_when_system_creation: false)
           employer = internship_agreement.employer
           MailActionItem.where(recipient: employer).delete_all
 
           create(:signature, :student, internship_agreement: internship_agreement,
-                user_id: internship_agreement.student.id)
+                 user_id: internship_agreement.student.id)
           internship_agreement.sign!
 
           to_sign_item = internship_agreement.mail_action_items.find_by(action_name: "agreement_to_sign")
@@ -265,7 +267,7 @@ module Services
           Services::EmployerActions::EmployerDigestMailer.perform_for_medium_level(user_id: employer.id)
 
           assert_equal 1, to_sign_item.reload.deliveries_count,
-                      "agreement_to_sign doit être envoyé dans le digest medium"
+                       "agreement_to_sign doit être envoyé dans le digest medium"
         end
       end
 

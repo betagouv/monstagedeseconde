@@ -151,10 +151,6 @@ group :test do
   gem "webdrivers"
 end
 
-group :review, :staging do
-  gem "rest-client" # used by mailtrap for review apps
-end
-
 group :test, :development, :review do
   gem "factory_bot_rails"
   gem "ffaker"

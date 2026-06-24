@@ -2,7 +2,7 @@ module MailActionItemHelpers
   UNSPECIFIED_ASSOCIATION = Object.new
 
   def assert_mail_action_item_created_for(recipient:, action_name:, internship_application: UNSPECIFIED_ASSOCIATION, internship_agreement: UNSPECIFIED_ASSOCIATION)
-    scope = MailActionItem.where(recipient:, action_name:)
+    scope = MailActionItem.where(recipient_type: recipient.class.name, recipient_id: recipient.id, action_name:)
     scope = scope.where(internship_application:) unless internship_application.equal?(UNSPECIFIED_ASSOCIATION)
     scope = scope.where(internship_agreement:) unless internship_agreement.equal?(UNSPECIFIED_ASSOCIATION)
 

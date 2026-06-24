@@ -33,7 +33,7 @@ module MailActionConfigurable
         urgency_level: "medium",
           max_deliveries_count: 1
       },
-      "canceled_internship_application" => {
+      "canceled_internship_application_by_employer" => {
         urgency_level: "low",
         max_deliveries_count: 1
       },
@@ -44,6 +44,10 @@ module MailActionConfigurable
     }.transform_values { |v| v.merge(action_type: :pending_internship_application) }.freeze
 
     PENDING_AGREEMENT_CONFIGS = {
+      "internship_agreement_completed_by_employer" => {
+        urgency_level: "medium",
+        max_deliveries_count: 2
+      },
       "new_agreement_to_fill_in" => {
         urgency_level: "medium",
         max_deliveries_count: 2
@@ -66,20 +70,19 @@ module MailActionConfigurable
       }
     }.transform_values { |v| v.merge(action_type: :pending_internship_agreement) }.freeze
 
-    PENDING_INTERNSHIP_OFFER_CONFIGS = {
-      "internship_offer_unpublished" => {
-        urgency_level: "low",
-        max_deliveries_count: 1
-      },
-      "internship_offer_removed" => {
-        urgency_level: "high",
-        max_deliveries_count: 1
-      }
-    }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
+    # PENDING_INTERNSHIP_OFFER_CONFIGS = {
+    #   "internship_offer_unpublished" => {
+    #     urgency_level: "low",
+    #     max_deliveries_count: 1
+    #   },
+    #   "internship_offer_removed" => {
+    #     urgency_level: "high",
+    #     max_deliveries_count: 1
+    #   }
+    # }.transform_values { |v| v.merge(action_type: :pending_internship_offer) }.freeze
 
     ACTION_CONFIGS = PENDING_APPLICATION_CONFIGS
                        .merge(PENDING_AGREEMENT_CONFIGS)
-                       .merge(PENDING_INTERNSHIP_OFFER_CONFIGS)
                        .freeze
   end
 end

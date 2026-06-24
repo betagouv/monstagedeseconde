@@ -1,11 +1,75 @@
 .container
-  h1.fr-my-8w Lancement des emails récapitulatifs
+  h1.fr-my-6w Lancement des emails récapitulatifs
 
-  .fr-highlight.fr-mb-6w
-    p 
-    | Il faut être Administrateur pour accéder à ces fonctionnalités. 
+  .fr-notice.fr-notice--info.fr-mb-4w
+    .fr-container
+      .fr-notice__body
+        p
+          span.fr-notice__title A noter
+          span.fr-notice__desc 
+            | Il faut être Administrateur pour accéder à ces fonctionnalités.
 
   - { low: "mails d'urgence faible", medium: "mails d'urgence moyenne", high: "mails d'urgence forte", critical: "mails d'urgence critique" }.each do |urgency_level, label|
     = form_with url: digest_mailers_path, method: :post, class: "fr-mb-2w" do |f|
       = hidden_field_tag :urgency_level, urgency_level
       = f.submit label, class: "fr-btn fr-btn--primary"
+
+  hr.fr-mt-6w.fr-mb-6w
+
+  h2.fr-mb-4w ⚙️ Configuration des fréquences et envois des emails récapitulatifs
+  p.fr-h5.fr-mb-2w Niveaux d'urgence
+  .fr-highlight
+    ul
+      li Urgence faible : deux fois par semaine
+      li Urgence moyenne : une fois par jour
+      li Urgence élevée : deux fois par jour
+      li Urgence critique : toutes les 4 heures (mais pas pendant la nuit)
+
+  = form_with url: digest_mailers_path, method: :post, id: "config-form" do |f|
+    - @presenter.sections.each do |section_title, action_names|
+      h3.fr-my-3w = section_title
+      table.fr-table.fr-mb-6w style="width:100%"
+        thead
+          tr
+            th Événement
+            th Clé technique
+            th Niveau d'urgence
+            th Max envois
+            th
+        tbody
+          - action_names.each do |action_name|
+            - config = @action_configs[action_name]
+            tr
+              td = @presenter.label_for(action_name)
+              td
+                code style="color:#666;font-size:0.8em" = action_name
+              td
+                = select_tag "mail_action_configs[#{action_name}][urgency_level]",
+                             options_for_select(Presenters::DigestMailer::URGENCY_OPTIONS, config[:urgency_level]),
+                             class: "fr-select"
+              td
+                = number_field_tag "mail_action_configs[#{action_name}][max_deliveries_count]",
+                                   config[:max_deliveries_count],
+                                   min: 1, max: 10,
+                                   class: "fr-input",
+                                   style: "width:80px"
+              td
+                = hidden_field_tag "reset_action",
+                                   action_name,
+                                   form: "reset-#{action_name}"
+                = tag.button "Réinitialiser",
+                             type: "submit",
+                             form: "reset-#{action_name}",
+                             class: "fr-btn fr-btn--tertiary fr-btn--sm",
+                             data: { confirm: "Réinitialiser aux valeurs par défaut ?" }
+
+    .fr-mt-4w
+      = f.submit "Enregistrer les modifications", class: "fr-btn fr-btn--primary"
+
+  / Formulaires de réinitialisation (un par action, hors du formulaire principal)
+  - @presenter.sections.values.flatten.each do |action_name|
+    = form_with url: digest_mailers_path,
+                method: :post,
+                id: "reset-#{action_name}",
+                style: "display:none" do |f|
+      = hidden_field_tag :reset_action, action_name

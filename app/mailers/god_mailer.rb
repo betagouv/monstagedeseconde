@@ -43,26 +43,6 @@ class GodMailer < ApplicationMailer
     )
   end
 
-  def weekly_expired_applications_email
-    internship_applications = InternshipApplication.expired.where("expired_at > :date", date: 15.days.ago)
-
-    @human_date = I18n.l Date.today, format: "%d %B %Y"
-
-    attachment_name = "export_candidatures_expirees_depuis_15_jours.xlsx"
-    xlsx = render_to_string layout: false,
-                            handlers: [ :axlsx ],
-                            formats: [ :xlsx ],
-                            template: "reporting/internship_applications/expired",
-                            locals: { internship_applications: internship_applications,
-                                      presenter_for_dimension: Presenters::Reporting::DimensionByOffer }
-    attachments[attachment_name] = { mime_type: Mime[:xlsx], content: xlsx }
-
-    mail(
-      to: ENV["TEAM_EMAIL"],
-      subject: "Monitoring MS2GT : Candidatures expirées depuis 15 jours au #{@human_date}"
-    )
-  end
-
   def employer_global_applications_reminder(employers_count)
     @human_date = I18n.l Date.today, format: "%d %B %Y"
     @employers_count = employers_count
@@ -124,41 +104,68 @@ class GodMailer < ApplicationMailer
     )
   end
 
-  def notify_others_signatures_started_email(internship_agreement:, missing_signatures_recipients:, last_signature:)
+  def notify_others_signatures_started_email(
+    internship_agreement:,
+    missing_signatures_recipients:,
+    last_signature:
+  )
     @internship_agreement  = internship_agreement
     internship_application = internship_agreement.internship_application
     @internship_offer      = internship_application.internship_offer
     student                = internship_application.student
     @prez_stud             = student.presenter
     @employer              = internship_agreement.employer
-    @school_manager        = internship_agreement.school_management_representative
+    @school_manager        = internship_agreement
+                              .school_management_representative
     @last_signature        = last_signature
-    @last_signature_role   = last_signature.nil? ? nil : I18n.t("activerecord.attributes.signature.signatory_role.#{last_signature.signatory_role.downcase}")
+    @last_signature_role   = format_signature_role(last_signature)
     @url = dashboard_internship_agreements_url(
-      uuid: internship_agreement.uuid,
+      uuid: internship_agreement.uuid
     ).html_safe
 
+    email_recipients = handle_school_manager_mail_action(
+      internship_agreement: internship_agreement,
+      action_name: "agreement_to_sign",
+      email_recipients: missing_signatures_recipients.dup,
+      school_manager: @school_manager
+    )
+
     send_email(
-      to: missing_signatures_recipients,
+      to: email_recipients,
       subject: "Une convention de stage attend votre signature"
     )
   end
 
   def notify_others_signatures_finished_email(internship_agreement:)
     @internship_agreement  = internship_agreement
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = internship_agreement.school_management_representative
     internship_application = internship_agreement.internship_application
     student                = internship_application.student
     @internship_offer      = internship_application.internship_offer
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement)
+    recipients_email       = recipients_email_for_signature(
+      internship_agreement: internship_agreement
+    )
     @url = dashboard_internship_agreements_url(
-      uuid: internship_agreement.uuid,
+      uuid: internship_agreement.uuid
     ).html_safe
 
+    email_recipients = recipients_email - [ @internship_offer.employer.email ]
+
+    unless internship_agreement.school_management_representative_signed_last?
+      handle_school_manager_mail_action(
+        internship_agreement: internship_agreement,
+        action_name: "agreement_signed_by_all",
+        email_recipients: email_recipients,
+        school_manager: @school_manager
+      )
+    end
+
+    email_recipients -= [ @school_manager.email ] if @school_manager.present?
+
     send_email(
-      to: recipients_email - [ @internship_offer.employer.email ], # the employer has already been notified when the last signature was done
+      to: email_recipients,
       subject: "Une convention de stage est signée par tous"
     )
   end
@@ -169,14 +176,24 @@ class GodMailer < ApplicationMailer
     employer               = @internship_offer.employer
     # employer is notified by digest email when the agreement is ready,
     # so we exclude them from this email to avoid sending two emails at the same time
-    recipients_email       = recipients_email_for_signature(internship_agreement: internship_agreement) - [ employer.email ]
+    recipients_email       = recipients_email_for_signature(
+      internship_agreement: internship_agreement,
+      with_legal_representatives: false
+    ) - [ employer.email ]
     student                = internship_application.student
     @prez_stud             = student.presenter
     @employer              = @internship_offer.employer
-    @school_manager        = internship_agreement.school_manager
+    @school_manager        = internship_agreement.school_management_representative
     @url = dashboard_internship_agreements_url(
       uuid: internship_agreement.uuid
     ).html_safe
+
+    recipients_email = handle_school_manager_mail_action(
+      internship_agreement: internship_agreement,
+      action_name: "signatures_enabled",
+      email_recipients: recipients_email,
+      school_manager: @school_manager
+    )
 
     send_email(
       to: recipients_email,
@@ -206,6 +223,20 @@ class GodMailer < ApplicationMailer
     )
   end
 
+  def offer_was_flagged(inappropriate_offer)
+    @inappropriate_offer = inappropriate_offer
+    @internship_offer = inappropriate_offer.internship_offer
+    @fr_ground = InappropriateOffer.options_for_ground[@inappropriate_offer.ground.to_s]
+    @user = inappropriate_offer.user
+    moderation_emails = parse_email_list(ENV["MODERATION_TEAM_EMAIL"])
+    send_email(
+      to: moderation_emails,
+      subject: "Offre signalée : [#{@fr_ground}] - #{@internship_offer.title} (##{@inappropriate_offer.id})"
+    )
+  end
+
+  private
+
   def recipients_email_for_signature(internship_agreement:, with_legal_representatives: true)
     internship_application = internship_agreement.internship_application
     student                = internship_application.student
@@ -221,19 +252,35 @@ class GodMailer < ApplicationMailer
     internship_agreement.legal_representative_data.values.map { |rep| rep[:email] }.compact.uniq
   end
 
-  def offer_was_flagged(inappropriate_offer)
-    @inappropriate_offer = inappropriate_offer
-    @internship_offer = inappropriate_offer.internship_offer
-    @fr_ground = InappropriateOffer.options_for_ground[@inappropriate_offer.ground.to_s]
-    @user = inappropriate_offer.user
-    moderation_emails = parse_email_list(ENV["MODERATION_TEAM_EMAIL"])
-    send_email(
-      to: moderation_emails,
-      subject: "Offre signalée : [#{@fr_ground}] - #{@internship_offer.title} (##{@inappropriate_offer.id})"
-    )
+  def format_signature_role(signature)
+    return nil if signature.nil?
+
+    key = "activerecord.attributes.signature.signatory_role.#{signature.signatory_role.downcase}"
+    I18n.t(key)
   end
 
-  private
+  def handle_school_manager_mail_action(
+    internship_agreement:,
+    action_name:,
+    email_recipients:,
+    school_manager:
+  )
+    school_roles_not_signed = internship_agreement.roles_not_signed_yet &
+                              Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE
+
+    if school_roles_not_signed.any? && school_manager.present?
+      stale_at = internship_agreement.internship_application.weeks&.order(:year, :number)&.last&.friday || 30.days.from_now
+      MailActionItem.create_by_name!(
+        action_name,
+        recipient: school_manager,
+        internship_agreement: internship_agreement,
+        stale_at: stale_at
+      )
+      return email_recipients - [ school_manager.email ]
+    end
+
+    email_recipients
+  end
 
   def parse_email_list(email_string)
     return [] if email_string.blank?

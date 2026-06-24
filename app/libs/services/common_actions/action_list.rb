@@ -1,4 +1,4 @@
-module Services::EmployerActions
+module Services::CommonActions
   class ActionList
     attr_reader :user_id
 
