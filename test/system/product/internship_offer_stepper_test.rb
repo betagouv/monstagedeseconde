@@ -15,7 +15,7 @@ module Product
       sign_in(employer)
       run_request_and_cache_response(report_as: 'new_dashboard_stepper_internship_occupation_path') do
         visit new_dashboard_stepper_internship_occupation_path
-        fill_in_internship_occupation_form(is_public: true, group:)
+        fill_in_internship_occupation_form
       end
     end
 
@@ -34,14 +34,15 @@ module Product
     end
     test 'USE_W3C, new_dashboard_stepper_planning_path' do
       employer = create(:employer)
-      entreprise = create(:entreprise, employer:)
+      internship_occupation = create(:internship_occupation, employer:)
+      entreprise = create(:entreprise, internship_occupation:)
       sector = create(:sector)
       sign_in(employer)
 
       travel_to(Date.new(2024, 3, 1)) do
         run_request_and_cache_response(report_as: 'new_dashboard_stepper_planning_path') do
           visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
-          fill_in_planning_form(sector:)
+          fill_in_planning_form
         end
       end
     end

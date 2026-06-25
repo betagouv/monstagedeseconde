@@ -31,10 +31,12 @@ module Phonable
   end
 
   def french_phone_number_format(phone_number_string)
-    phone_number_string.split('')
+    return "" if phone_number_string.blank?
+
+    phone_number_string.split("")
                        .each_slice(2)
                        .to_a
                        .map(&:join)
-                       .join(' ')
+                       .join(" ")
   end
 end

@@ -3,7 +3,7 @@
 class InternshipOffersController < ApplicationController
   OPTIONAL_SEARCH_PARAMS = %i[keyword sector_ids].freeze
 
-  layout 'search', only: :index
+  layout "search", only: :index
 
   before_action :prepare_search_data, only: %i[index search]
 
@@ -31,7 +31,7 @@ class InternshipOffersController < ApplicationController
           if current_user&.school&.try(:qpv)
             # Si c'est un PaginatableArray, on trie manuellement; sinon on utilise reorder
             if @internship_offers.respond_to?(:reorder)
-              @internship_offers = @internship_offers.reorder('qpv DESC NULLS LAST')
+              @internship_offers = @internship_offers.reorder("qpv DESC NULLS LAST")
             else
               sorted = @internship_offers.to_a.sort_by { |offer| offer.qpv ? 0 : 1 }
               @internship_offers = Kaminari.paginate_array(sorted).page(params[:page]).per(InternshipOffer::PAGE_SIZE)
@@ -120,14 +120,14 @@ class InternshipOffersController < ApplicationController
     existing_report = InappropriateOffer.find_by(offer_and_userid_parameters)
 
     if current_user.present? && existing_report
-      alert = 'Vous avez déjà signalé cette offre comme inappropriée.'
+      alert = "Vous avez déjà signalé cette offre comme inappropriée."
       redirect_to internship_offer_path(@internship_offer), alert: alert
     elsif Flipper.enabled?(:flag_internship_offer)
       new_report = InappropriateOffer.new(parameters)
       if new_report.valid?
         new_report.save
         GodMailer.offer_was_flagged(new_report).deliver_later
-        notice = 'Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h.'
+        notice = "Merci, votre signalement a bien été pris en compte. Notre équipe l’examinera sous 48h."
         redirect_to internship_offer_path(@internship_offer, sans_signalement: true), notice: notice
       else
         @inappropriate_offer = new_report
@@ -177,7 +177,7 @@ class InternshipOffersController < ApplicationController
   end
 
   def check_internship_offer_is_published_or_redirect
-    from_email = [ params[:origin], params[:origine] ].include?('email')
+    from_email = [ params[:origin], params[:origine] ].include?("email")
     authenticate_user! if current_user.nil? && from_email
     return if can?(:create, @internship_offer)
     return if @internship_offer.published?
@@ -293,17 +293,17 @@ class InternshipOffersController < ApplicationController
       prevPage: offers.present? ? offers.prev_page : nil,
       isFirstPage: offers.present? ? offers.first_page? : false,
       isLastPage: offers.present? ? offers.last_page? : false,
-      pageUrlBase: url_for(search_query_params.except('page'))
+      pageUrlBase: url_for(search_query_params.except("page"))
     }
   end
 
   def flag_params
-    params.expect(inappropriate_offer: [:id, :ground, :details])
+    params.expect(inappropriate_offer: [ :id, :ground, :details ])
   end
 
   def internship_offer_employer_name(internship_offer)
     return internship_offer.employer_name unless internship_offer.from_multi?
 
-    internship_offer.corporations.pluck(:corporation_name).join(', ')
+    internship_offer.corporations.pluck(:corporation_name).join(", ")
   end
 end

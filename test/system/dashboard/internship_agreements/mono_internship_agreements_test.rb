@@ -1,4 +1,4 @@
-require 'application_system_test_case'
+require "application_system_test_case"
 
 module Dashboard::InternshipAgreements
   class MonoInternshipAgreementTest < ApplicationSystemTestCase
@@ -6,13 +6,13 @@ module Dashboard::InternshipAgreements
     include TeamAndAreasHelper
 
     def fill_employer_missing_fields
-      find("input[name='internship_agreements_mono_internship_agreement[employer_name]']").set('Corporation 42')
-      find("input[name='internship_agreements_mono_internship_agreement[organisation_representative_role]']").set('CEO')
-      find("input[name='internship_agreements_mono_internship_agreement[entreprise_address]']").set('1 rue Jules Charpentier 37000 Tours')
-      find("input[name='internship_agreements_mono_internship_agreement[internship_address]']").set('1 rue Jules Charpentier 37000 Tours')
+      find("input[name='internship_agreements_mono_internship_agreement[employer_name]']").set("Corporation 42")
+      find("input[name='internship_agreements_mono_internship_agreement[organisation_representative_role]']").set("CEO")
+      find("input[name='internship_agreements_mono_internship_agreement[entreprise_address]']").set("1 rue Jules Charpentier 37000 Tours")
+      find("input[name='internship_agreements_mono_internship_agreement[internship_address]']").set("1 rue Jules Charpentier 37000 Tours")
     end
 
-    test 'employer reads internship agreement list and read his own agreements with student having a school with a school manager' do
+    test "employer reads internship agreement list and read his own agreements with student having a school with a school manager" do
       employer = create(:employer)
       employer_2 = create(:employer)
 
@@ -36,7 +36,7 @@ module Dashboard::InternshipAgreements
       # assert all('td[data-head="Statut"]').empty?
     end
 
-    test 'school_manager reads internship agreement list and read his own agreements' do
+    test "school_manager reads internship agreement list and read his own agreements" do
       school = create(:school, :with_school_manager)
       school_2 = create(:school)
       student = create(:student, school:)
@@ -52,11 +52,11 @@ module Dashboard::InternshipAgreements
       visit dashboard_internship_agreements_path
 
       within('td[data-head="Statut"]') do
-        assert_equal 1, all('div.actions').count
+        assert_equal 1, all("div.actions").count
       end
     end
 
-    test 'employer reads internship agreement table with correct indications - draft' do
+    test "employer reads internship agreement table with correct indications - draft" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -64,12 +64,12 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'À remplir par les deux parties.')
+        find("div.actions", text: "À remplir par les deux parties.")
       end
-      find('a.button-component-cta-button', text: 'Remplir ma convention')
+      find("a.button-component-cta-button", text: "Remplir ma convention")
     end
 
-    test 'employer reads internship agreement table with correct indications - status: started_by_employer' do
+    test "employer reads internship agreement table with correct indications - status: started_by_employer" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -77,18 +77,18 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
+        find("div.actions", text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Valider ma convention').click
+      find("a.button-component-cta-button", text: "Valider ma convention").click
       fill_employer_missing_fields
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_weekly_hours_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_weekly_hours_end')
-      fill_in('Pause déjeuner', with: "un repas à la cantine d'entreprise")
-      click_button('Valider la convention')
-      find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: 'Valider la convention')
+      select("08:00", from: "internship_agreements_mono_internship_agreement_weekly_hours_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_weekly_hours_end")
+      fill_in("Pause déjeuner", with: "un repas à la cantine d'entreprise")
+      click_button("Valider la convention")
+      find("h1 span.fr-fi-arrow-right-line.fr-fi--lg", text: "Valider la convention")
     end
 
-    test 'employer reads internship agreement table with correct indications / daily hours - status: started_by_employer' do
+    test "employer reads internship agreement table with correct indications / daily hours - status: started_by_employer" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -96,45 +96,45 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
+        find("div.actions", text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Valider ma convention').click
+      find("a.button-component-cta-button", text: "Valider ma convention").click
       fill_employer_missing_fields
-      find('label', text: 'Les horaires seront les mêmes sur toute la période de stage')
+      find("label", text: "Les horaires seront les mêmes sur toute la période de stage")
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_lundi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_lundi_end')
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mardi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mardi_end')
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mercredi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mercredi_end')
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_jeudi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_jeudi_end')
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_vendredi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_vendredi_end')
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_lundi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_lundi_end")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mardi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mardi_end")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mercredi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mercredi_end")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_jeudi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_jeudi_end")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_vendredi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_vendredi_end")
       text_area = first(:css,
-                        "textarea[name='internship_agreements_mono_internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
+                        "textarea[name='internship_agreements_mono_internship_agreement[lunch_break]']").native.send_keys("un repas à la cantine bien chaud")
       # samedi is avoided on purpose
       # fill_employer_missing_fields
-      click_button('Valider la convention')
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: 'Valider la convention')
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: 'Valider la convention').click
-      find('span#alert-text', text: "La convention a été envoyée au chef d'établissement.")
-      find('h1.h4.fr-mb-4w.text-dark', text: 'Editer, imprimer et signer les conventions dématérialisées')
+      click_button("Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention").click
+      find("span#alert-text", text: "La convention a été envoyée au chef d'établissement.")
+      find("h1.h4.fr-mb-4w.text-dark", text: "Editer, imprimer et signer les conventions dématérialisées")
 
       expected_days_hours = {
-        'lundi' => ['08:00', '16:00'],
-        'mardi' => ['08:00', '16:00'],
-        'mercredi' => ['08:00', '16:00'],
-        'jeudi' => ['08:00', '16:00'],
-        'vendredi' => ['08:00', '16:00'],
-        'samedi' => ['', '']
+        "lundi" => [ "08:00", "16:00" ],
+        "mardi" => [ "08:00", "16:00" ],
+        "mercredi" => [ "08:00", "16:00" ],
+        "jeudi" => [ "08:00", "16:00" ],
+        "vendredi" => [ "08:00", "16:00" ],
+        "samedi" => [ "", "" ]
       }
       assert_equal expected_days_hours, internship_agreement.reload.daily_hours
     end
 
-    test 'employer reads internship agreement table with missing indications / daily hours - status: started_by_employer' do
+    test "employer reads internship agreement table with missing indications / daily hours - status: started_by_employer" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -142,37 +142,37 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
+        find("div.actions", text: "Votre convention est remplie, mais elle n'est pas envoyée au chef d'établissement.")
       end
-      find('a.button-component-cta-button', text: 'Valider ma convention').click
+      find("a.button-component-cta-button", text: "Valider ma convention").click
       find("input[name='internship_agreements_mono_internship_agreement[organisation_representative_full_name]']")
-      within('.test-employer-role') do
-        fill_in 'En qualité de', with: 'CEO'
+      within(".test-employer-role") do
+        fill_in "En qualité de", with: "CEO"
       end
-      fill_in "Nom de l'entreprise", with: 'Corporation'
-      fill_in 'Adresse complète du lieu du stage', with: '1 rue de la paix PARIS 75002'
-      fill_in 'Adresse complète du siège social de l’entreprise ou de l’organisme d’accueil', with: '1 rue de la paix PARIS 75002'
+      fill_in "Nom de l'entreprise", with: "Corporation"
+      fill_in "Adresse complète du lieu du stage", with: "1 rue de la paix PARIS 75002"
+      fill_in "Adresse complète du siège social de l’entreprise ou de l’organisme d’accueil", with: "1 rue de la paix PARIS 75002"
       execute_script("document.getElementById('weekly_planning').checked = false;")
       execute_script("document.getElementById('daily-planning-container').classList.remove('d-none');")
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_lundi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_lundi_end')
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mardi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mardi_end')
-      select('08:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mercredi_start')
-      select('16:00', from: 'internship_agreements_mono_internship_agreement_daily_hours_mercredi_end')
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_lundi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_lundi_end")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mardi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mardi_end")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mercredi_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_daily_hours_mercredi_end")
       text_area = first(:css,
-                        "textarea[name='internship_agreements_mono_internship_agreement[lunch_break]']").native.send_keys('un repas à la cantine bien chaud')
+                        "textarea[name='internship_agreements_mono_internship_agreement[lunch_break]']").native.send_keys("un repas à la cantine bien chaud")
       # Missing lunch break indications on thursday and friday
       # samedi is avoided on purpose
-      click_button('Valider la convention')
-      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: 'Valider la convention')
+      click_button("Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention")
       find("button[data-action='click->internship-agreement-form#completeByEmployer']",
-           text: 'Valider la convention').click
-      alert_text = all('.fr-alert.fr-alert--error').first.text
-      assert_equal alert_text, 'Planning hebdomadaire : Veuillez compléter les horaires et repas de la semaine de stage'
+           text: "Valider la convention").click
+      alert_text = all(".fr-alert.fr-alert--error").first.text
+      assert_equal alert_text, "Planning hebdomadaire : Veuillez compléter les horaires et repas de la semaine de stage"
     end
 
-    test 'employer reads internship agreement table with correct indications - status: completed_by_employer /' do
+    test "employer reads internship agreement table with correct indications - status: completed_by_employer /" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -180,13 +180,13 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions',
+        find("div.actions",
              text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
+      find("a.button-component-cta-button", text: "Télécharger")
     end
 
-    test 'employer reads internship agreement table with correct indications - status: started_by_school_manager' do
+    test "employer reads internship agreement table with correct indications - status: started_by_school_manager" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -194,14 +194,14 @@ module Dashboard::InternshipAgreements
       sign_in(internship_offer.employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions',
+        find("div.actions",
              text: "La convention doit être remplie par l'établissement. Vous pouvez cependant l'imprimer en attendant son remplissage.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
+      find("a.button-component-cta-button", text: "Télécharger")
     end
 
-    test 'employer reads internship agreement table with correct indications - status: validated' do
-      skip 'until signature is addressed in this US'
+    test "employer reads internship agreement table with correct indications - status: validated" do
+      skip "until signature is addressed in this US"
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       create(:mono_internship_agreement,
@@ -210,13 +210,13 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'Votre convention est prête à être signée.')
+        find("div.actions", text: "Votre convention est prête à être signée.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
+      find("a.button-component-cta-button", text: "Télécharger")
+      find("button[data-action='group-signing#toggleFromButton']", text: "Ajouter aux signatures")
     end
 
-    test 'employer reads internship agreement table with correct indications - status: signatures_started with employer' do
+    test "employer reads internship agreement table with correct indications - status: signatures_started with employer" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -228,14 +228,14 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: 'Vous avez déjà signé.')
+        find(".actions.d-flex", text: "Vous avez déjà signé.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('a.fr-btn', text: 'Déjà signé')
+      find("a.button-component-cta-button", text: "Télécharger")
+      find("a.fr-btn", text: "Déjà signé")
     end
 
-    test 'employer reads internship agreement table with correct indications - status: signatures_started with school_manager' do
-      skip 'until signature is addressed in this US'
+    test "employer reads internship agreement table with correct indications - status: signatures_started with school_manager" do
+      skip "until signature is addressed in this US"
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -247,13 +247,13 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: "En attente de votre signature.")
+        find(".actions.d-flex", text: "En attente de votre signature.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
+      find("a.button-component-cta-button", text: "Télécharger")
+      find("button[data-action='group-signing#toggleFromButton']", text: "Ajouter aux signatures")
     end
 
-    test 'employer reads internship agreement table with correct indications - status: signed_by_all' do
+    test "employer reads internship agreement table with correct indications - status: signed_by_all" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -265,15 +265,15 @@ module Dashboard::InternshipAgreements
       sign_in(employer)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: 'Signée par toutes les parties.')
+        find(".actions.d-flex", text: "Signée par toutes les parties.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('a', text: 'Signée de tous')
+      find("a.button-component-cta-button", text: "Télécharger")
+      find("a", text: "Signée de tous")
     end
 
     # =================== School Manager ===================
 
-    test 'school_manager reads internship agreement table with correct indications - draft' do
+    test "school_manager reads internship agreement table with correct indications - draft" do
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
@@ -281,64 +281,64 @@ module Dashboard::InternshipAgreements
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'En attente de l\'offreur.')
+        find("div.actions", text: "En attente de l'offreur.")
       end
-      find('a.button-component-cta-button', text: 'En attente')
+      find("a.button-component-cta-button", text: "En attente")
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: started_by_employer' do
+    test "school_manager reads internship agreement table with correct indications - status: started_by_employer" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :started_by_employer)
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'En attente de l\'offreur.')
+        find("div.actions", text: "En attente de l'offreur.")
       end
-      find('a.button-component-cta-button', text: 'En attente')
+      find("a.button-component-cta-button", text: "En attente")
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: completed_by_employer /' do
+    test "school_manager reads internship agreement table with correct indications - status: completed_by_employer /" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :completed_by_employer)
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
-      find('a.button-component-cta-button', text: 'Remplir ma convention').click
+      find("a.button-component-cta-button", text: "Remplir ma convention").click
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
+        find("div.actions", text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
       end
-      fill_in 'Date de délibération du Conseil d’administration approuvant la convention-type', with: '10/10/2020'
-      fill_in 'Date de naissance de l’élève', with: '2010-05-15'
-      select('Privé sous contrat', from: 'Statut de l’établissement')
-      click_button('Valider la convention')
-      find('h1 span.fr-fi-arrow-right-line.fr-fi--lg', text: 'Valider la convention')
+      fill_in "Date de délibération du Conseil d’administration approuvant la convention-type", with: "10/10/2020"
+      fill_in "Date de naissance de l’élève", with: "2010-05-15"
+      select("Privé sous contrat", from: "Statut de l’établissement")
+      click_button("Valider la convention")
+      find("h1 span.fr-fi-arrow-right-line.fr-fi--lg", text: "Valider la convention")
       within("dialog[aria-labelledby='validation-modal-title']") do
-        find("button[data-action='click->internship-agreement-form#validate']", text: 'Je valide la convention')
-        find("button[data-action='click->internship-agreement-form#validate']", text: 'Je valide la convention').click
+        find("button[data-action='click->internship-agreement-form#validate']", text: "Je valide la convention")
+        find("button[data-action='click->internship-agreement-form#validate']", text: "Je valide la convention").click
       end
-      find('span#alert-text',
-           text: 'La convention est validée, le fichier pdf de la convention est maintenant disponible.')
+      find("span#alert-text",
+           text: "La convention est validée, le fichier pdf de la convention est maintenant disponible.")
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: started_by_school_manager' do
+    test "school_manager reads internship agreement table with correct indications - status: started_by_school_manager" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :started_by_school_manager)
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'Votre convention est remplie, mais pas validée.')
+        find("div.actions", text: "Votre convention est remplie, mais pas validée.")
       end
-      find('a.button-component-cta-button', text: 'Valider ma convention')
+      find("a.button-component-cta-button", text: "Valider ma convention")
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: validated' do
+    test "school_manager reads internship agreement table with correct indications - status: validated" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :validated)
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'Votre convention est prête.')
+        find("div.actions", text: "Votre convention est prête.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
+      find("a.button-component-cta-button", text: "Télécharger")
       # find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: signatures_started with employer' do
+    test "school_manager reads internship agreement table with correct indications - status: signatures_started with employer" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :signatures_started)
       create(:signature,
              :employer,
@@ -348,13 +348,13 @@ module Dashboard::InternshipAgreements
       visit dashboard_internship_agreements_path
 
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: "L'employeur a déjà signé. En attente de votre signature.")
+        find(".actions.d-flex", text: "L'employeur a déjà signé. En attente de votre signature.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
+      find("a.button-component-cta-button", text: "Télécharger")
       # find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: signatures_started with school_manager' do
+    test "school_manager reads internship agreement table with correct indications - status: signatures_started with school_manager" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :signatures_started)
       create(:signature,
              :school_manager,
@@ -363,23 +363,38 @@ module Dashboard::InternshipAgreements
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: 'Vous avez déjà signé. En attente de la signature de l’employeur.')
+        find(".actions.d-flex", text: "Vous avez déjà signé. En attente de la signature de l’employeur.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('a.fr-btn', text: 'Déjà signé')
+      find("a.button-component-cta-button", text: "Télécharger")
+      find("a.fr-btn", text: "Déjà signé")
     end
 
-    test 'school_manager reads internship agreement table with correct indications - status: signed_by_all' do
+    test "school_manager reads internship agreement table with correct indications - status: signed_by_all" do
       internship_agreement = create(:mono_internship_agreement, aasm_state: :signed_by_all)
       sign_in(internship_agreement.school_manager)
       visit dashboard_internship_agreements_path
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: 'Signée par toutes les parties.')
+        find(".actions.d-flex", text: "Signée par toutes les parties.")
       end
-      find('a.button-component-cta-button', text: 'Télécharger')
-      find('a.fr-btn', text: 'Signée de tous')
+      find("a.button-component-cta-button", text: "Télécharger")
+      find("a.fr-btn", text: "Signée de tous")
     end
 
+    # ====================== Student ======================
+    #
+    test "student can sign internship agreement" do
+      student = create(:student, school: create(:school, :with_school_manager))
+      internship_offer = create(:weekly_internship_offer_2nde)
+      internship_application = create(:weekly_internship_application, :approved, internship_offer:, student:)
+      internship_agreement = create(:mono_internship_agreement, internship_application:,
+                                                           aasm_state: :signatures_started)
+      create(:signature,
+             :employer,
+             internship_agreement:,
+             user_id: internship_agreement.employer.id)
+      sign_in(student)
+      visit dashboard_students_internship_applications_path(student_id: student.id)
+    end
     # =================== Admin Officer ===================
 
     # test 'admin_officer reads internship agreement table with correct indications - draft' do

@@ -15,7 +15,7 @@ class InternshipApplicationsController < ApplicationController
     authorize! :apply, @internship_offer
     @internship_application = InternshipApplication.new(
       internship_offer_id: params[:internship_offer_id],
-      internship_offer_type: 'InternshipOffer',
+      internship_offer_type: "InternshipOffer",
       student: current_user
     )
     @available_weeks = @internship_application.selectable_weeks
@@ -23,7 +23,8 @@ class InternshipApplicationsController < ApplicationController
     return unless @available_weeks.empty?
 
     redirect_to internship_offer_path(@internship_offer),
-                alert: "Votre établissement a déclaré des semaines de stage et aucune semaine n'est compatible avec cette offre de stage."
+                alert: "Votre établissement a déclaré des semaines de stage et " \
+                     "aucune semaine n'est compatible avec cette offre de stage."
   end
 
   def show
@@ -38,8 +39,8 @@ class InternshipApplicationsController < ApplicationController
 
     if params[:internship_application][:week_ids].present?
       week_ids = params[:internship_application][:week_ids]
-      params[:internship_application][:week_ids] = [week_ids] if week_ids.is_a?(String)
-      params[:internship_application][:week_ids] = week_ids.split(',') if week_ids.include?(',')
+      params[:internship_application][:week_ids] = [ week_ids ] if week_ids.is_a?(String)
+      params[:internship_application][:week_ids] = week_ids.split(",") if week_ids.include?(",")
     end
 
     appli_params = { user_id: current_user.id }.merge(create_internship_application_params)
@@ -53,7 +54,7 @@ class InternshipApplicationsController < ApplicationController
     else
       @available_weeks = @internship_application.selectable_weeks
       log_error(object: @internship_application)
-      render 'new', status: :bad_request
+      render "new", status: :bad_request
     end
   rescue ActiveRecord::RecordNotUnique
     redirect_to internship_offer_path(@internship_offer),
@@ -77,8 +78,8 @@ class InternshipApplicationsController < ApplicationController
       },
       user: current_user_or_visitor
     ).all
-                                                        .includes([:sector])
-                                                        .last(6)
+     .includes([ :sector ])
+     .last(6)
   end
 
   def edit_transfer
@@ -91,7 +92,7 @@ class InternshipApplicationsController < ApplicationController
     authorize! :transfer, @internship_application
     # send email to the invited employer
     if transfer_params[:destinations].present?
-      destinations = transfer_params[:destinations].split(',').compact.map(&:strip)
+      destinations = transfer_params[:destinations].split(",").compact.map(&:strip)
       faulty_emails = check_transfer_destinations(destinations)
       if faulty_emails.empty?
         @internship_application.transfer! if @internship_application.may_transfer?
@@ -106,7 +107,7 @@ class InternshipApplicationsController < ApplicationController
           ).deliver_later
         end
         redirect_to dashboard_candidatures_path,
-                    flash: { success: 'La candidature a été transmise avec succès' }
+                    flash: { success: "La candidature a été transmise avec succès" }
       else
         target_path = edit_transfer_internship_offer_internship_application_path(
           @internship_application.internship_offer, uuid: @internship_application.uuid
@@ -157,8 +158,8 @@ class InternshipApplicationsController < ApplicationController
   # end
 
   def sanitizing_params(appli_params)
-    phone = appli_params['student_phone']&.gsub(/\s+/, '')
-    appli_params.merge!({ 'student_phone' => phone })
+    phone = appli_params["student_phone"]&.gsub(/\s+/, "")
+    appli_params.merge!({ "student_phone" => phone })
   end
 
   def check_transfer_destinations(destinations)

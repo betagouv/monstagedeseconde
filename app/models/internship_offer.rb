@@ -93,6 +93,7 @@ class InternshipOffer < ApplicationRecord
 
   has_one :stats, class_name: "InternshipOfferStats", dependent: :destroy
   has_one :inappropriate_offer, dependent: :destroy
+  has_many :mail_action_items, dependent: :nullify
 
   # accepts_nested_attributes_for :organisation, allow_destroy: true
 

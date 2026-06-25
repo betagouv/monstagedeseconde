@@ -300,7 +300,8 @@ main#content role="main" data-controller="signup"
                       = f.hidden_field :captcha_uuid, value: @captcha_uuid
                       .row
                         .col-12.col-lg-6
-                          = f.text_field :captcha, as: :string, label: false, input_html: { autocomplete: "off" }, class: "fr-input fr-mb-2v", required: true
+                          label.fr-label[for="user_captcha"] Saisissez les caractères de l'image
+                          = f.text_field :captcha, as: :string, label: false, input_html: { autocomplete: "off" }, class: "fr-input fr-mb-2v", required: true, aria: { label: "Saisissez les caractères de l'image" }
 
               .col-12.col-lg-6
                 = f.submit "Valider",
