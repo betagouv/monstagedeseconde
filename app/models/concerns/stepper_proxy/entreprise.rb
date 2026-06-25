@@ -10,7 +10,7 @@ module StepperProxy
       belongs_to :sector
 
       before_validation :clean_siret, unless: -> { internship_address_manual_enter }
-      before_validation :public_entreprise_sector_settings, if: -> { is_public && !from_api? }
+      before_validation :assign_sector_from_naf, if: -> { !is_public && code_ape.present? && sector_id_changed? == false }
       before_save :entreprise_used_name
 
       attr_accessor :entreprise_chosen_full_address,
@@ -72,17 +72,19 @@ module StepperProxy
         self.employer_name = employer_chosen_name.presence || employer_name
       end
 
-      def public_entreprise_sector_settings
-        self.sector = Sector.find_by(name: 'Fonction publique')
+      def assign_sector_from_naf
+        sector_from_naf = NafSectorMapping.find_sector_by_code_naf(code_ape)
+        self.sector = sector_from_naf if sector_from_naf.present?
       end
 
+      # Seule contrainte résiduelle entre is_public et le secteur :
+      # une structure privée ne peut pas porter le secteur "Fonction publique".
+      # Une structure publique peut choisir n'importe quel secteur (y compris "Fonction publique").
       def sector_consistency_with_is_public
         fonction_publique_sector = Sector.find_by(name: 'Fonction publique')
         return if fonction_publique_sector.nil?
 
-        if is_public && sector_id != fonction_publique_sector.id
-          errors.add(:sector_id, "Le secteur doit être 'Fonction publique' pour une offre publique")
-        elsif !is_public && sector_id == fonction_publique_sector.id
+        if !is_public && sector_id == fonction_publique_sector.id
           errors.add(:sector_id, "Le secteur 'Fonction publique' n'est pas autorisé pour une offre privée")
         end
       end

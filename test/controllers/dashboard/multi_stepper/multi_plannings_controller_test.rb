@@ -5,6 +5,9 @@ module Dashboard::MultiStepper
     include Devise::Test::IntegrationHelpers
 
     setup do
+      # Pin to an in-season date so selectable weeks exist regardless of when
+      # the suite runs (in June there are no future-selectable weeks left).
+      travel_to Time.zone.local(2025, 10, 1)
       @employer = create(:employer)
       @multi_activity = create(:multi_activity, employer: @employer)
       @multi_coordinator = create(:multi_coordinator, multi_activity: @multi_activity)
@@ -20,31 +23,33 @@ module Dashboard::MultiStepper
     end
 
     test 'POST #create with valid params redirects to next step' do
-      create(:corporation, multi_corporation: @multi_corporation)
-      week = Week.selectable_from_now_until_end_of_school_year.first
+      travel_to(Date.new(2025, 1, 1)) do
+        create(:corporation, multi_corporation: @multi_corporation)
+        week = Week.selectable_from_now_until_end_of_school_year.first
 
-      assert_difference(['MultiPlanning.count', 'InternshipOffer.count'], 1) do
-        post dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: @multi_coordinator.id), params: {
-          multi_planning: {
-            max_candidates: 3,
-            lunch_break: '12h-14h',
-            weekly_hours: ['9h-17h'],
-            rep: false,
-            qpv: true,
-            all_year_long: '0',
-            grade_college: '1',
-            grade_2e: '0',
-            week_ids: [week.id]
+        assert_difference(['MultiPlanning.count', 'InternshipOffer.count'], 1) do
+          post dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: @multi_coordinator.id), params: {
+            multi_planning: {
+              max_candidates: 3,
+              lunch_break: '12h-14h',
+              weekly_hours: ['9h-17h'],
+              rep: false,
+              qpv: true,
+              all_year_long: '0',
+              grade_college: '1',
+              grade_2e: '0',
+              week_ids: [week.id]
+            }
           }
-        }
+        end
+
+        created_offer = InternshipOffer.last
+        assert_equal true, created_offer.from_multi?
+        assert_equal @multi_coordinator.sector_id, created_offer.sector_id
+
+        assert_redirected_to internship_offer_path(created_offer, origine: 'dashboard', stepper: true)
+        assert_equal 'Les informations de planning ont bien été enregistrées. Votre offre est publiée', flash[:notice]
       end
-      
-      created_offer = InternshipOffer.last
-      assert_equal true, created_offer.from_multi?
-      assert_equal @multi_coordinator.sector_id, created_offer.sector_id
-      
-      assert_redirected_to internship_offer_path(created_offer, origine: 'dashboard', stepper: true)
-      assert_equal 'Les informations de planning ont bien été enregistrées. Votre offre est publiée', flash[:notice]
     end
 
     test 'POST #create with invalid params renders new' do
@@ -89,32 +94,34 @@ module Dashboard::MultiStepper
 
     # test that the multi_planning is created with the correct reserved schools
     test 'POST #create with valid params creates the correct reserved schools' do
-      create(:corporation, multi_corporation: @multi_corporation)
-      week = Week.selectable_from_now_until_end_of_school_year.first
-      school_1 = create(:school)
-      school_2 = create(:school)
+      travel_to(Date.new(2025, 1, 1)) do
+        create(:corporation, multi_corporation: @multi_corporation)
+        week = Week.selectable_from_now_until_end_of_school_year.first
+        school_1 = create(:school)
+        school_2 = create(:school)
 
-      assert_difference(['MultiPlanning.count', 'InternshipOffer.count'], 1) do
-        post dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: @multi_coordinator.id), params: {
-          multi_planning: {
-            max_candidates: 3,
-            lunch_break: '12h-14h',
-            weekly_hours: ['9h-17h'],
-            rep: false,
-            qpv: true,
-            all_year_long: '0',
-            grade_college: '1',
-            grade_2e: '0',
-            week_ids: [week.id],
-            school_ids: [school_1.id, school_2.id]
+        assert_difference(['MultiPlanning.count', 'InternshipOffer.count'], 1) do
+          post dashboard_multi_stepper_multi_plannings_path(multi_coordinator_id: @multi_coordinator.id), params: {
+            multi_planning: {
+              max_candidates: 3,
+              lunch_break: '12h-14h',
+              weekly_hours: ['9h-17h'],
+              rep: false,
+              qpv: true,
+              all_year_long: '0',
+              grade_college: '1',
+              grade_2e: '0',
+              week_ids: [week.id],
+              school_ids: [school_1.id, school_2.id]
+            }
           }
-        }
-      end
+        end
 
-      created_offer = InternshipOffer.last
-      assert_equal true, created_offer.from_multi?
-      assert_equal @multi_coordinator.sector_id, created_offer.sector_id
-      assert_equal [school_1.id, school_2.id].sort, created_offer.schools.pluck(:id).sort
+        created_offer = InternshipOffer.last
+        assert_equal true, created_offer.from_multi?
+        assert_equal @multi_coordinator.sector_id, created_offer.sector_id
+        assert_equal [school_1.id, school_2.id].sort, created_offer.schools.pluck(:id).sort
+      end
     end
   end
 end

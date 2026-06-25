@@ -171,6 +171,22 @@ export default function SirenInput({
     }
   };
 
+  // Active (public) ou désactive (privé) l'option "Fonction publique" du select de secteur.
+  const toggleFonctionPubliqueOption = (sectorEl, available) => {
+    if (!sectorEl || !sectorEl.options) return;
+    for (let i = 0; i < sectorEl.options.length; i++) {
+      const option = sectorEl.options[i];
+      if (option.text.toLowerCase().includes("fonction publique")) {
+        option.disabled = !available;
+        option.hidden = !available;
+        if (!available && sectorEl.value === option.value) {
+          sectorEl.value = "";
+        }
+        break;
+      }
+    }
+  };
+
   const setOpenManual = () => {
     setInternshipAddressManualEnter(true);
     toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), true);
@@ -194,19 +210,24 @@ export default function SirenInput({
     // hide the ministry choice block only if not public
     const ministrySelect = document.getElementById("group-choice");
     const ministryBlock = document.getElementById("ministry-block");
-    // Private
+    const sectorSelect = document.getElementById(`${resourceName}_sector_id`);
+    // Le secteur est désormais proposé pour le public ET le privé ;
+    // seule l'option "Fonction publique" est réservée au public.
     if (!lastPublicValue) {
+      // Private
       ministryBlock.classList.add("fr-hidden");
       ministrySelect.required = false;
 
       sectorBloc.hidden = false;
+      toggleFonctionPubliqueOption(sectorSelect, false);
     } else {
       // Public company
       ministryBlock.classList.remove("fr-hidden");
       ministrySelect.setAttribute("required", "true");
       ministrySelect.required = true;
 
-      sectorBloc.hidden = true;
+      sectorBloc.hidden = false;
+      toggleFonctionPubliqueOption(sectorSelect, true);
     }
 
     const labelEntrepriseAddress = document.querySelector(
@@ -292,37 +313,26 @@ export default function SirenInput({
 
     const groupChoice = document.getElementById("group-choice");
     if (is_public != undefined) {
-      toggleHideContainerById("public-private-radio-buttons", false);
+      // afficher le choix public/privé (l'utilisateur doit pouvoir le voir/le modifier)
+      toggleHideContainerById("public-private-radio-buttons", true);
       if (is_public) {
-        document.getElementById("entreprise_is_public_true").checked = true;
-        // show ministry bloc
+        document.getElementById(`${resourceName}_is_public_true`).checked = true;
+        // ministère de tutelle obligatoire pour une structure publique
         ministry.removeAttribute("style");
         ministryClassList.remove("fr-hidden");
         ministry.removeAttribute("hidden");
         ministry.hidden = false;
-
-        // For public establishments
-
-        sectorBlocClassList.add("fr-hidden");
-        // Safely check and select "Fonction publique" option
-        if (sector && sector.options) {
-          for (let i = 0; i < sector.options.length; i++) {
-            if (
-              sector.options[i].text.toLowerCase().includes("fonction publique")
-            ) {
-              sector.value = sector.options[i].value;
-              break;
-            }
-          }
-        }
-        // remove required attribute from sector input
-        sector.removeAttribute("required");
-
-        // ministère de tutelle obligatoire pour une structure publique
         if (groupChoice) groupChoice.required = true;
 
-        // hide sector bloc
-        sectorBloc.hidden = true;
+        // une structure publique choisit librement son secteur ("Fonction publique"
+        // incluse) : on affiche le bloc secteur sans forcer de valeur
+        sectorBlocClassList.remove("fr-hidden");
+        sectorBloc.hidden = false;
+        if (sector) {
+          toggleFonctionPubliqueOption(sector, true);
+          sector.setAttribute("required", "true");
+          sector.value = "";
+        }
       } else {
         // For private companies
         document.getElementById(
@@ -333,7 +343,18 @@ export default function SirenInput({
           groupChoice.value = "";
         }
         sectorBlocClassList.remove("fr-hidden");
-        sector.value = "";
+        sectorBloc.hidden = false;
+        if (sector) {
+          // une structure privée ne peut pas choisir "Fonction publique"
+          toggleFonctionPubliqueOption(sector, false);
+          sector.setAttribute("required", "true");
+          // pré-sélection du secteur depuis le mapping NAF si disponible
+          if (selection.sectorId) {
+            sector.value = selection.sectorId;
+          } else {
+            sector.value = "";
+          }
+        }
       }
     }
     if (isFaulty && formerPublicValue) {

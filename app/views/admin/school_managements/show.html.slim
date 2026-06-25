@@ -1,0 +1,52 @@
+- content_for :title, "#{@school_management.last_name} #{@school_management.first_name}"
+
+= link_to "← Retour à la recherche", admin_school_managements_path, class: "fr-link fr-mb-3w d-inline-block"
+
+h1.fr-h3
+  = "#{@school_management.last_name} #{@school_management.first_name}"
+  small.fr-text--sm.fr-ml-2w = @school_management.role.humanize
+
+p.fr-text--sm.fr-mb-4w = @school_management.email
+
+.fr-grid-row.fr-grid-row--gutters
+  .fr-col-12.fr-col-md-6
+    h2.fr-h5 Établissements associés
+
+    #primary-school
+      - if @primary_school
+        .fr-callout.fr-mb-3w
+          p.fr-callout__title Établissement principal
+          p.fr-mb-0 = @primary_school.name
+          p.fr-text--sm.fr-mb-0 = "Code UAI : #{@primary_school.code_uai}"
+
+    #extra-schools
+      = render "admin/user_schools/list",
+               school_management: @school_management,
+               extra_schools: @extra_schools
+
+  .fr-col-12.fr-col-md-6
+    h2.fr-h5 Associer un établissement
+
+    p.fr-text--sm.fr-mb-2w
+      | Nom, commune ou code UAI 
+
+    = form_with url: admin_school_management_path(@school_management),
+                method: :get,
+                data: { turbo_frame: "school-results" } do |f|
+      .fr-search-bar.fr-mb-3w role="search"
+        = f.label :school_query, "Rechercher un établissement", class: "fr-label fr-sr-only"
+        = f.text_field :school_query,
+                       value: params[:school_query],
+                       class: "fr-input",
+                       placeholder: "Nom, commune ou code UAI…",
+                       autocomplete: "off"
+        button.fr-btn.fr-btn--icon-only type="submit" title="Rechercher" aria-label="Rechercher"
+          span.fr-icon-search-line aria-hidden="true"
+
+    = turbo_frame_tag "school-results" do
+      = render "admin/school_managements/school_results",
+               school_management: @school_management,
+               schools: @schools,
+               query: @school_query
+
+#flash-admin

@@ -1,22 +1,22 @@
 namespace :db do
-  namespace :structure do
-    # heroku hack for review apps
-    task dump: [:environment, :load_config] do
-      rewrite_comment_on_extension
-    end
+  # heroku hack: strip `COMMENT ON EXTENSION` lines from structure.sql after dump,
+  # because the Heroku Postgres user is not the extension owner and the load fails.
+  # see: https://www.thinbug.com/q/44168957
+  # Also strip `SET transaction_timeout` (emitted by pg_dump 17+): the Heroku
+  # review apps run PostgreSQL 15, which rejects this parameter and aborts the load.
+  task :strip_extension_comments do
+    filename = ENV["SCHEMA"] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "structure.sql")
+    next unless File.exist?(filename)
 
-    # can't comment on extension public extension [heroku]
-    def rewrite_comment_on_extension
-      filename = ENV["SCHEMA"] || File.join(ActiveRecord::Tasks::DatabaseTasks.db_dir, "structure.sql")
+    sql = File.read(filename)
+              .each_line
+              .grep_v(/\ACOMMENT ON EXTENSION.+/)
+              .grep_v(/\ASET transaction_timeout/)
+              .join
 
-      sql = File.read(filename)
-                .each_line
-                .grep_v(/\ACOMMENT ON EXTENSION.+/) # see: https://www.thinbug.com/q/44168957
-                .join
-
-      File.write(filename, sql)
-    end
+    File.write(filename, sql)
   end
+
   namespace :seed do
     desc 'create weeks fixture file'
     task weeks: :environment do
@@ -32,4 +32,11 @@ namespace :db do
       end
     end
   end
+end
+
+# Run the strip after any dump task that writes structure.sql. Rails 8 routes
+# schema:format=:sql dumps through `db:schema:dump` (and per-db variants);
+# `db:structure:dump` is kept for back-compat.
+%w[db:schema:dump db:structure:dump].each do |task_name|
+  Rake::Task[task_name].enhance { Rake::Task["db:strip_extension_comments"].invoke } if Rake::Task.task_defined?(task_name)
 end

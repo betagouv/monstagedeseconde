@@ -14,7 +14,7 @@
         / these actions do not require a modal
         = form_with method: :patch,
                     url: action[:form_path],
-                    data: {turbo: false} do |f|
+                    data: {turbo: false, controller: "single-submit", action: "submit->single-submit#lock"} do |f|
           = f.hidden_field :transition, value: action[:transition]
           = f.submit action[:label],
                      class: "fr-btn fr-btn--#{action[:color]} fr-btn--#{action[:level]} fr-mr-2w",

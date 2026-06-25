@@ -6,6 +6,7 @@ module Abilities
       can :show, :account, :rebuild_review_job
       can :manage, School
       can :manage, Sector
+      can :manage, NafSectorMapping
       can :manage, Academy
       can :manage, AcademyRegion
       can %i[read update export unpublish publish], InternshipOffer
@@ -42,6 +43,7 @@ module Abilities
       can :manage, Operator
       can :read_employer_name, InternshipOffer
       can :manage, InappropriateOffer
+      can :manage, UserSchool
     end
   end
 end

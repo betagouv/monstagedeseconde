@@ -19,7 +19,7 @@ module Users
               :role,
               presence: true
 
-    validates_inclusion_of :accept_terms, in: ['1', true],
+    validates_inclusion_of :accept_terms, in: [ "1", true ],
                                           message: :accept_terms,
                                           on: :create
 
@@ -27,8 +27,8 @@ module Users
     has_many :students, through: :school
     has_many :teachers, through: :school
     has_many :invitations,
-             class_name: 'Invitation',
-             foreign_key: 'user_id',
+             class_name: "Invitation",
+             foreign_key: "user_id",
              inverse_of: :author,
              dependent: :destroy
     has_many :internship_applications, through: :students
@@ -39,6 +39,16 @@ module Users
     # validate :official_email_address, on: :create
 
     delegate :code_uai, to: :school, prefix: true, allow_nil: true
+
+    scope :search_by_query, lambda { |query|
+      term = "%#{query.strip}%"
+      joins("LEFT JOIN schools ON schools.id = users.school_id")
+        .where(
+          "unaccent(users.first_name) ILIKE unaccent(:term) OR unaccent(users.last_name) ILIKE unaccent(:term) " \
+          "OR users.email ILIKE :term OR schools.code_uai ILIKE :term",
+          term: term
+        )
+    }
 
     def mono_internship_agreements
       internship_agreements.merge(InternshipAgreements::MonoInternshipAgreement.all)
@@ -57,7 +67,7 @@ module Users
 
     def custom_dashboard_paths
       # TODO: fix this : url_helpers.dashboard_school_class_rooms_path(school)
-      array = school.present? ? [url_helpers.root_path] : []
+      array = school.present? ? [ url_helpers.root_path ] : []
       array << after_sign_in_path
       array
     rescue ActionController::UrlGenerationError
@@ -70,10 +80,10 @@ module Users
     end
 
     def dashboard_name
-      return 'Ma classe' if school.present? && induced_teacher?
-      return 'Mon établissement' if school.present?
+      return "Ma classe" if school.present? && induced_teacher?
+      return "Mon établissement" if school.present?
 
-      ''
+      ""
     end
 
     def custom_agreements_path
@@ -86,18 +96,20 @@ module Users
     alias presenter role_presenter
 
     def signatory_role
-      Signature.signatory_roles[:school_manager] if role == 'school_manager'
-      Signature.signatory_roles[:cpe] if role == 'cpe'
-      Signature.signatory_roles[:other] if role == 'other'
-      Signature.signatory_roles[:admin_officer] if role == 'admin_officer'
-      Signature.signatory_roles[:teacher] if role == 'teacher'
+      case role
+      when "school_manager" then Signature.signatory_roles[:school_manager]
+      when "cpe"            then Signature.signatory_roles[:cpe]
+      when "other"          then Signature.signatory_roles[:other]
+      when "admin_officer"  then Signature.signatory_roles[:admin_officer]
+      when "teacher"        then Signature.signatory_roles[:teacher]
+      end
     end
 
     def school_management? = true
-    def school_manager? = role == 'school_manager'
-    def admin_officer? = role == 'admin_officer'
-    def cpe? = role == 'cpe'
-    def teacher? = role == 'teacher'
+    def school_manager? = role == "school_manager"
+    def admin_officer? = role == "admin_officer"
+    def cpe? = role == "cpe"
+    def teacher? = role == "teacher"
 
     def school_manager
       try(:school).try(:school_manager)
@@ -126,7 +138,7 @@ module Users
       part2 = internship_agreements_query.signatures_started
                                          .joins(:signatures)
                                          .where.not(signatures: { signatory_role: :school_manager })
-      [part1, part2].compact.map(&:count).sum
+      [ part1, part2 ].compact.map(&:count).sum
     end
     alias team_pending_agreements_actions_count pending_agreements_actions_count
 
@@ -139,16 +151,10 @@ module Users
     private
 
     def create_school_profiles
-      return unless school_manager? && school.present?
+      return unless school.present? && school_management?
 
       # Créer l'association avec l'établissement actuel si elle n'existe pas
-      UserSchool.create!(user: self, school: school) unless UserSchool.exists?(user: self, school: school)
-
-      # Pour les school_managers, créer des associations avec les établissements liés
-      nil unless school_manager?
-      # Ici, vous pouvez ajouter la logique pour trouver les écoles liées
-      # Par exemple, via une table de relations entre écoles ou un service externe
-      # Pour l'instant, nous ne créons que l'association avec l'école actuelle
+      UserSchool.find_or_create_by!(user: self, school: school)
     end
 
     # validators
@@ -187,7 +193,7 @@ module Users
     end
 
     def school_caen_or_normandie?
-      school.zipcode[0..1] == '61'
+      school.zipcode[0..1] == "61"
     end
   end
 end

@@ -4,7 +4,8 @@
        data-action="input->entreprise-form#checkForm"
        data-mandatory-fields-minimum-length-value="2"
        data-ministry-fields-new-record-value="#{resource.new_record?}"
-       data-ministry-fields-is-entreprise-public-value="#{resource.try(:is_public) ? 'true' : 'false'}" ]
+       data-ministry-fields-is-entreprise-public-value="#{resource.try(:is_public) ? 'true' : 'false'}"
+       data-ministry-fields-fonction-publique-sector-id-value="#{Sector.find_by(name: 'Fonction publique')&.id}" ]
     .row
       .col-12= form.rg2a_explain_required_asterisk(p_class_name: "mb-0")
       .col-md-6.order-md-2.order-1.fr-hidden.d-md-block
@@ -23,7 +24,7 @@
               = form.hidden_field :entreprise_coordinates_latitude,  value: resource&.entreprise_coordinates&.latitude || 0
               = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
               = form.hidden_field :entreprise_coordinates, value: { latitude: latitude, longitude: longitude }
-              = form.hidden_field :internship_address_manual_enter, value: false
+              = form.hidden_field :internship_address_manual_enter, value: resource.internship_address_manual_enter || false
               = form.hidden_field :siret, value: resource&.siret || '' unless resource.persisted?
               = form.hidden_field :code_ape, value: resource&.code_ape || ''
               - if resource.id
@@ -80,38 +81,44 @@
               = form.label :'group-choice', class: 'fr-label' do
                 = "Type d’employeur public *"
 
+              - selected_group_id = resource.group.try(:id)
+              - if @duplication
+                - duplicate_id = params[:duplicate_id] || params.dig(:internship_offer, :duplicate_id)
+                - selected_group_id = InternshipOffer.find_by(id: duplicate_id)&.group&.id
+
               = form.select :group_id,
-                            options_for_select(options_for_public_groups, @duplication ? InternshipOffer.find(params[:duplicate_id]).group.try(:id) : resource.group.try(:id) ),
+                            options_for_select(options_for_public_groups, selected_group_id),
                             { prompt: 'Sélectionnez un employeur public' },
                             class: "fr-select",
                             id: "group-choice",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName',
                             :'data-action' => 'change->entreprise-form#checkForm'
-          div [class="row fr-mt-3w bloc-tooggle #{(form.object.persisted? && !form.object.is_public) ? '' : 'fr-hidden'}"
+          div [class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
                data-ministry-fields-target="sectorBlock"
                id="#{resource.class.name.split('::').first.gsub(/s\Z/, '').underscore}_sector_id-block" ]
             .col-12
               = form.label :sector_id , class: 'fr-label' do
                 = "Indiquez le secteur d'activité de votre structure *"
               = form.select :sector_id,
-                            options_from_collection_for_select(Sector.all.order(:name).where.not(name: 'Fonction publique'), :id, :name, resource&.sector&.id),
+                            options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource&.sector&.id),
                             { prompt: sectors_options_for_default },
                             class: "fr-select sector_list",
                             required: false
           - if resource.persisted? || @duplication
             div class="row fr-mt-3w"
               .col-12
+                / Une structure saisie manuellement n'a pas de SIRET : champ non requis dans ce cas
                 = render 'inputs/dsfr_input_field',
                           field: :siret,
                           f: form,
-                          label: "SIRET *",
-                          required: true,
+                          label: resource.internship_address_manual_enter ? 'SIRET' : 'SIRET *',
+                          required: !resource.internship_address_manual_enter,
                           readonly: false,
                           title: 'SIRET (14 chiffres sans espace)',
                           object: form.object,
                           value: resource.siret,
-                          pattern: '^(\d{14})$' 
+                          pattern: '^(\d{14})$'
           div class="row fr-mt-3w hide-when-manual bloc-tooggle fr-hidden"
             .col-12
               = render 'inputs/dsfr_input_field',
