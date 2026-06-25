@@ -35,7 +35,8 @@ module Users
       end
 
       user = fetch_user_by_email
-      if user&.is_a?(Users::God) && user.valid_password?(params[:user][:password]) && Rails.env.production?
+      # TODO remove Rails.env.review? after releasing the new 2FA flow to production
+      if user&.is_a?(Users::God) && user.valid_password?(params[:user][:password]) && (Rails.env.production? || Rails.env.review?)
         sign_out user if user_signed_in?
         session[TwoFactorChallengesController::PENDING_SESSION_KEY] = user.id
         redirect_to two_factor_challenge_path, notice: "Confirmez avec votre application d'authentification." and return
