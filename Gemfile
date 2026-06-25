@@ -151,10 +151,6 @@ group :test do
   gem "webdrivers"
 end
 
-group :staging do
-  gem "rest-client" # not sure still in use?
-end
-
 group :test, :development, :review do
   gem "factory_bot_rails"
   gem "ffaker"

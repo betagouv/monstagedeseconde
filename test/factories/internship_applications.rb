@@ -3,15 +3,15 @@
 FactoryBot.define do
   factory :internship_application do
     student { create(:student_with_class_room_3e) }
-    motivation { 'Suis hyper motivé' }
-    student_phone { "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '') }
+    motivation { "Suis hyper motivé" }
+    student_phone { "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(" ", "") }
     student_email { FFaker::Internet.email }
     access_token { nil }
     student_address { FFaker::AddressFR.full_address }
     student_legal_representative_full_name { FFaker::NameFR.name }
     student_legal_representative_email { FFaker::Internet.email }
     student_legal_representative_phone do
-      "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(' ', '')
+      "+330#{rand(6..7)}#{FFaker::PhoneNumberFR.mobile_phone_number[2..-1]}".gsub(" ", "")
     end
 
     trait :submitted do
@@ -20,8 +20,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: '',
-               to_state: 'submitted',
+               from_state: "",
+               to_state: "submitted",
                author: application.student)
       end
     end
@@ -32,19 +32,27 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: '',
-               to_state: 'submitted',
+               from_state: "",
+               to_state: "submitted",
                author: application.student)
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'submitted',
-               to_state: 'canceled_by_student',
+               from_state: "submitted",
+               to_state: "canceled_by_student",
                author: application.student)
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'canceled_by_student',
-               to_state: 'restored',
+               from_state: "canceled_by_student",
+               to_state: "restored",
                author: application.student)
+        application.reload
+        application.mail_action_items.each(&:destroy) # Destroy mail action items created by callbacks to avoid duplicates
+        create(:mail_action_item,
+               recipient: application.internship_offer.employer,
+               action_name: "restored_internship_application",
+               action_type: :pending_internship_application,
+               urgency_level: :medium,
+               internship_application: application)
       end
     end
 
@@ -55,8 +63,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'submitted',
-               to_state: 'read_by_employer',
+               from_state: "submitted",
+               to_state: "read_by_employer",
                author: application.internship_offer.employer)
       end
     end
@@ -68,8 +76,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'submitted',
-               to_state: 'transfered',
+               from_state: "submitted",
+               to_state: "transfered",
                author: application.internship_offer.employer)
       end
     end
@@ -81,8 +89,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'submitted',
-               to_state: 'expired',
+               from_state: "submitted",
+               to_state: "expired",
                author: application.internship_offer.employer)
       end
     end
@@ -94,8 +102,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'read_by_employer',
-               to_state: 'validated_by_employer',
+               from_state: "read_by_employer",
+               to_state: "validated_by_employer",
                author: application.internship_offer.employer)
       end
     end
@@ -107,15 +115,23 @@ FactoryBot.define do
       approved_at { 1.days.ago }
       after(:create) do |application|
         create(:internship_application_state_change,
-               internship_application: application,
-               from_state: 'validated_by_employer',
-               to_state: 'approved',
-               author: application.internship_offer.employer)
+          internship_application: application,
+          from_state: "validated_by_employer",
+          to_state: "approved",
+          author: application.internship_offer.employer)
         if application.internship_offer.from_multi?
           create(:multi_internship_agreement, internship_application: application)
         else
           create(:mono_internship_agreement, internship_application: application)
         end
+        application.reload
+        application.mail_action_items.each(&:destroy)
+        create(:mail_action_item,
+          recipient: application.internship_offer.employer,
+          action_name: "agreement_to_sign",
+          action_type: :pending_internship_agreement,
+          urgency_level: :medium,
+          internship_agreement: application.internship_agreement)
       end
     end
 
@@ -126,8 +142,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'read_by_employer',
-               to_state: 'rejected',
+               from_state: "read_by_employer",
+               to_state: "rejected",
                author: application.internship_offer.employer)
       end
     end
@@ -140,8 +156,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'approved',
-               to_state: 'canceled_by_employer',
+               from_state: "approved",
+               to_state: "canceled_by_employer",
                author: application.internship_offer.employer)
       end
     end
@@ -153,8 +169,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'approved',
-               to_state: 'canceled_by_student',
+               from_state: "approved",
+               to_state: "canceled_by_student",
                author: application.student)
       end
     end
@@ -167,8 +183,8 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'approved',
-               to_state: 'canceled_by_student_confirmation',
+               from_state: "approved",
+               to_state: "canceled_by_student_confirmation",
                author: application.student)
       end
     end
@@ -179,31 +195,31 @@ FactoryBot.define do
       after(:create) do |application|
         create(:internship_application_state_change,
                internship_application: application,
-               from_state: 'approved',
-               to_state: 'expired_by_student',
+               from_state: "approved",
+               to_state: "expired_by_student",
                author: application.student)
       end
     end
 
     trait :weekly do
       internship_offer { create(:weekly_internship_offer_2nde) }
-      weeks { [internship_offer.weeks.to_a.sample] }
+      weeks { [ internship_offer.weeks.to_a.sample ] }
     end
 
     trait :multi do
       internship_offer { create(:multi_internship_offer) }
-      weeks { [internship_offer.weeks.to_a.sample] }
+      weeks { [ internship_offer.weeks.to_a.sample ] }
     end
 
     trait :first_june_week do
       student { create(:student_with_class_room_2nde, :seconde) }
-      weeks { [SchoolTrack::Seconde.both_weeks.first] }
+      weeks { [ SchoolTrack::Seconde.both_weeks.first ] }
       internship_offer { create(:weekly_internship_offer_2nde, :week_1) }
     end
 
     trait :second_june_week do
       student { create(:student_with_class_room_2nde, :seconde) }
-      weeks { [SchoolTrack::Seconde.both_weeks.second] }
+      weeks { [ SchoolTrack::Seconde.both_weeks.second ] }
       internship_offer { create(:weekly_internship_offer, :week_2) }
     end
 
@@ -213,11 +229,11 @@ FactoryBot.define do
       internship_offer { create(:weekly_internship_offer_2nde, :both_weeks) }
     end
 
-    factory :weekly_internship_application, traits: [:weekly],
+    factory :weekly_internship_application, traits: [ :weekly ],
                                             parent: :internship_application,
-                                            class: 'InternshipApplications::WeeklyFramed'
-    factory :multi_internship_application, traits: [:multi],
+                                            class: "InternshipApplications::WeeklyFramed"
+    factory :multi_internship_application, traits: [ :multi ],
                                             parent: :internship_application,
-                                            class: 'InternshipApplications::WeeklyFramed'
+                                            class: "InternshipApplications::WeeklyFramed"
   end
 end

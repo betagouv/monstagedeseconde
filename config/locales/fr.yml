@@ -63,6 +63,9 @@ fr:
       internship_applications/weekly_framed:
         one: Candidature
         other: Candidatures
+      mail_action_item:
+        one: Info Email
+        other: Info Emails
       student_legal_representative:
         one: Représentant légal
         other: Responsables légaux
@@ -228,6 +231,24 @@ fr:
         coordinates: Coordonnées GPS
         department: Département
         internship_address_manual_enter: modalité de saisie de l'adresse
+      mail_action_item:
+        action_name: Nom de l'action
+        first_seen_at: Première vue
+        stale_at: Date d'expiration
+        last_notified_at: Dernière notification
+        resolved_at: Résolu le
+        deliveries_count: Nombre de livraisons
+        max_deliveries_count: Nombre maximum de livraisons
+        payload: Contenu
+        created_at: Créé le
+        updated_at: Mis à jour le
+        action_type: Type d'action
+        urgency_level: Niveau d'urgence
+        internship_offer_id: ID de l'offre de stage
+        internship_application_id: ID de la candidature de stage
+        internship_agreement_id: ID de l'accord de stage
+        recipient_type: Type de destinataire
+        recipient_id: ID du destinataire
       entreprise: &entreprises_fields
         siret: Siret
         is_public: Secteur public/privé
@@ -396,6 +417,10 @@ fr:
             started_by_school_manager: Votre convention est remplie, mais pas validée.
             validated: Votre convention est prête.
             signatures_started: Partiellement signée.
+            signatures_started: 
+              multi_employer: En cours de signature.
+              already_signed: Vous avez déjà signé.
+              not_signed_yet: En attente de votre signature.
             signed_by_all: Signée par toutes les parties.
       internship_agreements/multi_internship_agreement:
         status:

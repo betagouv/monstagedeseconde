@@ -12,6 +12,7 @@ class InternshipAgreement < ApplicationRecord
   include Api::AuthV2
 
   MIN_PRESENCE_DAYS = 4
+  AGREEMENT_SIGNED_BY_ALL_STALE_DAYS = 40
   EMPLOYERS_PENDING_STATES  = %i[draft started_by_employer signed_by_employer validated].freeze
   SIGNATURES_STATES = %i[validated signatures_started signed_by_all].freeze
   # index croissant = convention plus avancée (utilisé pour dé-dupliquer les candidatures)
@@ -24,6 +25,7 @@ class InternshipAgreement < ApplicationRecord
   EXPECTED_ACTION_FROM_SCHOOL_MANAGER_STATES = %i[completed_by_employer started_by_school_manager].freeze
 
   has_many :signatures, dependent: :destroy
+  has_many :mail_action_items, dependent: :nullify
   belongs_to :internship_application, optional: false
 
   validates :internship_application_id,
@@ -40,6 +42,16 @@ class InternshipAgreement < ApplicationRecord
                 :enforce_teacher_validations,
                 :skip_validations_for_system,
                 :skip_notifications_when_system_creation
+
+  # Delegations
+  delegate :employer,              to: :internship_application
+  delegate :student,               to: :internship_application
+  delegate :internship_offer,      to: :internship_application
+  delegate :employer,              to: :internship_offer
+  delegate :school,                to: :student
+  delegate :school_manager,        to: :school
+  delegate :internship_offer_area, to: :internship_offer
+  delegate :from_multi?,           to: :internship_offer
 
   # Validations
   with_options if: :enforce_employer_validations? do
@@ -104,7 +116,8 @@ class InternshipAgreement < ApplicationRecord
       transitions from: %i[draft started_by_employer],
                   to: :completed_by_employer,
                   after: proc { |*_args|
-                           notify_school_management_of_employer_completion(self)
+                           notify_school_management_with_digest_email(
+                            "internship_agreement_completed_by_employer")
                          }
     end
 
@@ -135,26 +148,24 @@ class InternshipAgreement < ApplicationRecord
                   to: :signatures_started,
                   guard: :roles_not_signed_yet_present?,
                   after: proc { |*_args|
-                    roles_not_signed_yet.present? &&
-                      !skip_notifications_when_system_creation &&
-                      notify_others_signatures_started
+                    unless skip_notifications_when_system_creation
+                      notify_others_signatures_started if roles_not_signed_yet.present?
+                      notify_employer_partial_signature if roles_not_signed_yet.include?("employer")
+                    end
                   }
       transitions from: [ :signatures_started ],
                   to: :signed_by_all,
                   guard: :roles_not_signed_yet_blank?,
                   after: proc { |*_args|
-                           notify_others_signatures_finished(self) unless skip_notifications_when_system_creation
+                           unless skip_notifications_when_system_creation
+                             notify_others_signatures_finished(self)
+                             notify_employer_with_digest_email("agreement_signed_by_all")
+                             notify_student_with_digest_email("agreement_signed_by_all")
+                             notify_school_management_with_digest_email("agreement_signed_by_all") unless school_management_representative_signed_last?
+                           end
                          }
     end
   end
-
-  delegate :student,               to: :internship_application
-  delegate :internship_offer,      to: :internship_application
-  delegate :employer,              to: :internship_offer
-  delegate :school,                to: :student
-  delegate :school_manager,        to: :school
-  delegate :internship_offer_area, to: :internship_offer
-  delegate :from_multi?,           to: :internship_offer
 
   scope :mono, -> {
     where(type: "InternshipAgreements::MonoInternshipAgreement")
@@ -279,10 +290,22 @@ class InternshipAgreement < ApplicationRecord
     nil
   end
 
+  def school_management_representative_signed_last?
+    last_signature = signatures.last
+    representative = school_management_representative
+
+    last_signature.present? && representative.present? &&
+      last_signature.signator == representative
+  end
+
   def notify_others_signatures_started
+    # employer and student are notified by digest email, exclude them here to avoid duplicate
+    recipients = missing_signatures_recipients - [ employer.email, internship_application.student.email ]
+    return if recipients.empty?
+
     GodMailer.notify_others_signatures_started_email(
       internship_agreement: self,
-      missing_signatures_recipients: missing_signatures_recipients,
+      missing_signatures_recipients: recipients,
       last_signature: signatures&.last
     ).deliver_later
   end
@@ -323,7 +346,48 @@ class InternshipAgreement < ApplicationRecord
 
   private
 
+  def common_kwargs_for_digest_email(name, **kwargs)
+    kwargs[:internship_agreement_id] ||= id
+    kwargs[:action_type] ||= name
+    if name == "agreement_signed_by_all"
+      kwargs[:stale_at] ||= AGREEMENT_SIGNED_BY_ALL_STALE_DAYS.days.from_now
+    else
+      kwargs[:stale_at] ||= internship_application.weeks&.order(:year, :number)&.last&.monday || 30.days.from_now
+    end
+    kwargs
+  end
+
+  def notify_student_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= internship_application.student
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_employer_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= internship_application.internship_offer.employer
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_school_management_with_digest_email(name, **kwargs)
+    kwargs[:recipient] ||= school&.management_representative
+    if kwargs[:recipient].nil?
+      Rails.logger.warn "-------------------"
+      Rails.logger.warn "No recipient found for school management digest email for agreement #{id}"
+      Rails.logger.warn "-------------------"
+      return
+    end
+    kwargs = common_kwargs_for_digest_email(name, **kwargs)
+    MailActionItem.create_by_name!(name, **kwargs)
+  end
+
+  def notify_employer_partial_signature
+    notify_employer_with_digest_email("agreement_to_sign")
+    notify_employer_with_digest_email("agreement_signed_by_another")
+  end
+
   def notify_signatures_enabled
+    notify_employer_with_digest_email("signatures_enabled")
     GodMailer.notify_signatures_can_start_email(
       internship_agreement: self
     ).deliver_later
@@ -338,12 +402,6 @@ class InternshipAgreement < ApplicationRecord
   def notify_others_signatures_finished(agreement)
     GodMailer.notify_others_signatures_finished_email(internship_agreement: agreement)
              .deliver_later
-  end
-
-  def notify_school_management_of_employer_completion(agreement)
-    SchoolManagerMailer.internship_agreement_completed_by_employer_email(
-      internship_agreement: agreement
-    ).deliver_later
   end
 
   rails_admin do

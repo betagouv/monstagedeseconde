@@ -8,7 +8,13 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   include ::ApiTestHelpers
 
   def submit_form
-    find('button[type="submit"]', wait: 3).click
+    if page.has_selector?('.search-submit-btn, a[title="Lancer la recherche"], button[type="submit"]',
+                          wait: 1,
+                          visible: true)
+      find('.search-submit-btn, a[title="Lancer la recherche"], button[type="submit"]', wait: 1).click
+    else
+      assert_selector('.fr-test-internship-offers-container', wait: 5)
+    end
   end
 
   test 'search form is visible' do

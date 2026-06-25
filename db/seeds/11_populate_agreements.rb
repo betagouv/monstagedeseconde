@@ -79,12 +79,32 @@ def populate_agreements
   make_agreement(seconde_approved[2], state: :validated)
 
   # -----------------------------------------------------------------------
-  # signatures_started — convention en cours de signature (aucune signature créée)
+  # signatures_started — convention en cours de signature, élève doit signer
+  # On crée le MailActionItem agreement_to_sign pour l'élève comme le ferait
+  # le vrai workflow (notify_signatures_can_start_email → handle_student_mail_action)
   # -----------------------------------------------------------------------
   # 3ème
-  make_agreement(troisieme_approved[2], state: :signatures_started)
+  ag_started_3 = make_agreement(troisieme_approved[2], state: :signatures_started)
+  if ag_started_3
+    student_started_3 = troisieme_approved[2].student
+    MailActionItem.create_by_name!(
+      "agreement_to_sign",
+      recipient:                 student_started_3,
+      internship_agreement_id:   ag_started_3.id,
+      internship_application_id: troisieme_approved[2].id
+    )
+  end
   # 2de
-  make_agreement(seconde_approved[2], state: :signatures_started)
+  ag_started_2 = make_agreement(seconde_approved[2], state: :signatures_started)
+  if ag_started_2
+    student_started_2 = seconde_approved[2].student
+    MailActionItem.create_by_name!(
+      "agreement_to_sign",
+      recipient:                 student_started_2,
+      internship_agreement_id:   ag_started_2.id,
+      internship_application_id: seconde_approved[2].id
+    )
+  end
 
   # -----------------------------------------------------------------------
   # signed_by_all — élève et représentant légal ont signé

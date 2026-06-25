@@ -17,55 +17,77 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "scope remindable" do
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 5.days.ago,
-           pending_reminder_sent_at: 5.days.ago)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 10.days.ago,
-           pending_reminder_sent_at: 10.days.ago) # +1
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 18.days.ago,
-           pending_reminder_sent_at: 18.days.ago)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 3.days.ago,
-           pending_reminder_sent_at: nil)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 8.days.ago,
-           pending_reminder_sent_at: 2.days.ago)
-    create(:weekly_internship_application, :submitted,
-           submitted_at: 8.days.ago,
-           pending_reminder_sent_at: nil) # +1
-    create(:weekly_internship_application, submitted_at: 15.days.ago,
-                                           pending_reminder_sent_at: nil) # +1
-    create(:weekly_internship_application, :approved,
-           approved_at: 10.days.ago,
-           pending_reminder_sent_at: 10.days.ago)
-    assert_equal 3, InternshipApplication.remindable.count
+    travel_to Time.zone.local(2024, 1, 1) do
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 5.days.ago,
+            pending_reminder_sent_at: 5.days.ago)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 10.days.ago,
+            pending_reminder_sent_at: 10.days.ago) # +1
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 18.days.ago,
+            pending_reminder_sent_at: 18.days.ago)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 3.days.ago,
+            pending_reminder_sent_at: nil)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 8.days.ago,
+            pending_reminder_sent_at: 2.days.ago)
+      create(:weekly_internship_application, :submitted,
+            submitted_at: 8.days.ago,
+            pending_reminder_sent_at: nil) # +1
+      create(:weekly_internship_application, submitted_at: 15.days.ago,
+                                            pending_reminder_sent_at: nil) # +1
+      create(:weekly_internship_application, :approved,
+            approved_at: 10.days.ago,
+            pending_reminder_sent_at: 10.days.ago)
+      assert_equal 3, InternshipApplication.remindable.count
+    end
   end
 
-  test "creating a new internship application sets submitted_at and sends email to employer" do
-    freeze_time do
+  test "creating a new internship application sets submitted_at" do
+    travel_to Time.zone.local(2024, 1, 1) do
       assert_changes -> { InternshipApplication.count }, from: 0, to: 1 do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-
-        EmployerMailer.stub :internship_application_submitted_email, mock_mail do
-          internship_application = create(:weekly_internship_application)
+        assert_changes -> { MailActionItem.count }, from: 0, to: 1 do
+          create(:weekly_internship_application, :submitted, submitted_at: nil)
         end
 
-        assert_equal Time.now.utc, InternshipApplication.last.submitted_at
-        mock_mail.verify
+        assert_equal Time.current.utc, InternshipApplication.last.submitted_at
       end
     end
   end
 
-  test "transition from submited to validated_by_employer updates its flag" do
-    internship_application = create(:weekly_internship_application, :submitted)
+  test "cancel_by_student_confirmation creates a high-urgency mail action item when employer is aware of the application" do
+    internship_application = create(:weekly_internship_application, :read_by_employer)
+    student = internship_application.student
 
-    freeze_time do
+    assert_difference -> {
+      internship_application.mail_action_items.where(action_name: "cancel_by_student_confirmation").count
+    }, 1 do
+      internship_application.cancel_by_student_confirmation!(student)
+    end
+
+    item = internship_application.mail_action_items.find_by!(action_name: "cancel_by_student_confirmation")
+    assert_equal "high", item.urgency_level
+    assert_nil item.resolved_at
+  end
+
+  test "cancel_by_student_confirmation does not create a mail action item when employer was never aware of the application" do
+    internship_application = create(:weekly_internship_application, :submitted)
+    student = internship_application.student
+
+    assert_no_difference -> { MailActionItem.where(action_name: "cancel_by_student_confirmation").count } do
+      internship_application.cancel_by_student_confirmation!(student)
+    end
+  end
+
+  test "transition from submited to validated_by_employer updates its flag" do
+    travel_to Time.zone.local(2024, 1, 1) do
+      internship_application = create(:weekly_internship_application, :submitted)
+
       assert_changes -> { internship_application.reload.validated_by_employer_at },
-                     from: nil,
-                     to: Time.now.utc do
+                    from: nil,
+                    to: Time.current.utc do
         internship_application.stub :after_employer_validation_notifications, nil do
           internship_application.employer_validate!
         end
@@ -74,24 +96,23 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "transition from submited to validated_by_employer sends email to teacher and student" do
-    internship_application = create(:weekly_internship_application, :submitted)
-    create(
-      :teacher,
-      class_room: internship_application.student.class_room,
-      school: internship_application.student.school
-    )
-    mock_mail_to_teacher = Minitest::Mock.new
-    mock_mail_to_teacher.expect(:deliver_later, true, [], wait: 1.second)
-    mock_mail_to_student = Minitest::Mock.new
-    mock_mail_to_student.expect(:deliver_later, true, [], wait: 1.second)
+    travel_to Time.zone.local(2024, 1, 1) do
+      internship_application = create(:weekly_internship_application, :submitted)
+      create(
+        :teacher,
+        class_room: internship_application.student.class_room,
+        school: internship_application.student.school
+      )
+      mock_mail_to_teacher = Minitest::Mock.new
+      mock_mail_to_teacher.expect(:deliver_later, true, [], wait: 1.second)
 
-    TeacherMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_teacher do
-      StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_student do
-        internship_application.employer_validate!
+      TeacherMailer.stub :internship_application_validated_by_employer_email, mock_mail_to_teacher do
+        assert_difference "MailActionItem.count", 1 do
+          internship_application.employer_validate!
+        end
       end
-      mock_mail_to_student.verify
+      mock_mail_to_teacher.verify
     end
-    mock_mail_to_teacher.verify
   end
 
   test "transition from validated_by_employer to approved updates its flag" do
@@ -200,14 +221,10 @@ class InternshipApplicationTest < ActiveSupport::TestCase
 
     internship_application = create(:weekly_internship_application, :validated_by_employer, student:)
 
-    mock_mail_to_employer = Minitest::Mock.new
-    mock_mail_to_employer.expect(:deliver_later, true)
-
-    EmployerMailer.stub(:internship_application_approved_with_agreement_email,
-                        mock_mail_to_employer) do
+    assert_difference "MailActionItem.count", 1 do
       internship_application.approve!
     end
-    mock_mail_to_employer.verify
+    assert_equal "new_agreement_to_fill_in", MailActionItem.last.action_name
   end
 
   test "transition from submited to approved sends an email to school_manager when no agreement is possible" do
@@ -275,17 +292,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "transition from submited to rejected send rejected email to student" do
-    internship_application = create(:weekly_internship_application, :submitted)
-    freeze_time do
+    travel_to Time.zone.local(2024, 1, 1) do
+      internship_application = create(:weekly_internship_application, :submitted)
       assert_changes -> { internship_application.reload.rejected_at },
-                     from: nil,
-                     to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-        StudentMailer.stub :internship_application_rejected_email, mock_mail do
+                    from: nil,
+                    to: Time.current.utc do
+        assert_difference "MailActionItem.count", 1 do
           internship_application.reject!
         end
-        mock_mail.verify
       end
     end
   end
@@ -296,12 +310,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       assert_changes -> { internship_application.reload.validated_by_employer_at },
                      from: nil,
                      to: Time.now.utc do
-        mock_mail = Minitest::Mock.new
-        mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-        StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
+        assert_difference "MailActionItem.count", 1 do
           internship_application.employer_validate!
         end
-        mock_mail.verify
       end
     end
   end
@@ -329,19 +340,17 @@ class InternshipApplicationTest < ActiveSupport::TestCase
        "aasm_state from approved to rejected" do
     internship_application = create(:weekly_internship_application, :approved)
     assert_changes -> { internship_application.reload.aasm_state },
-                   from: "approved",
-                   to: "canceled_by_employer" do
+                  from: "approved",
+                  to: "canceled_by_employer" do
       freeze_time do
         assert_changes -> { internship_application.reload.canceled_at },
-                       from: nil,
-                       to: Time.now.utc do
-          mock_mail = Minitest::Mock.new
-          mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-          StudentMailer.stub :internship_application_canceled_by_employer_email,
-                             mock_mail do
+                      from: nil,
+                      to: Time.now.utc do
+          assert_difference "MailActionItem.count", 1 do
             internship_application.cancel_by_employer!
           end
-          mock_mail.verify
+          assert_equal "canceled_internship_application_by_employer",
+                       MailActionItem.last.action_name
         end
       end
     end
@@ -377,16 +386,14 @@ class InternshipApplicationTest < ActiveSupport::TestCase
   end
 
   test "#after_employer_validation_notifications when student registered by email" do
-    student = create(:student)
-    internship_application = create(:weekly_internship_application, student:)
+    travel_to Time.zone.local(2024, 1, 1) do
+      student = create(:student)
+      internship_application = create(:weekly_internship_application, student:)
 
-    mock_mail = Minitest::Mock.new
-    mock_mail.expect(:deliver_later, true, [], wait: 1.second)
-
-    StudentMailer.stub :internship_application_validated_by_employer_email, mock_mail do
-      internship_application.send(:after_employer_validation_notifications)
+      assert_difference "MailActionItem.count", 1 do
+        internship_application.after_employer_validation_notifications
+      end
     end
-    mock_mail.verify
   end
 
   test "#should_notify_employer_like?" do
@@ -568,6 +575,60 @@ class InternshipApplicationTest < ActiveSupport::TestCase
     internship_application = create(:weekly_internship_application, :restored)
     assert_equal "restored", internship_application.aasm_state
     assert internship_application.has_ever_been?(%i[submitted canceled_by_student])
+  end
+
+  test "resolver cleans up canceled_internship_application_by_student when application is restored, leaving other applications untouched" do
+    employer = create(:employer)
+    other_employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    other_offer = create(:weekly_internship_offer_2nde, employer: other_employer)
+
+    internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+    other_application = create(:weekly_internship_application, :submitted, internship_offer: other_offer)
+
+    internship_application.cancel_by_student!
+    other_application.cancel_by_student!
+
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    internship_application.restore!
+
+    # after restore the item is still present — resolver handles the cleanup before digest delivery
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+
+    assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+  end
+
+  test "restoring a canceled application removes only its own canceled_internship_application_by_student mail_action_item" do
+    employer = create(:employer)
+    other_employer = create(:employer)
+    internship_offer = create(:weekly_internship_offer_2nde, employer:)
+    other_offer = create(:weekly_internship_offer_2nde, employer: other_employer)
+
+    internship_application = create(:weekly_internship_application, :submitted, internship_offer:)
+    other_application = create(:weekly_internship_application, :submitted, internship_offer: other_offer)
+
+    internship_application.cancel_by_student!
+    other_application.cancel_by_student!
+
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    internship_application.restore!
+
+    # after restore, the canceled item still exists — resolver is responsible for cleanup
+    assert_not_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+
+    # resolver marks as resolved any canceled_internship_application_by_student item
+    # whose application is no longer canceled_by_student, scoped to employer —
+    # other_employer's item is untouched
+    Services::EmployerActions::Resolver.call(user_id: employer.id, urgency_levels: %w[low medium high])
+    assert_nil internship_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
+    assert_not_nil other_application.mail_action_items.find_by(action_name: "canceled_internship_application_by_student")
   end
 
   test "student_email_not_taken validation rejects email already used by another user" do
@@ -836,9 +897,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       conflicting_offer = create(:weekly_internship_offer_2nde, :week_1)
       expired_offer = create(:weekly_internship_offer_2nde, :week_1)
       create(:weekly_internship_application, :approved,
-             student:, internship_offer: conflicting_offer, weeks: [week])
+             student:, internship_offer: conflicting_offer, weeks: [ week ])
       expired_application = create(:weekly_internship_application, :expired,
-                                   student:, internship_offer: expired_offer, weeks: [week])
+                                   student:, internship_offer: expired_offer, weeks: [ week ])
 
       assert_equal :conflicting, expired_application.re_approval_blocked_reason
       refute expired_application.is_re_approvable?
@@ -854,9 +915,9 @@ class InternshipApplicationTest < ActiveSupport::TestCase
       approved_offer = create(:weekly_internship_offer_2nde, :week_1)
       expired_offer = create(:weekly_internship_offer_2nde, :week_2)
       create(:weekly_internship_application, :approved,
-             student:, internship_offer: approved_offer, weeks: [week_1])
+             student:, internship_offer: approved_offer, weeks: [ week_1 ])
       expired_application = create(:weekly_internship_application, :expired,
-                                   student:, internship_offer: expired_offer, weeks: [week_2])
+                                   student:, internship_offer: expired_offer, weeks: [ week_2 ])
 
       assert_nil expired_application.re_approval_blocked_reason
       assert expired_application.is_re_approvable?

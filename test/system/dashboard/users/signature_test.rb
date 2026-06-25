@@ -32,7 +32,7 @@ module Dashboard
         internship_agreement_2 = InternshipAgreement.last
         internship_agreement_2.complete!
         internship_agreement_2.finalize!
-        travel_to(weeks[0].week_date - 1.week) do
+        travel_to(internship_offer.weeks.first.week_date - 1.week) do
           sign_in(employer)
 
           visit dashboard_internship_agreements_path
@@ -118,7 +118,7 @@ module Dashboard
         internship_agreement_2 = InternshipAgreement.last
         internship_agreement_2.complete!
         internship_agreement_2.finalize!
-        travel_to(weeks[0].week_date - 1.week) do
+        travel_to(internship_offer.weeks.first.week_date - 1.week) do
           sign_in(employer)
 
           visit dashboard_internship_agreements_path
@@ -321,6 +321,79 @@ module Dashboard
 
         all('a.fr-btn--secondary.button-component-cta-button')[0].click # Télécharger
       end
+    end
+
+    test 'school_manager signs last and is not double-notified (digest scenario E)' do
+      internship_agreement = create(:mono_internship_agreement, :signatures_started)
+      school_manager = internship_agreement.school_manager
+      employer = internship_agreement.employer
+      student = internship_agreement.student
+
+      create(:signature, :employer, internship_agreement:, user_id: employer.id)
+      create(:signature, :student, internship_agreement:, user_id: student.id)
+      create(:signature, :student_legal_representative, internship_agreement:, user_id: student.id)
+
+      assert_equal [ "school_manager" ], internship_agreement.reload.roles_not_signed_yet
+
+      weeks = [ Week.find_by(number: 5, year: 2025), Week.find_by(number: 6, year: 2025) ]
+      travel_to(weeks[0].week_date - 1.week) do
+        sign_in(school_manager)
+
+        visit dashboard_internship_agreements_path
+
+        find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
+        click_button('Signer')
+
+        find('p', text: 'Vous vous apprêtez à signer en ligne ces conventions de stage. Votre signature manuscrite sera ajoutée.')
+
+        assert_difference -> { Signature.count }, 1 do
+          click_button('Confirmer')
+          assert_text "Les conventions ont été signées."
+        end
+
+        assert internship_agreement.reload.signed_by_all?
+
+        # le chef d'établissement vient de signer en dernier : aucun mail
+        # direct "signée par tous" et aucune entrée de digest pour lui
+        refute ActionMailer::Base.deliveries.any? { |mail| mail.to.include?(school_manager.email) }
+        refute MailActionItem.exists?(
+          action_name: "agreement_signed_by_all",
+          internship_agreement_id: internship_agreement.id,
+          recipient: school_manager
+        )
+      end
+    end
+
+    test "employer completes agreement for a school without management representative (digest scenario F)" do
+      student = create(:student, school: create(:school))
+      internship_application = create(:weekly_internship_application, student:)
+      internship_agreement = create(:mono_internship_agreement,
+                                     internship_application:,
+                                     aasm_state: :started_by_employer)
+      employer = internship_agreement.employer
+      school = internship_agreement.student.school
+      refute school.management_representative.present?
+
+      sign_in(employer)
+      visit dashboard_internship_agreements_path
+
+      find("a.button-component-cta-button", text: "Valider ma convention").click
+      find("input[name='internship_agreements_mono_internship_agreement[employer_name]']").set("Corporation 42")
+      find("input[name='internship_agreements_mono_internship_agreement[organisation_representative_role]']").set("CEO")
+      find("input[name='internship_agreements_mono_internship_agreement[entreprise_address]']").set("1 rue Jules Charpentier 37000 Tours")
+      find("input[name='internship_agreements_mono_internship_agreement[internship_address]']").set("1 rue Jules Charpentier 37000 Tours")
+      select("08:00", from: "internship_agreements_mono_internship_agreement_weekly_hours_start")
+      select("16:00", from: "internship_agreements_mono_internship_agreement_weekly_hours_end")
+      fill_in("Pause déjeuner", with: "un repas à la cantine d'entreprise")
+      click_button("Valider la convention")
+      find("button[data-action='click->internship-agreement-form#completeByEmployer']", text: "Valider la convention").click
+      find("span#alert-text", text: "La convention a été envoyée au chef d'établissement.")
+
+      assert internship_agreement.reload.completed_by_employer?
+      refute MailActionItem.exists?(
+        action_name: "internship_agreement_completed_by_employer",
+        internship_agreement_id: internship_agreement.id
+      )
     end
 
     test 'school_manager multi_agreements, multiple signs and everything is ok' do

@@ -59,7 +59,6 @@ module Abilities
 
       can %i[read
            show
-           update
            sign
            student_sign
            legal_representative_sign

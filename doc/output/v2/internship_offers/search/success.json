@@ -12,11 +12,11 @@
   },
   "internshipOffers": [
     {
-      "id": 221,
-      "title": "Stage de 2de - 1",
+      "id": 44,
+      "title": "Stage de 2de - 11",
       "description": "Lorem ipsum dolor weekly_internship_offer",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/221?page=2&utm_source=operator-2",
+      "url": "http://www.example.com/offres-de-stage/44?page=2&utm_source=operator-5",
       "city": "Paris",
       "zipcode": "75001",
       "street": "1 rue du poulet",
@@ -24,8 +24,8 @@
       "date_end": "20 juin 2025",
       "latitude": 48.866667,
       "longitude": 2.333333,
-      "image": "http://www.example.com/packs-test/media/images/sectors/administration-49ea51db7c3dd280abaa1839e28b1039.svg",
-      "sector": "Fonction publique",
+      "image": "http://www.example.com/packs-test/media/images/sectors/default_sector-e1b60d1832d3ebc2a8ccff663f1a8dd8.svg",
+      "sector": "secteur-26",
       "handicap_accessible": false,
       "period": 0,
       "weeks": "du 16/06/2025 au 20/06/2025",
@@ -36,9 +36,7 @@
       "grades": [
         "seconde"
       ],
-      "permalink": null,
-      "rep": false,
-      "qpv": false
+      "permalink": null
     }
   ]
 }

@@ -1,0 +1,287 @@
+p style=head_styles
+	| Résumé de vos actions en attente
+
+p style=p_cyclop_styles({color: '#000000'})
+	= "Bonjour #{@user.presenter.formal_name},"
+p style=p_cyclop_styles({color: '#000000'})
+	= "Vous avez de nouvelles actions à effectuer sur la plateforme 1Elève1stage."
+
+/ ─── Nouvelles candidatures (accept / refuse) ──────────────────────────────
+- if @pending_application_rows.any?
+	p style=h3_cyclop_styles
+		| Nouvelles candidatures à traiter :
+
+	- @pending_application_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td colspan="2" style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px; width: 50%; vertical-align: top;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Age :
+							= " #{row[:age]}"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Semaine(s) :
+							= " #{row[:weeks]}"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Expire le :
+							= " #{row[:expiry_date] || 'N/A'}"
+						- if row[:motivation].present?
+							p style="margin: 0 0 6px 0;"
+								strong
+									| Motivation :
+								= " #{row[:motivation]&.truncate(70)}"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px; width: 50%; vertical-align: top;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Etablissement :
+							= " #{row[:school_name]} (#{row[:school_city]})"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Email :
+							= " #{row[:student_email]}"
+						p style="margin: 0;"
+							strong
+								| Téléphone :
+							= " #{row[:student_phone]}"
+				tr style="background-color: #ffffff;"
+					td colspan="2" style="padding: 10px 12px; text-align: right;"
+						a href=row[:application_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Ouvrir la candidature
+
+/ ─── Annulations par l'élève ───────────────────────────────────────────────
+- if @canceled_by_student_rows&.any?
+	p style=h3_cyclop_styles
+		| Candidatures annulées par l'élève :
+
+	- @canceled_by_student_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #6a6a6a;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_formal_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Stage :
+							= " #{row[:offer_title]}"
+						- if row[:cancellation_message].present?
+							p style="margin: 0; color: #444444; font-size: 13px;"
+								strong
+									| Motif :
+								= " #{row[:cancellation_message]}"
+
+/ ─── Candidatures restaurées ───────────────────────────────────────────────
+- if @restored_application_rows&.any?
+	p style=h3_cyclop_styles
+		| Candidatures restaurées :
+
+	- @restored_application_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #009099;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_formal_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Stage :
+							= " #{row[:offer_title]}"
+						- if row[:restoration_message].present?
+							p style="margin: 0; color: #444444; font-size: 13px;"
+								strong
+									| Motif :
+								= " #{row[:restoration_message]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:application_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la candidature
+
+/ ─── Élève a choisi un autre stage ─────────────────────────────────────────
+- if @chose_another_internship_rows&.any?
+	p style=h3_cyclop_styles
+		| Élèves ayant choisi un autre stage :
+
+	- @chose_another_internship_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #e1000f;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0;"
+							= "#{row[:student_full_name]} a confirmé sa présence pour un autre stage (#{row[:offer_title]})."
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:manage_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Gérer mes candidatures
+
+/ ─── Candidatures transférées ──────────────────────────────────────────────
+- if @internship_application_transfered_rows&.any?
+	p style=h3_cyclop_styles
+		| Candidatures transférées :
+
+	- @internship_application_transfered_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0;"
+							strong
+								| Stage :
+							= " #{row[:offer_title]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:application_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la candidature
+
+/ ─── Conventions à signer ──────────────────────────────────────────────────
+- if @agreement_to_sign_rows&.any?
+	p style=h3_cyclop_styles
+		| Conventions de stage à signer :
+
+	- @agreement_to_sign_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0;"
+							strong
+								| Stage :
+							= " #{row[:offer_title]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:agreement_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la convention
+
+/ ─── Conventions à remplir ─────────────────────────────────────────────────
+- if @agreement_to_fill_in_rows&.any?
+	p style=h3_cyclop_styles
+		| Conventions de stage à compléter :
+
+	- @agreement_to_fill_in_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0;"
+							strong
+								| Stage :
+							= " #{row[:offer_title]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:agreement_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Remplir la convention
+
+/ ─── Signatures activées ───────────────────────────────────────────────────
+- if @signatures_enabled_rows&.any?
+	p style=h3_cyclop_styles
+		| Conventions prêtes à être signées :
+
+	- @signatures_enabled_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Etablissement :
+							= " #{row[:school_name]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:agreement_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la convention
+
+/ ─── Conventions signées par toutes les parties ────────────────────────────
+- if @agreement_signed_by_all_rows&.any?
+	p style=h3_cyclop_styles
+		| Conventions signées par toutes les parties :
+
+	- @agreement_signed_by_all_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #000091;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Etablissement :
+							= " #{row[:school_name]}"
+				tr style="background-color: #ffffff;"
+					td style="padding: 10px 12px; text-align: right;"
+						a href=row[:agreement_url] style="background-color: #000091; color: #ffffff; padding: 8px 16px; text-decoration: none; font-size: 14px;"
+							| Voir la convention
+
+/ ─── Convention signée par un autre élève ──────────────────────────────────
+- if @agreement_signed_by_another_rows&.any?
+	p style=h3_cyclop_styles
+		| Conventions signées par un tiers :
+
+	- @agreement_signed_by_another_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #6a6a6a;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:student_full_name]}"
+				tr style="background-color: #f6f8fd;"
+					td style="color: #000091; font-size: 14px; padding: 10px 12px;"
+						p style="margin: 0 0 6px 0;"
+							strong
+								| Stage :
+							= " #{row[:offer_title]}"
+						p style="margin: 0;"
+							strong
+								| Etablissement :
+							= " #{row[:school_name]}"
+
+/ ─── Offres dépubliées ─────────────────────────────────────────────────────
+- if @internship_offer_unpublished_rows&.any?
+	p style=h3_cyclop_styles
+		| Offres dépubliées :
+
+	- @internship_offer_unpublished_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #6a6a6a;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:offer_title]}"
+
+/ ─── Offres supprimées ──────────────────────────────────────────────────────
+- if @internship_offer_removed_rows&.any?
+	p style=h3_cyclop_styles
+		| Offres supprimées :
+
+	- @internship_offer_removed_rows.each_with_index do |row, index|
+		table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px; border: 1px solid #dddddd;"
+			tbody
+				tr style="background-color: #e1000f;"
+					td style="padding: 8px 12px; color: #ffffff; font-size: 16px; font-weight: bold;"
+						= "#{index + 1}. #{row[:offer_title]}"
+
+p style=p_cyclop_styles
+	| À bientôt,
+p style=p_cyclop_styles
+	| L'équipe 1élève1stage
+

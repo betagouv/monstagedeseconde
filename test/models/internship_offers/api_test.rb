@@ -20,7 +20,7 @@ module InternshipOffers
           sector: create(:sector),
           permalink: 'https://google.fr',
           grades: [Grade.seconde],
-          weeks: Week.selectable_from_now_until_end_of_school_year
+          weeks: Week.selectable_from_now_until_end_of_school_year.presence || [Week.current]
         }
       end
     end

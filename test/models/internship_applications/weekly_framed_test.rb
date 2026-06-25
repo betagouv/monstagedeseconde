@@ -174,12 +174,12 @@ module InternshipApplications
       end
     end
 
-    test 'expired applications notify student with one job enqueued' do
+    test 'expired applications notify student with one mail action item enqueued' do
       student = create(:student, phone: '+330611223344')
       internship_offer = create(:weekly_internship_offer_2nde)
       internship_application = create(:weekly_internship_application, :submitted, student:,
                                                                                   internship_offer:)
-      assert_enqueued_jobs 1 do
+      assert_difference "MailActionItem.count", 1 do
         internship_application.expire!
       end
     end
@@ -190,8 +190,8 @@ module InternshipApplications
       internship_application = create(:weekly_internship_application, :submitted, student:,
                                                                                   internship_offer:)
       internship_application.weeks.destroy_all
-      
-      assert_enqueued_jobs 1 do
+
+      assert_difference "MailActionItem.count", 1 do
         internship_application.expire!
       end
     end

@@ -1,20 +1,20 @@
 {
   "title": "title",
   "description": "description",
-  "employer_name": "Ministere",
-  "employer_description": "employer_description",
+  "max_candidates": 1,
   "employer_website": "http://employer_website.com",
-  "street": "Rue de Grenelle",
+  "street": "N/A",
   "zipcode": "75007",
   "city": "Paris",
+  "is_public": false,
+  "employer_name": "Ministere",
+  "employer_description": "employer_description",
   "remote_id": "remote_id",
   "permalink": "http://monsite.com",
-  "max_candidates": 1,
   "published_at": "2024-03-01T00:00:00.000+01:00",
-  "is_public": false,
   "formatted_coordinates": {
-    "latitude": 48.8566383,
-    "longitude": 2.3211761
+    "latitude": 90.0,
+    "longitude": 14.0
   },
   "weeks": [
     "2024-W25",

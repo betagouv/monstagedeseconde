@@ -4,15 +4,15 @@ module Layoutable
   extend ActiveSupport::Concern
 
   included do
-    layout 'dsfr_mailer'
+    layout "dsfr_mailer"
 
     # email attachements for inline image
     before_action :set_logo_attachment
     def set_logo_attachment
-      attachments.inline['logo-education-nationale.png'] =
+      attachments.inline["logo-education-nationale.png"] =
         File.read("#{Rails.root}/public/assets/emails/logo-education-nationale.png")
-      attachments.inline['header-email.png'] = File.read("#{Rails.root}/public/assets/emails/header-email.png")
-      attachments.inline['footer-email.png'] = File.read("#{Rails.root}/public/assets/emails/footer-email.png")
+      attachments.inline["header-email.png"] = File.read("#{Rails.root}/public/assets/emails/header-email.png")
+      attachments.inline["footer-email.png"] = File.read("#{Rails.root}/public/assets/emails/footer-email.png")
       # attachments.inline['rf.png'] = File.read("#{Rails.root}/public/assets/rf.png")
     end
 
@@ -23,105 +23,121 @@ module Layoutable
                   :head_styles,
                   :span_bold,
                   :p_cyclop_styles,
+                  :h3_cyclop_styles,
                   :head_cyclop_styles,
                   :hint_styles,
                   :tr_air_style
 
     def font_family
-      '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji'
+      "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji"
     end
 
     def head_styles(options = {})
       hash = {
-        'font-family' => font_family,
-        'font-size' => '24px',
-        'font-weight' => 'bold',
-        'margin' => '0',
-        'margin-bottom' => '15px;'
+        "font-family" => font_family,
+        "font-size" => "24px",
+        "font-weight" => "bold",
+        "margin" => "0",
+        "margin-bottom" => "15px;"
       }
       joiner(hash, options)
     end
 
     def p_styles(options = {})
       hash = {
-        'font-family' => font_family,
-        'font-size' => '15px',
-        'font-weight' => 'normal',
-        'margin' => '0',
-        'margin-bottom' => '15px;'
+        "font-family" => font_family,
+        "font-size" => "15px",
+        "font-weight" => "normal",
+        "margin" => "0",
+        "margin-bottom" => "15px;"
       }
       joiner(hash, options)
     end
 
     def p_styles_italic(options = {})
       {
-        'font-family' => font_family,
-        'font-size' => '15px',
-        'font-weight' => 'normal',
-        'font-style' => 'italic ',
-        'padding-left' => '25px',
-        'margin' => '0',
-        'margin-bottom' => '15px;'
+        "font-family" => font_family,
+        "font-size" => "15px",
+        "font-weight" => "normal",
+        "font-style" => "italic ",
+        "padding-left" => "25px",
+        "margin" => "0",
+        "margin-bottom" => "15px;"
       }.merge(options)
         .map { |k, v| "#{k}:#{v}" }
-        .join(';')
+        .join(";")
     end
 
     def hint_styles(options = {})
       {
-        'font-family' => '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji',
-        'font-size' => '11px',
-        'font-weight' => 'lighter',
-        'margin' => '0',
-        'margin-bottom' => '15px;'
+        "font-family" => "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
+        "font-size" => "11px",
+        "font-weight" => "lighter",
+        "margin" => "0",
+        "margin-bottom" => "15px;"
       }.merge(options)
         .map { |k, v| "#{k}:#{v}" }
-        .join(';')
+        .join(";")
     end
 
     def span_bold(options = {})
       hash = {
-        'font-family' => font_family,
-        'font-size' => '15px',
-        'font-weight' => 'bolder'
+        "font-family" => font_family,
+        "font-size" => "15px",
+        "font-weight" => "bolder"
       }
       joiner(hash, options)
     end
 
     def p_cyclop_styles(options = {})
       hash = {
-        'font-family' => font_family,
-        'font-size' => '17px',
-        'font-weight' => '400',
-        'line-height' => '20px',
-        'letter-spacing' => '0em',
-        'text-align' => 'left',
-        'margin' => '0',
-        'margin-bottom' => '15px;'
+        "font-family" => font_family,
+        "font-size" => "17px",
+        "font-weight" => "400",
+        "line-height" => "20px",
+        "letter-spacing" => "0em",
+        "text-align" => "left",
+        "margin" => "0",
+        "margin-bottom" => "15px;"
+      }
+      joiner(hash, options)
+    end
+
+    def h3_cyclop_styles(options = {})
+      hash = {
+        "font-family" => font_family,
+        "font-size" => "20px",
+        "font-weight" => "800",
+        "line-height" => "20px",
+        "letter-spacing" => "0em",
+        "text-align" => "left",
+        "margin" => "0",
+        "margin-top" => "10px",
+        "margin-bottom" => "20px;"
       }
       joiner(hash, options)
     end
 
     def head_cyclop_styles(options = {})
       hash = {
-        'font-family' => font_family,
-        'font-size' => '28px',
-        'font-weight' => 'bold',
-        'margin' => '0',
-        'color' => '#000091',
-        'margin-bottom' => '15px;'
+        "font-family" => font_family,
+        "font-size" => "28px",
+        "font-weight" => "bold",
+        "margin" => "0",
+        "color" => "#000091",
+        "margin-bottom" => "15px;"
       }
       joiner(hash, options)
     end
 
     def tr_air_style(options = {})
       hash = {
-        'font-family' => font_family,
-        'font-size' => '15px',
-        'font-weight' => 'normal',
-        'margin' => '0',
-        'line-height' => '30px;',
-        'vertical-align' => 'bottom;'
+        "font-family" => font_family,
+        "font-size" => "15px",
+        "font-weight" => "normal",
+        "margin" => "0",
+        "line-height" => "30px;",
+        "vertical-align" => "bottom;"
       }
       joiner(hash, options)
     end
@@ -129,7 +145,7 @@ module Layoutable
     def joiner(hash, options)
       hash.merge(options)
           .map { |k, v| "#{k}:#{v}" }
-          .join(';')
+          .join(";")
     end
   end
 end
