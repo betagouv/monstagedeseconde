@@ -34,15 +34,11 @@ module Users
                     notice: "Vous n'avez pas les permissions nécessaires pour accéder à cette page" and return
       end
 
-      # 2FA Magic link pour les admins
       user = fetch_user_by_email
       if user&.is_a?(Users::God) && user.valid_password?(params[:user][:password]) && Rails.env.production?
         sign_out user if user_signed_in?
-        jti = SecureRandom.uuid
-        token = JwtAuth.encode({ user_id: user.id, jti: jti }, MagicLinkToken::TTL.from_now)
-        MagicLinkToken.register(jti)
-        GodMailer.magic_link_login(user, token).deliver_now
-        redirect_to root_path, notice: "Un lien de connexion a été envoyé à votre adresse email." and return
+        session[TwoFactorChallengesController::PENDING_SESSION_KEY] = user.id
+        redirect_to two_factor_challenge_path, notice: "Confirmez avec votre application d'authentification." and return
       end
 
       if by_phone? && fetch_user_by_phone.try(:valid_password?, params[:user][:password])
