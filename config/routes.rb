@@ -36,9 +36,9 @@ Rails.application.routes.draw do
       # letter_thief : emails sortants interceptés (remplace Mailtrap en review).
       # Réservé aux comptes god car ils contiennent des données personnelles.
       mount LetterThief::Engine => "/letter_thief" if Rails.env.review?
+      mount RailsAdmin::Engine => "/admin", as: "rails_admin"
     end
 
-    mount RailsAdmin::Engine => "/admin", as: "rails_admin"
     mount ActionCable.server => "/cable"
 
     devise_for :users, path: "utilisateurs", path_names: {
