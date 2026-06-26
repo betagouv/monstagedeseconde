@@ -2,8 +2,9 @@
 
 module Dashboard
   module Students
-    class InternshipApplicationsController < ApplicationController
+    class InternshipApplicationsController < Dashboard::BaseController
       include ApplicationTransitable
+      skip_before_action :authenticate_user!
       before_action :authenticate_user!, except: %i[show]
       before_action :set_current_student
       before_action :set_internship_application, except: %i[index]
