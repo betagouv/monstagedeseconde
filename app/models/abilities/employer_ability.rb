@@ -44,6 +44,7 @@ module Abilities
       can %i[update], InternshipOffer do |internship_offer|
         internship_offer.employer_id.in?(user.team_members_ids) &&
           internship_offer.has_weeks_after_school_year_start? &&
+          !internship_offer.weeks_in_past_no_future_available? &&
           !internship_offer.is_a?(InternshipOffers::Multi)
       end
       can %i[create], InternshipOccupation

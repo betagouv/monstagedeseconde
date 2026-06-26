@@ -18,7 +18,7 @@ module Dashboard
 
       return if params[:order] && !valid_order_column? && (redirect_to(dashboard_internship_offers_path, flash: { danger: "Impossible de trier par #{params[:order]}" }); true)
 
-      @internship_offers = finder.all
+      @internship_offers = finder.all.where.not(aasm_state: :removed)
 
       if order_column_from_stats?
         # Only allow ordering by whitelisted columns/directions (defended in order_column/order_direction)
@@ -174,12 +174,17 @@ module Dashboard
     def publish
       @internship_offer = InternshipOffer.find(params[:id])
       authorize! :publish, @internship_offer
-      if @internship_offer.requires_updates?
+      if republish_blocked?
         republish
       else
         @internship_offer.publish! unless @internship_offer.published?
-        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
-                    flash: { success: "Votre annonce a bien été publiée" }
+        respond_to do |format|
+          format.turbo_stream
+          format.html do
+            redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                        flash: { success: "Votre annonce a bien été publiée" }
+          end
+        end
       end
     end
 
@@ -188,8 +193,13 @@ module Dashboard
       authorize! :update, @internship_offer
       if @internship_offer.may_unpublish?
         @internship_offer.unpublish!
-        redirect_to dashboard_internship_offers_path(origine: "dashboard"),
-                    flash: { success: "Votre annonce a bien été dépubliée" }
+        respond_to do |format|
+          format.turbo_stream
+          format.html do
+            redirect_to dashboard_internship_offers_path(origine: "dashboard"),
+                        flash: { success: "Votre annonce a bien été dépubliée" }
+          end
+        end
       else
         redirect_to dashboard_internship_offers_path(origine: "dashboard"),
                     flash: { warning: "Votre annonce n'a pas pu être dépubliée" }
@@ -197,17 +207,13 @@ module Dashboard
     end
 
     def republish
-      anchor = "max_candidates_fields"
-      warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places et des semaines de stage"
-
-      if @internship_offer.remaining_seats_count <= 0
-        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des places de stage"
-      elsif @internship_offer.remaining_seats_count > 0
-        anchor = "weeks_container"
-        warning = "Votre annonce n'est pas encore republiée, car il faut ajouter des semaines de stage"
+      if republish_blocking_reasons.include?(:must_duplicate)
+        redirect_to new_dashboard_internship_offer_path(duplicate_id: @internship_offer.id),
+                    flash: { warning: republish_warning_message }
+      else
+        redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: republish_anchor),
+                    flash: { warning: republish_warning_message }
       end
-      redirect_to edit_dashboard_internship_offer_path(@internship_offer, anchor: anchor),
-                  flash: { warning: warning }
     end
 
     # duplicate form
@@ -298,6 +304,26 @@ module Dashboard
       @internship_offer.grade_2e = internship_offer.fits_for_seconde? ? "1" : "0"
       @internship_offer.all_year_long = internship_offer.all_year_long?
       @internship_offer.entreprise_chosen_full_address = internship_offer.entreprise_full_address
+    end
+
+    def republish_blocked?
+      republish_blocking_reasons.any?
+    end
+
+    def republish_blocking_reasons
+      @republish_blocking_reasons ||= @internship_offer.republish_blocking_reasons
+    end
+
+    def republish_anchor
+      republish_blocking_reasons == [ :weeks ] ? "weeks_container" : "max_candidates_fields"
+    end
+
+    def republish_warning_message
+      warnings = []
+      warnings << "vous devez modifier les dates de votre offre pour la publier" if republish_blocking_reasons.include?(:weeks)
+      warnings << "vous devez dupliquer votre offre car aucune semaine n'est disponible cette année" if republish_blocking_reasons.include?(:must_duplicate)
+      warnings << "vous devez ajouter des places à ce stage pour le republier" if republish_blocking_reasons.include?(:seats)
+      warnings.join(" et ")
     end
 
     def duplicate_with_double_grades?
