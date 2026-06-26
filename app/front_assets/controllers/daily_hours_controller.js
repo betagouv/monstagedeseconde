@@ -9,7 +9,8 @@ export default class extends Controller {
     'dailyHoursEnd',
     'presenceHint',
     'validator',
-    'submitButton'
+    'submitButton',
+    'error'
   ];
 
   minimumPresence = 1; // at least 1 day of presence required
@@ -36,6 +37,7 @@ export default class extends Controller {
     }
     this.checkEnoughPresence();
     this.setValidateButton(false);
+    this.clearHoursError();
   }
 
   weeklyStartChange() {
@@ -81,6 +83,7 @@ export default class extends Controller {
       enoughPresence = true;
     }
     this.setValidateButton(enoughPresence);
+    this.refreshHoursError();
   }
 
 
@@ -138,6 +141,7 @@ export default class extends Controller {
       }
     }
     this.setValidateButton(enoughPresence);
+    this.refreshHoursError();
   }
 
   disableOptionBeforeStart(element, start) {
@@ -205,6 +209,59 @@ export default class extends Controller {
   clean_weekly_hours() {
     this.weeklyHoursStartTarget.value = '';
     this.weeklyHoursEndTarget.value = '';
+  }
+
+  // MGF-1666 : les horaires sont obligatoires. Affiche/efface l'erreur et renvoie
+  // sa validité. Appelé par grade#onValidate au clic sur « Publier l'offre ».
+  isWeeklyMode() {
+    const checkbox = document.getElementById('weekly_planning');
+    return checkbox ? checkbox.checked : true;
+  }
+
+  hoursAreValid() {
+    if (this.isWeeklyMode()) {
+      return (
+        this.hasWeeklyHoursStartTarget &&
+        this.hasWeeklyHoursEndTarget &&
+        Boolean(this.weeklyHoursStartTarget.value) &&
+        Boolean(this.weeklyHoursEndTarget.value)
+      );
+    }
+    return this.hasValidatorTarget && this.validatorTarget.value === 'day_selected';
+  }
+
+  validate() {
+    if (this.hoursAreValid()) {
+      this.clearHoursError();
+      return true;
+    }
+    this.showHoursError();
+    return false;
+  }
+
+  showHoursError() {
+    if (this.isWeeklyMode()) {
+      this.toggleSelectError(this.weeklyHoursStartTarget, !this.weeklyHoursStartTarget.value);
+      this.toggleSelectError(this.weeklyHoursEndTarget, !this.weeklyHoursEndTarget.value);
+    }
+    if (this.hasErrorTarget) this.errorTarget.classList.remove('fr-hidden');
+  }
+
+  clearHoursError() {
+    if (this.hasWeeklyHoursStartTarget) this.toggleSelectError(this.weeklyHoursStartTarget, false);
+    if (this.hasWeeklyHoursEndTarget) this.toggleSelectError(this.weeklyHoursEndTarget, false);
+    if (this.hasErrorTarget) this.errorTarget.classList.add('fr-hidden');
+  }
+
+  // Re-valide uniquement si l'erreur est déjà affichée (effacement « live » après
+  // un premier clic en erreur), sans afficher l'erreur pendant la saisie initiale.
+  refreshHoursError() {
+    if (!this.hasErrorTarget || this.errorTarget.classList.contains('fr-hidden')) return;
+    this.validate();
+  }
+
+  toggleSelectError(select, on) {
+    if (select) select.classList.toggle('fr-select--error', on);
   }
 
   connect() {

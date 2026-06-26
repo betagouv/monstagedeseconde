@@ -20,6 +20,10 @@ module StepperProxy
       validates :employer_chosen_name,
                 length: { maximum: 150 },
                 allow_blank: true
+      # MGF-1666 : champs facultatifs, mais au moins 10 caractères si renseignés.
+      validates :workspace_conditions, :workspace_accessibility,
+                length: { minimum: 10, maximum: 1000 },
+                allow_blank: true
       validates :employer_name,
                 presence: true,
                 length: { maximum: 150 }

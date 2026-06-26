@@ -75,9 +75,16 @@ div.fr-my-2w data-controller="daily-hours"
                                  action: "change->daily-hours#dailyHoursEndChange" },
                          aria: { label:"Selectionner une heure de fin de stage pour le #{weekday.capitalize}" }, id: "#{form.object_name}_daily_hours_#{weekday}_end"}
 
+  p.fr-error-text.fr-hidden.fr-mt-1w data-daily-hours-target="error"
+    | Veuillez renseigner les horaires de stage
+
   .row
     .col-12.mt-2.fr-my-2w
-      .form-group
+      .form-group[data-controller="field-validation"
+                  data-field-validation-required-value="true"
+                  data-field-validation-min-length-value="8"
+                  data-field-validation-required-message-value="Veuillez décrire la pause déjeuner"
+                  data-field-validation-min-length-message-value="Veuillez saisir au moins 8 caractères"]
         = form.label :lunch_break, class: 'fr-label'  do
           | Pause déjeuner *
         .text-muted
@@ -91,6 +98,8 @@ div.fr-my-2w data-controller="daily-hours"
                          placeholder: "12h -13h dans les locaux…",
                          maxlength: 250,
                          disabled: disabled,
-                         data: { action: "input->mandatory-fields#fieldChange",
-                                :'mandatory-fields-target' => "mandatoryField"}
+                         data: { action: "input->mandatory-fields#fieldChange blur->field-validation#validate",
+                                :'mandatory-fields-target' => "mandatoryField",
+                                :'field-validation-target' => "field"}
+        p.fr-error-text.fr-hidden data-field-validation-target="errorText"
 

@@ -1,4 +1,4 @@
-= form_with model: model, url: url , method: method, data: { turbo: false } do |form|
+= form_with model: model, url: url , method: method, data: { turbo: false }, html: { novalidate: true } do |form|
   = render "dashboard/stepper/steps",
             current_step_number: 1,
             total_steps: 3,

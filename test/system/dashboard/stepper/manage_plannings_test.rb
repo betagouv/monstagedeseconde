@@ -203,6 +203,26 @@ class ManagePlanningsTest < ApplicationSystemTestCase
     end
   end
 
+  # MGF-1666 : les horaires sont obligatoires. Cliquer « Publier l'offre » sans
+  # horaire doit les afficher en rouge et ne PAS ouvrir la pop-up double-niveau.
+  test 'fails gracefully and does not open the dialog when schedule hours are missing' do
+    travel_to Date.new(2025, 1, 1) do
+      entreprise            = create(:entreprise)
+      internship_occupation = entreprise.internship_occupation
+      employer              = internship_occupation.employer
+
+      sign_in(employer)
+      visit new_dashboard_stepper_planning_path(entreprise_id: entreprise.id)
+      assert_no_difference('Planning.count') do
+        fill_in_planning_form(with_hours: false)
+        find("button[type='submit']").click
+        assert_selector('select#planning_weekly_hours_start.fr-select--error')
+      end
+      assert_selector('[data-daily-hours-target="error"]', text: /horaires/i)
+      assert_no_text 'Attention : création de deux offres distinctes'
+    end
+  end
+
   test 'another employer cannot see the planning page' do
     travel_to Date.new(2025, 1, 1) do
       entreprise = create(:entreprise)

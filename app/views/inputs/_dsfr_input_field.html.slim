@@ -11,8 +11,27 @@
 - name ||= "#{f.object_name}[#{field}]"
 - value = value || (object.send(field) if object)
 - options ||= {}
+/ Opt-in inline (client-side) validation on blur + submit. See field_validation_controller.js.
+- validate = local_assigns[:validate]
+- fv_group_attrs = {}
+ruby:
+  if validate
+    fv_group_attrs['data-controller'] = 'field-validation'
+    fv_group_attrs['data-field-validation-required-value'] = 'true' if validate[:required]
+    fv_group_attrs['data-field-validation-required-message-value'] = validate[:required_message] if validate[:required_message]
+    fv_group_attrs['data-field-validation-min-length-value'] = validate[:min_length] if validate[:min_length]
+    fv_group_attrs['data-field-validation-min-length-message-value'] = validate[:min_length_message] if validate[:min_length_message]
+    fv_group_attrs['data-field-validation-min-value'] = validate[:min] if validate[:min]
+    fv_group_attrs['data-field-validation-min-message-value'] = validate[:min_message] if validate[:min_message]
+    fv_group_attrs['data-field-validation-pattern-value'] = validate[:pattern] if validate[:pattern]
+    fv_group_attrs['data-field-validation-pattern-message-value'] = validate[:pattern_message] if validate[:pattern_message]
+    fv_field_data = { :'field-validation-target' => 'field', action: 'blur->field-validation#validate' }
+    existing_data = (options[:data] || {}).dup
+    fv_field_data[:action] = "#{existing_data[:action]} #{fv_field_data[:action]}".strip if existing_data[:action]
+    options = options.merge(data: existing_data.merge(fv_field_data))
+  end
 - if object&.errors.blank?
-  .fr-input-group
+  .fr-input-group *fv_group_attrs
     = f.label field,
               class: "fr-label",
               for: id
@@ -34,8 +53,10 @@
              title: title,
              **(pattern.present? ? { pattern: pattern } : {}),
              **options)
+    - if validate
+      p.fr-error-text.fr-hidden id="field-validation-error-#{field}" data-field-validation-target="errorText"
 - elsif object.errors[field].present?
-  .fr-input-group.fr-input-group--error
+  .fr-input-group.fr-input-group--error *fv_group_attrs
     = f.label field,
               class: 'fr-label',
               for: id
@@ -61,7 +82,7 @@
       - field_name = t("activerecord.attributes.#{object.class.name.underscore}.#{field}")
       = "#{field_name} : #{object.errors[field].map(&:downcase).join(', ').html_safe}"
 - else
-  .fr-input-group.fr-input-group--valid
+  .fr-input-group.fr-input-group--valid *fv_group_attrs
     = f.label field,
               class:"fr-label",
               for: id
@@ -81,3 +102,5 @@
                    readonly: readonly,
                    **(pattern.present? ? { pattern: pattern } : {}),
                    **options)
+    - if validate
+      p.fr-error-text.fr-hidden id="field-validation-error-#{field}" data-field-validation-target="errorText"

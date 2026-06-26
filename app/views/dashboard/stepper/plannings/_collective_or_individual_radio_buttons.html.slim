@@ -1,4 +1,8 @@
-.form-group.form-group-select-max-candidates
+.form-group.form-group-select-max-candidates[data-controller="field-validation"
+                                              data-field-validation-required-value="true"
+                                              data-field-validation-min-value="1"
+                                              data-field-validation-required-message-value="Veuillez indiquer le nombre d’élèves que vous souhaitez accueillir"
+                                              data-field-validation-min-message-value="Veuillez indiquer un nombre d’élèves d’au moins 1"]
   = form.label :max_candidates, class: 'fr-label' do
     = "Nombre total d'élèves que vous souhaitez accueillir sur la période de stage"
   = form.number_field :max_candidates,
@@ -10,5 +14,8 @@
                       pattern: "[0-9]{1,5}",
                       inputmode: "numeric",
                       min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
-                      data: { :'grade-target' => "maxCandidatesSource" }
+                      data: { :'grade-target' => "maxCandidatesSource",
+                              :'field-validation-target' => "field",
+                              action: "blur->field-validation#validate" }
+  p.fr-error-text.fr-hidden data-field-validation-target="errorText"
 
