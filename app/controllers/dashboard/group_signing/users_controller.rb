@@ -1,6 +1,7 @@
 module Dashboard
   module GroupSigning
-    class UsersController < ApplicationController
+    class UsersController < Dashboard::BaseController
+      skip_before_action :authenticate_user!
       include Phonable
 
       def start_signing

@@ -1,7 +1,6 @@
 module Dashboard::Stepper
-  class EntreprisesController < ApplicationController
+  class EntreprisesController < Dashboard::BaseController
     # step 2
-    before_action :authenticate_user!
     before_action :fetch_entreprise, only: %i[edit update]
     before_action :sanitize_content, only: %i[create update]
 
