@@ -1,6 +1,5 @@
 module Dashboard
   class MultiInternshipAgreementsController < Dashboard::BaseController
-    include AgreementTransitable
     before_action :set_internship_agreement,
                   only: %i[edit update show school_management_signature school_management_sign]
 
