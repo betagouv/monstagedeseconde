@@ -159,7 +159,7 @@ module Abilities
 
       can :flip_notification, AreaNotification do |_area_notif|
         many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-        current_area_notifications_are_off = !user.fetch_current_area_notification.notify
+        current_area_notifications_are_off = !user.fetch_current_area_notification&.notify
 
         user.team.alive? &&
           (many_people_in_charge_of_area || current_area_notifications_are_off)

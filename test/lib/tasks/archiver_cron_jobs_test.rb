@@ -65,4 +65,23 @@ class ArchiverCronJobsTest < ActiveSupport::TestCase
       clear_enqueued_jobs
     end
   end
+
+  test 'does not crash when employer has a mix of old and nil last_date offers' do
+    if ENV.fetch('RUN_BRITTLE_TEST', false)
+      current_week_id = Week.current.id
+      more_than_2_years_ago_in_weeks = 2 * 52 + 3
+      older_weeks = [Week.find(current_week_id - more_than_2_years_ago_in_weeks - 1), Week.find(current_week_id - more_than_2_years_ago_in_weeks)]
+      old_offer = create(:weekly_internship_offer, weeks: older_weeks)
+      # second offer for same employer with nil last_date — triggered NoMethodError on nil before the fix
+      create(:weekly_internship_offer, employer_id: old_offer.employer_id, last_date: nil)
+      assert_equal 2, InternshipOffer.kept.count
+      assert_nothing_raised do
+        Monstage::Application.load_tasks
+        Rake::Task['cleaning:archive_idle_employers'].invoke
+      end
+      InternshipOfferWeek.delete_all
+      InternshipOffer.delete_all
+      clear_enqueued_jobs
+    end
+  end
 end
