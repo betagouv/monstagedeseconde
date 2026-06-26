@@ -105,6 +105,111 @@ module ReviewRebuild
         weeks: [ targeted_offer.weeks.second ]
       )
       InternshipApplication.last(2).each { |app| app.reject! }
+      # --- end of rejected
+
+      # --- read_by_employer
+      student = college_rep_active_students.first
+      targeted_offer = paris_offers.troisieme_or_quatrieme.first
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.read!(Users::God.first)
+      end
+      # --- end of read_by_employer
+
+      # --- transfered
+      student = college_rep_active_students.second
+      targeted_offer = paris_offers.troisieme_or_quatrieme.second
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.transfer!(Users::God.first)
+        app.update_columns(transfered_at: rand(3..7).days.ago)
+      end
+      # --- end of transfered
+
+      # --- validated_by_employer (en attente de confirmation élève)
+      student = college_rep_active_students.third
+      targeted_offer = paris_offers.troisieme_or_quatrieme.second
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.second ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.employer_validate!(Users::God.first)
+        app.update_columns(validated_by_employer_at: rand(2..4).days.ago)
+      end
+      # --- end of validated_by_employer
+
+      # --- canceled_by_employer (offer was approved then cancelled by employer)
+      student = college_rep_active_students[3]
+      targeted_offer = paris_offers.troisieme_or_quatrieme.first
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.employer_validate!(Users::God.first)
+        app.approve!(Users::God.first)
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_employer!(Users::God.first)
+        app.update_columns(canceled_at: rand(1..3).days.ago)
+      end
+      # --- end of canceled_by_employer
+
+      # --- canceled_by_student
+      student = college_rep_active_students[4]
+      targeted_offer = paris_offers.troisieme_or_quatrieme.third
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_student!(Users::God.first)
+        app.update_columns(canceled_at: rand(1..5).days.ago)
+      end
+      # --- end of canceled_by_student
+
+      # --- expired
+      student = college_rep_active_students[5]
+      targeted_offer = paris_offers.troisieme_or_quatrieme.first
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.expire!(Users::God.first)
+        app.update_columns(expired_at: rand(10..20).days.ago, submitted_at: rand(25..35).days.ago)
+      end
+      # --- end of expired
+
+      # --- expired_by_student
+      student = college_rep_active_students[6]
+      targeted_offer = paris_offers.troisieme_or_quatrieme.second
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.expire_by_student!(Users::God.first)
+        app.update_columns(expired_at: rand(5..15).days.ago)
+      end
+      # --- end of expired_by_student
+
+      # --- canceled_by_student_confirmation (élève annule après validation employeur)
+      student = college_rep_active_students[7]
+      targeted_offer = paris_offers.troisieme_or_quatrieme.third
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.employer_validate!(Users::God.first)
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_student_confirmation!(Users::God.first)
+      end
+      # --- end of canceled_by_student_confirmation
+
+      # --- restored (candidature annulée puis restaurée)
+      student = college_rep_active_students[8]
+      targeted_offer = paris_offers.troisieme_or_quatrieme.first
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_offer.weeks.first ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_student!(Users::God.first)
+        app.skip_callback_with_review_rebuild = true
+        app.restore!(Users::God.first)
+        app.update_columns(restored_at: rand(1..3).days.ago, canceled_at: rand(5..10).days.ago)
+      end
+      # --- end of restored
     end
 
     # Logic for creating applications for 2de
@@ -205,6 +310,157 @@ module ReviewRebuild
         weeks: [ targeted_week ]
       )
       InternshipApplication.last(2).each { |app| app.reject! }
+      # --- end of rejected
+
+      # --- read_by_employer
+      student = lycee_rep_active_students.first
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 0,
+        week_index: 0,
+        context: "secondes read_by_employer rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.read!(Users::God.first)
+      end
+      # --- end of read_by_employer
+
+      # --- transfered
+      student = lycee_rep_active_students.second
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 1,
+        week_index: 0,
+        context: "secondes transfered rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.transfer!(Users::God.first)
+        app.update_columns(transfered_at: rand(3..7).days.ago)
+      end
+      # --- end of transfered
+
+      # --- validated_by_employer
+      student = lycee_rep_active_students.third
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 1,
+        week_index: 0,
+        week_fallback_index: 0,
+        context: "secondes validated_by_employer rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.employer_validate!(Users::God.first)
+        app.update_columns(validated_by_employer_at: rand(2..4).days.ago)
+      end
+      # --- end of validated_by_employer
+
+      # --- canceled_by_employer
+      student = lycee_rep_active_students[3]
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 0,
+        week_index: 0,
+        context: "secondes canceled_by_employer rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.employer_validate!(Users::God.first)
+        app.approve!(Users::God.first)
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_employer!(Users::God.first)
+        app.update_columns(canceled_at: rand(1..3).days.ago)
+      end
+      # --- end of canceled_by_employer
+
+      # --- canceled_by_student
+      student = lycee_rep_active_students[4]
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: -1,
+        week_index: 0,
+        context: "secondes canceled_by_student rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_student!(Users::God.first)
+        app.update_columns(canceled_at: rand(1..5).days.ago)
+      end
+      # --- end of canceled_by_student
+
+      # --- expired
+      student = lycee_rep_active_students[5]
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 0,
+        week_index: 0,
+        context: "secondes expired rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.expire!(Users::God.first)
+        app.update_columns(expired_at: rand(10..20).days.ago, submitted_at: rand(25..35).days.ago)
+      end
+      # --- end of expired
+
+      # --- expired_by_student
+      student = lycee_rep_active_students[6]
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 1,
+        week_index: 0,
+        context: "secondes expired_by_student rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.expire_by_student!(Users::God.first)
+        app.update_columns(expired_at: rand(5..15).days.ago)
+      end
+      # --- end of expired_by_student
+
+      # --- canceled_by_student_confirmation
+      student = lycee_rep_active_students[7]
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: -1,
+        week_index: 0,
+        context: "secondes canceled_by_student_confirmation rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.employer_validate!(Users::God.first)
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_student_confirmation!(Users::God.first)
+      end
+      # --- end of canceled_by_student_confirmation
+
+      # --- restored
+      student = lycee_rep_active_students[8]
+      targeted_offer, targeted_week = fetch_offer_and_week!(
+        offers: paris_offers.seconde,
+        offer_index: 0,
+        week_index: 0,
+        context: "secondes restored rep"
+      )
+      app = application_maker(student: student, targeted_offer: targeted_offer, weeks: [ targeted_week ])
+      if app
+        app.skip_callback_with_review_rebuild = true
+        app.cancel_by_student!(Users::God.first)
+        app.skip_callback_with_review_rebuild = true
+        app.restore!(Users::God.first)
+        app.update_columns(restored_at: rand(1..3).days.ago, canceled_at: rand(5..10).days.ago)
+      end
+      # --- end of restored
     end
 
     # -- helpers
@@ -232,6 +488,9 @@ module ReviewRebuild
     def from_now_to_end_of_current_troisieme_year_limits
       SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year
     end
+
+    def college_rep_active_students = Users::Student.where(school: college_rep, anonymized: false).order(id: :desc).to_a
+    def lycee_rep_active_students   = Users::Student.where(school: lycee_rep,   anonymized: false).order(id: :desc).to_a
 
     def paris_offers
       InternshipOffers::WeeklyFramed.where(city: "Paris")

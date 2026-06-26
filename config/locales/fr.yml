@@ -163,6 +163,9 @@ fr:
         zipcode: Code postal
         city: Commune
         phone: Téléphone
+        sector_id: Secteur d'activité
+        is_public: Secteur public/privé
+        group_id: Type d'employeur public
       school:
         name: Nom
         kind: Type
@@ -228,6 +231,8 @@ fr:
       entreprise: &entreprises_fields
         siret: Siret
         is_public: Secteur public/privé
+        sector_id: Secteur d'activité
+        group_id: Type d'employeur public
         employer_name: Nom de l'employeur(issu du siret)
         employer_chosen_name: Nom de l'employeur
         entreprise_coordinates: Coordonnées GPS de l'entreprise

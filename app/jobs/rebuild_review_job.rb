@@ -11,6 +11,7 @@ class RebuildReviewJob < ApplicationJob
   include ReviewRebuild::InvitationsCreationSteps
   include ReviewRebuild::TeamsCreationSteps
   include ReviewRebuild::BoardingHousesCreationSteps
+  include ReviewRebuild::CleaningCreationSteps
   queue_as :default
   sidekiq_options retry: false
 
@@ -58,7 +59,8 @@ class RebuildReviewJob < ApplicationJob
     [ :offers, "Création des offres", 30, "addition" ],
     [ :applications, "Création des candidatures", 69, "addition" ],
     [ :agreements, "Création des conventions", 15, "addition" ],
-    [ :boarding_houses, "Création des internats", 200, "addition" ]
+    [ :boarding_houses, "Création des internats", 200, "addition" ],
+    [ :cleaning, "Nettoyage des données", 1, "addition" ]
   ].freeze
   # [:extra_areas, 'Création des espaces supplémentaires - non fait', 0, 'addition'],
   # [:invitation, "Création d'une invitation", 1, 'addition'],
@@ -75,6 +77,11 @@ class RebuildReviewJob < ApplicationJob
       time_value = @total.zero? ? 0 : (duration.to_f / @total * 100).round(2)
       hash[sym] = { text => time_value }
     end
+
+    rounding_error = 100 - @rebuilt_steps_hash.values.sum { |value| value.values.first }
+    last_sym, last_value = @rebuilt_steps_hash.to_a.last
+    last_text = last_value.keys.first
+    @rebuilt_steps_hash[last_sym] = { last_text => (last_value[last_text] + rounding_error).round(2) }
   end
 
   # ------------
@@ -88,7 +95,7 @@ class RebuildReviewJob < ApplicationJob
       broadcast_header("Création des données")
       creation_steps
 
-      broadcast_header("✅ THAT'S ALL FOLKS")
+      broadcast_header("✅ OPERATION ACHEVÉE !")
     end
   rescue StandardError => e
     broadcast_error("🚨 Une erreur est survenue : #{e.message}")
@@ -101,7 +108,12 @@ class RebuildReviewJob < ApplicationJob
     # BoardingHouse themselves are not deleted, just like schools are not neither.
 
     broadcast_info(:mail_action_item_removal)
-    MailActionItem.delete_all if defined?(MailActionItem)
+    # TODO simplify when MailActionItem is released in production, by just doing MailActionItem.delete_all
+    if defined?(MailActionItem)
+      MailActionItem.delete_all
+    elsif ActiveRecord::Base.connection.table_exists?(:mail_action_items)
+      ActiveRecord::Base.connection.execute("delete from mail_action_items;")
+    end
 
     broadcast_info(:invitation_removal)
     Invitation.where.not(sent_at: nil).delete_all

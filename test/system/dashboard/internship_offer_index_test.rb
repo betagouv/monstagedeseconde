@@ -53,6 +53,49 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     end
   end
 
+  test 'archived offer shows archived badge and duplicate button in index' do
+    travel_to(Date.new(2026, 6, 1)) do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde,
+                                employer:,
+                                internship_offer_area_id: employer.current_area_id)
+      internship_offer.update_columns(
+        aasm_state: 'unpublished',
+        published_at: nil,
+        first_date: 2.days.ago,
+        last_date: 1.day.ago
+      )
+
+      sign_in(employer)
+      InternshipOffer.stub :nearby, InternshipOffer.all do
+        visit dashboard_internship_offers_path
+        assert_selector '.label', text: "Archivée. Dupliquez l'annonce pour la republier"
+        assert_selector 'a.test-duplicate-button'
+      end
+    end
+  end
+
+  test 'archived offer shows archived badge and explanatory text on show page' do
+    travel_to(Date.new(2026, 6, 1)) do
+      employer = create(:employer)
+      internship_offer = create(:weekly_internship_offer_2nde,
+                                employer:,
+                                internship_offer_area_id: employer.current_area_id)
+      internship_offer.update_columns(
+        aasm_state: 'unpublished',
+        published_at: nil,
+        first_date: 2.days.ago,
+        last_date: 1.day.ago
+      )
+
+      sign_in(employer)
+      visit internship_offer_path(internship_offer, origine: 'dashboard')
+      assert_selector 'p.fr-badge', text: 'Offre archivée'
+      assert_selector '.label', text: "Archivée. Dupliquez l'annonce pour la republier"
+      assert_selector 'a.test-duplicate-button'
+    end
+  end
+
   test 'tabs test(still todo)' do
     employer = create(:employer)
     internship_offer = create(:weekly_internship_offer_2nde, employer:)
@@ -77,23 +120,21 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         InternshipOffers::WeeklyFramed.update_older_internship_offers
         assert internship_offer.reload.published?
         visit dashboard_internship_offers_path
-        find('.label', text: 'Publié')
+        assert_selector '.label', text: 'Publié'
 
         # Mask it
-        find("a[title='Publier / Masquer']").click
-        find('h2.h4', text: 'Les offres')
-        find('.label', text: 'Masqué')
+        page.execute_script(<<~JS)
+          document.querySelector("#toggle_status_#{dom_id(internship_offer)} form").requestSubmit();
+        JS
+        assert_selector ".label", text: "Masqué"
         assert_nil internship_offer.reload.published_at
         assert internship_offer.unpublished?
 
-        # ----------------------------
         # republish
-        # ----------------------------
-        within("#toggle_status_#{dom_id(internship_offer)}") do
-          find("a[rel='nofollow'][data-method='patch']").click # this republishes the internship_offer
-        end
-        find('h2.h4', text: 'Les offres')
-        sleep 0.05
+        page.execute_script(<<~JS)
+          document.querySelector("#toggle_status_#{dom_id(internship_offer)} form").requestSubmit();
+        JS
+        assert_selector ".label", text: "Publié"
         assert internship_offer.reload.published?
         refute internship_offer.published_at.nil?
       end
