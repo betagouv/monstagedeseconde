@@ -78,7 +78,10 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
-    return true if signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.from_multi?
+    # Multi historique : l'employeur "signe" via CorporationInternshipAgreement (pas de
+    # Signature employer). Stage partagé : chaque convention suit la sémantique mono
+    # (l'employeur de la structure crée une vraie Signature employer).
+    return true if signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.legacy_multi?
 
     signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.signed_by_employer?
   end

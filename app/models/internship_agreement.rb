@@ -25,9 +25,14 @@ class InternshipAgreement < ApplicationRecord
 
   has_many :signatures, dependent: :destroy
   belongs_to :internship_application, optional: false
+  # Stage partagé : chaque convention est rattachée à SA structure d'accueil.
+  # Nullable : conventions mono et multi historiques (corporation_id IS NULL).
+  belongs_to :corporation, optional: true
 
+  # Unicité scoppée par corporation : 1 convention mono par candidature, mais 2
+  # conventions partagées (une par corporation). Cf. les 2 index partiels Postgres.
   validates :internship_application_id,
-            uniqueness: { conditions: -> { kept } },
+            uniqueness: { scope: :corporation_id, conditions: -> { kept } },
             if: :kept?
 
   after_create :generate_token, unless: :access_token?
@@ -182,6 +187,19 @@ class InternshipAgreement < ApplicationRecord
     joins(internship_application: { student: :grade })
       .where(grades: { id: Grade.seconde.id })
   }
+
+  # Stage partagé : convention réelle rattachée à une structure (corporation_id présent),
+  # générée par le nouveau flux (1 offre partagée -> 2 conventions).
+  def shared_offer_agreement?
+    from_multi? && corporation_id.present?
+  end
+
+  # Multi "historique" (avant les stages partagés) : 1 convention unique regroupant N
+  # corporations via corporation_internship_agreements, sans corporation_id. Conserve
+  # l'ancien rendu PDF/signature SGID.
+  def legacy_multi?
+    from_multi? && corporation_id.nil?
+  end
 
   def enforce_teacher_validations?
     enforce_teacher_validations == true

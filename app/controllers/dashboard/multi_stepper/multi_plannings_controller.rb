@@ -6,11 +6,11 @@ module Dashboard::MultiStepper
     before_action :fetch_multi_corporation, only: %i[new create edit update]
 
     def new
+      # Stage partagé : seconde uniquement (le public collège n'est pas proposé).
       @multi_planning = MultiPlanning.new(
         multi_coordinator: @multi_coordinator,
         max_candidates: 1,
         all_year_long: true,
-        grade_college: '1',
         grade_2e: '1',
       )
       set_weeks_variables
@@ -87,10 +87,13 @@ module Dashboard::MultiStepper
           :grade_2e,
           :period_field,
           :internship_type,
+          :has_different_period_2_hours,
           daily_hours: {},
+          daily_hours_2: {},
           week_ids: [],
           grade_ids: [],
           weekly_hours: [],
+          weekly_hours_2: [],
           school_ids: []
       ])
     end

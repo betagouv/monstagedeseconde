@@ -51,7 +51,7 @@ module Dashboard
                                                .student
                                                .presenter
                                                .full_name_camel_case
-          if @internship_agreement.from_multi?
+          if @internship_agreement.legacy_multi?
             send_data(
               GenerateMultiInternshipAgreement.new(@internship_agreement.uuid).call.render,
               filename: "Convention_de_stage_#{ext_file_name}.pdf",

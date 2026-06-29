@@ -6,6 +6,15 @@ module Dashboard::MultiStepper
       before_action :fetch_corporation, only: %i[edit update destroy]
 
       def create
+        # Stage partagé : on bloque au-delà de 2 structures (UI + serveur).
+        if @multi_corporation.full?
+          respond_to do |format|
+            format.turbo_stream { render :create }
+            format.html { redirect_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_corporation.multi_coordinator_id), alert: 'Les 2 structures sont déjà renseignées.' }
+          end
+          return
+        end
+
         process_corporation_params
         @corporation = @multi_corporation.corporations.build(corporation_params)
         authorize! :create, @corporation
@@ -83,6 +92,7 @@ module Dashboard::MultiStepper
           :internship_street, :internship_zipcode, :internship_city, :internship_phone,
           :tutor_name, :tutor_role_in_company, :tutor_email, :tutor_phone,
           :employer_name, :employer_role, :employer_email, :employer_phone,
+          :period,
           :latitude, :longitude, # Allow these temporary params
           internship_coordinates: [:latitude, :longitude] # Allow nested attributes for coordinates
         ])

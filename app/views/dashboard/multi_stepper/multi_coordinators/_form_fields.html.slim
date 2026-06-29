@@ -18,9 +18,10 @@ div [data-controller="mandatory-fields ministry-fields"
         legend.fr-h6 Les informations liées au coordinateur
         .row
           .col-12
-            - content = "Vous êtes coordinateur de cette offre multi-structures. Merci de renseigner vos \
-            informations personnelles ici, même si vous n’êtes pas signataire de la convention. \
-            Si votre structure accueille aussi des élèves, ajoutez-la aussi comme structure accueillante à l'étape suivante."
+            - content = "Vous êtes coordinateur de cette offre partagée par 2 structures. Merci de renseigner vos \
+            informations personnelles ici, même si vous n’êtes pas l’une des deux structures accueillantes. \
+            Si vous êtes par ailleurs l’une des deux structures accueillantes, vous devrez l’ajouter à l’étape suivante. \
+            Vous recevrez toutes les candidatures et vous aurez le choix de les sélectionner ou de les transférer aux structures d’accueil."
             .fr-mb-2w = render partial: 'inputs/small_info', locals: { content: content }
           .col-12
             - unless resource.persisted?

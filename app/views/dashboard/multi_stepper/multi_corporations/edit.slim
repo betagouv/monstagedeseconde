@@ -5,7 +5,7 @@
 
 .fr-grid-row
   .fr-col-12
-    h1.fr-h3.fr-mb-1w Déposer une offre de stage pour plusieurs entreprises
+    h1.fr-h3.fr-mb-1w Déposer une offre de stage pour 2 structures
     
     .fr-stepper
       h2.fr-stepper__title
@@ -19,9 +19,12 @@
 .fr-grid-row.fr-grid-row--gutters
   .fr-col-md-7
     turbo-frame id="corporation_form_frame"
-      = render 'dashboard/multi_stepper/multi_corporations/corporations/form', 
-               multi_corporation: @multi_corporation, 
-               corporation: @corporation || Corporation.new(multi_corporation_id: @multi_corporation.id)
+      - if @multi_corporation.full? && @corporation.nil?
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/limit_reached', multi_corporation: @multi_corporation
+      - else
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/form',
+                 multi_corporation: @multi_corporation,
+                 corporation: @corporation || Corporation.new(multi_corporation_id: @multi_corporation.id)
 
   .fr-col-md-5
     turbo-frame id="corporations_list"
@@ -33,4 +36,4 @@
     = form_with model: @multi_corporation, url: dashboard_multi_stepper_multi_corporation_path(@multi_corporation), method: :patch do |f|
       .fr-btns-group.fr-btns-group--inline-lg.fr-btns-group--icon-left
         = link_to "Précédent", edit_dashboard_multi_stepper_multi_coordinator_path(@multi_corporation.multi_coordinator), class: 'fr-btn fr-btn--secondary fr-btn--icon-left'
-        = f.submit "Suivant", class: 'fr-btn fr-icon-arrow-right-line fr-btn--icon-right', disabled: @multi_corporation.corporations.empty?
+        = f.submit "Suivant", class: 'fr-btn fr-icon-arrow-right-line fr-btn--icon-right', disabled: !@multi_corporation.full?

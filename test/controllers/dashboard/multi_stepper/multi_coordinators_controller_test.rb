@@ -18,7 +18,7 @@ module Dashboard::MultiStepper
       get new_dashboard_multi_stepper_multi_coordinator_path(multi_activity_id: @multi_activity.id)
       assert_response :success
       assert_select 'form'
-      assert_select 'h1', text: /Déposer une offre de stage pour plusieurs structures/
+      assert_select 'h1', text: /Déposer une offre de stage pour 2 structures/
     end
 
     test 'GET #new should require authentication' do
