@@ -50,7 +50,7 @@
                         required: true,
                         title: 'Activités prévues au cours du stage',
                         object: form.object,
-                        options: { rows: 5 ,
+                        options: { rows: 5, maxlength: InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT,
                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
                         field_type: :text_area

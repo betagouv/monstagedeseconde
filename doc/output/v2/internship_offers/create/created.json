@@ -10,17 +10,17 @@
   "remote_id": "test",
   "permalink": "http://monsite.com",
   "max_candidates": 2,
-  "published_at": "2026-06-08T12:02:45.333+02:00",
-  "is_public": true,
+  "published_at": "2025-03-01T00:00:00.000+01:00",
+  "is_public": false,
   "formatted_coordinates": {
-    "latitude": 1.0,
-    "longitude": 1.0
+    "latitude": 48.8602244,
+    "longitude": 2.333
   },
   "weeks": [
-    "2026-W25",
-    "2026-W26"
+    "2025-W21",
+    "2025-W22"
   ],
   "grades": [
-    "seconde"
+    "troisieme"
   ]
 }

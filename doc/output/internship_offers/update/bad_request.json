@@ -2,7 +2,7 @@
   "code": "VALIDATION_ERROR",
   "error": {
     "description": [
-      "Description too long, allowed up 500 chars"
+      "Description too long, allowed up to 1500 chars"
     ]
   }
 }
