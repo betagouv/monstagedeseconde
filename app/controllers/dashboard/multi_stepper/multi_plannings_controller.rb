@@ -87,7 +87,6 @@ module Dashboard::MultiStepper
           :grade_2e,
           :period_field,
           :internship_type,
-          :has_different_period_2_hours,
           daily_hours: {},
           daily_hours_2: {},
           week_ids: [],

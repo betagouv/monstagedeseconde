@@ -13,9 +13,9 @@ class InternshipApplicationSharedAgreementsTest < ActiveSupport::TestCase
 
   teardown { travel_back }
 
-  def build_shared_offer
+  def build_shared_offer(offer_attrs = {})
     multi_corporation = create(:shared_multi_corporation)
-    create(:multi_internship_offer, multi_corporation: multi_corporation)
+    create(:multi_internship_offer, { multi_corporation: multi_corporation }.merge(offer_attrs))
   end
 
   def build_validated_application(offer)
@@ -67,6 +67,24 @@ class InternshipApplicationSharedAgreementsTest < ActiveSupport::TestCase
 
     ranges = application.internship_agreements.kept.map(&:date_range)
     assert_equal 2, ranges.uniq.size, "les deux conventions doivent couvrir des semaines différentes"
+  end
+
+  test "la convention de la période 2 reçoit les horaires de la seconde période s'ils diffèrent" do
+    daily_hours_2 = { 'lundi' => ['10:00', '15:00'], 'mardi' => ['10:00', '15:00'],
+                      'mercredi' => ['10:00', '15:00'], 'jeudi' => ['10:00', '15:00'],
+                      'vendredi' => ['10:00', '15:00'] }
+    offer = build_shared_offer(daily_hours_2: daily_hours_2)
+    application = build_validated_application(offer)
+    application.create_agreement
+
+    corp1 = offer.corporations.find_by(period: 1)
+    corp2 = offer.corporations.find_by(period: 2)
+    agreement_1 = application.internship_agreements.kept.find_by(corporation_id: corp1.id)
+    agreement_2 = application.internship_agreements.kept.find_by(corporation_id: corp2.id)
+
+    assert_equal offer.daily_hours, agreement_1.daily_hours
+    assert_equal daily_hours_2, agreement_2.daily_hours
+    assert_not_equal agreement_1.daily_hours, agreement_2.daily_hours
   end
 
   test 'create_agreement est idempotent par structure' do

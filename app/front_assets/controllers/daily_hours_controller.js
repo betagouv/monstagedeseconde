@@ -9,7 +9,14 @@ export default class extends Controller {
     'dailyHoursEnd',
     'presenceHint',
     'validator',
-    'submitButton'
+    'submitButton',
+    // Stage partagé : 2 jeux d'horaires (période 1 / période 2) cohabitent dans le
+    // formulaire. Ces targets, scoppées à chaque instance du contrôleur, remplacent
+    // les anciens sélecteurs jQuery globaux pour éviter les collisions d'IDs.
+    // Optionnelles : le stepper mono ne les fournit pas (fallback ci-dessous).
+    'weeklyToggle',
+    'weeklyContainer',
+    'dailyContainer'
   ];
 
   minimumPresence = 1; // at least 1 day of presence required
@@ -21,18 +28,29 @@ export default class extends Controller {
   }
 
   handleToggleWeeklyPlanning() {
-    if ($('#weekly_planning').is(":checked")) {
+    // Targets scoppées (multi) si disponibles, sinon sélecteurs globaux (mono).
+    const isWeekly = this.hasWeeklyToggleTarget
+      ? this.weeklyToggleTarget.checked
+      : $('#weekly_planning').is(":checked");
+    const weeklyContainer = this.hasWeeklyContainerTarget
+      ? this.weeklyContainerTarget
+      : document.getElementById('weekly-planning');
+    const dailyContainer = this.hasDailyContainerTarget
+      ? this.dailyContainerTarget
+      : document.getElementById('daily-planning-container');
+
+    if (isWeekly) {
       this.clean_daily_hours()
-      $("#daily-planning-container").addClass('d-none')
-      $("#daily-planning-container").hide()
-      $("#weekly-planning").removeClass('d-none')
-      $("#weekly-planning").slideDown()
+      dailyContainer.classList.add('d-none')
+      $(dailyContainer).hide()
+      weeklyContainer.classList.remove('d-none')
+      $(weeklyContainer).slideDown()
     } else {
       this.clean_weekly_hours()
-      $("#weekly-planning").addClass('d-none')
-      $("#weekly-planning").hide()
-      $("#daily-planning-container").removeClass('d-none')
-      $("#daily-planning-container").slideDown()
+      weeklyContainer.classList.add('d-none')
+      $(weeklyContainer).hide()
+      dailyContainer.classList.remove('d-none')
+      $(dailyContainer).slideDown()
     }
     this.checkEnoughPresence();
     this.setValidateButton(false);
@@ -89,7 +107,7 @@ export default class extends Controller {
     const start = this.getIFromTime(this.dailyHoursStartTargets[i].value);
 
     if (start) {
-      let dailyHoursEnd = document.getElementsByClassName('daily-hours-end')[i];
+      let dailyHoursEnd = this.dailyHoursEndTargets[i];
       this.disableOptionBeforeStart(dailyHoursEnd, start);
       dailyHoursEnd.disabled = false;
     } else {
@@ -105,7 +123,7 @@ export default class extends Controller {
 
     // if end not Nan
     if (end) {
-      const dailyHoursStart = document.getElementsByClassName('daily-hours-start')[i];
+      const dailyHoursStart = this.dailyHoursStartTargets[i];
       this.disableOptionAfterEnd(dailyHoursStart, end);
       dailyHoursStart.disabled = false;
     } else {
@@ -192,13 +210,11 @@ export default class extends Controller {
 
 
   initialize_daily_hours() {
-    var dailyHoursStart = document.getElementsByClassName('daily-hours-start');
-    for (var i = 0; i < dailyHoursStart.length; i++) {
-      dailyHoursStart[i].value = '09:00';
+    for (var i = 0; i < this.dailyHoursStartTargets.length; i++) {
+      this.dailyHoursStartTargets[i].value = '09:00';
     }
-    var dailyHoursEnd = document.getElementsByClassName('daily-hours-end');
-    for (var i = 0; i < dailyHoursEnd.length; i++) {
-      dailyHoursEnd[i].value = '17:00';
+    for (var j = 0; j < this.dailyHoursEndTargets.length; j++) {
+      this.dailyHoursEndTargets[j].value = '17:00';
     }
   }
 
