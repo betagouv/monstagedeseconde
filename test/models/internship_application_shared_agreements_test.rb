@@ -116,6 +116,34 @@ class InternshipApplicationSharedAgreementsTest < ActiveSupport::TestCase
     assert agreement_1.reload.pre_selected_for_signature?
   end
 
+  # Incidences sur les statistiques (SFD) : 1 offre partagée = 1 offre ;
+  # 1 candidature = 1 candidature = 1 élève ; 1 convention partagée = 1 élève = 2 conventions.
+  # Metabase distingue les conventions partagées via corporation_id (NOT NULL).
+  test 'stats : 1 offre, 1 candidature = 1 élève, 2 conventions (1 seul élève distinct)' do
+    offer = build_shared_offer
+    application = build_validated_application(offer)
+    application.create_agreement
+
+    # 1 offre partagée = 1 offre
+    assert_equal 1, InternshipOffer.where(id: offer.id).count
+
+    # 1 candidature = 1 élève
+    assert_equal 1, offer.internship_applications.count
+    assert_equal 1, offer.internship_applications.distinct.count(:user_id)
+
+    # 2 conventions mais 1 seul élève distinct derrière (pas de double comptage)
+    agreements = application.internship_agreements.kept
+    assert_equal 2, agreements.count
+    distinct_students = InternshipAgreement.where(id: agreements.ids)
+                                           .joins(:internship_application)
+                                           .distinct
+                                           .count('internship_applications.user_id')
+    assert_equal 1, distinct_students
+
+    # Discriminant Metabase : les conventions partagées portent un corporation_id
+    assert agreements.all? { |a| a.corporation_id.present? }
+  end
+
   test "l'unicité autorise 2 conventions par candidature mais 1 seule par structure" do
     offer = build_shared_offer
     application = build_validated_application(offer)
