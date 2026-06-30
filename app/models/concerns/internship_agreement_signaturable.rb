@@ -50,27 +50,13 @@ module InternshipAgreementSignaturable
       if (roles_not_signed_yet & Signature::SCHOOL_MANAGEMENT_SIGNATORY_ROLE).any?
         recipients << school_management_representative.email if school_management_representative
       end
-      if legacy_multi?
-        corporations_all_signed = true
-        internship_offer.corporations.each do |corporation|
-          corporation_internship_agreement = CorporationInternshipAgreement.find_by(
-            corporation_id: corporation.id,
-            internship_agreement_id: id
-          )
-          if corporation_internship_agreement.signed == false
-            corporations_all_signed = false
-            break
-          end
-        end
-        corporations_all_signed
+      if from_multi?
+        # Multi (historique ET stage partagé) : la/les structure(s) signe(nt) via
+        # CorporationInternshipAgreement. La convention partagée n'a que SA structure.
+        corporation_agreements = CorporationInternshipAgreement.where(internship_agreement_id: id)
+        corporation_agreements.all?(&:signed)
       elsif roles_not_signed_yet.include?('employer')
-        # Stage partagé : l'employeur signataire est le représentant de la structure
-        # d'accueil (recopié dans employer_contact_email), pas l'employeur coordinateur.
-        if shared_offer_agreement?
-          recipients << employer_contact_email if employer_contact_email.present?
-        elsif employer
-          recipients << employer.email
-        end
+        recipients << employer.email if employer
       end
       recipients
     end
@@ -78,7 +64,7 @@ module InternshipAgreementSignaturable
     def ready_to_sign?(user:)
       return false if signed_by?(user:) || !user.can_sign?(self)
       return false unless aasm_state.to_s.in?(%w[validated signatures_started])
-      return false if user.employer_like? && legacy_multi? && pre_selected_for_signature
+      return false if user.employer_like? && from_multi? && pre_selected_for_signature
       true
     end
 

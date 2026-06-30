@@ -97,6 +97,25 @@ class InternshipApplicationSharedAgreementsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'dispatch_multi_agreements_signature pour une convention partagée n\'invite que sa structure' do
+    offer = build_shared_offer
+    application = build_validated_application(offer)
+    application.create_agreement
+    corp1 = offer.corporations.find_by(period: 1)
+    agreement_1 = application.internship_agreements.kept.find_by(corporation_id: corp1.id)
+
+    builder = Builders::SignatureBuilder.new(user: offer.employer, context: :web, params: {})
+
+    assert_difference -> { CorporationInternshipAgreement.where(internship_agreement_id: agreement_1.id).count }, 1 do
+      builder.dispatch_multi_agreements_signature(internship_agreement_ids: agreement_1.id.to_s)
+    end
+
+    cias = CorporationInternshipAgreement.where(internship_agreement_id: agreement_1.id)
+    assert_equal [corp1.id], cias.pluck(:corporation_id),
+                 "une convention partagée ne doit créer la CIA que pour SA structure"
+    assert agreement_1.reload.pre_selected_for_signature?
+  end
+
   test "l'unicité autorise 2 conventions par candidature mais 1 seule par structure" do
     offer = build_shared_offer
     application = build_validated_application(offer)
