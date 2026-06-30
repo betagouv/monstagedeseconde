@@ -68,6 +68,81 @@ module Dashboard::MultiStepper::MultiCorporations
 
       assert_match 'renseignées et validées', response.body
     end
+
+    test 'POST #create persists the period' do
+      post dashboard_multi_stepper_multi_corporation_corporations_path(@multi_corporation),
+           params: { corporation: valid_corporation_params(period: 2, latitude: 48.85, longitude: 2.35) }
+
+      assert_redirected_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_coordinator.id)
+      assert_equal 2, Corporation.last.period
+    end
+
+    test 'POST #create (html) is blocked with an alert when already full' do
+      create(:corporation, multi_corporation: @multi_corporation, period: 1)
+      create(:corporation, multi_corporation: @multi_corporation, period: 2)
+
+      assert_no_difference('Corporation.count') do
+        post dashboard_multi_stepper_multi_corporation_corporations_path(@multi_corporation),
+             params: { corporation: valid_corporation_params }
+      end
+
+      assert_redirected_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_coordinator.id)
+      assert_equal 'Les 2 structures sont déjà renseignées.', flash[:alert]
+    end
+
+    test 'POST #create with a duplicate period is rejected with the validation message' do
+      create(:corporation, multi_corporation: @multi_corporation, period: 1)
+
+      assert_no_difference('Corporation.count') do
+        post dashboard_multi_stepper_multi_corporation_corporations_path(@multi_corporation),
+             params: { corporation: valid_corporation_params(period: 1) }
+      end
+
+      assert_redirected_to new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_coordinator.id)
+      assert_match 'déjà couverte', flash[:alert]
+    end
+
+    test 'PATCH #update (html) updates the corporation' do
+      corporation = create(:corporation, multi_corporation: @multi_corporation, period: 1)
+
+      patch dashboard_multi_stepper_multi_corporation_corporation_path(@multi_corporation, corporation),
+            params: { corporation: { corporation_name: 'Structure renommée' } }
+
+      assert_redirected_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation)
+      assert_equal 'Structure renommée', corporation.reload.corporation_name
+    end
+
+    test 'DELETE #destroy (html) removes the corporation and frees its period' do
+      corporation = create(:corporation, multi_corporation: @multi_corporation, period: 1)
+
+      assert_difference('Corporation.count', -1) do
+        delete dashboard_multi_stepper_multi_corporation_corporation_path(@multi_corporation, corporation)
+      end
+
+      assert_redirected_to edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation)
+      assert_equal 1, @multi_corporation.reload.next_available_period
+    end
+
+    test 'create is forbidden for an employer who is not the owner' do
+      sign_out @employer
+      sign_in create(:employer)
+
+      assert_no_difference('Corporation.count') do
+        post dashboard_multi_stepper_multi_corporation_corporations_path(@multi_corporation),
+             params: { corporation: valid_corporation_params }
+      end
+
+      assert_redirected_to root_path
+    end
+
+    test 'create requires authentication' do
+      sign_out @employer
+
+      post dashboard_multi_stepper_multi_corporation_corporations_path(@multi_corporation),
+           params: { corporation: valid_corporation_params }
+
+      assert_redirected_to new_user_session_path
+    end
   end
 end
 
