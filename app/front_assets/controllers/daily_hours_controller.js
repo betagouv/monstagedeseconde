@@ -245,7 +245,7 @@ export default class extends Controller {
       this.toggleSelectError(this.weeklyHoursStartTarget, !this.weeklyHoursStartTarget.value);
       this.toggleSelectError(this.weeklyHoursEndTarget, !this.weeklyHoursEndTarget.value);
     }
-    // MGF-1666 : barre rouge à gauche du groupe (harmonisé avec la pause déjeuner).
+    // MGF-1666: red left bar on the group, harmonised with the lunch break field.
     if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.add('fr-input-group--error');
     if (this.hasErrorTarget) this.errorTarget.classList.remove('fr-hidden');
   }

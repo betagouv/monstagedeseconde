@@ -271,8 +271,8 @@ export default class extends Controller {
     if (this.allYearLongTarget.checked) {
       troisiemeScore = document.querySelectorAll(".custom-control-checkbox-list input").length;
     } else {
-      // MGF-1666 : compter les cases réellement cochées (robuste au chargement /
-      // à l'édition) plutôt que l'accumulateur `scores` alimenté aux clics.
+      // MGF-1666: count the actually-checked boxes (robust on load / edit) rather
+      // than the `scores` accumulator that is only updated on clicks.
       troisiemeScore = this.weekCheckboxesTargets.filter((cb) => cb.checked).length;
     }
     return troisiemeScore;
