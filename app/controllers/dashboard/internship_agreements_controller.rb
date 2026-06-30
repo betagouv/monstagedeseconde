@@ -196,6 +196,9 @@ module Dashboard
                                    { school: :school_managers }] }
              ] }
            )
+           # Trié par élève : regroupe les 2 conventions d'un stage partagé
+           # (même candidature) côte à côte dans le tableau (SFD).
+           .order(Arel.sql('users.last_name ASC, users.first_name ASC, internship_agreements.id ASC'))
     end
 
     def internship_agreement_builder
