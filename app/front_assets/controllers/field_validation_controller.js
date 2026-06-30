@@ -28,6 +28,7 @@ export default class extends Controller {
     minLengthMessage: String,
     minMessage: String,
     patternMessage: String,
+    debounce: Number,
   };
 
   connect() {
@@ -39,9 +40,15 @@ export default class extends Controller {
   }
 
   disconnect() {
+    clearTimeout(this.debounceTimer);
     if (this.form && this.boundValidateOnSubmit) {
       this.form.removeEventListener('submit', this.boundValidateOnSubmit);
     }
+  }
+
+  validateLive() {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => this.validate(), this.hasDebounceValue ? this.debounceValue : 300);
   }
 
   // A field inside a collapsed block (d-none / fr-hidden) is not validated.

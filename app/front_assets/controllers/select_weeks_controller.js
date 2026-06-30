@@ -74,6 +74,8 @@ export default class extends Controller {
       toggleContainer(this.checkboxesContainerTarget, true);
       this.computeMonthScore();
     }
+
+    requestAnimationFrame(() => this.broadcastWeeksCount(this.totalScore()));
   }
 
   fetchSchoolsNearby() {
@@ -269,7 +271,9 @@ export default class extends Controller {
     if (this.allYearLongTarget.checked) {
       troisiemeScore = document.querySelectorAll(".custom-control-checkbox-list input").length;
     } else {
-      troisiemeScore = Object.values(this.scores).reduce((a, b) => a + b);
+      // MGF-1666 : compter les cases réellement cochées (robuste au chargement /
+      // à l'édition) plutôt que l'accumulateur `scores` alimenté aux clics.
+      troisiemeScore = this.weekCheckboxesTargets.filter((cb) => cb.checked).length;
     }
     return troisiemeScore;
   }

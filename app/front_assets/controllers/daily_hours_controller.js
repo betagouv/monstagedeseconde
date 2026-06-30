@@ -10,7 +10,8 @@ export default class extends Controller {
     'presenceHint',
     'validator',
     'submitButton',
-    'error'
+    'error',
+    'errorGroup'
   ];
 
   minimumPresence = 1; // at least 1 day of presence required
@@ -244,12 +245,15 @@ export default class extends Controller {
       this.toggleSelectError(this.weeklyHoursStartTarget, !this.weeklyHoursStartTarget.value);
       this.toggleSelectError(this.weeklyHoursEndTarget, !this.weeklyHoursEndTarget.value);
     }
+    // MGF-1666 : barre rouge à gauche du groupe (harmonisé avec la pause déjeuner).
+    if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.add('fr-input-group--error');
     if (this.hasErrorTarget) this.errorTarget.classList.remove('fr-hidden');
   }
 
   clearHoursError() {
     if (this.hasWeeklyHoursStartTarget) this.toggleSelectError(this.weeklyHoursStartTarget, false);
     if (this.hasWeeklyHoursEndTarget) this.toggleSelectError(this.weeklyHoursEndTarget, false);
+    if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.remove('fr-input-group--error');
     if (this.hasErrorTarget) this.errorTarget.classList.add('fr-hidden');
   }
 

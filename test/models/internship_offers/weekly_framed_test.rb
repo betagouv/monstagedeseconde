@@ -28,6 +28,23 @@ module InternshipsOffers
       assert_not_empty internship_offer.errors[:coordinates]
     end
 
+    test 'weekly schedule requires both start and end (MGF-1666)' do
+      schedule_message = 'Veuillez renseigner une heure de début et une heure de fin de stage'
+
+      offer = InternshipOffers::WeeklyFramed.new(weekly_hours: ['09:00', ''], daily_hours: {})
+      offer.valid?
+      assert_includes offer.errors[:base], schedule_message
+
+      offer.weekly_hours = ['09:00', '17:00']
+      offer.valid?
+      assert_not_includes offer.errors[:base], schedule_message
+
+      empty_offer = InternshipOffers::WeeklyFramed.new(weekly_hours: [], daily_hours: {})
+      empty_offer.valid?
+      assert_not_empty empty_offer.errors[:weekly_hours]
+      assert_not_empty empty_offer.errors[:daily_hours]
+    end
+
     test 'fulfilled internship_offers' do
       travel_to Date.new(2024, 9, 1) do
         internship_offer = create(:weekly_internship_offer_2nde,

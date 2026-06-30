@@ -212,7 +212,7 @@
                 rows: 3,
                 value: resource.workspace_conditions,
                 maxlength: 1000,
-                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter blur->character-count#validateMin"}
+                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter input->character-count#validateMinLive blur->character-count#validateMin"}
               .fr-messages-group aria-live="polite"
                 .fr-message.fr-message--info data-character-count-target="counter"
                   | 0/1000 caractères
@@ -229,7 +229,7 @@
                 rows: 3,
                 value: resource.workspace_accessibility,
                 maxlength: 1000,
-                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter blur->character-count#validateMin"}
+                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter input->character-count#validateMinLive blur->character-count#validateMin"}
               .fr-messages-group aria-live="polite"
                 .fr-message.fr-message--info data-character-count-target="counter"
                   | 0/1000 caractères

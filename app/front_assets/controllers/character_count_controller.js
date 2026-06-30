@@ -19,6 +19,10 @@ export default class extends Controller {
     }
   }
 
+  disconnect() {
+    clearTimeout(this.debounceTimer);
+  }
+
   // MGF-1666: the field stays optional, but once the user typed something it
   // must contain at least `min` characters. Validated on blur.
   validateMin() {
@@ -28,5 +32,10 @@ export default class extends Controller {
     const tooShort = length > 0 && length < this.minValue;
     this.minErrorTarget.classList.toggle('fr-hidden', !tooShort);
     this.inputTarget.classList.toggle('fr-input--error', tooShort);
+  }
+
+  validateMinLive() {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => this.validateMin(), 300);
   }
 }

@@ -25,7 +25,7 @@ ruby:
     fv_group_attrs['data-field-validation-min-message-value'] = validate[:min_message] if validate[:min_message]
     fv_group_attrs['data-field-validation-pattern-value'] = validate[:pattern] if validate[:pattern]
     fv_group_attrs['data-field-validation-pattern-message-value'] = validate[:pattern_message] if validate[:pattern_message]
-    fv_field_data = { :'field-validation-target' => 'field', action: 'blur->field-validation#validate' }
+    fv_field_data = { :'field-validation-target' => 'field', action: 'input->field-validation#validateLive blur->field-validation#validate' }
     existing_data = (options[:data] || {}).dup
     fv_field_data[:action] = "#{existing_data[:action]} #{fv_field_data[:action]}".strip if existing_data[:action]
     options = options.merge(data: existing_data.merge(fv_field_data))

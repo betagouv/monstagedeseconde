@@ -16,6 +16,6 @@
                       min: resource.is_a?(InternshipOffer) ? (resource.internship_applications.try(:approved).try(:count) || 0) : 0,
                       data: { :'grade-target' => "maxCandidatesSource",
                               :'field-validation-target' => "field",
-                              action: "blur->field-validation#validate" }
+                              action: "input->field-validation#validateLive blur->field-validation#validate" }
   p.fr-error-text.fr-hidden data-field-validation-target="errorText"
 
