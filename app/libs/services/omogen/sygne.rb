@@ -222,11 +222,11 @@ module Services::Omogen
         sygne_eleves(code_uai, niveau: niveau).each do |eleve|
           next if eleve.grade.blank? || eleve.classe.blank?
 
-          key = [eleve.classe, eleve.grade.id]
+          key = [ eleve.classe, eleve.grade.id ]
           tally[key][:count] += 1
           tally[key][:grade_id] = eleve.grade.id
-          tally[key][:female] += 1 if eleve.gender == 'f'
-          tally[key][:male] += 1 if eleve.gender == 'm'
+          tally[key][:female] += 1 if eleve.gender == "f"
+          tally[key][:male] += 1 if eleve.gender == "m"
         end
       end
       tally
@@ -276,8 +276,8 @@ module Services::Omogen
 
       {
         ine: payload[:ine] || ine,
-        nom: payload[:nom],
-        prenom: payload[:prenom],
+        nom: payload[:nomFamille] || payload[:nom],
+        prenom: payload[:prenom1] || payload[:prenom],
         dateNaissance: payload[:dateNaissance],
         codeSexe: payload[:codeSexe],
         codeUai: sco[:codeUai],

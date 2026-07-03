@@ -24,15 +24,15 @@ class Grade < ApplicationRecord
   alias troisieme_ou_quatrieme? troisieme_or_quatrieme?
 
   def seconde?
-    short_name == 'seconde'
+    short_name == "seconde"
   end
 
   def self.troisieme
-    fetch_by_short_name('troisieme').first
+    fetch_by_short_name("troisieme").first
   end
 
   def self.quatrieme
-    fetch_by_short_name('quatrieme').first
+    fetch_by_short_name("quatrieme").first
   end
 
   def self.troisieme_et_quatrieme
@@ -44,7 +44,7 @@ class Grade < ApplicationRecord
   end
 
   def self.seconde
-    fetch_by_short_name('seconde').first
+    fetch_by_short_name("seconde").first
   end
 
   def self.college
@@ -52,11 +52,11 @@ class Grade < ApplicationRecord
   end
 
   def self.lycee
-    fetch_by_short_name('seconde')
+    fetch_by_short_name("seconde")
   end
 
   def self.options_for_select(current_user)
-    complete_list = all.map { |grade| [grade.name, grade.id] }
+    complete_list = all.map { |grade| [ grade.name, grade.id ] }
     return complete_list if current_user.nil? || !current_user.student?
 
     complete_list.filter { |grade| grade[1] == current_user.grade_id }
@@ -78,14 +78,18 @@ class Grade < ApplicationRecord
     false
   end
 
+  def self.mefstat4_authorized?(niveau)
+    niveau.present? && Services::Omogen::Sygne::MEFSTAT4_CODES.include?(niveau)
+  end
+
   def self.grade_by_mef(code_mef:)
     case code_mef[0..2]
-    when '102', '166'
-      Grade.find_by(short_name: 'quatrieme')
-    when '103', '104', '110', '131', '167'
-      Grade.find_by(short_name: 'troisieme')
-    when '200', '210'
-      Grade.find_by(short_name: 'seconde')
+    when "102", "166"
+      Grade.find_by(short_name: "quatrieme")
+    when "103", "104", "110", "131", "167"
+      Grade.find_by(short_name: "troisieme")
+    when "200", "210"
+      Grade.find_by(short_name: "seconde")
     else
       nil
     end
