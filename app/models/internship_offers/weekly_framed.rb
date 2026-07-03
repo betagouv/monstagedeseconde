@@ -125,9 +125,18 @@ module InternshipOffers
 
     def schedules_ok?
       weekly_ok = weekly_hours.present? && weekly_hours.reject(&:blank?).size >= 2
-      daily_ok  = daily_hours.present? && daily_hours.any? { |_, v| v.first.present? && v.second.present? }
 
-      weekly_ok || daily_ok
+      weekly_ok || daily_hours_ok?
+    end
+
+    def daily_hours_ok?
+      return false if daily_hours.blank?
+
+      entries = daily_hours.values
+      no_partial_day = entries.all? { |v| v.first.blank? == v.second.blank? }
+      complete_day   = entries.any? { |v| v.first.present? && v.second.present? }
+
+      no_partial_day && complete_day
     end
 
     def copy_entreprise_full_address

@@ -120,19 +120,20 @@ export default class extends Controller {
   }
 
   checkEnoughPresence() {
-    let daysCounter = 0;
+    let completeDays = 0;
+    let partialDays = 0;
     this.dailyHoursStartTargets.forEach((dailyHoursStartTarget, i) => {
-      if (dailyHoursStartTarget.value !== '' && this.dailyHoursEndTargets[i].value !== '') {
-        daysCounter += 1;
+      const hasStart = dailyHoursStartTarget.value !== '';
+      const hasEnd = this.dailyHoursEndTargets[i].value !== '';
+      if (hasStart && hasEnd) {
+        completeDays += 1;
+      } else if (hasStart || hasEnd) {
+        partialDays += 1;
       }
     });
-    const enoughPresence = daysCounter >= this.minimumPresence;
+    const enoughPresence = completeDays >= this.minimumPresence && partialDays === 0;
     if (this.hasPresenceHintTarget) {
-      if (enoughPresence) {
-        this.presenceHintTarget.classList.add('d-none');
-      } else {
-        this.presenceHintTarget.classList.remove('d-none');
-      }
+      this.presenceHintTarget.classList.toggle('d-none', enoughPresence);
     }
     if (this.hasValidatorTarget) {
       const newValue = enoughPresence ? 'day_selected' : '';
@@ -211,9 +212,6 @@ export default class extends Controller {
     this.weeklyHoursStartTarget.value = '';
     this.weeklyHoursEndTarget.value = '';
   }
-
-  // MGF-1666 : les horaires sont obligatoires. Affiche/efface l'erreur et renvoie
-  // sa validité. Appelé par grade#onValidate au clic sur « Publier l'offre ».
   isWeeklyMode() {
     const checkbox = document.getElementById('weekly_planning');
     return checkbox ? checkbox.checked : true;
@@ -244,8 +242,15 @@ export default class extends Controller {
     if (this.isWeeklyMode()) {
       this.toggleSelectError(this.weeklyHoursStartTarget, !this.weeklyHoursStartTarget.value);
       this.toggleSelectError(this.weeklyHoursEndTarget, !this.weeklyHoursEndTarget.value);
+    } else {
+      this.dailyHoursStartTargets.forEach((startTarget, i) => {
+        const endTarget = this.dailyHoursEndTargets[i];
+        const partial = (startTarget.value !== '') !== (endTarget.value !== '');
+        this.toggleSelectError(startTarget, partial && startTarget.value === '');
+        this.toggleSelectError(endTarget, partial && endTarget.value === '');
+      });
     }
-    // MGF-1666: red left bar on the group, harmonised with the lunch break field.
+    
     if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.add('fr-input-group--error');
     if (this.hasErrorTarget) this.errorTarget.classList.remove('fr-hidden');
   }
@@ -253,6 +258,8 @@ export default class extends Controller {
   clearHoursError() {
     if (this.hasWeeklyHoursStartTarget) this.toggleSelectError(this.weeklyHoursStartTarget, false);
     if (this.hasWeeklyHoursEndTarget) this.toggleSelectError(this.weeklyHoursEndTarget, false);
+    this.dailyHoursStartTargets.forEach((t) => this.toggleSelectError(t, false));
+    this.dailyHoursEndTargets.forEach((t) => this.toggleSelectError(t, false));
     if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.remove('fr-input-group--error');
     if (this.hasErrorTarget) this.errorTarget.classList.add('fr-hidden');
   }
