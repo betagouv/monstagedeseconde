@@ -21,7 +21,7 @@ module Dashboard
           sign_in(student)
           visit internship_offers_path
           click_on internship_offer.title
-          all(".fr-btn", text: "Postuler").first.click
+          first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
           # fill_in 'Adresse électronique (email)', with: new_email
           # click_on 'Valider'
@@ -49,7 +49,7 @@ module Dashboard
         sign_in(student)
         visit internship_offers_path
         click_on second_internship_offer.title
-        all(".fr-btn", text: "Postuler").first.click
+        first(".fr-btn", text: "Postuler").click
         form_student_value = find('input[name="internship_application[student_email]"]').value
         assert_equal former_student_email, form_student_value
       end
@@ -68,7 +68,7 @@ module Dashboard
         sign_in(student)
         visit internship_offers_path
         click_on second_internship_offer.title
-        all(".fr-btn", text: "Postuler").first.click
+        first(".fr-btn", text: "Postuler").click
 
         # TODO: This test is not working on CI, but works locally
         # form_student_value = find('input[name="internship_application[student_phone]"]').value.gsub(/\s+/, '')
@@ -82,7 +82,7 @@ module Dashboard
           student = application.student
           sign_in(student)
           visit internship_offer_path(internship_offer)
-          all("a", text: "Postuler").first.click
+          first("a", text: "Postuler").click
           assert_text "Votre candidature"
         end
       end
@@ -93,7 +93,7 @@ module Dashboard
         student = application.student
         sign_in(student)
         visit internship_offer_path(internship_offer)
-        all("a", text: "Postuler").first.click
+        first("a", text: "Postuler").click
         assert_text "Votre candidature"
       end
 
@@ -105,7 +105,7 @@ module Dashboard
           student = application.student
           sign_in(student)
           visit internship_offer_path(internship_offer)
-          all("a", text: "Postuler").first.click
+          first("a", text: "Postuler").click
           assert_text "Votre candidature"
         end
       end
@@ -121,7 +121,7 @@ module Dashboard
           sign_in(student)
           visit internship_offers_path
           click_on internship_offer.title
-          all(".fr-btn", text: "Postuler").first.click
+          first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
           # fill_in 'Adresse électronique (email)', with: new_email
           click_on "Valider ma candidature"
@@ -142,7 +142,7 @@ module Dashboard
           # new_email = 'tests@free.fr'
           sign_in(student)
           visit internship_offer_path(internship_offer)
-          all(".fr-btn", text: "Postuler").first.click
+          first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
           # fill_in 'Adresse électronique (email)', with: new_email
           click_on "Valider ma candidature"
@@ -163,7 +163,7 @@ module Dashboard
           # new_email = 'tests@free.fr'
           sign_in(student)
           visit internship_offer_path(internship_offer)
-          all(".fr-btn", text: "Postuler").first.click
+          first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
           fill_in "Numéro de portable élève ou responsable légal", with: "1" * 15
           # fill_in 'Adresse électronique (email)', with: new_email
@@ -182,7 +182,7 @@ module Dashboard
           student = create(:student, :seconde, school: school, email: "test@free.fr", phone: "+ 330620554411")
           sign_in(student)
           visit internship_offer_path(internship_offer)
-          all(".fr-btn", text: "Postuler").first.click
+          first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
           click_on "Valider ma candidature"
           click_on "Envoyer ma candidature"
@@ -216,7 +216,7 @@ module Dashboard
           student = create(:student, :seconde, school: school, email: "test@free.fr", phone: "+ 330620554411")
           sign_in(student)
           visit internship_offer_path(internship_offer)
-          all(".fr-btn", text: "Postuler").first.click
+          first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
           click_on "Valider ma candidature"
           click_on "Envoyer ma candidature"
