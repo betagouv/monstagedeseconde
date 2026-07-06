@@ -49,7 +49,9 @@ Minitest::Retry.use!(
     Selenium::WebDriver::Error,
     # React islands (SirenInput, AddressInput…) sometimes haven't finished
     # mounting when Capybara looks for their fields → transient ElementNotFound.
-    Capybara::ElementNotFound
+    # `first`/`assert_selector` raise ExpectationNotMet in the same situations.
+    Capybara::ElementNotFound,
+    Capybara::ExpectationNotMet
   ]
 )
 # Minitest::Reporters.use!

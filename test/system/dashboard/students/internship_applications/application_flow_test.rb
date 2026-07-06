@@ -88,13 +88,15 @@ module Dashboard
       end
 
       test "student with validated application on second week can apply on first week" do
-        application = create(:weekly_internship_application, :second_june_week, :approved)
-        internship_offer = create(:weekly_internship_offer_2nde, :week_1)
-        student = application.student
-        sign_in(student)
-        visit internship_offer_path(internship_offer)
-        first("a", text: "Postuler").click
-        assert_text "Votre candidature"
+        travel_to Date.new(2024, 10, 1) do
+          application = create(:weekly_internship_application, :second_june_week, :approved)
+          internship_offer = create(:weekly_internship_offer_2nde, :week_1)
+          student = application.student
+          sign_in(student)
+          visit internship_offer_path(internship_offer)
+          first("a", text: "Postuler").click
+          assert_text "Votre candidature"
+        end
       end
 
       test "student with validated application on second week can apply on first week with a 3e-2e offer" do
