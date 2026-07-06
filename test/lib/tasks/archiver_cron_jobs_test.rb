@@ -45,6 +45,27 @@ class ArchiverCronJobsTest < ActiveSupport::TestCase
     end
   end
 
+  test 'do not notify employer with old offers but recent sign in' do
+    if ENV.fetch('RUN_BRITTLE_TEST', false)
+      current_week_id = Week.current.id
+      more_than_2_years_ago_in_weeks = 2 * 52 + 3
+      older_weeks = [Week.find(current_week_id - more_than_2_years_ago_in_weeks - 1), Week.find(current_week_id - more_than_2_years_ago_in_weeks)]
+      offer = create(:weekly_internship_offer,
+                     weeks: older_weeks)
+      # signed in recently -> would be spared by CleaningEmployerJob anyway, so no warning either
+      offer.employer.update_columns(current_sign_in_at: 1.week.ago)
+      assert_no_emails do
+        assert_no_enqueued_jobs do
+          Monstage::Application.load_tasks
+          Rake::Task['cleaning:archive_idle_employers'].invoke
+        end
+      end
+      # no delete_all cleanup: tests are transactional and delete_all violates
+      # the internship_offer_grades FK anyway
+      clear_enqueued_jobs
+    end
+  end
+
   test 'do not notify employer whose offers are not old enough at least for one' do
     if ENV.fetch('RUN_BRITTLE_TEST', false)
       too_old = 2.years.ago - 10.day
