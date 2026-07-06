@@ -90,7 +90,7 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
 
       sign_in(employer)
       visit internship_offer_path(internship_offer, origine: 'dashboard')
-      assert_selector 'p.fr-badge', text: 'Offre archivée'
+      assert_selector 'p.fr-badge', text: /offre archivée/i
       assert_selector '.label', text: "Archivée. Dupliquez l'annonce pour la republier"
       assert_selector 'a.test-duplicate-button'
     end

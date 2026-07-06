@@ -26,9 +26,12 @@
                         title: 'intitulé du stage',
                         object: form.object,
                         field_type: :text_field,
+                        validate: { required: true,
+                                    required_message: "Veuillez indiquer le ou les métiers qui seront observables par l'élève" },
                         options: { maxlength: 150,
                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange input->fill-card#offerTitleChanged",
                                           :'mandatory-fields-with-coordinates-target' => "mandatoryField",
+                                          :'mf-min-length' => 1,
                                           :'fill-card-target' => "offerTitleInput"} }
             - content = "Conseil : nommez le(s) métiers qui sont concernés par le stage, cela facilitera la recherche des élèves." \
                         " Attention à l'utilisation des acronymes. Les 50 premiers caractères de cette zone" \
@@ -50,9 +53,14 @@
                         required: true,
                         title: 'Activités prévues au cours du stage',
                         object: form.object,
-                        options: { rows: 5, maxlength: InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT,
+                        validate: { required: true,
+                                    min_length: InternshipOffer::DESCRIPTION_MIN_CHAR_COUNT,
+                                    required_message: "Veuillez décrire les activités qui seront proposées à l’élève",
+                                    min_length_message: "Veuillez saisir au moins #{InternshipOffer::DESCRIPTION_MIN_CHAR_COUNT} caractères" },
+                        options: { rows: 5 ,
                                   data: { action: "input->mandatory-fields-with-coordinates#fieldChange",
-                                          :'mandatory-fields-with-coordinates-target' => "mandatoryField"}},
+                                          :'mandatory-fields-with-coordinates-target' => "mandatoryField",
+                                          :'mf-min-length' => InternshipOffer::DESCRIPTION_MIN_CHAR_COUNT}},
                         field_type: :text_area
               .fr-alert.fr-alert--error.fr-alert--sm.d-none.fr-mt-1w data-max-length-input-target="maxLengthMessage"
                 |La description est trop longue
@@ -91,8 +99,7 @@
                     = link_to 'Annuler', dashboard_internship_offers_path, class: 'fr-btn fr-btn--secondary fr-mr-3w'
                     = button_tag :submit,
                                 class: 'fr-btn',
-                                data: { :'mandatory-fields-with-coordinates-target' => "disabledField",
-                                        :'internship_occupation-form-target' => "submitButton"} do
+                                data: { :'internship_occupation-form-target' => "submitButton"} do
                       = "Suivant "
 
 

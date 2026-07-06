@@ -93,7 +93,7 @@
                             id: "group-choice",
                             required: false,
                             :'data-ministry-fields-target' => 'selectGroupName',
-                            :'data-action' => 'change->entreprise-form#checkForm'
+                            :'data-action' => 'change->entreprise-form#checkForm blur->entreprise-form#validateGroupChoice'
           div [class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
                data-ministry-fields-target="sectorBlock"
                id="#{resource.class.name.split('::').first.gsub(/s\Z/, '').underscore}_sector_id-block" ]
@@ -104,7 +104,8 @@
                             options_from_collection_for_select(Sector.all.order(:name), :id, :name, resource&.sector&.id),
                             { prompt: sectors_options_for_default },
                             class: "fr-select sector_list",
-                            required: false
+                            required: false,
+                            :'data-action' => 'change->entreprise-form#validateSector blur->entreprise-form#validateSector'
           - if resource.persisted? || @duplication
             div class="row fr-mt-3w"
               .col-12
@@ -167,6 +168,8 @@
                         required: true,
                         title: label,
                         object: form.object,
+                        validate: { required: true,
+                                    required_message: "Veuillez vérifier l’adresse du siège de votre établissement" },
                         options: { maxlength: 200 },
                         value: resource&.entreprise_chosen_full_address
               .fr-mt-2v.d-flex.align-items-center
@@ -187,6 +190,10 @@
                         object: form.object,
                         hint: hint,
                         pattern: phone_pattern,
+                        validate: { required: true,
+                                    pattern: phone_pattern,
+                                    required_message: "Veuillez indiquer le numéro de téléphone du dépositaire",
+                                    pattern_message: "Le numéro de téléphone saisi n’est pas valide" },
                         value: resource.try(:contact_phone),
                         options: { maxlength: 20 }
 
@@ -196,7 +203,7 @@
                 | Les informations liées à votre environnement de travail
               .small
                 | Afin de mieux informer les élèves, nous vous proposons de préciser brièvement et si vous le souhaitez les conditions d’accueil dans vos locaux en répondant à ces deux questions
-          div data-controller="character-count" data-character-count-max-value="1000" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+          div data-controller="character-count" data-character-count-max-value="1000" data-character-count-min-value="10" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
             .col-12
               = form.label :workspace_conditions, class: 'fr-label' do
                 = "Décrivez l'environnement de travail dans lequel l'élève va évoluer (open space, niveau sonore, luminosité…)"
@@ -205,13 +212,15 @@
                 rows: 3,
                 value: resource.workspace_conditions,
                 maxlength: 1000,
-                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter"}
+                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter input->character-count#validateMinLive blur->character-count#validateMin"}
               .fr-messages-group aria-live="polite"
                 .fr-message.fr-message--info data-character-count-target="counter"
                   | 0/1000 caractères
                 .fr-message.fr-message--error.fr-hidden data-character-count-target="error"
                   | Le texte ne doit pas dépasser 1000 caractères
-          div data-controller="character-count" data-character-count-max-value="1000" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
+                .fr-message.fr-message--error.fr-hidden data-character-count-target="minError"
+                  | Veuillez saisir au moins 10 caractères
+          div data-controller="character-count" data-character-count-max-value="1000" data-character-count-min-value="10" class="row fr-mt-3w bloc-tooggle #{form.object.persisted? ? '' : 'fr-hidden'}"
             .col-12
               = form.label :workspace_accessibility, class: 'fr-label' do
                 = "Parlez-nous de l’accessibilité du poste (déplacement dans les locaux, informations sonores et/ou visuelles, présence d’un ascenseur…)"
@@ -220,12 +229,14 @@
                 rows: 3,
                 value: resource.workspace_accessibility,
                 maxlength: 1000,
-                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter"}
+                data: {:'character_count_target' => "input", :'action' => "input->character-count#updateCounter input->character-count#validateMinLive blur->character-count#validateMin"}
               .fr-messages-group aria-live="polite"
                 .fr-message.fr-message--info data-character-count-target="counter"
                   | 0/1000 caractères
                 .fr-message.fr-message--error.fr-hidden data-character-count-target="error"
                   | Le texte ne doit pas dépasser 1000 caractères
+                .fr-message.fr-message--error.fr-hidden data-character-count-target="minError"
+                  | Veuillez saisir au moins 10 caractères
 
 
     - if submit_button
@@ -235,8 +246,7 @@
                   class: 'fr-btn fr-btn--secondary fr-mr-3w'
         = button_tag :submit,
                      class: 'fr-btn',
-                     :'data-entreprise-form-target' => "submitButton",
-                     :'data-mandatory-fileds-target' => "disabledField"  do
+                     :'data-entreprise-form-target' => "submitButton"  do
           = "Suivant "
 
 .fr-mb-4w

@@ -26,10 +26,18 @@ export default class extends Controller {
   areAllMandatoryFieldsFilled(){
     let allMandatoryFieldsAreFilled = true;
     this.mandatoryFieldTargets.forEach((field) => {
-      if (field.value.length <= this.minimumLengthValue) {
+      // Per-field minimum length (data-mf-min-length) so each field uses its own
+      // rule (e.g. title just non-empty, description >= 10) instead of a single
+      // shared minimum. Falls back to the controller-wide minimumLength.
+      const perFieldMin = field.dataset.mfMinLength;
+      const minLength = (perFieldMin !== undefined && perFieldMin !== '')
+        ? parseInt(perFieldMin, 10)
+        : this.minimumLengthValue;
+
+      if (field.value.trim().length < minLength) {
         allMandatoryFieldsAreFilled = false;
       }
-      if(field.value.length > this.maximumLengthValue) {
+      if (field.value.length > this.maximumLengthValue) {
         allMandatoryFieldsAreFilled = false;
       }
     });

@@ -84,7 +84,7 @@ module Presenters
       def state_validated_by_employer
         { label:   student_or_school? ? "acceptée par l'entreprise" : "en attente de réponse",
           badge:   student? ? "success" : "info",
-          tab:     "Acceptées par l'offreur, à confirmer par l'élève",
+          tab:     "Acceptées par l’offreur, à confirmer par l’élève",
           actions: [ action(label: student? ? "Répondre" : "Voir",
                            level: student? ? "primary" : "tertiary") ] }
       end

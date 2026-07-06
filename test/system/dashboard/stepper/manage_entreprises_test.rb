@@ -48,6 +48,10 @@ class ManageEntreprisesTest < ApplicationSystemTestCase
     visit new_dashboard_stepper_entreprise_path(internship_occupation_id: internship_occupation.id)
     fill_in_entreprise_form(group:, sector: nil)
     find("button[type='submit']").click
+    # MGF-1666 : le secteur manquant est signalé en rouge au clic (validation
+    # client), sans soumettre le formulaire.
+    assert_selector('select.sector_list.fr-select--error')
+    assert_selector('#sector-choice-error', text: /secteur/i)
     assert_equal 0, Entreprise.all.count
     find(".fr-stepper__steps[data-fr-current-step='2'][data-fr-steps='3']")
   end

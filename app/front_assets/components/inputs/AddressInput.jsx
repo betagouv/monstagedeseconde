@@ -37,10 +37,18 @@ export default function AddressInput({
   const [searchAddressVisible, setSearchAddressVisible] = useState(true);
   const [validatedAddress, setValidatedAddress] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
+  // MGF-1666: inline error when the address field is left without a valid selection.
+  const [addressTouched, setAddressTouched] = useState(false);
+
+  const hasValidCoordinates = Boolean(latitude) && Boolean(longitude);
+  // A persisted / duplicated record already has valid coordinates server-side,
+  // so the address is only enforced on submit for brand-new records.
+  const isExistingRecord = Boolean(addressFieldsVisible || editMode || isDuplication);
 
   const mapRef = useRef(null);
   const markerRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const coordsRef = useRef({ lat: latitude, lng: longitude });
 
   const [fullAddressDebounced] = useDebounce(fullAddress, 100);
 
@@ -208,6 +216,8 @@ export default function AddressInput({
   
   const inputChange = (event) => {
     setFullAddress(event.target.value);
+    // Clear the inline error as soon as the user resumes typing a new search.
+    setAddressTouched(false);
   };
 
   const resetField = (e) => {
@@ -273,7 +283,27 @@ export default function AddressInput({
 
   useEffect(() => {
     broadcast(newCoordinatesChanged({ latitude, longitude }));
+    coordsRef.current = { lat: latitude, lng: longitude };
   }, [latitude, longitude]);
+
+  // MGF-1666: the "Suivant" button is always active. On submit, block and show
+  // the error when a brand-new record has no valid address (coordinates still 0).
+  useEffect(() => {
+    if (isExistingRecord) return undefined;
+    const container = document.querySelector('.address-input-container');
+    const form = container ? container.closest('form') : null;
+    if (!form) return undefined;
+
+    const onSubmit = (event) => {
+      const { lat, lng } = coordsRef.current;
+      if (!(lat && lng)) {
+        event.preventDefault();
+        setAddressTouched(true);
+      }
+    };
+    form.addEventListener('submit', onSubmit);
+    return () => form.removeEventListener('submit', onSubmit);
+  }, [isExistingRecord]);
 
   useEffect(() => {
     if (mapVisible && mapRef.current) {
@@ -327,8 +357,11 @@ export default function AddressInput({
                         {...getInputProps({
                           onChange: inputChange,
                           onClick: resetField,
+                          onBlur: () => setAddressTouched(true),
                           value: fullAddress,
-                          className: 'fr-input flex-grow-1',
+                          className: `fr-input flex-grow-1${
+                            addressTouched && !hasValidCoordinates ? ' fr-input--error' : ''
+                          }`,
                           name: `${resourceName}_autocomplete`,
                           id: `${resourceName}_autocomplete`,
                           placeholder: '',
@@ -344,6 +377,12 @@ export default function AddressInput({
                         </a>
                       </div>
                     </div>
+
+                    { addressTouched && !hasValidCoordinates && (
+                      <p className="fr-error-text">
+                        Veuillez sélectionner une adresse valide dans la liste de suggestions
+                      </p>
+                    )}
 
                     <div className="search-in-place bg-white shadow">
                       <ul

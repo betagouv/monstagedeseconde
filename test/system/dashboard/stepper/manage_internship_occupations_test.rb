@@ -17,6 +17,8 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       travel_to(Date.new(2024, 3, 1)) do
         visit employer.custom_dashboard_path
         find('#test-create-offer').click
+        choose('radio-rich-0', allow_label_click: true)
+        click_on 'Commencer'
         fill_in_internship_occupation_form
         find('li#downshift-0-item-0', wait: 4).click
         find('span', text: 'Étape 1 sur 3')
@@ -33,6 +35,8 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
     travel_to(Date.new(2024, 3, 1)) do
       visit employer.custom_dashboard_path
       find('#test-create-offer').click
+      choose('radio-rich-0', allow_label_click: true)
+      click_on 'Commencer'
       fill_in_internship_occupation_form(full_address: 'fdfqq5fdsfqdsfdssfqsdf')
       assert_raises(Capybara::ElementNotFound) { find('li#downshift-0-item-0') }
     end
@@ -55,6 +59,28 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
     end
   end
 
+  # MGF-1666 : le bouton de validation n'est plus grisé. Cliquer dessus déclenche
+  # toutes les validations, qui s'affichent en rouge, et bloque l'avancement.
+  test 'submit button stays active and clicking it surfaces inline errors' do
+    employer = create(:employer)
+    sign_in(employer)
+    travel_to(Date.new(2024, 3, 1)) do
+      visit employer.custom_dashboard_path
+      find('#test-create-offer').click
+      choose('radio-rich-0', allow_label_click: true)
+      click_on 'Commencer'
+      find('span', text: 'Étape 1 sur 3')
+
+      # le bouton n'est jamais désactivé
+      assert_no_selector("button[type='submit'][disabled]")
+
+      # cliquer sans rien remplir affiche les messages d'erreur et reste à l'étape 1
+      click_on 'Suivant'
+      assert_selector('.fr-error-text', visible: true)
+      assert_selector('span', text: 'Étape 1 sur 3')
+    end
+  end
+
   test 'update internship_occupation fails gracefuly when employer description is too long' do
     employer = create(:employer)
     internship_occupation = create(:internship_occupation, employer:)
@@ -63,8 +89,10 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       visit edit_dashboard_stepper_internship_occupation_path(internship_occupation)
       as = 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 2)
       fill_in_internship_occupation_form(description: as, full_address: '')
+      # MGF-1666: le bouton n'est plus grisé ; la trop grande longueur est
+      # signalée par l'alerte (et bloquée côté serveur si on soumet).
       assert_equal 'La description est trop longue', find('.fr-alert.fr-alert--error').text
-      find('button[name="button"][type="submit"][disabled]')
+      assert_no_selector('button[name="button"][type="submit"][disabled]')
     end
   end
 end

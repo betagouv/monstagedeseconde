@@ -46,10 +46,30 @@ export default function SirenInput({
   const [formerPublicValue, setFormerPublicValue] = useState(
     lastPublicValue || false
   );
+  // MGF-1666 : message d'erreur DSFR affiché au blur (champ vide / SIRET invalide).
+  const [blurError, setBlurError] = useState(null);
 
   const inputChange = (event) => {
     setSiret(event.target.value);
     setEmployerNameStr(event.target.value);
+    setBlurError(null);
+  };
+
+  const handleBlur = () => {
+    const cleanSiret = siret.replace(/\s/g, "");
+    if (siret.trim().length === 0) {
+      setBlurError(
+        "Veuillez indiquer le nom ou le SIRET de la structure d'accueil"
+      );
+    } else if (
+      /^\d+$/.test(cleanSiret) &&
+      cleanSiret.length === 14 &&
+      !isAValidSiret(cleanSiret)
+    ) {
+      setBlurError("Le SIRET saisi n'est pas valide");
+    } else {
+      setBlurError(null);
+    }
   };
 
   const searchCompanyBySiret = (siret) => {
@@ -266,6 +286,7 @@ export default function SirenInput({
 
   const onChange = (selection) => {
     show_form(true);
+    setBlurError(null);
     // is_public is known when user searched by name and unknown when user searched by siret
     const is_public = selection.is_public;
     const zipcode = selection.adresseEtablissement.codePostalEtablissement;
@@ -526,8 +547,9 @@ export default function SirenInput({
                   <input
                     {...getInputProps({
                       onChange: inputChange,
+                      onBlur: handleBlur,
                       value: employerNameStr,
-                      className: "fr-input",
+                      className: `fr-input${blurError ? " fr-input--error" : ""}`,
                       maxLength: 140,
                       id: `${resourceName}_siren`,
                       placeholder:
@@ -544,13 +566,21 @@ export default function SirenInput({
                   ></button>
                 </div>
               </div>
-              <div
-                className="alerte alert-danger siren-error p-2 mt-2 fr-hidden"
+              {blurError && (
+                <p
+                  className="fr-error-text"
+                  id={`${resourceName}_siren-blur-error`}
+                >
+                  {blurError}
+                </p>
+              )}
+              <p
+                className="fr-error-text siren-error fr-hidden"
                 id="siren-error"
                 role="alert"
               >
-                <small>Aucune réponse trouvée, essayez avec le SIRET.</small>
-              </div>
+                Aucune réponse trouvée, essayez avec le SIRET.
+              </p>
               {!isOpen && siretIndications}
               <div className="search-in-sirene bg-white shadow">
                 <ul
