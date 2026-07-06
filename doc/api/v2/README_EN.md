@@ -251,7 +251,7 @@ In addition to these general errors, request-specific errors will be detailed fo
 *Body parameters:*
 
 * **internship_offer.title** *(string, required* ≤ 150 characters)  
-* **internship_offer.description** *(text, required* ≤ 500 characters)  
+* **internship_offer.description** *(text, required* ≤ 1500 characters)  
 * **internship_offer.employer_name** *(string, required* ≤ 150 characters)  
 * **internship_offer.employer_description** *(string, required* ≤ 275 characters)  
 * **internship_offer.employer_website** *(string, optional* ≤ 560 characters)  
@@ -348,7 +348,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 * **remote_id** *(string, required)*  
 * **internship_offer.title** *(string)*  
-* **internship_offer.description** *(text, ≤ 500 characters)*  
+* **internship_offer.description** *(text, ≤ 1500 characters)*  
 * **internship_offer.employer_name** *(string)*  
 * **internship_offer.employer_description** *(string, ≤ 275 characters)*  
 * **internship_offer.employer_website** *(string)*  

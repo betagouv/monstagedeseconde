@@ -256,7 +256,7 @@ En plus de ses erreurs transverses, les erreurs spécifiques à un appel seront 
 *Paramètres de body :*
 
 * **internship_offer.title** *(string, required*<= 150 caractères)
-* **internship_offer.description** *(text, required *<= 500 caractères)
+* **internship_offer.description** *(text, required *<= 1500 caractères)
 * **internship_offer.employer_name** *(string, required*<= 150 caractères)
 * **internship_offer.employer_description** *(string, required *<= 275 caractères)
 * **internship_offer.employer_website** *(string, optional*<= 560 caractères)
@@ -358,7 +358,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 
 * **remote_id** *(string, required)*
 * **internship_offer.title** *(string)*
-* **internship_offer.description** *(text,  <= 500 caractères)*
+* **internship_offer.description** *(text,  <= 1500 caractères)*
 * **internship_offer.employer_name** *(string)*
 * **internship_offer.employer_description** *(string, <= 275 caractères)*
 * **internship_offer.employer_website** *(string)*

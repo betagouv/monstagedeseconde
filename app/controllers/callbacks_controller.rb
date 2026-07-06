@@ -7,16 +7,16 @@ class CallbacksController < ApplicationController
       state = params[:state]
       nonce = params[:nonce]
       user_info = Services::FimConnection.new(code, state, nonce).get_user_info
-      Rails.logger.info('--------------')
-      Rails.logger.info('FIM Connection')
+      Rails.logger.info("--------------")
+      Rails.logger.info("FIM Connection")
       Rails.logger.info("User info FIM : #{user_info.inspect}")
-      Rails.logger.info('--------------')
-      redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
+      Rails.logger.info("--------------")
+      redirect_to root_path, notice: "Connexion impossible" and return unless user_info.present?
 
-      user_info_email = user_info['email'].downcase
+      user_info_email = user_info["email"].downcase
       user_invited = Invitation.exists?(email: user_info_email)
 
-      unless School.exists?(code_uai: user_info['rne']) || user_invited
+      unless School.exists?(code_uai: user_info["rne"]) || user_invited
         redirect_to root_path, alert: "Établissement non trouvé (UAI: #{user_info['rne']})" and return
       end
 
@@ -28,25 +28,25 @@ class CallbacksController < ApplicationController
         user.fim_user_info = user_info
         user.save if user.changed?
         sign_in(user)
-        redirect_to user.custom_dashboard_path, notice: 'Vous êtes bien connecté'
+        redirect_to user.custom_dashboard_path, notice: "Vous êtes bien connecté"
       else
-        initial_user_info_rne = ''
+        initial_user_info_rne = ""
         if user_invited
-          initial_user_info_rne = user_info['rne']
+          initial_user_info_rne = user_info["rne"]
           inviter_uai_code = Invitation.find_by(email: user_info_email).inviter_school_uai_code
-          user_info['rne'] = inviter_uai_code
+          user_info["rne"] = inviter_uai_code
         end
 
         Rails.logger.info("FIM : User does not exist: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']}")
-        user.first_name = user_info['given_name']
-        user.last_name = user_info['family_name']
+        user.first_name = user_info["given_name"]
+        user.last_name = user_info["family_name"]
         user.email = user_info_email
         user.password = make_password
-        user.role = get_role(user_info['FrEduFonctAdm'])
-        user.school_id = get_school_id(user_info['rne'])
+        user.role = get_role(user_info["FrEduFonctAdm"])
+        user.school_id = get_school_id(user_info["rne"])
         user.confirmed_at = Time.now
         user.accept_terms = true
-        user_info.merge!('original_rne' => initial_user_info_rne) if initial_user_info_rne.present?
+        user_info.merge!("original_rne" => initial_user_info_rne) if initial_user_info_rne.present?
         user.fim_user_info = user_info
 
         if user.save
@@ -59,17 +59,20 @@ class CallbacksController < ApplicationController
         else
           Rails.logger.error("FIM : User not saved: #{user_info['given_name']} #{user_info['family_name']} #{user_info['email']} : #{user.errors.full_messages}")
           puts user.errors.full_messages
-          redirect_to root_path, alert: 'Erreur lors de la création de l\'utilisateur'
+          redirect_to root_path, alert: "Erreur lors de la création de l'utilisateur"
         end
       end
     else
       Rails.logger.error("FIM : State invalide: #{params[:state]}")
-      redirect_to root_path, alert: 'State invalide'
+      redirect_to root_path, alert: "State invalide"
     end
   end
 
   def educonnect
     # redirect_to root_path, alert: 'Jeton invalide' and return unless cookies[:state] == params[:state]
+    unless ActiveSupport::SecurityUtils.secure_compare(cookies[:state].to_s, params[:state].to_s)
+      redirect_to root_path, alert: "Jeton invalide" and return
+    end
 
     code = params[:code]
     state = params[:state]
@@ -83,30 +86,30 @@ class CallbacksController < ApplicationController
     # Rails.logger.info("Educonnect ID token: #{educonnect.id_token}")
 
     user_info = educonnect.get_user_info
-    Rails.logger.info('--------------')
+    Rails.logger.info("--------------")
     Rails.logger.info("Educonnect User info: #{user_info.inspect}")
-    Rails.logger.info('--------------')
+    Rails.logger.info("--------------")
 
-    redirect_to root_path, notice: 'Connexion impossible' and return unless user_info.present?
+    redirect_to root_path, notice: "Connexion impossible" and return unless user_info.present?
 
-    if user_info['FrEduCtPersonAffiliation'] == ['resp2d'] # resp2d = Responsable légal
+    if user_info["FrEduCtPersonAffiliation"] == [ "resp2d" ] # resp2d = Responsable légal
       redirect_to educonnect_logout_responsible_path,
-                  alert: 'Seuls les élèves de 4e, 3e et 2de peuvent se connecter.' and return
+                  alert: "Seuls les élèves de 4e, 3e et 2de peuvent se connecter." and return
     end
 
-    if user_info['FrEduCtEleveUAI'].blank?
+    if user_info["FrEduCtEleveUAI"].blank?
       handle_educonnect_logout(educonnect)
       redirect_to root_path,
-                  alert: 'La connexion à la plateforme est réservée aux élèves à partir ' \
-                         'de leurs propres identifiants Éduconnect.' and return
+                  alert: "La connexion à la plateforme est réservée aux élèves à partir " \
+                         "de leurs propres identifiants Éduconnect." and return
     end
 
-    student = Users::Student.find_by(ine: user_info['FrEduCtEleveINE'])
-    school = School.find_by(code_uai: user_info['FrEduCtEleveUAI'])
+    student = Users::Student.find_by(ine: user_info["FrEduCtEleveINE"])
+    school = School.find_by(code_uai: user_info["FrEduCtEleveUAI"])
 
     unless school.present?
       handle_educonnect_logout(educonnect)
-      alert_message = 'Établissement scolaire non répertorié sur 1 élève, 1 stage ' \
+      alert_message = "Établissement scolaire non répertorié sur 1 élève, 1 stage " \
                       "(UAI: #{user_info['FrEduCtEleveUAI']})."
       redirect_to root_path, alert: alert_message and return
     end
@@ -115,7 +118,7 @@ class CallbacksController < ApplicationController
       check_for_school_update(student, school) if Flipper.enabled?(:student_update_feature)
     else
       handle_educonnect_logout(educonnect)
-      redirect_to root_path, alert: 'Elève non répertorié sur 1 élève, 1 stage.' and return
+      redirect_to root_path, alert: "Elève non répertorié sur 1 élève, 1 stage." and return
     end
 
     student = student.add_responsible_data if student.legal_representative_full_name.blank? && !Rails.env.staging?
@@ -131,7 +134,7 @@ class CallbacksController < ApplicationController
       # Vérifier que l'utilisateur est valide avant la connexion
       unless student.valid?
         Rails.logger.error("Student validation failed: #{student.errors.full_messages}")
-        return redirect_to root_path, alert: 'Erreur de validation utilisateur'
+        return redirect_to root_path, alert: "Erreur de validation utilisateur"
       end
 
       # Essayer de créer la session avec plus de détails en cas d'erreur
@@ -144,24 +147,24 @@ class CallbacksController < ApplicationController
       Rails.logger.error("Failed to sign in student - Error type: #{e.class}")
       Rails.logger.error("Error message: #{e.message}")
       Rails.logger.error("Backtrace:\n#{e.backtrace.join("\n")}")
-      return redirect_to root_path, alert: 'Erreur lors de la connexion'
+      return redirect_to root_path, alert: "Erreur lors de la connexion"
     end
 
     Rails.logger.info("Student signed in successfully: #{student.id} studentID")
 
-    redirect_to root_path, notice: 'Vous êtes bien connecté'
+    redirect_to root_path, notice: "Vous êtes bien connecté"
   end
 
   def get_role(role)
     case role
-    when 'DIR'
-      'school_manager'
-    when 'ADF'
-      'admin_officer'
-    when 'ENS'
-      'teacher'
+    when "DIR"
+      "school_manager"
+    when "ADF"
+      "admin_officer"
+    when "ENS"
+      "teacher"
     else
-      'other'
+      "other"
     end
   end
 
@@ -171,9 +174,9 @@ class CallbacksController < ApplicationController
 
   def make_password
     numbers = (0..9).to_a.sample(4)
-    capitals = ('A'..'Z').to_a.sample(5)
-    letters = ('a'..'z').to_a.sample(8)
-    specials = ['!', '&', '+', '_', '@'].sample(3)
+    capitals = ("A".."Z").to_a.sample(5)
+    letters = ("a".."z").to_a.sample(8)
+    specials = [ "!", "&", "+", "_", "@" ].sample(3)
     (numbers + capitals + letters + specials).shuffle.join
   end
 
@@ -207,19 +210,19 @@ class CallbacksController < ApplicationController
   end
 
   def get_uai_codes(user_info)
-    rne_resp = user_info['FrEduRneResp']
-    if rne_resp.nil? || rne_resp == 'X'
-      return user_info['FrEduRne'].map{|s| first_string_before_separator(s)} unless user_info['FrEduRne'].nil?
+    rne_resp = user_info["FrEduRneResp"]
+    if rne_resp.nil? || rne_resp == "X"
+      return user_info["FrEduRne"].map { |s| first_string_before_separator(s) } unless user_info["FrEduRne"].nil?
 
       Rails.logger.error("FIM : FrEduRne is nil : #{user_info.inspect}")
-      [user_info['rne']]
+      [ user_info["rne"] ]
 
     else
-      rne_resp.map{|s| first_string_before_separator(s)}
+      rne_resp.map { |s| first_string_before_separator(s) }
     end
   end
 
-  def first_string_before_separator(string, separator = '$')
+  def first_string_before_separator(string, separator = "$")
     string.split(separator).first
   end
 

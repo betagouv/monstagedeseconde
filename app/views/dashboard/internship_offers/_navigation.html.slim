@@ -39,11 +39,14 @@
                         data: { turbo: false },
                         class: 'fr-btn fr-btn--secondary'
       - else # unpublished
+        - if @internship_offer.weeks_in_past_no_future_available? && !@internship_offer.from_multi?
+          .w-100.fr-mb-1w
+            .label.text-left = "Archivée. Dupliquez l'annonce pour la republier"
         - if can?(:update, @internship_offer) && !@internship_offer.from_multi?
           = link_to 'Modifier',
                     edit_dashboard_internship_offer_path(id: @internship_offer.id),
                     class: 'fr-btn fr-btn--secondary fr-mr-2w'
-        - if can?(:duplicate, @internship_offer) && !@internship_offer.from_multi?
+        - if (can?(:duplicate, @internship_offer) || @internship_offer.weeks_in_past_no_future_available?) && !@internship_offer.from_multi?
           .fr-mx-1w
             = link_to new_dashboard_internship_offer_path(duplicate_id: @internship_offer.to_param, show_resume: false),
                       class: 'fr-btn fr-btn--icon fr-btn--secondary test-duplicate-button' do
@@ -55,4 +58,4 @@
                       publish_dashboard_internship_offer_path(@internship_offer),
                       data: { turbo: false },
                       class: 'fr-btn',
-                      disabled: @internship_offer.requires_updates?
+                      disabled: @internship_offer.requires_update_at_toggle_time?
