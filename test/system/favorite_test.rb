@@ -21,7 +21,7 @@ class SchoolsTest < ApplicationSystemTestCase
     internship_offer = create(:weekly_internship_offer_2nde)
     student = create(:student, :seconde)
     sign_in student
-    visit internship_offers_path
+    visit_offers_index internship_offers_path
     assert_changes -> { Favorite.all.count }, from: 0, to: 1 do
       find('.results-col .heart-empty').click
       find('.results-col .heart-full')

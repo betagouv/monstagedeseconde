@@ -56,10 +56,10 @@ module Dashboard
             end
             click_button('Choisir ce stage')
             click_button('Confirmer')
+            find '#alert-text', text: 'Candidature acceptée !'
           end
         end
         assert_equal 'Public', InternshipAgreement.last.legal_status
-        find '#alert-text', text: 'Candidature acceptée !'
         find "a#show_link_#{internship_application.id}", text: "Contacter l'employeur"
       end
 
@@ -128,6 +128,7 @@ module Dashboard
           find(selector).set('Je ne suis plus disponible')
           # fill_in "Motif de l'annulation",	with: 'Je ne suis plus disponible'
           click_button "Confirmer l'annulation"
+          find('button', text: 'Annulées')
         end
       end
 
@@ -149,6 +150,7 @@ module Dashboard
                        to: 1 do
           click_button 'Renvoyer la demande'
           find("input[type='submit'][value='Renvoyer la demande']").click
+          find('span#alert-text', text: 'Votre candidature a bien été renvoyée')
         end
 
         click_button 'Renvoyer la demande'
@@ -201,9 +203,12 @@ module Dashboard
           selector = '#internship_application_canceled_by_student_message'
           find(selector).native.send_keys('Je ne suis plus disponible')
           click_button 'Confirmer'
+          find('#alert-text', text: 'Candidature mise à jour avec succès.')
           assert_equal 'canceled_by_student', internship_application.reload.aasm_state
           click_button 'Fermer' # flash message is closed
-          click_link 'Connexion' # demonstrates user is not logged in
+          # démontre que l'utilisateur n'est pas connecté : menu visiteur
+          open_my_space_menu
+          find('a', text: 'Je suis un offreur')
         end
       end
 
@@ -228,9 +233,12 @@ module Dashboard
           visit url
           click_button 'Choisir ce stage'
           click_button 'Confirmer'
+          find('#alert-text', text: 'Candidature acceptée !')
           assert_equal 'approved', internship_application.reload.aasm_state
           click_button 'Fermer' # flash message is closed
-          click_link 'Connexion' # demonstrates user is not logged in
+          # démontre que l'utilisateur n'est pas connecté : menu visiteur
+          open_my_space_menu
+          find('a', text: 'Je suis un offreur')
         end
       end
 
@@ -250,8 +258,7 @@ module Dashboard
                                           student:)
 
           sign_in(employer)
-          visit dashboard_internship_offers_path
-          click_link 'Candidatures'
+          visit dashboard_candidatures_path
           click_link 'Répondre'
           click_button 'Refuser'
           selector = '#internship_application_rejected_message'
@@ -259,6 +266,7 @@ module Dashboard
           within('.fr-modal__footer') do
             click_button 'Refuser'
           end
+          find('span#alert-text', text: 'Candidature non retenue.')
           assert_equal 'rejected', internship_application.reload.aasm_state
           sign_out(internship_offer.employer)
 
@@ -284,6 +292,7 @@ module Dashboard
           visit dashboard_internship_offers_path
           click_link 'Candidatures'
           click_link 'Rechercher un autre stage'
+          dismiss_boarding_house_announcement
           click_link internship_offer_2.title
           first('a', text: 'Postuler').click
           find('h1.h2', text: 'Votre candidature')
@@ -303,6 +312,7 @@ module Dashboard
         visit dashboard_internship_offers_path
         click_link 'Candidatures'
         click_link 'Rechercher un autre stage'
+        dismiss_boarding_house_announcement
         click_link internship_offer_2.title
         all('p.fr-badge.fr-badge--warning', text: 'Stage déjà validé sur cette période'.upcase, count: 2)
       end

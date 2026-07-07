@@ -1,14 +1,20 @@
+# Les ids sont figés pour refléter les seeds de production (db/seeds/00_populate_departments.rb) :
+# le front (SearchBar.jsx, GradeInput.jsx) hardcode gradeIdSeconde="1", gradeIdTroisieme="2",
+# gradeIdQuatrieme="3" — sans ces ids, la recherche par niveau est intestable en système.
 quatrieme:
+  id: 3
   name: 'quatrieme générale'
   short_name: 'quatrieme'
   school_year_end_month: '06'
   school_year_end_day: '1'
 troisieme:
+  id: 2
   name: 'troisieme générale'
   short_name: 'troisieme'
   school_year_end_month: '06'
   school_year_end_day: '1'
 seconde:
+  id: 1
   name: 'seconde générale et technologique'
   short_name: 'seconde'
   school_year_end_month: '07'

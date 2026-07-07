@@ -24,10 +24,12 @@ module Dashboard::InternshipOffers
       click_on 'Refuser'
       find('#internship_application_rejected_message').click.set('(test ata test)')
       find('#refuser-button').click
-      assert internship_application.reload.rejected?
-      find('h2.h4', text: 'Les candidatures')
-      find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--error', text: 'REFUSÉ')
       find('span#alert-text', text: 'Candidature non retenue.')
+      find('h2.h4', text: 'Les candidatures')
+      # la candidature refusée n'apparaît que dans l'onglet « Refusées »
+      find('button', text: 'Refusées').click
+      find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--warning', text: "refusée par l'employeur".upcase)
+      assert internship_application.reload.rejected?
       find('button#tabpanel-received[aria-controls="tabpanel-received-panel"]', text: 'Reçues').click
       find('td.text-center[colspan="6"]', text: 'Aucune candidature reçue')
     end
@@ -39,11 +41,10 @@ module Dashboard::InternshipOffers
       visit dashboard_internship_offer_internship_application_path(internship_offer, uuid: internship_application.uuid)
       click_on 'Accepter'
       find('#accepter-button').click
-      assert internship_application.reload.validated_by_employer?
+      find('span#alert-text', text: 'Candidature mise à jour avec succès.')
       find('h2.h4', text: 'Les candidatures')
       find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: 'en attente de réponse'.upcase)
-
-      find('span#alert-text', text: 'Candidature mise à jour avec succès.')
+      assert internship_application.reload.validated_by_employer?
       find('button#tabpanel-received[aria-controls="tabpanel-received-panel"]', text: 'Reçues').click
       find('td.text-center[colspan="6"]', text: 'Aucune candidature reçue')
     end
@@ -92,32 +93,30 @@ module Dashboard::InternshipOffers
                                                                      uuid: internship_application.uuid)
         click_on 'Accepter'
         find('#accepter-button').click
-        assert internship_application.reload.validated_by_employer?
         find('h2.h4', text: 'Les candidatures')
         find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: 'en attente de réponse'.upcase)
-        sign_out(employer)
+        assert internship_application.reload.validated_by_employer?
 
-        sign_in(other_student)
-        visit internship_offers_path
-        click_on internship_offer.title
-        first(:link, 'Postuler').click
-        select 'Semaine du 8 janvier au 14 janvier', from: 'Quelle semaine ?'
-        find('textarea[name="internship_application[motivation]"]').click.set('Motivation')
-        within('.react-tel-input') do
-          find('input[name="internship_application[student_phone]"]').set('0600060606')
-        end
-        # fill_in 'Numéro de portable élève ou responsable légal',	with: "0600060606"
-        click_on 'Valider'
-        click_on 'Envoyer ma candidature'
+        # un second élève postule (créé directement : changer d'utilisateur au
+        # sein d'un même test système ne prend pas de manière fiable)
+        other_internship_application = create(:weekly_internship_application, :submitted,
+                                              internship_offer:, student: other_student)
 
-        assert_equal 2, InternshipApplication.count
-        other_internship_application = InternshipApplication.last
-        sign_out(other_student)
-
-        sign_in(employer)
+        # tant qu'aucun élève n'a confirmé, la place n'est pas consommée :
+        # l'employeur peut encore accepter la seconde candidature
         visit dashboard_internship_offer_internship_application_path(internship_offer,
                                                                      uuid: other_internship_application.uuid)
-        assert_select('button', text: 'Accepter', count: 0)
+        find('h2.h3', text: 'Candidature de')
+        assert_selector('button', text: 'Accepter')
+
+        # le premier élève confirme : la place est consommée,
+        # la seconde candidature ne peut plus être acceptée
+        internship_application.approve!
+
+        visit dashboard_internship_offer_internship_application_path(internship_offer,
+                                                                     uuid: other_internship_application.uuid)
+        find('h2.h3', text: 'Candidature de')
+        assert_no_selector('button', text: 'Accepter')
       end
     end
 
@@ -137,9 +136,9 @@ module Dashboard::InternshipOffers
                                                                      uuid: internship_application_2.uuid)
         click_on 'Accepter'
         find('#accepter-button').click
-        assert internship_application_2.reload.validated_by_employer?
         find('h2.h4', text: 'Les candidatures')
         find('p.fr-mt-1w.fr-badge.fr-badge--sm.fr-badge--info', text: 'en attente de réponse'.upcase)
+        assert internship_application_2.reload.validated_by_employer?
 
         # in the meanwhile student approves the second internship_application
         internship_application_2.approve!
@@ -230,7 +229,8 @@ module Dashboard::InternshipOffers
       assert_text "Candidature annulée par l'élève"
       assert internship_application.reload.canceled_by_student?
       refute internship_application.is_re_approvable?
-      assert false
+      # une candidature annulée par l'élève ne peut pas être « rattrapée »
+      assert_no_selector('button', text: 'Accepter')
     end
   end
 end

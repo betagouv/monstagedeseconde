@@ -18,6 +18,7 @@ module Dashboard
         fill_in('Prénom', with: 'Pablo')
         fill_in('Adresse électronique', with: other_school_admin.email)
         click_button("Inviter un membre de l'équipe")
+        find('span#alert-text', text: "vient d'être envoyé")
       end
     end
 

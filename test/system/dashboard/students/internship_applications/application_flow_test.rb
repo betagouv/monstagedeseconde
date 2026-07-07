@@ -19,7 +19,7 @@ module Dashboard
           new_email = "tests@free.fr"
 
           sign_in(student)
-          visit internship_offers_path
+          visit_offers_index internship_offers_path
           click_on internship_offer.title
           first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
@@ -47,7 +47,7 @@ module Dashboard
                                         student_email: former_student_email)
         assert_nil student.email
         sign_in(student)
-        visit internship_offers_path
+        visit_offers_index internship_offers_path
         click_on second_internship_offer.title
         first(".fr-btn", text: "Postuler").click
         form_student_value = find('input[name="internship_application[student_email]"]').value
@@ -66,7 +66,7 @@ module Dashboard
                                         student:,
                                         student_phone: former_student_phone)
         sign_in(student)
-        visit internship_offers_path
+        visit_offers_index internship_offers_path
         click_on second_internship_offer.title
         first(".fr-btn", text: "Postuler").click
 
@@ -121,7 +121,7 @@ module Dashboard
           student = create(:student, :seconde, phone: "+2620625852585", school:, email: nil)
           # new_email = 'tests@free.fr'
           sign_in(student)
-          visit internship_offers_path
+          visit_offers_index internship_offers_path
           click_on internship_offer.title
           first(".fr-btn", text: "Postuler").click
           find("#internship_application_motivation", visible: false).set("Le dev ça motive")
@@ -261,6 +261,7 @@ module Dashboard
           assert_equal "Je me suis trompé", internship_application.reload.restored_message
 
           click_link "Voir"
+          find("h1.h3", text: "L'offre de stage")
           find("button", text: "Annuler la candidature").click
           find("dialog textarea").set("Je me suis trompé")
           within("dialog") { click_button "Confirmer l'annulation" }

@@ -23,9 +23,10 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
         find('li#downshift-0-item-0', wait: 4).click
         find('span', text: 'Étape 1 sur 3')
         click_on 'Suivant'
+        # attendre l'effet UI avant l'assertion de comptage du bloc assert_difference
+        assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
       end
     end
-    assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
     assert InternshipOccupation.last.coordinates.present?
   end
 
