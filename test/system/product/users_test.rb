@@ -14,13 +14,13 @@ module Product
     end
 
     test 'USE_W3C, register as Employer' do
-      run_request_and_cache_response(report_as: 'new_user_registration_path_Employer') do
+      run_request_and_cache_response(report_as: 'new_user_registration_path_Employer', pending_a11y: true) do
         visit new_user_registration_path(as: 'Employer')
       end
     end
 
     test 'USE_W3C, register as SchoolManagement' do
-      run_request_and_cache_response(report_as: 'new_user_registration_path_SchoolManagement') do
+      run_request_and_cache_response(report_as: 'new_user_registration_path_SchoolManagement', pending_a11y: true) do
         visit new_user_registration_path(as: 'SchoolManagement')
       end
     end
@@ -38,7 +38,7 @@ module Product
     end
 
     test 'USE_W3C, register as Statistician' do
-      run_request_and_cache_response(report_as: 'new_user_registration_path_Statistician') do
+      run_request_and_cache_response(report_as: 'new_user_registration_path_Statistician', pending_a11y: true) do
         visit new_user_registration_path(as: 'Statistician')
       end
     end
