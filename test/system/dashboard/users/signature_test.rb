@@ -249,19 +249,15 @@ module Dashboard
         end
 
         assert_equal 2, Signature.all.count
-        signatures = Signature.all.order(:id)
-
-        signature = signatures.first
-        assert_equal internship_agreement.id, signature.internship_agreement.id
-        assert_equal school_manager.id, signature.school_manager.id
-        assert_equal DateTime.now, signature.signature_date
-        assert_equal 'school_manager', signature.signatory_role
-
-        signature = signatures.last
-        assert_equal internship_agreement_2.id, signature.internship_agreement.id
-        assert_equal school_manager.id, signature.school_manager.id
-        assert_equal DateTime.now, signature.signature_date
-        assert_equal 'school_manager', signature.signatory_role
+        # l'ordre de traitement des conventions n'est pas garanti (ordre des ids
+        # construits côté JS) : on vérifie chaque convention indépendamment
+        [internship_agreement, internship_agreement_2].each do |agreement|
+          signature = Signature.find_by(internship_agreement_id: agreement.id)
+          refute_nil signature
+          assert_equal school_manager.id, signature.school_manager.id
+          assert_equal DateTime.now, signature.signature_date
+          assert_equal 'school_manager', signature.signatory_role
+        end
 
 
         find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
@@ -307,19 +303,15 @@ module Dashboard
         end
 
         assert_equal 2, Signature.all.count
-        signatures = Signature.all.order(:id)
-
-        signature = signatures.first
-        assert_equal internship_agreement.id, signature.internship_agreement.id
-        assert_equal school_manager.id, signature.school_manager.id
-        assert_equal DateTime.now, signature.signature_date
-        assert_equal 'school_manager', signature.signatory_role
-
-        signature = signatures.last
-        assert_equal internship_agreement_2.id, signature.internship_agreement.id
-        assert_equal school_manager.id, signature.school_manager.id
-        assert_equal DateTime.now, signature.signature_date
-        assert_equal 'school_manager', signature.signatory_role
+        # l'ordre de traitement des conventions n'est pas garanti (ordre des ids
+        # construits côté JS) : on vérifie chaque convention indépendamment
+        [internship_agreement, internship_agreement_2].each do |agreement|
+          signature = Signature.find_by(internship_agreement_id: agreement.id)
+          refute_nil signature
+          assert_equal school_manager.id, signature.school_manager.id
+          assert_equal DateTime.now, signature.signature_date
+          assert_equal 'school_manager', signature.signatory_role
+        end
 
 
         find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
