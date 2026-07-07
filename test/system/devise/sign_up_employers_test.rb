@@ -24,6 +24,7 @@ class SignUpEmployersTest < ApplicationSystemTestCase
         find('#user_captcha').set('ABC123')
         # le bouton Valider n'est activé que par la saisie d'un mot de passe valide
         fill_in 'Créer un mot de passe', with: valid_password
+        find('#test-create-user:not([disabled])') # attendre l'activation du bouton
         click_on 'Valider'
         find('#error_explanation, .fr-alert--error, .fr-message--error', match: :first)
       end
@@ -39,6 +40,7 @@ class SignUpEmployersTest < ApplicationSystemTestCase
         execute_script("document.getElementById('user_accept_terms').checked = true;")
         find('#user_captcha').set('ABC123')
         fill_in 'Créer un mot de passe', with: valid_password
+        find('#test-create-user:not([disabled])') # attendre l'activation du bouton
         click_on 'Valider'
         assert_text 'Confirmez votre compte', wait: 10
       end
