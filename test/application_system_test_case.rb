@@ -38,37 +38,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # plus de 2 s (défaut Capybara) à se rendre, surtout sur CI.
   Capybara.default_max_wait_time = 10
 
-  # MGF-1666 — réactivation des tests système sur CI.
-  # Ces tests e2e sont "rottés" : l'application a évolué (UI de recherche React,
-  # refonte nav équipes/espaces, tableaux de conventions, flux de signature,
-  # overlay de modale DSFR, etc.) sans que les tests suivent. Ils sont
-  # indépendants de MGF-1666 et temporairement désactivés pour permettre
-  # d'activer la suite système au vert. Détail des actions de réparation,
-  # cluster par cluster : voir SYSTEM_TESTS_TODO.md (racine du repo).
-  # Pour réactiver un test : retirer son nom de cette liste (ou la regex).
-  ROTTED_SYSTEM_TESTS = [
-    "AutocompleteSchoolTest#test_autocomplete_school_allow_school_manager_to_change_school",
-    "AutocompleteSchoolTest#test_autocomplete_school_works_with_default_values",
-    "AutocompleteSchoolTest#test_students_changes_class_room",
-    "EditOrDuplicateInternshipOffersTest#test_Employer_can_discard_internship_offer",
-    "EditOrDuplicateInternshipOffersTest#test_Employer_can_split_a_duplicated_internship_offer_across_both_publics",
-    "InternshipApplicationStudentFlowTest#test_student_in_seconde_cannot_see_a_intenship_offer_for_troisiemes",
-    "InternshipApplicationStudentFlowTest#test_student_not_in_class_room_can_not_ask_for_week",
-    "InternshipApplicationStudentFlowTest#test_student_with_empty_student_legal_representative_data_can_submit_an_application",
-    "ReportingDashboardTest#test_Offers_deleted_are_displayed",
-    # --- Tests FLAKY (assertion "count/state didn't change" qui vérifie la BDD trop
-    # tôt après un clic, avant la fin de la requête). À stabiliser (attendre l'effet
-    # côté UI avant l'assertion DB), pas à réécrire. Voir SYSTEM_TESTS_TODO.md §11.
-  ].freeze
-
-  def before_setup
-    full_name = "#{self.class.name}##{name}"
-    if ROTTED_SYSTEM_TESTS.any? { |matcher| matcher === full_name }
-      skip "Test système rotté désactivé — voir SYSTEM_TESTS_TODO.md"
-    end
-    super
-  end
-
   def setup
     stub_request(:any, %r{data.geopf.fr/geocodage})
       .to_return(status: 200, body: File.read(Rails.root.join(*%w[test

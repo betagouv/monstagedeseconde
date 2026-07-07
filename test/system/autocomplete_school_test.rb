@@ -2,19 +2,19 @@
 
 require 'application_system_test_case'
 
+# La section « Mon établissement » du compte est désormais en lecture seule
+# (app/views/users/_edit_school.html.slim) : l'établissement et la classe ne
+# sont plus modifiables depuis cette page (rattachement géré par ailleurs :
+# admin des personnels, synchronisation élèves).
 class AutocompleteSchoolTest < ApplicationSystemTestCase
   setup do
     @default_school_name = 'Pasteur'
     @default_school_city = 'Mantes-la-Jolie'
     @default_school = create(:school, :with_school_manager, name: @default_school_name,
                                                             city: @default_school_city)
-    @next_school_city = 'Paris'
-    @next_school_name = 'Charlemagne'
-    @next_school = create(:school, city: @next_school_city,
-                                   name: @next_school_name)
   end
 
-  test 'autocomplete school works with default values' do
+  test 'school panel shows school manager school as read-only' do
     school_manager = @default_school.school_manager
     sign_in(school_manager)
     visit account_path(section: :school)
@@ -22,82 +22,24 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
       click_on 'Mon établissement'
     end
 
-    assert_equal(find_field('Établissement ou commune').value,
-                 @default_school_city,
-                 "can't find default school.city")
-    assert_equal(find(:css, '#user_school_name').value,
-                 @default_school_name,
-                 "can't find existing school.name")
-    assert_equal(0,
-                 all('#user_class_room_id').size,
-                 'should not show select class_room')
+    school_select = find('select#school_name[disabled]')
+    assert_equal @default_school_name,
+                 school_select.find('option', text: @default_school_name).text
+    assert_no_field 'Établissement ou commune'
+    assert_no_selector '#user_class_room_id'
   end
 
-  test 'autocomplete school allow school_manager to change school' do
-    school_manager = @default_school.school_manager
-    sign_in(school_manager)
-    visit account_path(section: :school)
-
-    assert_changes -> { school_manager.reload.school_id },
-                   from: @default_school.id,
-                   to: @next_school.id do
-      within('.fr-tabs') do
-        click_on 'Mon établissement'
-      end
-      fill_in('Établissement ou commune', with: @next_school_city[0..3])
-      first('.autocomplete-school-results .list-group-item-action').click
-      assert_equal find_field('Établissement ou commune').value,
-                   @next_school_city,
-                   "can't find next school.city"
-
-      select @next_school.name, from: 'user_school_id'
-      click_on 'Enregistrer'
-    end
-  end
-
-  test 'reset button works as expected' do
-    student = create(:student, school: @default_school)
+  test 'school panel shows student school as read-only without class room choice' do
+    student = create(:student, school: @default_school,
+                               class_room: create(:class_room, school: @default_school))
     sign_in(student)
     visit account_path(section: :school)
     within('.fr-tabs') do
       click_on 'Mon établissement'
     end
 
-    if ENV['RUN_BRITTLE_TEST'] && ENV['RUN_BRITTLE_TEST'] == 'true'
-      # default presence of fields
-      assert_equal 1, all('#user_school_name').size, 'default school name missing'
-      assert_equal 1, all('#user_class_room_id').size, 'default class room missing'
-
-      first('.btn-clear-city').click
-      assert_equal 0, all('#user_school_name').size, 'reset school name fails'
-      assert_equal 0, all('#user_class_room_id').size, 'reset class_room fails'
-    end
-  end
-
-  test 'students changes class_room' do
-    default_class_room = create(:class_room, school: @default_school, name: 'mon nom')
-    next_class_room = create(:class_room, school: @next_school)
-
-    student = create(:student, school: @default_school, class_room: default_class_room)
-    sign_in(student)
-    visit account_path(section: :school)
-    within('.fr-tabs') do
-      click_on 'Mon établissement'
-    end
-
-    # default value
-    assert_equal(1,
-                 all('#user_class_room_name').size,
-                 'expected class room input not present')
-
-    fill_in('Établissement ou commune', with: @next_school_city[0..3])
-    first('.autocomplete-school-results .list-group-item-action').click
-    select @next_school.name, from: 'user_school_id'
-    select(next_class_room.name, from: 'user_class_room_id')
-    click_on 'Enregistrer'
-
-    student.reload
-    assert_equal student.school_id, @next_school.id
-    assert_equal student.class_room_id, next_class_room.id
+    find('select#school_name[disabled]')
+    assert_no_field 'Établissement ou commune'
+    assert_no_selector '#user_class_room_id'
   end
 end
