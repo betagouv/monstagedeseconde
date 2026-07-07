@@ -54,14 +54,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     "Admin::SchoolManagementsTest#test_clicking_Gérer_navigates_to_the_detail_page",
     "Admin::SchoolManagementsTest#test_cycle_complet_:_associer,_retirer_avec_confirmation,_réassocier,_retirer_à_nouveau",
     "Admin::SchoolManagementsTest#test_search_shows_no_results_message_when_nothing_matches",
-    "AreaNotificationTest#test_workflow_for_making_a_team_is_ok",
     "AutocompleteSchoolTest#test_autocomplete_school_allow_school_manager_to_change_school",
     "AutocompleteSchoolTest#test_autocomplete_school_works_with_default_values",
     "AutocompleteSchoolTest#test_students_changes_class_room",
-    "Dashboard::TeamMemberInvitations::InvitationAndMembershipTest#test_when_two_employers_are_in_the_same_team,_they_cannot_place_an_invitation_to_the_same_third_employer",
-    "Dashboard::TeamMemberInvitations::InvitationAndMembershipTest#test_when_two_statisticians_are_in_the_same_team_on_a_single_area,_they_can_manage_internship_applications_of_the_team",
-    "Dashboard::TeamMemberInvitations::InvitationAndMembershipTest#test_when_two_statisticians_are_in_the_same_team,_they_cannot_place_an_invitation_to_the_same_third_employer",
-    "Dashboard::TeamMemberInvitations::InvitationAndMembershipTest#test_when_two_user_operators_are_in_the_same_team_on_a_single_area,_they_can_manage_internship_applications_of_the_team",
     "EditOrDuplicateInternshipOffersTest#test_Employer_can_discard_internship_offer",
     "EditOrDuplicateInternshipOffersTest#test_Employer_can_split_a_duplicated_internship_offer_across_both_publics",
     "InternshipApplicationStudentFlowTest#test_student_in_seconde_cannot_see_a_intenship_offer_for_troisiemes",
@@ -73,10 +68,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     "ManagePlanningsTest#test_fails_gracefully_when_both_grades_are_unchecked",
     "ManagePlanningsTest#test_planning_shows_the_right_amount_of_schools_nearby_the_entreprise",
     "ReportingDashboardTest#test_Offers_deleted_are_displayed",
-    "WithTeamTest#test_adding_an_extra_area_make_area_notifications_count_ok",
-    "WithTeamTest#test_adding_an_extra_collegue_make_area_notifications_count_ok",
-    "WithTeamTest#test_space_destruction_make_area_notifications_count_ok",
-    "WithTeamTest#test_workflow_for_making_a_team_is_ok",
     # --- Tests FLAKY (assertion "count/state didn't change" qui vérifie la BDD trop
     # tôt après un clic, avant la fin de la requête). À stabiliser (attendre l'effet
     # côté UI avant l'assertion DB), pas à réécrire. Voir SYSTEM_TESTS_TODO.md §11.

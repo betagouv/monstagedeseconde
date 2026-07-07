@@ -146,10 +146,15 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       # select("Lycée evariste Gallois", from: "Établissement")
 
       assert_difference('Planning.count') do
-        assert_difference('InternshipOffers::WeeklyFramed.count') do
+        # MGF-1731 : sélectionner les deux publics crée DEUX offres distinctes,
+        # après confirmation dans la modale dédiée
+        assert_difference('InternshipOffers::WeeklyFramed.count', 2) do
           find("button[type='submit']").click
+          within('dialog#double-grades-modal-action') do
+            click_button 'Publier 2 offres'
+          end
           notice = find('span#alert-text').text
-          assert_match 'Votre offre est publiée', notice
+          assert_match 'Vos deux offres sont publiées', notice
         end
       end
 
@@ -196,9 +201,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_no_difference('Planning.count') do
         fill_in_planning_form(with_seconde: false, with_troisieme: false)
         find("button[type='submit']").click
-      end
-      within('.fr-alert.fr-alert--error.server-error') do
-        find 'strong', text: /Niveaux ciblés/
+        # MGF-1666 : la validation est côté front, l'alerte s'affiche en ligne
+        find('[data-grade-target="alertContainer"] p',
+             text: 'Vous devez sélectionner au moins un public parmi les lycéens et les collégiens')
       end
     end
   end
@@ -239,7 +244,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
   end
 
   test 'planning shows the right amount of schools nearby the entreprise' do
-    travel_to Date.new(2019, 9, 1) do
+    travel_to Date.new(2024, 9, 2) do
       first_3_weeks = Week.selectable_from_now_until_end_of_school_year.first(3)
       school_bordeaux = create(:school, city: 'Bordeaux', zipcode: '33000',
                                         weeks: first_3_weeks, coordinates: Coordinates.bordeaux)
