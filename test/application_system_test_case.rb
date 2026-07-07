@@ -47,13 +47,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # cluster par cluster : voir SYSTEM_TESTS_TODO.md (racine du repo).
   # Pour réactiver un test : retirer son nom de cette liste (ou la regex).
   ROTTED_SYSTEM_TESTS = [
-    "Admin::SchoolManagementsTest#test_admin_can_associate_an_extra_school_to_a_personnel",
-    "Admin::SchoolManagementsTest#test_admin_can_search_by_code_UAI",
-    "Admin::SchoolManagementsTest#test_admin_can_search_for_school_management_personnel_by_name",
-    "Admin::SchoolManagementsTest#test_already_associated_school_does_not_appear_in_search_results",
-    "Admin::SchoolManagementsTest#test_clicking_Gérer_navigates_to_the_detail_page",
-    "Admin::SchoolManagementsTest#test_cycle_complet_:_associer,_retirer_avec_confirmation,_réassocier,_retirer_à_nouveau",
-    "Admin::SchoolManagementsTest#test_search_shows_no_results_message_when_nothing_matches",
     "AutocompleteSchoolTest#test_autocomplete_school_allow_school_manager_to_change_school",
     "AutocompleteSchoolTest#test_autocomplete_school_works_with_default_values",
     "AutocompleteSchoolTest#test_students_changes_class_room",
@@ -62,11 +55,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     "InternshipApplicationStudentFlowTest#test_student_in_seconde_cannot_see_a_intenship_offer_for_troisiemes",
     "InternshipApplicationStudentFlowTest#test_student_not_in_class_room_can_not_ask_for_week",
     "InternshipApplicationStudentFlowTest#test_student_with_empty_student_legal_representative_data_can_submit_an_application",
-    "ManageInternshipOccupationsTest#test_create_internship_occupation_fails_gracefully",
-    "ManagePlanningsTest#test_can_create_a_planning_with_grade_troisieme_/_quatrieme_only",
-    "ManagePlanningsTest#test_can_create_a_planning_with_grade_troisieme_and_seconde",
-    "ManagePlanningsTest#test_fails_gracefully_when_both_grades_are_unchecked",
-    "ManagePlanningsTest#test_planning_shows_the_right_amount_of_schools_nearby_the_entreprise",
     "ReportingDashboardTest#test_Offers_deleted_are_displayed",
     # --- Tests FLAKY (assertion "count/state didn't change" qui vérifie la BDD trop
     # tôt après un clic, avant la fin de la requête). À stabiliser (attendre l'effet

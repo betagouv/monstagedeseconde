@@ -38,8 +38,12 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       find('#test-create-offer').click
       choose('radio-rich-0', allow_label_click: true)
       click_on 'Commencer'
+      # le stub géocodage global (setup) renvoie toujours des résultats :
+      # on le remplace par une réponse vide pour simuler une adresse introuvable
+      stub_request(:get, %r{data.geopf.fr/geocodage})
+        .to_return(status: 200, body: { type: 'FeatureCollection', features: [] }.to_json)
       fill_in_internship_occupation_form(full_address: 'fdfqq5fdsfqdsfdssfqsdf')
-      assert_raises(Capybara::ElementNotFound) { find('li#downshift-0-item-0') }
+      assert_raises(Capybara::ElementNotFound) { find('li#downshift-0-item-0', wait: 2) }
     end
   end
 
