@@ -14,12 +14,9 @@ module Product
         contact_path
         eleves_path
         equipe_pedagogique_path
-        inscription_permanence_path
         mentions_legales_path
-        operators_path
         politique_de_confidentialite_path
         professionnels_path
-        partenaires_path
         referents_path
         root_path
       ].map do |page_path|

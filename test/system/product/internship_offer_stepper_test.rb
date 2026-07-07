@@ -14,6 +14,8 @@ module Product
       run_request_and_cache_response(report_as: 'new_dashboard_stepper_internship_occupation_path') do
         visit new_dashboard_stepper_internship_occupation_path
         fill_in_internship_occupation_form
+        # attendre la fin de la requête de géocodage avant le teardown (reset WebMock)
+        find('li#downshift-0-item-0', wait: 5)
       end
     end
 
@@ -21,19 +23,20 @@ module Product
       employer = create(:employer)
       internship_occupation = create(:internship_occupation, employer:)
       sector = create(:sector)
+      group = create(:group, name: 'hello', is_public: true)
       sign_in(employer)
 
       travel_to(Date.new(2024, 3, 1)) do
         run_request_and_cache_response(report_as: 'new_dashboard_stepper_entreprise_path') do
           visit new_dashboard_stepper_entreprise_path(internship_occupation_id: internship_occupation.id)
-          fill_in_entreprise_form(sector:)
+          fill_in_entreprise_form(sector:, group:)
         end
       end
     end
     test 'USE_W3C, new_dashboard_stepper_planning_path' do
       employer = create(:employer)
-      entreprise = create(:entreprise, employer:)
-      sector = create(:sector)
+      internship_occupation = create(:internship_occupation, employer:)
+      entreprise = create(:entreprise, internship_occupation:)
       sign_in(employer)
 
       travel_to(Date.new(2024, 3, 1)) do

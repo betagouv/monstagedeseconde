@@ -9,8 +9,8 @@ module Product
 
     test 'USE_W3C, dashboard_internship_offers_path' do
       employer = create(:employer)
-      %i[drafted submitted approved rejected].map do |aasm_state|
-        internship_offer = create(weekly_internship_offer_2nde, employer: employer)
+      %i[submitted read_by_employer approved rejected].map do |aasm_state|
+        internship_offer = create(:weekly_internship_offer_2nde, employer: employer)
         create(:weekly_internship_application, aasm_state: aasm_state, internship_offer: internship_offer)
       end
       sign_in(employer)
@@ -20,7 +20,7 @@ module Product
     end
 
     test 'USE_W3C, edit_dashboard_internship_offer_path' do
-      stage_dev = create(weekly_internship_offer_2nde)
+      stage_dev = create(:weekly_internship_offer_2nde)
       sign_in(stage_dev.employer)
       run_request_and_cache_response(report_as: 'edit_dashboard_internship_offer_path') do
         visit edit_dashboard_internship_offer_path(id: stage_dev.to_param)
@@ -28,8 +28,10 @@ module Product
     end
 
     test 'USE_W3C, new_dashboard_internship_offer_path(duplicate_id)' do
-      stage_dev = create(weekly_internship_offer_2nde)
-      sign_in(stage_dev.employer)
+      employer = create(:employer)
+      stage_dev = create(:weekly_internship_offer_2nde, employer:,
+                                                        internship_offer_area_id: employer.current_area_id)
+      sign_in(employer)
       run_request_and_cache_response(report_as: 'new_dashboard_internship_offer_path') do
         visit new_dashboard_internship_offer_path(duplicate_id: stage_dev.id)
       end
@@ -81,7 +83,7 @@ module Product
       internship_application = create(:weekly_internship_application, :approved)
       sign_in(internship_application.internship_offer.employer)
       run_request_and_cache_response(report_as: 'dashboard_internship_applications_path') do
-        visit dashboard_internship_applications_path
+        visit dashboard_candidatures_path
       end
     end
 
