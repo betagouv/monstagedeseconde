@@ -4,10 +4,6 @@ require 'fileutils'
 
 module Html5Validator
   W3C_RESPONSE_STORED_DIR = Rails.root.join('tmp', 'w3c')
-  # Pages capturées mais exclues des validations vnu/pa11y (violations a11y
-  # préexistantes à corriger — voir PR #940) : les globs tmp/w3c/*.html de la CI
-  # n'entrent pas dans ce sous-répertoire.
-  PENDING_A11Y_DIR = W3C_RESPONSE_STORED_DIR.join('pending-a11y')
   SCREENSHOT_STORED_DIR = Rails.root.join('tmp', 'functional_screenshots')
 
   def self.screenshot_files
@@ -32,15 +28,14 @@ module Html5Validator
     `java -jar node_modules/vnu-jar/build/dist/vnu.jar --errors-only #{W3C_RESPONSE_STORED_DIR}/*.html`
   end
 
-  def run_request_and_cache_response(report_as:, pending_a11y: false)
+  def run_request_and_cache_response(report_as:)
     yield
     basename = report_as.parameterize
     ext = '.html'
     assert_equal 1, page.all('.content').size
 
-    target_dir = pending_a11y ? PENDING_A11Y_DIR : W3C_RESPONSE_STORED_DIR
-    FileUtils.mkdir_p(target_dir)
-    File.open(target_dir.join("#{basename}#{ext}"), 'w+') do |fd|
+    FileUtils.mkdir_p(W3C_RESPONSE_STORED_DIR)
+    File.open(W3C_RESPONSE_STORED_DIR.join("#{basename}#{ext}"), 'w+') do |fd|
       fd.write('<!DOCTYPE html>')
       fd.write(page.body)
       page.save_screenshot(SCREENSHOT_DIR.join("#{basename}.png"), full: true) if ENV.has_key?('FUNCTIONAL_SCREENSHOTS')

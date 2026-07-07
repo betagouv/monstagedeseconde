@@ -4,8 +4,12 @@ nav.fr-breadcrumb aria-label=("vous êtes ici :") role="navigation"
     ol.fr-breadcrumb__list
       li= link_to 'Accueil', root_path, class: 'fr-breadcrumb__link'
       - links.each_with_index do |link, i|
+        / accepte [path, name] ou { path:, name: } (generate_breadcrumb_links)
+        - path = link.is_a?(Hash) ? link[:path] : link[0]
+        - name = link.is_a?(Hash) ? link[:name] : link[1]
         - if i < links.size - 1
-          li= link_to link[1], link[0], class: 'fr-breadcrumb__link'
+          li= link_to name, path, class: 'fr-breadcrumb__link'
         - else
           li
-            a.fr-breadcrumb__link aria-current="page" #{link[1]}
+            a.fr-breadcrumb__link aria-current="page"
+              = name

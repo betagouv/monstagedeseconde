@@ -22,7 +22,7 @@ module Product
     test 'USE_W3C, edit_dashboard_internship_offer_path' do
       stage_dev = create(:weekly_internship_offer_2nde)
       sign_in(stage_dev.employer)
-      run_request_and_cache_response(report_as: 'edit_dashboard_internship_offer_path', pending_a11y: true) do
+      run_request_and_cache_response(report_as: 'edit_dashboard_internship_offer_path') do
         visit edit_dashboard_internship_offer_path(id: stage_dev.to_param)
       end
     end
@@ -32,7 +32,7 @@ module Product
       stage_dev = create(:weekly_internship_offer_2nde, employer:,
                                                         internship_offer_area_id: employer.current_area_id)
       sign_in(employer)
-      run_request_and_cache_response(report_as: 'new_dashboard_internship_offer_path', pending_a11y: true) do
+      run_request_and_cache_response(report_as: 'new_dashboard_internship_offer_path') do
         visit new_dashboard_internship_offer_path(duplicate_id: stage_dev.id)
       end
     end
@@ -82,7 +82,7 @@ module Product
     test 'USE_W3C, employer dashboard_internship_applications_path' do
       internship_application = create(:weekly_internship_application, :approved)
       sign_in(internship_application.internship_offer.employer)
-      run_request_and_cache_response(report_as: 'dashboard_internship_applications_path', pending_a11y: true) do
+      run_request_and_cache_response(report_as: 'dashboard_internship_applications_path') do
         visit dashboard_candidatures_path
       end
     end
