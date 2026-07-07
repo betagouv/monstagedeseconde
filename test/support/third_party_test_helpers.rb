@@ -37,19 +37,16 @@ module ThirdPartyTestHelpers
 
   def captcha_stub
     stub_request(:post, 'https://oauth.piste.gouv.fr/api/oauth/token')
-      .with(
-        body: {
-          'client_id' => ENV['CAPTCHA_CLIENT_ID'],
-          'client_secret' => ENV['CAPTCHA_CLIENT_SECRET'],
-          'grant_type' => 'client_credentials',
-          'scope' => 'piste.captchetat'
-        },
-        headers: common_headers.merge({
-                                        'Content-Type' => 'application/x-www-form-urlencoded',
-                                        'Host' => 'oauth.piste.gouv.fr'
-                                      })
-      )
-      .to_return(default_response)
+      .to_return(status: 200, body: { access_token: 'fake-captcha-token' }.to_json, headers: {})
+    stub_request(:get, %r{api\.piste\.gouv\.fr/piste/captchetat/v2/simple-captcha-endpoint})
+      .to_return(status: 200,
+                 body: { imageb64: Base64.strict_encode64('fake-image'), uuid: 'fake-uuid' }.to_json,
+                 headers: {})
+    stub_request(:post, %r{api\.piste\.gouv\.fr/piste/captchetat/v2/valider-captcha})
+      .to_return(status: 200, body: 'true', headers: {})
+    # exécuter le bloc éventuel : sans ce yield, les tests écrits
+    # `captcha_stub do ... end` étaient des no-ops silencieux
+    yield if block_given?
   end
 
   def nominatim_stub

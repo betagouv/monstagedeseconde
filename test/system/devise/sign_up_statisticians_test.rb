@@ -16,13 +16,13 @@ class SignUpStatisticiansTest < ApplicationSystemTestCase
       assert_difference('Users::EducationStatistician.count', 1) do
         fill_in 'Prénom', with: 'Martin'
         fill_in 'Nom', with: 'Fourcade'
-        execute_script("document.getElementById('user_statistician_education').checked=true;")
-        execute_script("document.getElementById('statistician-department').classList.remove('d-none');")
-        execute_script("document.getElementById('new_user').action = '/utilisateurs?as=EducationStatistician';")
-        select('75', from: 'user_department')
+        # le choix du type déclenche le stimulus signup (action du formulaire + champs)
+        choose('user_statistician_education', allow_label_click: true)
+        select('75 - Paris', from: 'user_department')
         fill_in 'Adresse électronique', with: good_email
         fill_in 'Créer un mot de passe', with: valid_password
         execute_script("document.getElementById('user_accept_terms').checked = true;")
+        find('#user_captcha').set('ABC123')
         click_on 'Valider'
       end
 
@@ -30,7 +30,8 @@ class SignUpStatisticiansTest < ApplicationSystemTestCase
       created_statistician = Users::EducationStatistician.find_by(email: good_email)
       assert_equal 'Martin', created_statistician.first_name
       assert_equal 'Fourcade', created_statistician.last_name
-      assert_equal false, created_statistician.agreement_signatorable
+      # les statisticiens sont désormais signataires par défaut (colonne default true)
+      assert_equal true, created_statistician.agreement_signatorable
     end
   end
 end

@@ -15,13 +15,14 @@ class SignUpMinistryStatisticiansTest < ApplicationSystemTestCase
       assert_difference('Users::MinistryStatistician.count', 1) do
         fill_in 'Prénom', with: 'Martin'
         find("input[name='user[last_name]']").fill_in(with: 'Fourcade')
-        execute_script("document.getElementById('user_statistician_ministry_type').checked=true;")
-        execute_script("document.getElementById('statistician-ministry').classList.remove('d-none');")
-        execute_script(" document.getElementById('new_user').action = '/utilisateurs?as=MinistryStatistician';")
+        # le choix du type déclenche le stimulus signup (action du formulaire + champs)
+        choose('user_statistician_ministry_type', allow_label_click: true)
         select('Ministère de la Justice', from: 'Choisissez le ministère correspondant')
         fill_in 'Adresse électronique', with: email
-        fill_in 'Créer un mot de passe', with: 'kikoololletest1Max!!'
         execute_script("document.getElementById('user_accept_terms').checked = true;")
+        find('#user_captcha').set('ABC123')
+        # le bouton Valider n'est activé que par la saisie d'un mot de passe valide
+        fill_in 'Créer un mot de passe', with: 'kikoololletest1Max!!'
         click_on 'Valider'
       end
 

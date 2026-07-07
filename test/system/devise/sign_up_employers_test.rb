@@ -19,16 +19,28 @@ class SignUpEmployersTest < ApplicationSystemTestCase
         fill_in 'Prénom', with: 'Madame'
         find("input[name='user[last_name]']").fill_in with: 'Accor'
         fill_in 'Adresse électronique', with: existing_email
-        fill_in 'Créer un mot de passe', with: valid_password
         fill_in "Fonction au sein de l'entreprise", with: "chef d'entreprise"
+        execute_script("document.getElementById('user_accept_terms').checked = true;")
+        find('#user_captcha').set('ABC123')
+        # le bouton Valider n'est activé que par la saisie d'un mot de passe valide
+        fill_in 'Créer un mot de passe', with: valid_password
         click_on 'Valider'
+        find('#error_explanation, .fr-alert--error, .fr-message--error', match: :first)
       end
 
-      # create employer
+      # create employer : après un échec, le captcha n'est pas régénéré
+      # (le bouton reste désactivé) — il faut recharger la page
+      visit new_user_registration_path(as: 'Employer')
       assert_difference('Users::Employer.count', 1) do
+        fill_in 'Prénom', with: 'Madame'
+        find("input[name='user[last_name]']").fill_in with: 'Accor'
         fill_in 'Adresse électronique', with: 'another@gmail.com'
+        fill_in "Fonction au sein de l'entreprise", with: "chef d'entreprise"
+        execute_script("document.getElementById('user_accept_terms').checked = true;")
+        find('#user_captcha').set('ABC123')
         fill_in 'Créer un mot de passe', with: valid_password
         click_on 'Valider'
+        assert_text 'Confirmez votre compte', wait: 10
       end
 
       # check created employer has valid info
