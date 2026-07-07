@@ -143,6 +143,30 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     evaluate_script("Turbo.setConfirmMethod(() => Promise.resolve(true))")
   end
 
+  # La modale « annonce internats » (InternshipOfferResults.jsx) s'ouvre à chaque
+  # montage du composant de résultats tant que le flag localStorage n'est pas posé
+  # — toujours le cas dans une session Selenium fraîche — et son backdrop
+  # intercepte alors tous les clics de la page.
+  def dismiss_boarding_house_announcement
+    execute_script("try { localStorage.setItem('boardingHouseAnnouncementDismissed', '1') } catch (e) {}")
+    return unless page.has_css?('#boarding-house-announcement-title', wait: 1)
+
+    click_button 'OK'
+    assert_no_selector '#boarding-house-announcement-title'
+  end
+
+  def visit_offers_index(path)
+    visit path
+    dismiss_boarding_house_announcement
+  end
+
+  # « Espaces », « Equipe » et « Mon profil » sont dans le dropdown « Mon espace »
+  # de la navbar (fermé par défaut).
+  def open_my_space_menu
+    click_on 'Mon espace'
+    find('ul[data-dropdown-target="menu"]', visible: :visible)
+  end
+
   def after_teardown
     super
     FileUtils.rm_rf(ActiveStorage::Blob.service.root)

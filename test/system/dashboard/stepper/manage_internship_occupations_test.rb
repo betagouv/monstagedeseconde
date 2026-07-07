@@ -53,9 +53,12 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       sign_in(employer)
       visit edit_dashboard_stepper_internship_occupation_path(internship_occupation)
       as = 'a' * 10
-      fill_in_internship_occupation_form(description: as, full_address: ' ')
+      # MGF-1666 : la validation front bloque l'avancement si l'adresse perd ses
+      # coordonnées ; on met à jour la description en conservant l'adresse existante.
+      fill_in_internship_occupation_form(description: as, full_address: '')
       find('button[name="button"][type="submit"]').click
       assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
+      assert_equal as, internship_occupation.reload.description
     end
   end
 
