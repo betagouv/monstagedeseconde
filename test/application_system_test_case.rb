@@ -80,8 +80,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     # --- Tests FLAKY (assertion "count/state didn't change" qui vérifie la BDD trop
     # tôt après un clic, avant la fin de la requête). À stabiliser (attendre l'effet
     # côté UI avant l'assertion DB), pas à réécrire. Voir SYSTEM_TESTS_TODO.md §11.
-    # Conventions de stage — tests data-driven "reads ... table with correct indications - <statut>"
-    %r{InternshipAgreementTest#test_school_manager_reads_(?:multi_)?internship_agreement_table_with_correct_indications}
   ].freeze
 
   def before_setup

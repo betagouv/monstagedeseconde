@@ -48,7 +48,8 @@ class WithTeamTest < ApplicationSystemTestCase
     visit employer_2.after_sign_in_path
     assert_equal 0, AreaNotification.all.count
     click_button 'Oui'
-    find('li a', text: 'Espaces').click
+    open_my_space_menu
+    click_link 'Espaces'
     assert_equal 4, AreaNotification.all.count # (one minimum area per user )* 2 team members
     click_button 'Créer un nouvel espace'
     fill_in('Nom de l\'espace', with: space_name)
@@ -75,7 +76,8 @@ class WithTeamTest < ApplicationSystemTestCase
     sign_in(employer_2)
     visit employer_2.after_sign_in_path
     assert_equal 4, AreaNotification.all.count
-    find('li a', text: 'Espaces').click
+    open_my_space_menu
+    click_link 'Espaces'
     all('tbody tr td.area-name a').each do |el|
       el.text.in?([employer_1.current_area.name, employer_2.current_area.name])
     end
