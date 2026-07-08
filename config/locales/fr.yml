@@ -811,9 +811,9 @@ fr:
         breadcrumb: 'Data Review Reset'
         menu: 'Reset des données de la plateforme review'
       import_students_from_sygne:
-        menu: 'Importer les élèves depuis Sygne'
-        title: 'Importer les élèves depuis Sygne'
-        breadcrumb: 'Importer les élèves depuis Sygne'
+        menu: 'Recompter les effectifs depuis Sygne'
+        title: 'Recompter les effectifs depuis Sygne'
+        breadcrumb: 'Recompter les effectifs depuis Sygne'
       index:
         no_records: Aucun résultat
       delete:
