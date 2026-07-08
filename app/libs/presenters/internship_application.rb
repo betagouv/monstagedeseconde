@@ -35,119 +35,10 @@ module Presenters
     end
 
     def human_state
-      # label stands for badge content
-      # action_label stands for action button content
-      action_path = { path: internship_application_path }
-      case internship_application.aasm_state.to_s
-      when 'submitted'
-        label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'nouveau'
-        action_label = reader.student? ? 'Voir' : 'Répondre'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
-        { label:,
-          badge: 'info',
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      when 'restored'
-        states_with_notice = %w[read_by_employer transfered validated_by_employer]
-        action_label = if reader.student?
-                         'Voir'
-                       elsif internship_application.has_ever_been?(states_with_notice)
-                         'Candidature restaurée - répondre'
-                       else
-                         'Répondre'
-                       end
-        label = if reader.student?
-                  "sans réponse de l'entreprise"
-                elsif internship_application.has_ever_been?(states_with_notice)
-                  'candidature restaurée'
-                else
-                  'nouveau'
-                end
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
-        { label:,
-          badge: 'info',
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      when 'read_by_employer'
-        label = reader.student? || reader.school_management? ? "Sans réponse de l'entreprise" : 'Lue'
-        badge = reader.student? ? 'info' : 'warning'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Reçues, en attente de réponse'
-        action_label = reader.student? || reader.school_management? ? 'Voir' : 'Répondre'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        { label:,
-          badge:,
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-
-      when 'transfered'
-        action_label = reader.student? ? 'en attente de réponse' : 'transféré'
-        action_level = reader.student? ? 'tertiary' : 'primary'
-        label = reader.student? ? 'en attente de réponse' : 'transféré'
-        tab = reader.student? ? 'Envoyées, en attente de réponse' : 'Transférées'
-        { label:,
-          badge: 'info',
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-
-      when 'validated_by_employer'
-        label = reader.student? || reader.school_management? ? 'acceptée par l\'entreprise' : 'en attente de réponse'
-        action_label = reader.student? ? 'Répondre' : 'Voir'
-        action_level = reader.student? ? 'primary' : 'tertiary'
-        badge = reader.student? ? 'success' : 'info'
-        tab = 'Acceptées par l’offreur, à confirmer par l’élève'
-        { label:,
-          badge:,
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      when 'canceled_by_employer'
-        # label = reader.student? || reader.school_management? ? 'annulée par l\'entreprise' : 'refusée'
-        tab = 'Annulées'
-        { label: 'annulée par l\'employeur',
-          badge: 'error',
-          tab:,
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'rejected'
-        # label = reader.student? || reader.school_management? ? 'refusée par l\'entreprise' : 'refusée'
-        tab = 'Refusées'
-        { label: 'refusée par l\'employeur',
-          badge: 'warning',
-          tab:,
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'canceled_by_student'
-        label = reader.student? || reader.school_management? ? 'annulée' : 'annulée par l\'élève'
-        tab = 'Annulées'
-        { label:,
-          badge: 'purple-glycine',
-          tab:,
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'expired'
-        { label: 'expirée',
-          badge: 'error',
-          tab: 'Expirées',
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'expired_by_student'
-        label = reader.student? || reader.school_management? ? 'vous n\'avez pas répondu dans les délais' : "l'élève n’a pas répondu dans les délais"
-        { label: label,
-          badge: 'error',
-          tab: 'Expirées',
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'canceled_by_student_confirmation'
-        { label: reader.student? ? 'Vous avez choisi un autre stage' : "L'élève a choisi un autre stage",
-          badge: 'purple-glycine',
-          actions: [action_path.merge(label: 'Voir', level: 'tertiary')] }
-      when 'approved'
-        action_label = reader.student? ? 'Contacter l\'employeur' : 'Voir'
-        action_level = reader.student? ? 'primary' : 'secondary'
-        tab = reader.student? ? 'Votre stage validé' : 'Stage validé'
-        { label: 'stage validé',
-          badge: 'success',
-          tab:,
-          actions: [action_path.merge(label: action_label, level: action_level)] }
-      else
-        {}
-      end
+      HumanState.for(application: internship_application, role: reader_role, application_path: internship_application_path).to_h
+    rescue HumanState::UnknownState, HumanState::UnknownRole => e
+      Sentry.capture_exception(e)
+      {}
     end
 
     def actions_in_show_page
@@ -294,6 +185,13 @@ module Presenters
     end
 
     private
+
+    def reader_role
+      if reader.student?            then :student
+      elsif reader.school_management? then :school_management
+      else                               :employer
+      end
+    end
 
     def current_state_in_list?(state_array)
       state_array.include?(internship_application.aasm_state)

@@ -85,10 +85,11 @@ footer#footer.fr-footer role="contentinfo"
                       "https://github.com/betagouv/monstagedeseconde/",
                       class: 'fr-raw-link fr-text--sm link',
                       target: '_blank'
-          li.fr-footer__bottom-item
-            = link_to "Contactez-nous",
-                      contact_path,
-                      class: 'fr-raw-link fr-text--sm link'
+          - if display_footer_contact_link?
+            li.fr-footer__bottom-item
+              = link_to "Contactez-nous",
+                        contact_path,
+                        class: 'fr-raw-link fr-text--sm link'
     p.fr-mb-8w.fr-py-2w.fr-text--sm.license
       | Sauf mention explicite de propriété intellectuelle détenue par des tiers, les contenus de ce site sont proposés sous 
       a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank" class="link" licence etalab-2.0 

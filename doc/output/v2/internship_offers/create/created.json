@@ -1,24 +1,24 @@
 {
   "title": "title",
   "description": "description",
-  "max_candidates": 1,
+  "employer_name": "employer_name",
+  "employer_description": "employer_description",
   "employer_website": "http://google.fr",
   "street": "Avenue de l'opéra",
   "zipcode": "75002",
   "city": "Paris",
-  "is_public": false,
-  "employer_name": "employer_name",
-  "employer_description": "employer_description",
   "remote_id": "test",
   "permalink": "http://monsite.com",
-  "published_at": "2025-07-02T09:45:20.795+02:00",
+  "max_candidates": 2,
+  "published_at": "2025-03-01T00:00:00.000+01:00",
+  "is_public": false,
   "formatted_coordinates": {
-    "latitude": 1.0,
-    "longitude": 1.0
+    "latitude": 48.8602244,
+    "longitude": 2.333
   },
   "weeks": [
-    "2025-W19",
-    "2025-W20"
+    "2025-W21",
+    "2025-W22"
   ],
   "grades": [
     "troisieme"

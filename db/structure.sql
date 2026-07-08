@@ -1712,7 +1712,9 @@ CREATE TABLE public.multi_coordinators (
     phone character varying(20) NOT NULL,
     multi_activity_id bigint NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    is_public boolean DEFAULT false NOT NULL,
+    group_id bigint
 );
 
 
@@ -4368,6 +4370,13 @@ CREATE INDEX index_multi_activities_on_employer_id ON public.multi_activities US
 
 
 --
+-- Name: index_multi_coordinators_on_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_multi_coordinators_on_group_id ON public.multi_coordinators USING btree (group_id);
+
+
+--
 -- Name: index_multi_coordinators_on_multi_activity_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -5482,6 +5491,14 @@ ALTER TABLE ONLY public.internship_offer_stats
 
 
 --
+-- Name: multi_coordinators fk_rails_e7f677a586; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.multi_coordinators
+    ADD CONSTRAINT fk_rails_e7f677a586 FOREIGN KEY (group_id) REFERENCES public.groups(id);
+
+
+--
 -- Name: internship_offer_grades fk_rails_e960458274; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5544,7 +5561,9 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260610090000'),
 ('20260608090000'),
+('20260604000000'),
 ('20260526090153'),
 ('20260520214758'),
 ('20260515090000'),
@@ -6050,4 +6069,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
-

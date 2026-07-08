@@ -70,6 +70,9 @@ class CallbacksController < ApplicationController
 
   def educonnect
     # redirect_to root_path, alert: 'Jeton invalide' and return unless cookies[:state] == params[:state]
+    unless ActiveSupport::SecurityUtils.secure_compare(cookies[:state].to_s, params[:state].to_s)
+      redirect_to root_path, alert: "Jeton invalide" and return
+    end
 
     code = params[:code]
     state = params[:state]

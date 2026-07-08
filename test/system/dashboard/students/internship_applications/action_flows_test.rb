@@ -285,7 +285,7 @@ module Dashboard
           click_link 'Candidatures'
           click_link 'Rechercher un autre stage'
           click_link internship_offer_2.title
-          all('a', text: 'Postuler').first.click
+          first('a', text: 'Postuler').click
           find('h1.h2', text: 'Votre candidature')
         end
       end

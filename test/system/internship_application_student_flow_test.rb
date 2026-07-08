@@ -28,7 +28,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
       sign_in(student)
       visit internship_offer_path(internship_offer)
       assert_select 'a', text: 'Postuler', count: 0
-      all('a', text: 'Postuler').first.click
+      first('a', text: 'Postuler').click
       assert page.has_content?('Votre établissement a déclaré des semaines de stage et aucune semaine n\'est compatible avec cette offre de stage.')
     end
   end
@@ -103,7 +103,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
       visit internship_offer_path(internship_offer)
       first(:link, 'Postuler').click
 
-      all('a', text: 'Postuler').first.click
+      first('a', text: 'Postuler').click
       # check application is now here, ensure feature is here
       page.find '#internship-application-closeform', visible: true
       page.find('.test-missing-school-weeks', visible: true)
@@ -190,7 +190,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
       internship_offer = create(:weekly_internship_offer_2nde)
       assert internship_offer.employer != employer
       visit internship_offer_path(internship_offer.id)
-      all('input[type="submit"]').first.click # Postuler
+      first('input[type="submit"]').click # Postuler
       assert page.has_selector?('span#alert-text', text: 'Connectez-vous pour postuler aux stages')
     end
   end

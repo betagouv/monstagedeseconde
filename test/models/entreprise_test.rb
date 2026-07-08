@@ -61,4 +61,30 @@ class EntrepriseTest < ActiveSupport::TestCase
     assert_equal "Adresse de l'entreprise est trop court (au moins 8 caractères)",
                  entreprise.errors.full_messages.first
   end
+
+  # MGF-1666 : workspace_conditions / workspace_accessibility facultatifs,
+  # mais au moins 10 caractères si renseignés.
+  test 'workspace fields are optional (blank is valid)' do
+    entreprise = build(:entreprise, workspace_conditions: '', workspace_accessibility: '')
+    assert entreprise.valid?, entreprise.errors.full_messages.to_sentence
+  end
+
+  test 'workspace_conditions shorter than 10 chars is invalid' do
+    entreprise = build(:entreprise, workspace_conditions: 'court')
+    refute entreprise.valid?
+    assert entreprise.errors[:workspace_conditions].present?
+  end
+
+  test 'workspace_accessibility shorter than 10 chars is invalid' do
+    entreprise = build(:entreprise, workspace_accessibility: 'court')
+    refute entreprise.valid?
+    assert entreprise.errors[:workspace_accessibility].present?
+  end
+
+  test 'workspace fields with at least 10 chars are valid' do
+    entreprise = build(:entreprise,
+                       workspace_conditions: 'Open space lumineux et calme',
+                       workspace_accessibility: 'Ascenseur et rampe disponibles')
+    assert entreprise.valid?, entreprise.errors.full_messages.to_sentence
+  end
 end

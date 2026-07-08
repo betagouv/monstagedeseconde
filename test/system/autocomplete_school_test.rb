@@ -45,7 +45,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
         click_on 'Mon établissement'
       end
       fill_in('Établissement ou commune', with: @next_school_city[0..3])
-      all('.autocomplete-school-results .list-group-item-action').first.click
+      first('.autocomplete-school-results .list-group-item-action').click
       assert_equal find_field('Établissement ou commune').value,
                    @next_school_city,
                    "can't find next school.city"
@@ -68,7 +68,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
       assert_equal 1, all('#user_school_name').size, 'default school name missing'
       assert_equal 1, all('#user_class_room_id').size, 'default class room missing'
 
-      all('.btn-clear-city').first.click
+      first('.btn-clear-city').click
       assert_equal 0, all('#user_school_name').size, 'reset school name fails'
       assert_equal 0, all('#user_class_room_id').size, 'reset class_room fails'
     end
@@ -91,7 +91,7 @@ class AutocompleteSchoolTest < ApplicationSystemTestCase
                  'expected class room input not present')
 
     fill_in('Établissement ou commune', with: @next_school_city[0..3])
-    all('.autocomplete-school-results .list-group-item-action').first.click
+    first('.autocomplete-school-results .list-group-item-action').click
     select @next_school.name, from: 'user_school_id'
     select(next_class_room.name, from: 'user_class_room_id')
     click_on 'Enregistrer'

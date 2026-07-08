@@ -1,23 +1,23 @@
 {
-  "title": "Stage de 2de - 8",
+  "title": "Stage de 2de - 2",
   "description": "Lorem ipsum dolor",
-  "max_candidates": 1,
+  "employer_name": "Octo",
+  "employer_description": "Lorem ipsum dolor api",
   "employer_website": null,
   "street": "1 rue du poulet",
   "zipcode": "75001",
   "city": "Paris",
-  "is_public": true,
-  "employer_name": "Octo",
-  "employer_description": "Lorem ipsum dolor api",
-  "remote_id": "1",
+  "remote_id": "7",
   "permalink": "https://google.fr",
-  "published_at": "2025-07-02T09:45:13.195+02:00",
+  "max_candidates": 1,
+  "published_at": "2026-06-23T15:22:27.845+02:00",
+  "is_public": true,
   "formatted_coordinates": {
     "latitude": 48.866667,
     "longitude": 2.333333
   },
   "weeks": [
-    "2025-W25"
+    "2026-W25"
   ],
   "grades": [
     "seconde"

@@ -1,0 +1,24 @@
+- content_for :title, "Personnels pédagogiques"
+
+h1.fr-h2 Gestion des personnels pédagogiques
+
+p.fr-text--sm.fr-mb-3w
+  | Recherchez un personnel par nom, prénom, email ou code UAI.
+
+= form_with url: admin_school_managements_path,
+            method: :get,
+            data: { turbo_frame: "school-management-results" } do |f|
+  .fr-search-bar.fr-mb-4w role="search"
+    = f.label :query, "Rechercher un personnel pédagogique", class: "fr-label fr-sr-only"
+    = f.text_field :query,
+                   value: params[:query],
+                   class: "fr-input",
+                   placeholder: "Nom, prénom, email ou code UAI…",
+                   autocomplete: "off",
+                   type: "search"
+    = f.button "Rechercher", type: "submit", class: "fr-btn fr-icon-search-line"
+
+= turbo_frame_tag "school-management-results" do
+  = render "admin/school_managements/search_results",
+           school_managements: @school_managements,
+           query: @query

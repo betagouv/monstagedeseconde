@@ -97,7 +97,7 @@ module Api
           end
           assert_response :bad_request
           assert_equal 'VALIDATION_ERROR', json_response['code']
-          assert_equal [ 'Description too long, allowed up 500 chars' ],
+          assert_equal [ 'Description too long, allowed up to 1500 chars' ],
                        json_error['description'],
                        'bad description error '
         end

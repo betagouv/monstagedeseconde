@@ -66,9 +66,7 @@ class PagesController < ApplicationController
     @resources = get_resources('statistician')
   end
 
-  def home
-    @faqs = get_faqs('student')
-  end
+  def home; end
 
   def search_companies
     @faqs = get_faqs('student')

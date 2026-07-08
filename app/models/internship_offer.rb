@@ -16,6 +16,7 @@ class InternshipOffer < ApplicationRecord
   DUPLICATE_WHITE_LIST = %w[type title sector_id max_candidates description employer_id
                             employer_name street zipcode city department entreprise_coordinates
                             employer_chosen_name all_year_long period grade_ids week_ids
+                            entreprise_id
                             entreprise_full_address internship_offer_area_id contact_phone
                             is_public group school_id coordinates first_date last_date
                             siret internship_address_manual_enter lunch_break daily_hours
@@ -435,11 +436,13 @@ class InternshipOffer < ApplicationRecord
   end
 
   def seconde_school_track_week_1?
-    weeks & SchoolTrack::Seconde.both_weeks == [ SchoolTrack::Seconde.first_week ]
+    week_ids = weeks.map(&:id)
+    week_ids.include?(SchoolTrack::Seconde.first_week.id) && !week_ids.include?(SchoolTrack::Seconde.second_week.id)
   end
 
   def seconde_school_track_week_2?
-    weeks & SchoolTrack::Seconde.both_weeks == [ SchoolTrack::Seconde.second_week ]
+    week_ids = weeks.map(&:id)
+    week_ids.include?(SchoolTrack::Seconde.second_week.id) && !week_ids.include?(SchoolTrack::Seconde.first_week.id)
   end
 
   def fits_for_seconde?
@@ -589,7 +592,27 @@ class InternshipOffer < ApplicationRecord
   def requires_update_at_toggle_time?
     return false if published?
 
-    no_remaining_seat_anymore?
+    republish_blocking_reasons.any?
+  end
+
+  def republish_blocking_reasons
+    reasons = []
+    reasons << :seats if no_remaining_seat_anymore?
+    reasons << :must_duplicate if weeks_in_past_no_future_available?
+    reasons << :weeks if weeks_in_past_with_future_available?
+    reasons
+  end
+
+  def weeks_in_the_past?
+    last_date.present? && last_date < Time.current
+  end
+
+  def weeks_in_past_no_future_available?
+    weeks_in_the_past? && Week.selectable_from_now_until_end_of_school_year.none?
+  end
+
+  def weeks_in_past_with_future_available?
+    weeks_in_the_past? && Week.selectable_from_now_until_end_of_school_year.any?
   end
 
   def approved_applications_current_school_year
