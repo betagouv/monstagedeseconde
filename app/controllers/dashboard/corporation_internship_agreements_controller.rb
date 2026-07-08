@@ -1,5 +1,6 @@
 module Dashboard
-  class CorporationInternshipAgreementsController < ApplicationController
+  class CorporationInternshipAgreementsController < Dashboard::BaseController
+    skip_before_action :authenticate_user!
     layout 'no_link_layout'
 
     def index
