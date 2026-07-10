@@ -76,6 +76,8 @@ export default class extends Controller {
       toggleContainer(this.checkboxesContainerTarget, true);
       this.computeMonthScore();
     }
+
+    requestAnimationFrame(() => this.broadcastWeeksCount(this.totalScore()));
   }
 
   fetchSchoolsNearby() {
@@ -161,6 +163,24 @@ export default class extends Controller {
   hasAtLeastOneCheckbox() {
     const selectedCheckbox = $(this.weekCheckboxesTargets).filter(":checked");
     return selectedCheckbox.length === 0;
+  }
+
+  // MGF-1666: the "semaines spécifiques" selector is only required when it is
+  // actually displayed (collégiens selected, "specific weeks" mode). Returns
+  // true when a week MUST be picked but none is. Pure-2de offers are unaffected
+  // because their weeks come from the seconde period, not these checkboxes.
+  weekSelectionInvalid() {
+    if (!this.hasCheckboxesContainerTarget) return false;
+
+    const container = this.checkboxesContainerTarget;
+    // offsetParent === null when the container (or an ancestor) is hidden.
+    if (container.offsetParent === null) return false;
+
+    return this.hasAtLeastOneCheckbox();
+  }
+
+  showWeekError() {
+    this.onNoWeekSelected();
   }
 
   // ui helpers
@@ -253,7 +273,9 @@ export default class extends Controller {
     if (this.allYearLongTarget.checked) {
       troisiemeScore = document.querySelectorAll(".custom-control-checkbox-list input").length;
     } else {
-      troisiemeScore = Object.values(this.scores).reduce((a, b) => a + b);
+      // MGF-1666: count the actually-checked boxes (robust on load / edit) rather
+      // than the `scores` accumulator that is only updated on clicks.
+      troisiemeScore = this.weekCheckboxesTargets.filter((cb) => cb.checked).length;
     }
     return troisiemeScore;
   }

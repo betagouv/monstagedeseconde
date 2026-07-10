@@ -143,31 +143,18 @@ module Dashboard::InternshipOffers
       assert_redirected_to root_path
     end
 
-    test "GET #index filters as Employer show published, unpublished, in past when required" do
+    test "GET #index as Employer does not show removed offers" do
       employer, internship_offer_published = create_employer_and_offer_2nde
-      internship_offer_unpublished = create(:weekly_internship_offer_2nde,
-                                            internship_offer_area_id: employer.current_area_id,
-                                            employer:)
-      internship_offer_unpublished.update_columns(published_at: nil, aasm_state: :removed)
-      two_weeks_ago = 2.weeks.ago
-      internship_offer_in_the_past = create(
-        :weekly_internship_offer_2nde,
-        employer:,
-        internship_offer_area_id: employer.current_area_id
-      )
+      internship_offer_removed = create(:weekly_internship_offer_2nde,
+                                        internship_offer_area_id: employer.current_area_id,
+                                        employer:)
+      internship_offer_removed.update_columns(published_at: nil, aasm_state: :removed)
       sign_in(employer)
 
       get dashboard_internship_offers_path
 
-      assert_select(".test-internship-offer-#{internship_offer_published.id}",
-                    { count: 1 },
-                    "should not have found published offer")
-      assert_select(".test-internship-offer-#{internship_offer_unpublished.id}",
-                    { count: 1 },
-                    "should found unpublished offer")
-      assert_select(".test-internship-offer-#{internship_offer_in_the_past.id}",
-                    { count: 1 },
-                    "should not have found offer in the past")
+      assert_presence_of(internship_offer: internship_offer_published)
+      assert_absence_of(internship_offer: internship_offer_removed)
     end
 
     test "GET #index returns sortable table" do

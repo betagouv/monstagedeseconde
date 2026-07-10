@@ -44,6 +44,7 @@ module Abilities
       can %i[update], InternshipOffer do |internship_offer|
         internship_offer.employer_id.in?(user.team_members_ids) &&
           internship_offer.has_weeks_after_school_year_start? &&
+          !internship_offer.weeks_in_past_no_future_available? &&
           !internship_offer.is_a?(InternshipOffers::Multi)
       end
       can %i[create], InternshipOccupation
@@ -158,7 +159,7 @@ module Abilities
 
       can :flip_notification, AreaNotification do |_area_notif|
         many_people_in_charge_of_area = !user.current_area.single_human_in_charge?
-        current_area_notifications_are_off = !user.fetch_current_area_notification.notify
+        current_area_notifications_are_off = !user.fetch_current_area_notification&.notify
 
         user.team.alive? &&
           (many_people_in_charge_of_area || current_area_notifications_are_off)

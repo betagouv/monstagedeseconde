@@ -28,7 +28,7 @@ def random_extra_attributes(object)
   object.current_sign_in_at = (2..5).to_a.sample.days.ago
   object.last_sign_in_at = (12..16).to_a.sample.days.ago
   if object.student?
-    object.gender ||= (['m'] * 4 + ['f'] * 4 + ['np']).sample
+    object.gender ||= ([ 'm' ] * 4 + [ 'f' ] * 4 + [ 'np' ]).sample
     if object.grade.present?
       type = object.grade == Grade.seconde ? :lycee : :college
       object.class_room ||= random_class_room(type: type)
@@ -81,4 +81,5 @@ if Rails.env == 'review' || Rails.env.development?
   School.update_all(updated_at: Time.now)
   prevent_sidekiq_to_run_job_after_seed_loaded
   Services::CounterManager.reset_internship_offer_counters
+  MailActionItem.delete_all if MailActionItem.table_exists?
 end

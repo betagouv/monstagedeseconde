@@ -190,7 +190,7 @@ def populate_internship_offers
     siret:,
     sector: Sector.first,
     is_public: false,
-    title: '3eme - Stage editeur - A la recherche du temps passé par les collaborateurs',
+    title: '3eme - Multi - Stage editeur - A la recherche du temps passé par les collaborateurs',
     description: "Stage organisé par la DRAFPIC - HDF, avec le lycée Pasteur\n\nLundi:\nLycée Pasteur, Hénin-Beaumont: matin accueil du stage, après midi: visite des plateaux techniques\n\nMardi :\nmatin: intervention FRTP et CMQ TP au Lycée Pasteur, après-midi: visite Centrale thermique CCG - EDF Bouchain\n\nMercredi:\nmatin: visite chantier TP entreprise Ramery, hôpital de Lens\n\nJeudi:\nLycée Pasteur, Hénin-Beaumont: camp Innovation Dreamakers\n\nVendredi:\nLycée Pasteur, Hénin-Beaumont, avec Dreamakers qui prend en mains:  matin: préparation de la restitution, après midi: restitution orale devant les familles et les partenaires",
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
@@ -215,7 +215,7 @@ def populate_internship_offers
     siret:,
     sector: Sector.first,
     is_public: false,
-    title: '3eme - Les métiers du meuble',
+    title: '3eme - Multi -Les métiers du meuble',
     description: "Stage organisé par les coopératives du bois de Charente - HDF, avec le lycée Pasteur\n\nLundi:\nLycée Pasteur, Hénin-Beaumont: matin accueil du stage, après midi: visite des plateaux techniques\n\nMardi :\nmatin: intervention FRTP et CMQ TP au Lycée Pasteur, après-midi: visite Centrale thermique CCG - EDF Bouchain\n\nMercredi:\nmatin: visite chantier TP entreprise Ramery, hôpital de Lens\n\nJeudi:\nLycée Pasteur, Hénin-Beaumont: camp Innovation Dreamakers\n\nVendredi:\nLycée Pasteur, Hénin-Beaumont, avec Dreamakers qui prend en mains:  matin: préparation de la restitution, après midi: restitution orale devant les familles et les partenaires",
     employer_description: "Du Temps pour moi est une agence mandataire de garde d'enfants à domicile. Notre activité consister à aider les familles de la métropole lilloise à trouver leur intervenant(e) à domicile pour la garde de leurs enfants de 0 à 16 ans.",
     employer_website: 'http://www.dtpm.fr/',
@@ -376,6 +376,58 @@ def populate_internship_offers
                                 .select { |io| io.may_unpublish? }
                                 &.last
                                 &.unpublish!
+
+  # Offre 2de — état: removed (dépubliée définitivement)
+  offer_removed_seconde = InternshipOffers::WeeklyFramed.create!(
+    employer: Users::Employer.first,
+    contact_phone: '+33637607756',
+    siret:,
+    max_candidates: 3,
+    period: [ 0, 1, 2 ].sample,
+    sector: Sector.third,
+    is_public: false,
+    title: '(2de) - Stage archiviste — service des archives municipales',
+    description: 'Vous découvrez le métier d\'archiviste au sein du service des archives municipales de la ville.',
+    employer_description: 'Les archives municipales conservent et valorisent le patrimoine documentaire de la ville.',
+    street: '3 rue des Archives',
+    zipcode: '75003',
+    city: 'Paris',
+    coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    employer_name: 'Mairie de Paris',
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: seconde_weeks,
+    grades: [ Grade.seconde ],
+    entreprise_full_address: '3 rue des Archives, 75003 Paris',
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: [ '09:00', '17:00' ]
+  )
+  offer_removed_seconde.remove! if offer_removed_seconde.may_remove?
+
+  # Offre 3ème — état: removed (dépubliée définitivement)
+  offer_removed_troisieme = InternshipOffers::WeeklyFramed.create!(
+    employer: Users::Employer.first,
+    contact_phone: '+33637607756',
+    siret:,
+    max_candidates: 3,
+    period: [ 0, 1, 2 ].sample,
+    sector: Sector.third,
+    is_public: false,
+    title: '(3eme) - Stage menuisier — atelier artisanal',
+    description: 'Vous observez le travail du menuisier dans un atelier artisanal de fabrication de meubles.',
+    employer_description: 'Atelier artisanal spécialisé dans la fabrication de meubles sur mesure.',
+    street: '7 rue du Faubourg Saint-Antoine',
+    zipcode: '75011',
+    city: 'Paris',
+    coordinates: { latitude: Coordinates.paris[:latitude], longitude: Coordinates.paris[:longitude] },
+    employer_name: 'Atelier Bois & Co',
+    internship_offer_area_id: Users::Employer.first.internship_offer_areas.first.id,
+    weeks: troisieme_weeks,
+    grades: [ Grade.troisieme ],
+    entreprise_full_address: '7 rue du Faubourg Saint-Antoine, 75011 Paris',
+    lunch_break: "L'élève doit prévoir son repas de midi",
+    weekly_hours: [ '09:00', '17:00' ]
+  )
+  offer_removed_troisieme.remove! if offer_removed_troisieme.may_remove?
 
   # 11 multi-line
   description = " - Présentation des services de la direction régionale de la banque Acme Corp. (banque de dépôt). - Présentation des principes secondaires du métier. - Immersion au sein d’une équipe d'admiistrateurs de comptes de la banque. Proposition de gestion de portefeuille de clients en fin de stage, avec les conseils du tuteur'. "

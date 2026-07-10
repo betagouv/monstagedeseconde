@@ -20,6 +20,7 @@ require "support/team_and_areas_helper"
 require "minitest/retry"
 require "webmock/minitest"
 require "sidekiq/testing"
+require "capybara" # needed so Capybara::ElementNotFound is defined for the retry config below
 
 # these two lines should be withdrawn whenever the ChromeDriver is ok
 # https://stackoverflow.com/questions/70967207/selenium-chromedriver-cannot-construct-keyevent-from-non-typeable-key/70971698#70971698
@@ -41,7 +42,16 @@ Minitest::Retry.use!(
   io: $stdout,
   exceptions_to_retry: [
     ActionView::Template::Error, # during test, sometimes fails on "unexpected token at ''", not fixable
-    PG::InternalError # sometimes postgis ref system is not yet ready
+    PG::InternalError, # sometimes postgis ref system is not yet ready
+    # System (Selenium) tests are subject to transient DOM races
+    # ("Node with given id does not belong to the document", stale element,
+    # click intercepted). Retrying these flaky exceptions keeps CI green.
+    Selenium::WebDriver::Error,
+    # React islands (SirenInput, AddressInput…) sometimes haven't finished
+    # mounting when Capybara looks for their fields → transient ElementNotFound.
+    # `first`/`assert_selector` raise ExpectationNotMet in the same situations.
+    Capybara::ElementNotFound,
+    Capybara::ExpectationNotMet
   ]
 )
 # Minitest::Reporters.use!

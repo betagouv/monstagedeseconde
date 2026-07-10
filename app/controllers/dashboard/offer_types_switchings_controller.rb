@@ -1,6 +1,5 @@
 module Dashboard
-  class OfferTypesSwitchingsController < ApplicationController
-    before_action :authenticate_user!
+  class OfferTypesSwitchingsController < Dashboard::BaseController
 
     def new
       authorize! :create, InternshipOffer

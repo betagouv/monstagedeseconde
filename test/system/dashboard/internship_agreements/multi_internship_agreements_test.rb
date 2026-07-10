@@ -251,7 +251,7 @@ module Dashboard::InternshipAgreements
       sign_in(coordinator_user)
 
       visit dashboard_internship_agreements_path
-      all('button[data-action="group-signing#toggleFromButton"]').first.click
+      first('button[data-action="group-signing#toggleFromButton"]').click
       click_button('Faire signer')
       within('dialog[aria-labelledby="multi-modal-title"]') do
         click_button('Envoyer en signature')

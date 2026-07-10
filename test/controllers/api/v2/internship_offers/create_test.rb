@@ -870,6 +870,73 @@ module Api
           end
         end
       end
+
+      test 'POST #create accepts a description of 1500 characters (max boundary)' do
+        sector = Sector.find_by(name: 'Fonction publique')
+        description = 'a' * InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT
+
+        assert_difference('InternshipOffer.count', 1) do
+          post api_v2_internship_offers_path(
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                title: 'title',
+                description:,
+                employer_name: 'employer_name',
+                employer_description: 'employer_description',
+                employer_website: 'http://google.fr',
+                'coordinates' => { latitude: 1, longitude: 1 },
+                street: "Avenue de l'opéra",
+                zipcode: '75002',
+                city: 'Paris',
+                sector_uuid: sector.uuid,
+                remote_id: 'desc-1500',
+                max_candidates: 2,
+                is_public: true,
+                permalink: 'http://monsite.com',
+                grades: %w[seconde],
+                weeks: InternshipOffers::Api.mandatory_seconde_weeks
+              }
+            }
+          )
+        end
+        assert_response :created
+        assert_equal InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT, InternshipOffers::Api.last.description.length
+      end
+
+      test 'POST #create rejects a description longer than 1500 characters with an explicit message' do
+        sector = Sector.find_by(name: 'Fonction publique')
+        description = 'a' * (InternshipOffer::DESCRIPTION_MAX_CHAR_COUNT + 1)
+
+        assert_difference('InternshipOffer.count', 0) do
+          post api_v2_internship_offers_path(
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                title: 'title',
+                description:,
+                employer_name: 'employer_name',
+                employer_description: 'employer_description',
+                employer_website: 'http://google.fr',
+                'coordinates' => { latitude: 1, longitude: 1 },
+                street: "Avenue de l'opéra",
+                zipcode: '75002',
+                city: 'Paris',
+                sector_uuid: sector.uuid,
+                remote_id: 'desc-1501',
+                max_candidates: 2,
+                is_public: true,
+                permalink: 'http://monsite.com',
+                grades: %w[seconde],
+                weeks: InternshipOffers::Api.mandatory_seconde_weeks
+              }
+            }
+          )
+        end
+        assert_response :bad_request
+        assert_equal 'VALIDATION_ERROR', json_code
+        assert_equal [ 'Description too long, allowed up to 1500 chars' ], json_error['description']
+      end
     end
   end
 end

@@ -1,7 +1,6 @@
 module Dashboard
   module InternshipOfferAreas
-    class AreaNotificationsController < ApplicationController
-      before_action :authenticate_user!
+    class AreaNotificationsController < Dashboard::BaseController
       before_action :fetch_area_notification, only: %i[edit update flip]
 
       def index

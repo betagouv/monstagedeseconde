@@ -31,11 +31,11 @@ Rails.application.routes.draw do
             via: %i[get post delete]
 
       # flipper
-      mount Flipper::UI.app(Flipper) => '/admin/flipper'
+      mount Flipper::UI.app(Flipper) => "/admin/flipper"
 
       # letter_thief : emails sortants interceptés (remplace Mailtrap en review).
       # Réservé aux comptes god car ils contiennent des données personnelles.
-      mount LetterThief::Engine => '/letter_thief' if Rails.env.review?
+      mount LetterThief::Engine => "/letter_thief" if Rails.env.review?
     end
 
     mount RailsAdmin::Engine => "/admin", as: "rails_admin"
@@ -335,7 +335,7 @@ Rails.application.routes.draw do
   end
   # Redirects
   # get '/dashboard/internship_offers/:id', to: redirect('/internship_offers/%<id>s', status: 302)
-  get "/dashboard/internship_offers/:id", to: redirect('/internship_offers/#{id}', status: 302)
+  get "/dashboard/internship_offers/:id", to: redirect("/internship_offers/%{id}", status: 302)
 
   resources :school_switches, only: [ :create ]
 

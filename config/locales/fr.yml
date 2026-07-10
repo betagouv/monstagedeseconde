@@ -163,6 +163,9 @@ fr:
         zipcode: Code postal
         city: Commune
         phone: Téléphone
+        sector_id: Secteur d'activité
+        is_public: Secteur public/privé
+        group_id: Type d'employeur public
       school:
         name: Nom
         kind: Type
@@ -228,6 +231,8 @@ fr:
       entreprise: &entreprises_fields
         siret: Siret
         is_public: Secteur public/privé
+        sector_id: Secteur d'activité
+        group_id: Type d'employeur public
         employer_name: Nom de l'employeur(issu du siret)
         employer_chosen_name: Nom de l'employeur
         entreprise_coordinates: Coordonnées GPS de l'entreprise
@@ -683,7 +688,7 @@ fr:
               blank: "Le stage doit être soit public ou privé"
             description:
               blank: "Veuillez saisir une description pour l'offre de stage"
-              too_long: La description doit faire au maximum 500 caractères
+              too_long: La description doit faire au maximum %{count} caractères
             sector:
               required: "Veuillez choisir un secteur pour l'offre de stage"
             weeks:
@@ -708,7 +713,7 @@ fr:
               blank: "Missing title"
             description:
               blank: "Missing description"
-              too_long: "Description too long, allowed up 500 chars"
+              too_long: "Description too long, allowed up to %{count} chars"
             period:
               blank: "La période de stage est obligatoire"
               invalid: "La période de stage est invalide"

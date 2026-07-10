@@ -14,77 +14,41 @@ module ReviewRebuild
         iag.student_legal_representative_2_email = 'frederic.tolenado@free.fr'
         iag.save! if iag.valid?
       end
+
       internship_agreements = InternshipAgreement.all.to_a
-      internship_agreements.select{ |iag| iag.validated? }[0..-2].each do |iag|
+      internship_agreements.select { |iag| iag.draft? }[0..-2].each do |iag|
         iag.complete!
         iag.start_by_school_manager!
         iag.finalize!
       end
 
+      # signatures_started — élève et représentant légal ont signé (3ème)
       agreement = InternshipAgreement.validated.troisieme_grades.first
       if agreement.present?
-        Signature.new(common_attributes(agreement, 'school_manager'))
-                  .save!
+        Signature.new(student_attributes(agreement, 'student')).save!
+        agreement.sign!
+        Signature.new(student_attributes(agreement, 'student_legal_representative')).save!
         agreement.sign!
       end
 
-      # agreement = InternshipAgreement.validated.troisieme_grades.second
-      # Signature.new(common_attributes(agreement, 'employer'))
-      #          .save!
-      # agreement.sign!
-
+      # signatures_started — élève et représentant légal ont signé (2de)
       agreement = InternshipAgreement.validated.seconde_grades.first
       if agreement.present?
-        Signature.new(common_attributes(agreement, 'school_manager'))
-                 .save!
+        Signature.new(student_attributes(agreement, 'student')).save!
+        agreement.sign!
+        Signature.new(student_attributes(agreement, 'student_legal_representative')).save!
         agreement.sign!
       end
-
-      # agreement = InternshipAgreement.validated.seconde_grades.second
-      # Signature.new(common_attributes(agreement, 'employer'))
-      #          .save!
-      # agreement.sign!
-
-      if agreement.present?
-        Signature.new(common_attributes(agreement, 'student_legal_representative'))
-                 .save!
-        agreement.sign!
-      end
-
-      # --- pair signing
-      # agreement = InternshipAgreement.validated.seconde_grades.third
-      # Signature.new(common_attributes(agreement, 'school_manager'))
-      #          .save!
-      # agreement.sign!
-
-      # Signature.new(common_attributes(agreement, 'employer'))
-      #          .save!
-      # agreement.sign!
-
-      # Signature.new(common_attributes(agreement, 'student'))
-      #          .save!
-      # agreement.sign!
     end
 
-    def common_attributes(agreement, signatory_role)
-      hash = {
-        signature_image: Rack::Test::UploadedFile.new('test/fixtures/files/signature.png', 'image/png'),
-        signature_date: Time.current,
-        signatory_ip: FFaker::Internet.ip_v4_address,
-        signature_phone_number: '+33123456789',
-        internship_agreement: agreement
+    def student_attributes(agreement, signatory_role)
+      {
+        signatory_role:  signatory_role,
+        signature_date:  Time.current,
+        signatory_ip:    FFaker::Internet.ip_v4_address,
+        internship_agreement: agreement,
+        user_id:         agreement.student.id
       }
-      hash[:signatory_role] = signatory_role
-      hash[:user_id] = if signatory_role == 'school_manager'
-                         agreement.school_manager.id
-                       elsif signatory_role == 'employer'
-                         agreement.employer.id
-                       elsif signatory_role == 'student'
-                         agreement.student.id
-                       elsif signatory_role == 'student_legal_representative'
-                         agreement.student.id
-                       end
-      hash
     end
   end
 end

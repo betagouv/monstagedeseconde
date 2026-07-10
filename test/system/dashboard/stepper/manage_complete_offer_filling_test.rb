@@ -19,6 +19,8 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
       travel_to(Date.new(2024, 3, 1)) do
         visit employer.custom_dashboard_path
         find('#test-create-offer').click
+        choose('radio-rich-0', allow_label_click: true)
+        click_on 'Commencer'
         fill_in_internship_occupation_form
         find('li#downshift-0-item-0', wait: 8).click
         find('span', text: 'Étape 1 sur 3')
@@ -50,6 +52,8 @@ class ManageCompleteOfferFillingTest < ApplicationSystemTestCase
     travel_to(Date.new(2024, 3, 1)) do
       visit employer.custom_dashboard_path
       find('#test-create-offer').click
+      choose('radio-rich-0', allow_label_click: true)
+      click_on 'Commencer'
       fill_in_internship_occupation_form
       find('li#downshift-0-item-0', wait: 8).click
       find('span', text: 'Étape 1 sur 3')

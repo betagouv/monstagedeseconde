@@ -7,6 +7,7 @@ module PlanningFormFiller
     first_week: false,
     second_week: false,
     both_weeks: true,
+    with_hours: true,
     school_ids: []
   )
     # default values are all checked
@@ -23,8 +24,10 @@ module PlanningFormFiller
     end
 
     fill_in "Nombre total d'élèves que vous souhaitez accueillir sur la période de stage", with: max_candidates
-    find('#planning_weekly_hours_start').select('08:00')
-    find('#planning_weekly_hours_end').select('15:00')
+    if with_hours
+      find('#planning_weekly_hours_start').select('08:00')
+      find('#planning_weekly_hours_end').select('15:00')
+    end
     fill_in 'Pause déjeuner', with: 'test de lunch break'
     return if school_ids.empty?
 

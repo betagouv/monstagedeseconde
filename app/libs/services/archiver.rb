@@ -1,52 +1,89 @@
 module Services
   # Services::StudentArchiver.new(begins_at: Date.new(2019, 9, 1), ends_at: Date.new(2020, 8, 31))
   class Archiver
-    def self.archive_students
+    # Set-based equivalents of Users::Student#anonymize / InternshipApplication#anonymize.
+    # Only `email` is per-row: a random local part with the original domain preserved (or NULL when
+    # blank), matching `"#{SecureRandom.hex}@#{email_domain_name}"`. `discarded_at` uses COALESCE so
+    # an already-discarded student keeps its original timestamp (mirrors `discard! unless discarded?`).
+    STUDENT_ANONYMIZATION_SQL = <<~SQL.squish.freeze
+      first_name = 'NA',
+      last_name = 'NA',
+      phone = NULL,
+      current_sign_in_ip = NULL,
+      last_sign_in_ip = NULL,
+      anonymized = true,
+      discarded_at = COALESCE(discarded_at, now()),
+      birth_date = NULL,
+      class_room_id = NULL,
+      resume_other = NULL,
+      resume_languages = NULL,
+      gender = NULL,
+      ine = NULL,
+      address = NULL,
+      legal_representative_full_name = NULL,
+      legal_representative_phone = NULL,
+      legal_representative_email = NULL,
+      email = CASE
+                WHEN email IS NULL OR email = '' THEN NULL
+                ELSE md5(random()::text || id::text) || '@' || split_part(email, '@', 2)
+              END
+    SQL
+
+    APPLICATION_ANONYMIZATION_SQL = <<~SQL.squish.freeze
+      motivation = 'NA',
+      student_address = 'NA',
+      student_legal_representative_full_name = 'NA',
+      student_legal_representative_email = 'NA',
+      student_legal_representative_phone = '+330600110011',
+      student_phone = '+330600110011',
+      student_email = 'NA'
+    SQL
+
+    # Set-based anonymization: 2 UPDATEs per batch (applications, then students) instead of ~3
+    # queries per student. `anonymized: true` marks a student done, so the query below skips
+    # already-anonymized students and an interrupted run resumes instead of restarting.
+    def self.archive_students(batch_size: Rails.env.production? ? 10_000 : 5_000)
       puts "🚀 Début de l'archivage des étudiants..."
 
-      total_students = Users::Student.kept.count
+      scope = Users::Student.kept.where(anonymized: false)
+      total_students = scope.count
       puts "📊 Nombre total d'étudiants à archiver : #{total_students}"
+      return if total_students.zero?
 
       archived_count = 0
       error_count = 0
       start_time = Time.current
 
-      # Optimisation : bigger batch size for production
-      batch_size = Rails.env.production? ? 500 : 100
       puts "⚡ Taille de batch : #{batch_size} (optimisé pour #{Rails.env})"
 
-      Users::Student.kept
-                    .select(:id, :created_at, :updated_at, :anonymized, :email, :first_name, :last_name, :phone, :current_sign_in_ip, :last_sign_in_ip, :discarded_at) # Include fields needed for anonymization
-                    .in_batches(of: batch_size)
-                    .each_with_index do |batch, batch_index|
-        puts "📦 Traitement du batch #{batch_index + 1} (#{batch_size} étudiants)"
+      scope.in_batches(of: batch_size).each_with_index do |batch, batch_index|
+        ids = batch.pluck(:id)
+        next if ids.empty?
 
-        # Optimisation : process in parallel if possible
-        batch.each_with_index do |student, index_in_batch|
-          # Optimisation : use update_all for simple fields
-          student.archive
-          archived_count += 1
-
-          # Display progress every 50 students in production
-          progress_interval = Rails.env.production? ? 50 : 10
-          if (index_in_batch + 1) % progress_interval == 0
-            progress = ((archived_count.to_f / total_students) * 100).round(1)
-            puts "  ✅ #{archived_count}/#{total_students} étudiants archivés (#{progress}%)"
+        begin
+          # One transaction per batch keeps each batch atomic while committing incrementally, so an
+          # interrupted run resumes from the last committed batch. Applications are anonymized first:
+          # a student is only flagged `anonymized: true` (and thus skipped next run) once its
+          # applications' PII has been cleared in the same committed transaction.
+          ActiveRecord::Base.transaction do
+            InternshipApplication.where(user_id: ids).update_all(APPLICATION_ANONYMIZATION_SQL)
+            Users::Student.where(id: ids).update_all(STUDENT_ANONYMIZATION_SQL)
           end
+          archived_count += ids.size
         rescue StandardError => e
-          error_count += 1
-          puts "  ❌ Erreur lors de l'archivage de l'étudiant #{student.id}: #{e.message}"
+          error_count += ids.size
+          puts "  ❌ Erreur sur le batch #{batch_index + 1} (ids #{ids.first}..#{ids.last}): #{e.message}"
+          next
         end
 
-        # Feedback after each batch
         elapsed_time = Time.current - start_time
-        avg_time_per_student = elapsed_time / archived_count if archived_count > 0
-        estimated_remaining = (total_students - archived_count) * avg_time_per_student if avg_time_per_student
+        rate = archived_count / elapsed_time if elapsed_time > 0
+        estimated_remaining = (total_students - archived_count) / rate if rate && rate > 0
+        progress = ((archived_count.to_f / total_students) * 100).round(1)
 
-        puts "  📈 Progrès: #{archived_count}/#{total_students} (#{((archived_count.to_f / total_students) * 100).round(1)}%)"
-        puts "  ⏱️  Temps écoulé: #{format_duration(elapsed_time)}"
-        puts "  🎯 Temps restant estimé: #{format_duration(estimated_remaining)}" if estimated_remaining
-        puts ''
+        puts "  ✅ #{archived_count}/#{total_students} étudiants archivés (#{progress}%) — " \
+             "écoulé #{format_duration(elapsed_time)}" \
+             "#{estimated_remaining ? ", restant ~#{format_duration(estimated_remaining)}" : ''}"
       end
 
       # Final summary

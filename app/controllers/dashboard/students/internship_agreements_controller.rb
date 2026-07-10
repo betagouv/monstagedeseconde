@@ -1,7 +1,8 @@
 module Dashboard::Students
-  class InternshipAgreementsController < ApplicationController
+  class InternshipAgreementsController < Dashboard::BaseController
     include EduconnectLogout
     layout 'no_link_layout', only: %i[new]
+    skip_before_action :authenticate_user!
     before_action :authenticate_user!, only: %i[sign]
     before_action :fetch_internship_agreement
 

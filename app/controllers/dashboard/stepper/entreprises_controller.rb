@@ -1,7 +1,6 @@
 module Dashboard::Stepper
-  class EntreprisesController < ApplicationController
+  class EntreprisesController < Dashboard::BaseController
     # step 2
-    before_action :authenticate_user!
     before_action :fetch_entreprise, only: %i[edit update]
     before_action :sanitize_content, only: %i[create update]
 
@@ -218,11 +217,9 @@ module Dashboard::Stepper
       return unless entreprise_params.key?(:is_public)
 
       is_public_value = ActiveModel::Type::Boolean.new.cast(entreprise_params[:is_public])
-      if is_public_value
-        @entreprise.sector_id = Sector.find_by(name: "Fonction publique").try(:id)
-      else
-        params[:entreprise][:group_id] = nil
-      end
+      # Le secteur n'est plus forcé pour le public : c'est un choix libre.
+      # On nettoie seulement le ministère pour une structure privée.
+      params[:entreprise][:group_id] = nil unless is_public_value
     end
 
     def set_updated_address_flag

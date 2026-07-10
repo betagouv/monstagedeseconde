@@ -96,12 +96,14 @@ module Dashboard::InternshipOffers
       end
     end
 
-    test "GET #edit is not turboable" do
-      employer = create(:employer)
-      sign_in(employer)
-      internship_offer = create(:weekly_internship_offer_2nde, employer:)
-      get edit_dashboard_internship_offer_path(internship_offer.to_param)
-      assert_select 'meta[name="turbo-visit-control"][content="reload"]'
+    test 'GET #edit is not turboable' do
+      travel_to Date.new(2023, 10, 1) do
+        employer = create(:employer)
+        sign_in(employer)
+        internship_offer = create(:weekly_internship_offer_2nde, employer:)
+        get edit_dashboard_internship_offer_path(internship_offer.to_param)
+        assert_select 'meta[name="turbo-visit-control"][content="reload"]'
+      end
     end
 
     test "GET #edit with disabled fields if applications exist" do

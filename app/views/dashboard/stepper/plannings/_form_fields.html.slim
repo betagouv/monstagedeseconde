@@ -166,8 +166,7 @@
                   class: 'fr-btn fr-btn--secondary fr-mr-3w'
         = button_tag :submit,
                     class: 'fr-btn',
-                    data: { :'mandatory-fields-target' => "disabledField",
-                            action: "grade#onValidate"}  do
+                    data: { action: "grade#onValidate"}  do
           = "Publier l'offre"
     - elsif duplication
       = render 'dashboard/stepper_multi_or_single/double_grades_dialog', forbidden: forbidden

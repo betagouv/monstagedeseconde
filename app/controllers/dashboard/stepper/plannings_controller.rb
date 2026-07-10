@@ -2,7 +2,7 @@
 
 module Dashboard::Stepper
   # Step 3 of internship offer creation: fill planning info
-  class PlanningsController < ApplicationController
+  class PlanningsController < Dashboard::BaseController
     include TroisiemeDuplicationPeriod
     include SecondeLimitedPeriod
 

@@ -2,8 +2,7 @@
 
 module Dashboard::MultiStepper
   # Step 2 of multi-activity internship offer creation: coordinator information
-  class MultiCoordinatorsController < ApplicationController
-    before_action :authenticate_user!
+  class MultiCoordinatorsController < Dashboard::BaseController
     before_action :fetch_multi_coordinator, only: %i[edit update]
     before_action :sanitize_content, only: %i[create update]
 
@@ -61,6 +60,8 @@ module Dashboard::MultiStepper
         multi_coordinator: [
           :siret,
           :sector_id,
+          :is_public,
+          :group_id,
           :employer_name,
           :employer_chosen_name,
           :employer_address,
@@ -74,6 +75,7 @@ module Dashboard::MultiStepper
     end
 
     def set_computed_params
+      sync_group_when_private
       @multi_coordinator.employer_chosen_name ||= multi_coordinator_params[:employer_name]
       @multi_coordinator.employer_chosen_address ||= multi_coordinator_params[:employer_address]
       @multi_coordinator.employer_address ||= multi_coordinator_params[:employer_chosen_address]
@@ -88,6 +90,17 @@ module Dashboard::MultiStepper
           @multi_coordinator.street = [result.try(:house_number), result.try(:street)].compact.join(' ').presence || result.address
         end
       end
+    end
+
+    # Le ministère est lié à is_public : on le nettoie pour une structure privée.
+    def sync_group_when_private
+      return unless multi_coordinator_params.key?(:is_public)
+
+      is_public_value = ActiveModel::Type::Boolean.new.cast(multi_coordinator_params[:is_public])
+      return if is_public_value
+
+      @multi_coordinator.group_id = nil
+      params[:multi_coordinator][:group_id] = nil
     end
 
     def sanitize_content

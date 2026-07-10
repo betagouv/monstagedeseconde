@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  
   def env_class_name
-    return 'development' if Rails.env.development?
-    return 'review' if Rails.env.staging? || Rails.env.review?
-    return 'staging' if request.host.include?('recette')
+    return "development" if Rails.env.development?
+    return "review" if Rails.env.staging? || Rails.env.review?
+    return "staging" if request.host.include?("recette")
 
-    ''
+    ""
   end
 
   def helpdesk_url
-    'https://uneleveunstage.crisp.help/fr/'
+    "https://uneleveunstage.crisp.help/fr/"
   end
 
   # not used
@@ -20,6 +19,19 @@ module ApplicationHelper
   #       .map { |path| current_page?(path) }
   #       .any?
   # end
+
+  # Le lien "Contactez-nous" (formulaire de contact) ne cible que les offreurs,
+  # personnels pédagogiques et référents
+  def display_footer_contact_link?
+    return true if user_signed_in? && !current_user.student?
+
+    [
+      pro_login_path,
+      school_management_login_path,
+      statistician_login_path,
+      new_user_session_path
+    ].any? { |path| current_page?(path) }
+  end
 
   def account_controller?(user:)
     [
@@ -32,8 +44,8 @@ module ApplicationHelper
 
   def body_class_name
     class_names = []
-    class_names.push('homepage fr-px-0') if homepage?
-    class_names.join(' ')
+    class_names.push("homepage fr-px-0") if homepage?
+    class_names.join(" ")
   end
 
   def homepage?
@@ -45,7 +57,7 @@ module ApplicationHelper
   # end
 
   def statistics?
-    controller.class.name.deconstantize == 'Reporting'
+    controller.class.name.deconstantize == "Reporting"
   end
 
   def current_controller?(controller_name)
@@ -56,7 +68,7 @@ module ApplicationHelper
     if content_for?(:page_title)
       content_for :page_title
     else
-      default = '1Élève1Stage'
+      default = "1Élève1Stage"
       i18n_key = "#{controller_path.tr('/', '.')}.#{action_name}.page_title"
       dyn_page_name = t(i18n_key, default: default)
       dyn_page_name == default ? default : "#{dyn_page_name} | #{default}"
@@ -65,30 +77,30 @@ module ApplicationHelper
 
   def involved_partners_logos
     [
-      { logo_img: 'airfrance.png', alt: 'airfrance logo' },
-      { logo_img: 'bnp.png', alt: 'bnp logo' },
-      { logo_img: 'bonduelle.png', alt: 'bonduelle logo' },
-      { logo_img: 'bpce.png', alt: 'bpce logo' },
-      { logo_img: 'ch-cornouille.png', alt: 'ch-cornouille logo' },
-      { logo_img: 'campus-bretagne.png', alt: 'campus bretagne logo' },
-      { logo_img: 'ca.png', alt: 'CA logo' },
-      { logo_img: 'finances-publiques.png', alt: 'finances publiques logo' },
-      { logo_img: 'gendarmerie.png', alt: 'gendarmerie logo' },
-      { logo_img: 'laposte.png', alt: 'laposte logo' },
-      { logo_img: 'min-interieur.png', alt: 'min interieur logo' },
-      { logo_img: 'normandie-manutention.png', alt: 'normandie manutention logo' },
-      { logo_img: 'orchestre.png', alt: 'orchestre national logo' },
-      { logo_img: 'orchestre-euro.png', alt: 'orchestre europeen logo' },
-      { logo_img: 'police.png', alt: 'police logo' },
-      { logo_img: 'renault.png', alt: 'renault logo' },
-      { logo_img: 'rte.png', alt: 'rte logo' },
-      { logo_img: 'safran.png', alt: 'safran logo' },
-      { logo_img: 'saint-gobain.png', alt: 'saint gobain logo' },
-      { logo_img: 'sogetrel.png', alt: 'sogetrel logo' },
-      { logo_img: 'suez.png', alt: 'suez logo' },
-      { logo_img: 'thales.png', alt: 'thales logo' },
-      { logo_img: 'mairie-toulouse.png', alt: 'mairie toulouse logo' },
-      { logo_img: 'univ-rennes.png', alt: 'univ rennes logo' }
+      { logo_img: "airfrance.png", alt: "airfrance logo" },
+      { logo_img: "bnp.png", alt: "bnp logo" },
+      { logo_img: "bonduelle.png", alt: "bonduelle logo" },
+      { logo_img: "bpce.png", alt: "bpce logo" },
+      { logo_img: "ch-cornouille.png", alt: "ch-cornouille logo" },
+      { logo_img: "campus-bretagne.png", alt: "campus bretagne logo" },
+      { logo_img: "ca.png", alt: "CA logo" },
+      { logo_img: "finances-publiques.png", alt: "finances publiques logo" },
+      { logo_img: "gendarmerie.png", alt: "gendarmerie logo" },
+      { logo_img: "laposte.png", alt: "laposte logo" },
+      { logo_img: "min-interieur.png", alt: "min interieur logo" },
+      { logo_img: "normandie-manutention.png", alt: "normandie manutention logo" },
+      { logo_img: "orchestre.png", alt: "orchestre national logo" },
+      { logo_img: "orchestre-euro.png", alt: "orchestre europeen logo" },
+      { logo_img: "police.png", alt: "police logo" },
+      { logo_img: "renault.png", alt: "renault logo" },
+      { logo_img: "rte.png", alt: "rte logo" },
+      { logo_img: "safran.png", alt: "safran logo" },
+      { logo_img: "saint-gobain.png", alt: "saint gobain logo" },
+      { logo_img: "sogetrel.png", alt: "sogetrel logo" },
+      { logo_img: "suez.png", alt: "suez logo" },
+      { logo_img: "thales.png", alt: "thales logo" },
+      { logo_img: "mairie-toulouse.png", alt: "mairie toulouse logo" },
+      { logo_img: "univ-rennes.png", alt: "univ rennes logo" }
     ]
   end
 
@@ -98,13 +110,13 @@ module ApplicationHelper
       if link.is_a?(Array)
         { path: link[0], name: link[1] }
       else
-        { path: '', name: link }
+        { path: "", name: link }
       end
     end
   end
 
   def prismic_structured_text_to_html(prismic_fragment)
-    return '' if prismic_fragment.blank? || prismic_fragment.blocks.blank?
+    return "" if prismic_fragment.blank? || prismic_fragment.blocks.blank?
 
     html_parts = []
     current_list_items = []
@@ -143,7 +155,7 @@ module ApplicationHelper
     # Fermer la dernière liste si elle existe
     html_parts << build_list_html(current_list_items, current_list_ordered) if current_list_items.any?
 
-    html_parts.join("\n").html_safe
+    html_parts.safe_join("\n")
   end
 
   def js_email_pattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'
@@ -151,36 +163,27 @@ module ApplicationHelper
   private
 
   def process_text_with_spans(text, spans)
-    return text if spans.blank?
+    return h(text) if spans.blank?
 
-    # Trier les spans par position de début
-    sorted_spans = spans.sort_by(&:start)
-
-    # Construire le HTML avec les liens
-    result = ''
+    result = "".html_safe
     last_end = 0
 
-    sorted_spans.each do |span|
-      # Ajouter le texte avant le span
-      result += text[last_end...span.start] if span.start > last_end
+    spans.sort_by(&:start).each do |span|
+      result << h(text[last_end...span.start]) if span.start > last_end
 
-      # Traiter le span selon son type
       case span
       when Prismic::Fragments::StructuredText::Span::Hyperlink
-        link_text = text[span.start...span.end]
+        link_text = h(text[span.start...span.end])
         link_attributes = build_link_attributes(span.link)
-        result += "<a #{link_attributes}>#{link_text}</a>"
+        result << "<a #{link_attributes}>#{link_text}</a>".html_safe
       else
-        # Pour les autres types de spans, ajouter le texte tel quel
-        result += text[span.start...span.end]
+        result << h(text[span.start...span.end])
       end
 
       last_end = span.end
     end
 
-    # Ajouter le texte restant après le dernier span
-    result += text[last_end..-1] if last_end < text.length
-
+    result << h(text[last_end..]) if last_end < text.length
     result
   end
 
@@ -189,26 +192,21 @@ module ApplicationHelper
 
     case link
     when Prismic::Fragments::WebLink
-      # S'assurer que l'URL est correctement échappée
-      safe_url = h(link.url.to_s)
-      attributes << "href=\"#{safe_url}\""
-      attributes << "target=\"#{link.target}\"" if link.target.present?
-      attributes << 'rel="noopener noreferrer"' if link.target == '_blank'
+      attributes << "href=\"#{h(link.url.to_s)}\""
+      attributes << "target=\"#{h(link.target)}\"" if link.target.present?
+      attributes << 'rel="noopener noreferrer"' if link.target == "_blank"
     when Prismic::Fragments::DocumentLink
-      # Pour les liens internes vers d'autres documents Prismic
-      safe_url = h(link.url.to_s)
-      attributes << "href=\"#{safe_url}\""
+      attributes << "href=\"#{h(link.url.to_s)}\""
     end
 
-    attributes.join(' ')
+    attributes.join(" ")
   end
 
   def build_list_html(list_items, ordered)
-    return '' if list_items.empty?
+    return "".html_safe if list_items.empty?
 
-    tag = ordered ? 'ol' : 'ul'
-    items_html = list_items.map { |item| "<li>#{item}</li>" }.join("\n")
-
-    "<#{tag}>\n#{items_html}\n</#{tag}>"
+    tag = ordered ? "ol" : "ul"
+    items_html = safe_join(list_items.map { |item| content_tag(:li, item) }, "\n")
+    content_tag(tag, "\n#{items_html}\n".html_safe)
   end
 end

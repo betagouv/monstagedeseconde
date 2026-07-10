@@ -4,9 +4,6 @@ module InternshipOffers
   class WeeklyFramed < InternshipOffer
     include RailsAdminInternshipOfferable
 
-    # TODO: remove following since inherited
-    attr_accessor :republish
-
     #---------------------
     after_initialize :init
     before_create :reverse_academy_by_zipcode
@@ -17,7 +14,7 @@ module InternshipOffers
               presence: true
     validates :contact_phone,
               format: { with: Regexp.new(ApplicationController.helpers.field_phone_pattern),
-                        message: 'Le numéro de téléphone doit être composé de 10 chiffres' },
+                        message: "Le numéro de téléphone doit être composé de 10 chiffres" },
               unless: :from_api?
 
     validates :max_candidates,
@@ -31,14 +28,14 @@ module InternshipOffers
     #---------------------
     # mother comes from duplication
     has_one :mother,
-            class_name: 'InternshipOffer',
-            foreign_key: 'mother_id',
+            class_name: "InternshipOffer",
+            foreign_key: "mother_id",
             dependent: :nullify
     #---------------------
     # fullfilled scope isolates those offers that have reached max_candidates
     #---------------------
     scope :fulfilled, lambda {
-      joins(:stats).where('internship_offer_stats.remaining_seats_count < 1')
+      joins(:stats).where("internship_offer_stats.remaining_seats_count < 1")
     }
 
     scope :uncompleted_with_max_candidates, lambda {
@@ -57,7 +54,7 @@ module InternshipOffers
     }
 
     scope :after_week, lambda { |week:|
-      joins(:week).where('weeks.year > ? OR (weeks.year = ? AND weeks.number > ?)', week.year, week.year, week.number)
+      joins(:week).where("weeks.year > ? OR (weeks.year = ? AND weeks.number > ?)", week.year, week.year, week.number)
     }
 
     scope :after_current_week, lambda {
@@ -65,7 +62,7 @@ module InternshipOffers
     }
 
     def visible
-      published? ? 'oui' : 'non'
+      published? ? "oui" : "non"
     end
 
     def approved_applications_count
@@ -77,22 +74,22 @@ module InternshipOffers
     # TODO: belongs_to a task not a model
     def self.update_older_internship_offers
       to_be_unpublished = where(aasm_state: %i[published need_to_be_updated splitted])
-                          .where('last_date < ?', SchoolYear::Current.new.offers_beginning_of_period).to_a
+                          .where("last_date < ?", SchoolYear::Current.new.offers_beginning_of_period).to_a
       to_be_unpublished.each do |offer|
-        print '.'
+        print "."
         # skip missing weeks validation and silent unpublishing
         offer.update_columns(
-          aasm_state: 'unpublished',
+          aasm_state: "unpublished",
           published_at: nil
         )
       end
-      to_be_updated = published.joins(:stats).where('internship_offer_stats.remaining_seats_count < 1').to_a
-      to_be_updated += published.where('last_date < ?', Time.now.utc).to_a
+      to_be_updated = published.joins(:stats).where("internship_offer_stats.remaining_seats_count < 1").to_a
+      to_be_updated += published.where("last_date < ?", Time.now.utc).to_a
       to_be_updated.each do |offer|
-        print '|'
+        print "|"
         # skip missing weeks validation
         offer.update_columns(
-          aasm_state: 'need_to_be_updated',
+          aasm_state: "need_to_be_updated",
           published_at: nil
         )
       end
@@ -115,16 +112,28 @@ module InternshipOffers
     def schedules_check
       return if schedules_ok?
 
-      errors.add(:weekly_hours, :blank) if weekly_hours.blank?
-      errors.add(:daily_hours, :blank) if daily_hours.blank?
+      if weekly_hours.blank? && daily_hours.blank?
+        errors.add(:weekly_hours, :blank)
+        errors.add(:daily_hours, :blank)
+      else
+        errors.add(:base, 'Veuillez renseigner une heure de début et une heure de fin de stage')
+      end
     end
 
     def schedules_ok?
-      weekly_hours_compacted = weekly_hours&.reject(&:blank?)
-      daily_hours_compacted  = daily_hours&.reject { |_, v| v.first.blank? || v.second.blank? }
-      return false if weekly_hours_compacted&.empty? && daily_hours_compacted&.empty?
+      weekly_ok = weekly_hours.present? && weekly_hours.reject(&:blank?).size >= 2
 
-      true
+      weekly_ok || daily_hours_ok?
+    end
+
+    def daily_hours_ok?
+      return false if daily_hours.blank?
+
+      entries = daily_hours.values
+      no_partial_day = entries.all? { |v| v.first.blank? == v.second.blank? }
+      complete_day   = entries.any? { |v| v.first.present? && v.second.present? }
+
+      no_partial_day && complete_day
     end
 
     def copy_entreprise_full_address

@@ -1,5 +1,5 @@
 module Presenters
-  class PrefectureStatistician < User
+  class PrefectureStatistician < Statistician
     def profile_filters
       {
         dashboard: {
