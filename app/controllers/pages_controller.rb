@@ -66,7 +66,9 @@ class PagesController < ApplicationController
     @resources = get_resources('statistician')
   end
 
-  def home; end
+  def home
+    @partners = get_all_partners
+  end
 
   def search_companies
     @faqs = get_faqs('student')
@@ -112,9 +114,7 @@ class PagesController < ApplicationController
   end
 
   def regional_partners_index
-    @main_partners = get_main_partners
-    @engaged_partners = get_engaged_partners
-    @quotes = get_quotes
+    @partners = get_all_partners
   end
 
   def student_login
@@ -201,62 +201,36 @@ class PagesController < ApplicationController
     end
   end
 
-  def get_main_partners
+  def get_all_partners
     return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
 
-    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-    main_partners = api.query([
-                                Prismic::Predicates.at('document.type', 'partner'),
-                                Prismic::Predicates.at('my.partner.category', 'main_partner')
-                              ],
-                              { 'orderings' => '[my.partner.rank]' })
+    Rails.cache.fetch('prismic_partners', expires_in: 1.hour) do
+      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
 
-    puts "main_partners: #{main_partners.inspect}"
+      begin
+        response = api.query([Prismic::Predicates.at('document.type', 'partner')],
+                             {
+                               'orderings' => '[my.partner.rank]',
+                               'pageSize' => 100
+                             })
+      rescue StandardError => e
+        Rails.logger.error "Error fetching Prismic Partners: #{e}"
+        return []
+      end
 
-    main_partners.results.map do |doc|
-      {
-        name: doc['partner.name'].as_text,
-        logo: doc['partner.logo'].url,
-        url: doc['partner.url'].as_text,
-        rank: doc['partner.rank']
-      }
+      serialize_partners(response.results)
     end
   end
 
-  def get_engaged_partners
-    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+  def serialize_partners(results)
+    results.filter_map do |doc|
+      logo = doc['partner.logo'].try(:url)
+      next if logo.blank?
 
-    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-    engaged_partners = api.query([
-                                   Prismic::Predicates.at('document.type', 'partner'),
-                                   Prismic::Predicates.at('my.partner.category', 'engaged_partner')
-                                 ],
-                                 {
-                                   'orderings' => '[my.partner.name]',
-                                   'pageSize' => 100
-                                 })
-    puts "engaged_partners: #{engaged_partners.inspect}"
-
-    engaged_partners.results.map do |doc|
       {
         name: doc['partner.name'].as_text,
-        logo: doc['partner.logo'].try(:url),
-        url: doc['partner.url'].try(:as_text),
-        rank: doc['partner.rank']
-      }
-    end
-  end
-
-  def get_quotes
-    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
-
-    api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-    response = api.query([Prismic::Predicates.at('document.type', 'quote')])
-    @quotes = response.results.map do |doc|
-      {
-        quote: doc['quote.text'].as_text,
-        author: doc['quote.author'].as_text,
-        author_background: doc['quote.author_background'].as_text
+        logo: logo,
+        url: doc['partner.url'].try(:as_text)
       }
     end
   end

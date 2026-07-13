@@ -75,35 +75,6 @@ module ApplicationHelper
     end
   end
 
-  def involved_partners_logos
-    [
-      { logo_img: "airfrance.png", alt: "airfrance logo" },
-      { logo_img: "bnp.png", alt: "bnp logo" },
-      { logo_img: "bonduelle.png", alt: "bonduelle logo" },
-      { logo_img: "bpce.png", alt: "bpce logo" },
-      { logo_img: "ch-cornouille.png", alt: "ch-cornouille logo" },
-      { logo_img: "campus-bretagne.png", alt: "campus bretagne logo" },
-      { logo_img: "ca.png", alt: "CA logo" },
-      { logo_img: "finances-publiques.png", alt: "finances publiques logo" },
-      { logo_img: "gendarmerie.png", alt: "gendarmerie logo" },
-      { logo_img: "laposte.png", alt: "laposte logo" },
-      { logo_img: "min-interieur.png", alt: "min interieur logo" },
-      { logo_img: "normandie-manutention.png", alt: "normandie manutention logo" },
-      { logo_img: "orchestre.png", alt: "orchestre national logo" },
-      { logo_img: "orchestre-euro.png", alt: "orchestre europeen logo" },
-      { logo_img: "police.png", alt: "police logo" },
-      { logo_img: "renault.png", alt: "renault logo" },
-      { logo_img: "rte.png", alt: "rte logo" },
-      { logo_img: "safran.png", alt: "safran logo" },
-      { logo_img: "saint-gobain.png", alt: "saint gobain logo" },
-      { logo_img: "sogetrel.png", alt: "sogetrel logo" },
-      { logo_img: "suez.png", alt: "suez logo" },
-      { logo_img: "thales.png", alt: "thales logo" },
-      { logo_img: "mairie-toulouse.png", alt: "mairie toulouse logo" },
-      { logo_img: "univ-rennes.png", alt: "univ rennes logo" }
-    ]
-  end
-
   # Helper method to generate breadcrumb links
   def generate_breadcrumb_links(*links)
     links.map do |link|

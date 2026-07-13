@@ -57,4 +57,48 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_template 'pages/accessibilite'
     assert_select 'title', 'Accessibilité | 1Élève1Stage'
   end
+
+  test 'GET pages#regional_partners_index shows the partners carousel' do
+    PagesController.stub_any_instance(:get_all_partners, fake_partners) do
+      get partners_path
+    end
+    assert_response :success
+    assert_template 'pages/regional_partners_index'
+    assert_carousel_markup
+  end
+
+  test 'home shows the partners carousel' do
+    PagesController.stub_any_instance(:get_all_partners, fake_partners) do
+      get root_path
+    end
+    assert_response :success
+    assert_carousel_markup
+  end
+
+  test 'GET pages#regional_partners_index without partners hides the carousel' do
+    get partners_path
+    assert_response :success
+    assert_select 'section.partners-carousel', count: 0
+  end
+
+  private
+
+  def fake_partners
+    (1..5).map do |i|
+      { name: "Partenaire #{i}", logo: "https://images.prismic.io/logo-#{i}.png", url: "https://partenaire-#{i}.fr" }
+    end
+  end
+
+  def assert_carousel_markup
+    assert_select 'section.partners-carousel[aria-labelledby="partners-carousel-title"]' do
+      assert_select 'h2#partners-carousel-title', 'Nos partenaires'
+      assert_select 'button[data-carousel-target="playButton"]'
+      # logos are rendered twice to build the seamless scrolling loop,
+      # the duplicate set being hidden from assistive technologies
+      assert_select 'img[alt="Partenaire 1"]', count: 2
+      assert_select '[aria-hidden="true"] img[alt="Partenaire 1"]', count: 1
+      assert_select 'a[href="https://partenaire-1.fr"]', count: 2
+      assert_select '[aria-hidden="true"] a[href="https://partenaire-1.fr"][tabindex="-1"]', count: 1
+    end
+  end
 end
