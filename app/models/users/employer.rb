@@ -5,12 +5,38 @@ module Users
     include EmployerAdmin
     include Signatorable
     include Teamable
+    include PdfToPngAttachable
 
     GRACE_PERIOD = 2.years
+
+    has_one_attached :header_logo
+    has_one_attached :signature_stamp
 
     validates :employer_role,
               presence: true,
               length: { minimum: 3, maximum: 150 }
+    validates :header_logo,
+              content_type: {
+                in: ['image/jpeg', 'image/png'],
+                message: 'doit être au format JPEG ou PNG'
+              },
+              size: {
+                less_than: 2.megabytes,
+                message: 'doit être inférieur à 2 Mo'
+              },
+              if: -> { header_logo.attached? }
+    validates :signature_stamp,
+              content_type: {
+                in: ['image/jpeg', 'image/png', 'application/pdf'],
+                message: 'doit être au format JPEG, PNG ou PDF'
+              },
+              size: {
+                less_than: 5.megabytes,
+                message: 'doit être inférieure à 5 Mo'
+              },
+              if: -> { signature_stamp.attached? }
+
+    pdf_to_png_attachable :signature_stamp
 
     def custom_dashboard_path
       return custom_candidatures_path if internship_applications.submitted.any?

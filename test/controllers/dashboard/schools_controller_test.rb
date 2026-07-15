@@ -113,5 +113,57 @@ module Dashboard
       assert_redirected_to root_path
       assert_equal original_signature, other_school.reload.signature
     end
+
+    #
+    # update_header_logo
+    #
+    test 'PATCH update_header_logo as SchoolManager attaches the logo' do
+      school = create(:school)
+      sign_in(create(:school_manager, school: school))
+
+      logo = fixture_file_upload('signature.png', 'image/png')
+      patch(update_header_logo_dashboard_school_path(school.to_param),
+            params: { school: { header_logo: logo } })
+
+      assert_redirected_to dashboard_internship_agreements_path
+      assert school.reload.header_logo.attached?
+    end
+
+    test 'PATCH update_header_logo with an invalid file does not attach' do
+      school = create(:school)
+      sign_in(create(:school_manager, school: school))
+
+      invalid_file = fixture_file_upload('signature.json', 'application/json')
+      patch(update_header_logo_dashboard_school_path(school.to_param),
+            params: { school: { header_logo: invalid_file } })
+
+      assert_redirected_to dashboard_internship_agreements_path
+      refute school.reload.header_logo.attached?
+    end
+
+    test 'PATCH update_header_logo on another school as SchoolManager is forbidden' do
+      own_school = create(:school)
+      other_school = create(:school)
+      sign_in(create(:school_manager, school: own_school))
+
+      logo = fixture_file_upload('signature.png', 'image/png')
+      patch(update_header_logo_dashboard_school_path(other_school.to_param),
+            params: { school: { header_logo: logo } })
+
+      assert_redirected_to root_path
+      refute other_school.reload.header_logo.attached?
+    end
+
+    test 'PATCH update_header_logo as Student is forbidden' do
+      school = create(:school)
+      sign_in(create(:student, school: school))
+
+      logo = fixture_file_upload('signature.png', 'image/png')
+      patch(update_header_logo_dashboard_school_path(school.to_param),
+            params: { school: { header_logo: logo } })
+
+      assert_redirected_to root_path
+      refute school.reload.header_logo.attached?
+    end
   end
 end

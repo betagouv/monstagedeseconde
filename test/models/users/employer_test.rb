@@ -217,5 +217,59 @@ module Users
       employer = build(:employer, email: 'employer@example.com')
       assert employer.valid?
     end
+
+    test 'header_logo accepts a png image' do
+      employer = build(:employer)
+      employer.header_logo.attach(
+        io: File.open(Rails.root.join('test/fixtures/files/signature.png')),
+        filename: 'logo.png',
+        content_type: 'image/png'
+      )
+      assert employer.valid?
+    end
+
+    test 'header_logo rejects a non-image file' do
+      employer = build(:employer)
+      employer.header_logo.attach(
+        io: File.open(Rails.root.join('test/fixtures/files/signature.json')),
+        filename: 'logo.json',
+        content_type: 'application/json'
+      )
+      refute employer.valid?
+      assert_includes employer.errors[:header_logo].join, 'JPEG ou PNG'
+    end
+
+    test 'signature_stamp accepts png, jpeg and pdf' do
+      employer = build(:employer)
+      employer.signature_stamp.attach(
+        io: File.open(Rails.root.join('test/fixtures/files/signature.png')),
+        filename: 'stamp.png',
+        content_type: 'image/png'
+      )
+      assert employer.valid?
+    end
+
+    test 'signature_stamp rejects a non-image file' do
+      employer = build(:employer)
+      employer.signature_stamp.attach(
+        io: File.open(Rails.root.join('test/fixtures/files/signature.json')),
+        filename: 'stamp.json',
+        content_type: 'application/json'
+      )
+      refute employer.valid?
+      assert_includes employer.errors[:signature_stamp].join, 'JPEG, PNG ou PDF'
+    end
+
+    test 'signature_stamp pdf is converted to png after commit' do
+      skip 'ghostscript required for PDF rasterization' unless system('command -v gs > /dev/null')
+
+      employer = create(:employer)
+      pdf_io = StringIO.new(Prawn::Document.new { |doc| doc.text('cachet') }.render)
+      employer.signature_stamp.attach(io: pdf_io, filename: 'stamp.pdf', content_type: 'application/pdf')
+      employer.save!
+
+      assert_equal 'image/png', employer.reload.signature_stamp.content_type
+      assert_equal 'stamp.png', employer.signature_stamp.filename.to_s
+    end
   end
 end

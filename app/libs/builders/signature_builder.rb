@@ -48,13 +48,20 @@ module Builders
           signature.errors.add('id', 'Le code n\'a pas été validé ')
           raise ActiveRecord::RecordInvalid, signature
         end
-        data_url = params[:signature_image]
-        raise ArgumentError, 'Invalid signature image' unless data_url =~ /^data:(.*?);base64,(.*)$/
+        if use_signature_stamp?
+          raise ArgumentError, 'Cachet + signature manquant' unless signature_stamp_attached?
 
-        content_type = ::Regexp.last_match(1) # "image/png"
-        base64_data = ::Regexp.last_match(2)
-        decoded_data = Base64.decode64(base64_data)
-        uploaded_file = StringIO.new(decoded_data).tap(&:rewind)
+          content_type = user.signature_stamp.content_type
+          uploaded_file = StringIO.new(user.signature_stamp.download).tap(&:rewind)
+        else
+          data_url = params[:signature_image]
+          raise ArgumentError, 'Invalid signature image' unless data_url =~ /^data:(.*?);base64,(.*)$/
+
+          content_type = ::Regexp.last_match(1) # "image/png"
+          base64_data = ::Regexp.last_match(2)
+          decoded_data = Base64.decode64(base64_data)
+          uploaded_file = StringIO.new(decoded_data).tap(&:rewind)
+        end
 
         signature.attach_signature!(
           io: uploaded_file,
@@ -123,17 +130,19 @@ module Builders
     end
 
     def prepare_attributes(internship_agreement_id)
-      make_image(params: params,
-                 internship_agreement_id: internship_agreement_id,
-                 user: user) &&
-        {
-          internship_agreement_id: internship_agreement_id,
-          signatory_role: user.signatory_role,
-          signatory_ip: user.current_sign_in_ip,
-          user_id: user.id,
-          signature_phone_number: user.phone,
-          signature_date: DateTime.now
-        }
+      unless use_signature_stamp?
+        make_image(params: params,
+                   internship_agreement_id: internship_agreement_id,
+                   user: user)
+      end
+      {
+        internship_agreement_id: internship_agreement_id,
+        signatory_role: user.signatory_role,
+        signatory_ip: user.current_sign_in_ip,
+        user_id: user.id,
+        signature_phone_number: user.phone,
+        signature_date: DateTime.now
+      }
     end
 
     private
@@ -171,6 +180,14 @@ module Builders
       internship_agreement = signature.internship_agreement
       internship_agreement.sign!
       true
+    end
+
+    def use_signature_stamp?
+      params[:use_signature_stamp] == '1'
+    end
+
+    def signature_stamp_attached?
+      user.respond_to?(:signature_stamp) && user.signature_stamp.attached?
     end
 
     def initialize(user:, context:, params:)

@@ -58,5 +58,17 @@ module InternshipAgreements
       icon = actor_signed ? 'fr-icon-check-line' : 'fr-icon-close-line'
       {icon: icon, color: color, actor_signed: actor_signed}
     end
+
+    # The school referent teacher never signs online : his optional signature
+    # is handwritten on a printed copy of the agreement.
+    def show_referent?
+      name = @internship_agreement.student_refering_teacher_full_name
+      name.present? && name.strip.casecmp('N/A') != 0
+    end
+
+    def referent_paper_only_title
+      'La signature du référent pédagogique est facultative. ' \
+        "S'il doit signer, imprimez la convention et faites-la signer sur papier."
+    end
   end
 end

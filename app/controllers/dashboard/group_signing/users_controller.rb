@@ -143,6 +143,7 @@ module Dashboard
 
       def handwrite_sign
         authorize! :sign_internship_agreements, InternshipAgreement
+        update_signature_stamp if params.dig(:user, :signature_stamp).present?
         signature_builder.handwrite_sign do |on|
           on.success do |signatures|
             redirect_to dashboard_internship_agreements_path,
@@ -246,6 +247,7 @@ module Dashboard
           phone_suffix
           phone_prefix
           signature_image
+          use_signature_stamp
           agreement_ids
           internship_agreement_ids
         ].concat((0..5).map { |index| "digit-code-target-#{index}".to_sym })
@@ -260,6 +262,13 @@ module Dashboard
         school = current_user.school
         school.signature = params[:internship_agreement][:signature]
         school.save
+      end
+
+      def update_signature_stamp
+        return unless current_user.respond_to?(:signature_stamp)
+
+        current_user.signature_stamp = params[:user][:signature_stamp]
+        current_user.save
       end
     end
   end

@@ -51,6 +51,19 @@ module Dashboard
       end
     end
 
+    def update_header_logo
+      redirect_to dashboard_internship_agreements_path and return unless params.dig(:school, :header_logo).present?
+
+      @school = School.find(params.require(:id))
+      authorize! :update_header_logo, @school
+      if @school.update(header_logo_params)
+        redirect_to dashboard_internship_agreements_path, flash: { success: 'Logo mis à jour avec succès' }
+      else
+        redirect_to dashboard_internship_agreements_path,
+                    flash: { danger: @school.errors.full_messages.to_sentence }
+      end
+    end
+
     def show
       authorize! :edit, @school
       @available_weeks = Week.selectable_on_school_year
@@ -110,6 +123,10 @@ module Dashboard
 
     def signature_params
       params.expect(school: [:signature])
+    end
+
+    def header_logo_params
+      params.expect(school: [:header_logo])
     end
   end
 end

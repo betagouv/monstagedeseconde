@@ -14,6 +14,11 @@ module ApplicationHelper
     'https://uneleveunstage.crisp.help/fr/'
   end
 
+  # Official blank agreement, offered for download (MGF-1757)
+  def blank_internship_agreement_pdf_path
+    '/documents_utiles/convention_sequence_observation_milieu_pro_4eme_3eme_2ndeGT.pdf'
+  end
+
   # not used
   # def custom_dashboard_controller?(user:)
   #   user.custom_dashboard_paths

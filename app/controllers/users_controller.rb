@@ -50,6 +50,18 @@ class UsersController < ApplicationController
     render :edit, status: :bad_request
   end
 
+  def update_agreement_assets
+    authorize! :update_agreement_assets, current_user
+
+    if current_user.update(agreement_assets_params)
+      redirect_to account_path(section: :agreement_assets),
+                  flash: { success: 'Vos documents de convention ont été mis à jour' }
+    else
+      redirect_to account_path(section: :agreement_assets),
+                  flash: { danger: current_user.errors.full_messages.to_sentence }
+    end
+  end
+
   def internship_agreement
     authorize! :show_internship_agreement, current_user
 
@@ -205,6 +217,10 @@ class UsersController < ApplicationController
         :legal_representative_full_name,
         :show_modal_info
     ])
+  end
+
+  def agreement_assets_params
+    params.expect(user: %i[header_logo signature_stamp])
   end
 
   def current_section

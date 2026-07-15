@@ -28,6 +28,52 @@ module Dashboard::InternshipOffers
       assert_select("td[data-head='#{internship_application.internship_offer.title}']", count: 0)
     end
 
+    test "GET #index as employer offers the blank agreement download" do
+      school = create(:school, :with_school_manager)
+      student = create(:student, school: school)
+      employer, internship_offer = create_employer_and_offer_2nde
+      create(:weekly_internship_application, :approved, student: student, internship_offer: internship_offer)
+      sign_in(employer)
+
+      get dashboard_internship_agreements_path
+
+      assert_response :success
+      assert_select "a[href=?]",
+                    '/documents_utiles/convention_sequence_observation_milieu_pro_4eme_3eme_2ndeGT.pdf'
+    end
+
+    test "GET #index as employer shows the paper-only referent line when a referent is set" do
+      school = create(:school, :with_school_manager)
+      student = create(:student, school: school)
+      employer, internship_offer = create_employer_and_offer_2nde
+      internship_application = create(:weekly_internship_application, :approved, student: student,
+                                                                                 internship_offer: internship_offer)
+      internship_agreement = internship_application.internship_agreement
+      internship_agreement.update_columns(student_refering_teacher_full_name: 'Jean Prof')
+      sign_in(employer)
+
+      get dashboard_internship_agreements_path
+
+      assert_response :success
+      assert_select 'div', text: /Référent pédagogique \(signature papier uniquement\)/
+    end
+
+    test "GET #index as employer hides the referent line when referent is N\\/A" do
+      school = create(:school, :with_school_manager)
+      student = create(:student, school: school)
+      employer, internship_offer = create_employer_and_offer_2nde
+      internship_application = create(:weekly_internship_application, :approved, student: student,
+                                                                                 internship_offer: internship_offer)
+      internship_agreement = internship_application.internship_agreement
+      internship_agreement.update_columns(student_refering_teacher_full_name: 'N/A')
+      sign_in(employer)
+
+      get dashboard_internship_agreements_path
+
+      assert_response :success
+      assert_select 'div', text: /Référent pédagogique \(signature papier uniquement\)/, count: 0
+    end
+
     test "GET #edit as employer when missing school_manager renders success even w/o school manager" do
       school = create(:school) # no_school_manager
       employer, internship_offer = create_employer_and_offer_2nde

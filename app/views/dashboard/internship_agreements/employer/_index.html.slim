@@ -1,7 +1,17 @@
 
 .row.no-gutters.fr-ml-1w
   .col-12
-    h1.h4.fr-mb-4w.text-dark Editer, imprimer et signer les conventions dématérialisées
+    h1.h4.fr-mb-2w.text-dark Editer, imprimer et signer les conventions dématérialisées
+    p.fr-mb-2w
+      = link_to blank_internship_agreement_pdf_path,
+                class: "fr-link fr-icon-download-line fr-link--icon-left",
+                download: true,
+                title: "Télécharger la convention type vierge - PDF" do
+        | Télécharger la convention vierge (PDF)
+    .fr-alert.fr-alert--info.fr-alert--sm.fr-mb-2w
+      p
+        | La signature du référent pédagogique de l'établissement est facultative et s'effectue uniquement sur papier :
+        |  s'il doit signer, imprimez la convention pour la faire signer.
 .row.no-gutters.fr-mt-4w.fr-ml-1w
   .col-12
     - if internship_agreements.empty? && @no_agreement_internship_application_list.empty?

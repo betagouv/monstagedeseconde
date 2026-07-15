@@ -57,4 +57,14 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_template 'pages/accessibilite'
     assert_select 'title', 'Accessibilité | 1Élève1Stage'
   end
+
+  test 'GET pages#documents_utiles offers the blank agreement download' do
+    get '/documents-utiles'
+    assert_response :success
+    assert_select "a[href=?]",
+                  '/documents_utiles/convention_sequence_observation_milieu_pro_4eme_3eme_2ndeGT.pdf'
+    assert File.exist?(
+      Rails.public_path.join('documents_utiles/convention_sequence_observation_milieu_pro_4eme_3eme_2ndeGT.pdf')
+    )
+  end
 end
