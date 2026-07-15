@@ -591,4 +591,45 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "signed-old@example.fr",
                 agreement_signed.reload.student_legal_representative_email
   end
+  #
+  # update_agreement_assets
+  #
+  test "PATCH update_agreement_assets as Employer attaches logo and stamp" do
+    employer = create(:employer)
+    sign_in(employer)
+
+    patch account_agreement_assets_path, params: {
+      user: {
+        header_logo: fixture_file_upload("signature.png", "image/png"),
+        signature_stamp: fixture_file_upload("signature.png", "image/png")
+      }
+    }
+
+    assert_redirected_to account_path(section: :agreement_assets)
+    assert employer.reload.header_logo.attached?
+    assert employer.signature_stamp.attached?
+  end
+
+  test "PATCH update_agreement_assets with invalid file does not attach" do
+    employer = create(:employer)
+    sign_in(employer)
+
+    patch account_agreement_assets_path, params: {
+      user: { header_logo: fixture_file_upload("signature.json", "application/json") }
+    }
+
+    assert_redirected_to account_path(section: :agreement_assets)
+    refute employer.reload.header_logo.attached?
+  end
+
+  test "PATCH update_agreement_assets as Student is forbidden" do
+    student = create(:student)
+    sign_in(student)
+
+    patch account_agreement_assets_path, params: {
+      user: { header_logo: fixture_file_upload("signature.png", "image/png") }
+    }
+
+    assert_redirected_to root_path
+  end
 end

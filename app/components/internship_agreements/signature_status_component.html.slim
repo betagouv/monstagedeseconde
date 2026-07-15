@@ -16,3 +16,7 @@ div style="color: #{student_info[:color]}"
 div style="color: #{legal_representative_info[:color]}"
   span class="#{legal_representative_info[:icon]}"
   span Responsable légal
+- if show_referent?
+  div.text-muted title=referent_paper_only_title
+    span.fr-icon-printer-line aria-hidden="true"
+    span Référent pédagogique (signature papier uniquement)

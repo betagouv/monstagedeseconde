@@ -20,6 +20,9 @@
     - if can?(:show, :api_token)
       li role="presentation"
         button#api.fr-tabs__tab aria-controls="api-panel" aria-selected="false" role="tab" tabindex="4"  API
+    - if can?(:update_agreement_assets, current_user)
+      li role="presentation"
+        button#agreement-assets.fr-tabs__tab aria-controls="agreement-assets-panel" aria-selected="false" role="tab" tabindex="5"  Ma signature et mon logo
 
   = render "edit_identity"
 
@@ -29,4 +32,6 @@
   = render "edit_school" if current_user.in_a_school?
 
   = render "edit_api" if can?(:show, :api_token)
+
+  = render "edit_agreement_assets" if can?(:update_agreement_assets, current_user)
 

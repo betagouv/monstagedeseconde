@@ -2,7 +2,7 @@ import { Controller } from 'stimulus';
 import SignaturePad from 'signature_pad/dist/signature_pad';
 
 export default class extends Controller {
-  static targets = ['pad', 'clear', 'submitter', 'signature'];
+  static targets = ['pad', 'clear', 'submitter', 'signature', 'stampToggle'];
 
   padTargetConnected(element) {
     const options = {
@@ -22,11 +22,27 @@ export default class extends Controller {
     event.preventDefault();
     this.signaturePad.clear();
     this.signatureTarget.value = '';
-    this.submitterTarget.setAttribute('disabled', true);
+    if (!this.stampChecked()) {
+      this.submitterTarget.setAttribute('disabled', true);
+    }
+  }
+
+  toggleStamp() {
+    if (this.stampChecked()) {
+      this.submitterTarget.removeAttribute('disabled');
+    } else if (this.signaturePad.isEmpty()) {
+      this.submitterTarget.setAttribute('disabled', true);
+    }
+  }
+
+  stampChecked() {
+    return this.hasStampToggleTarget && this.stampToggleTarget.checked;
   }
 
   save(event) {
-    this.signatureTarget.value = this.signaturePad.toDataURL(); // default is png
+    if (!this.stampChecked()) {
+      this.signatureTarget.value = this.signaturePad.toDataURL(); // default is png
+    }
     this.submitterTarget.removeAttribute('disabled');
   }
 }

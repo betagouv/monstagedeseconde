@@ -2,6 +2,12 @@
   .col-8
     h1.h4
       | Éditer, imprimer et signez vos conventions dématérialisées.
+    p
+      = link_to blank_internship_agreement_pdf_path,
+                class: "fr-link fr-icon-download-line fr-link--icon-left",
+                download: true,
+                title: "Télécharger la convention type vierge - PDF" do
+        | Télécharger la convention vierge (PDF)
   .col-4.text-right
     - if can?(:edit_signature, @school)
       - label = @school.signature.present? ? 'Signature enregistrée' : "Ajouter une signature"
@@ -18,4 +24,20 @@
                                             data-fr-opened='false'
                                             role='button']
       = render partial: 'dashboard/schools/edit_signature',
+                locals: { school: @school }
+    - if can?(:edit_header_logo, @school)
+      - logo_label = @school.header_logo.present? ? 'Logo enregistré' : "Ajouter un logo"
+      - logo_extra_class = @school.header_logo.present? ? 'fr-text-default--success fr-fi-info-line fr-btn--icon-left' : ' '
+
+      button [class="fr-btn fr-btn--sm fr-btn--secondary fr-raw-link fr-ml-1w #{logo_extra_class}"
+              data-fr-opened='false'
+              aria-controls='edit-header-logo'
+              role='button'
+              tabindex='0']
+        = logo_label
+      - if @school.header_logo.present?
+        span.fr-icon-pencil-line.fr-ml-1w [aria-controls='edit-header-logo'
+                                            data-fr-opened='false'
+                                            role='button']
+      = render partial: 'dashboard/schools/edit_header_logo',
                 locals: { school: @school }

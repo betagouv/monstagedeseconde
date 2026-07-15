@@ -1,0 +1,72 @@
+#agreement-assets-panel.fr-tabs__panel.fr-tabs__panel--selected aria-labelledby="tabpanel-agreement-assets" role="tabpanel" tabindex="0"
+  h1.h2.mb-3 Ma signature et mon logo
+
+  p
+    | Ces fichiers apparaîtront automatiquement sur les conventions de stage dématérialisées :
+    | le logo en haut à droite de l'entête, l'image « cachet + signature » dans le bloc des signatures.
+    | Vous pouvez les modifier à tout moment.
+
+  = form_with model: current_user,
+              scope: :user,
+              url: account_agreement_assets_path,
+              method: :patch,
+              local: true,
+              data: { turbo: false } do |f|
+
+    = render 'layouts/form_errors', resource: current_user, resource_name: :user
+
+    .row
+      .col-md-6.col-xs-12
+        .fr-upload-group data-controller="preview-image"
+          p.fr-label
+            | Logo de votre organisation
+            br
+            span.fr-hint-text
+              | (PNG et JPG/JPEG acceptés jusqu'à 2 Mo)
+          .d-flex.justify-content-start.align-items-center.gap-2
+            = f.file_field :header_logo,
+                          class: "fr-upload w-auto",
+                          accept: "image/png,image/jpeg",
+                          "data-fr-label": "Ajouter un fichier",
+                          "data-preview-image-target": "input",
+                          "data-action": "change->preview-image#preview"
+            = link_to '#',
+                      class: 'fr-text-default--danger text-danger fr-raw-link',
+                      id: 'delete-header-logo',
+                      data: { action: "click->preview-image#clear" } do
+              span.fr-icon-delete-line
+          .fr-mt-2w
+            p Aperçu de votre logo
+            .fr-upload-preview data-preview-image-target="preview"
+              - if current_user.header_logo.present?
+                = image_tag current_user.header_logo, class: "img-fluid", style: "max-height: 128px;"
+
+      .col-md-6.col-xs-12
+        .fr-upload-group data-controller="preview-image"
+          p.fr-label
+            | Cachet + signature
+            br
+            span.fr-hint-text
+              | (PNG, JPG/JPEG et PDF acceptés jusqu'à 5 Mo)
+          .d-flex.justify-content-start.align-items-center.gap-2
+            = f.file_field :signature_stamp,
+                          class: "fr-upload w-auto",
+                          accept: "image/png,image/jpeg,application/pdf",
+                          "data-fr-label": "Ajouter un fichier",
+                          "data-preview-image-target": "input",
+                          "data-action": "change->preview-image#preview"
+            = link_to '#',
+                      class: 'fr-text-default--danger text-danger fr-raw-link',
+                      id: 'delete-signature-stamp',
+                      data: { action: "click->preview-image#clear" } do
+              span.fr-icon-delete-line
+          .fr-mt-2w
+            p Aperçu de votre cachet + signature
+            .fr-upload-preview data-preview-image-target="preview"
+              - if current_user.signature_stamp.present?
+                = image_tag current_user.signature_stamp, class: "img-fluid", style: "max-height: 128px;"
+
+    .row.fr-mt-2w
+      .col-md-6.col-xs-12
+        .actions.d-flex.d-sm-block
+          = f.submit "Mettre à jour", class: 'fr-btn btn-block'

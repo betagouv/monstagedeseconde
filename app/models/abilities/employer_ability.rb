@@ -13,6 +13,7 @@ module Abilities
 
     def as_account_user(user:)
       can :show, :account
+      can :update_agreement_assets, Users::Employer, id: user.id
       can(:read_employer_name, InternshipOffer) do |internship_offer|
         read_employer_name?(internship_offer:)
       end

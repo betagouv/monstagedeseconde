@@ -109,4 +109,25 @@ class SchoolTest < ActiveSupport::TestCase
     school = create(:school)
     assert_equal "#{school.name} - #{school.city}, #{school.zipcode}", school.agreement_address
   end
+
+  test 'header_logo accepts a png image' do
+    school = build(:school)
+    school.header_logo.attach(
+      io: File.open(Rails.root.join('test/fixtures/files/signature.png')),
+      filename: 'logo.png',
+      content_type: 'image/png'
+    )
+    assert school.valid?
+  end
+
+  test 'header_logo rejects a non-image file' do
+    school = build(:school)
+    school.header_logo.attach(
+      io: File.open(Rails.root.join('test/fixtures/files/signature.json')),
+      filename: 'logo.json',
+      content_type: 'application/json'
+    )
+    refute school.valid?
+    assert_includes school.errors[:header_logo].join, 'JPEG ou PNG'
+  end
 end

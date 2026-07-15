@@ -6,6 +6,10 @@
 
   - else
     = render 'dashboard/internship_agreements/shared/school_signature'
+    .fr-alert.fr-alert--info.fr-alert--sm.fr-mb-2w
+      p
+        | La signature du référent pédagogique est facultative et s'effectue uniquement sur papier :
+        |  s'il doit signer, imprimez la convention pour la faire signer.
     - if @mono_internship_agreements.any?
       p.h5 Stages avec une seule structure accueillante
       = render partial: 'dashboard/internship_agreements/internship_agreements_list',

@@ -42,3 +42,26 @@
                         id: "submit",
                         data: {:"handwrite-sign-target" => 'submitter',
                                :action => 'handwrite-sign#save' }
+        - if current_user.is_a?(Users::Employer)
+          .col-12.fr-mt-2w
+            hr.fr-mb-1w
+            .fr-checkbox-group
+              input#use_signature_stamp type="checkbox" value="1" name="user[use_signature_stamp]" data-handwrite-sign-target="stampToggle" data-action="handwrite-sign#toggleStamp"
+              label.fr-label for="use_signature_stamp"
+                | Utiliser mon image « cachet + signature » à la place de la signature manuscrite
+            - if current_user.signature_stamp.attached?
+              .fr-mt-1w
+                = image_tag url_for(current_user.signature_stamp), class: "img-fluid", style: "max-height: 96px;"
+                p.fr-hint-text
+                  | Vous pouvez modifier ce fichier depuis la page « Mon compte ».
+            - else
+              .fr-upload-group.fr-mt-1w
+                p.fr-label
+                  | Joignez votre fichier « cachet + signature »
+                  br
+                  span.fr-hint-text
+                    | (PNG, JPG/JPEG et PDF acceptés jusqu'à 5 Mo — il sera réutilisé pour vos prochaines signatures)
+                = f.file_field :signature_stamp,
+                              class: "fr-upload w-auto",
+                              accept: "image/png,image/jpeg,application/pdf",
+                              "data-fr-label": "Ajouter un fichier"

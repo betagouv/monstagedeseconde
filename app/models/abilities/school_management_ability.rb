@@ -82,7 +82,9 @@ module Abilities
                manage_school_students
                manage_school_internship_agreements
                edit_signature
-               update_signature], School do |school|
+               update_signature
+               edit_header_logo
+               update_header_logo], School do |school|
           school.id == user.school_id
         end
       end

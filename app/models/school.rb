@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'mini_magick'
-require 'tempfile'
-
 class School < ApplicationRecord
   include Nearbyable
   include Zipcodable
   include SchoolUsersAssociations
+  include PdfToPngAttachable
 
   has_many :class_rooms, dependent: :destroy
   has_many :internship_offers, dependent: :nullify
@@ -20,6 +18,7 @@ class School < ApplicationRecord
   has_many :internship_offers, through: :reserved_schools
   belongs_to :department, optional: true
   has_one_attached :signature
+  has_one_attached :header_logo
 
   # has_rich_text :agreement_conditions_rich_text
 
@@ -38,10 +37,20 @@ class School < ApplicationRecord
               message: 'doit être inférieure à 5 Mo'
             },
             if: -> { signature.attached? }
+  validates :header_logo,
+            content_type: {
+              in: ['image/jpeg', 'image/png'],
+              message: 'doit être au format JPEG ou PNG'
+            },
+            size: {
+              less_than: 2.megabytes,
+              message: 'doit être inférieur à 2 Mo'
+            },
+            if: -> { header_logo.attached? }
 
   # Callbacks
   before_save :set_legal_status
-  after_commit :convert_pdf_to_png, if: :needs_pdf_conversion?
+  pdf_to_png_attachable :signature
 
   CONTRACT_CODES = {
     '10' => 'HORS CONTRAT',
@@ -269,37 +278,5 @@ class School < ApplicationRecord
 
   def set_legal_status
     self.legal_status = contract_label
-  end
-
-  def needs_pdf_conversion?
-    signature.attached? && signature.content_type == 'application/pdf'
-  end
-
-  def convert_pdf_to_png
-    return unless signature.attached? && signature.content_type == 'application/pdf'
-
-    begin
-      temp_pdf = Tempfile.new(['signature', '.pdf'])
-      temp_pdf.binmode
-      temp_pdf.write(signature.download)
-      temp_pdf.close
-
-      # Convert to PNG
-      image = MiniMagick::Image.new(temp_pdf.path)
-      image.format 'png'
-
-      # Reattach as PNG
-      signature.attach(
-        io: StringIO.new(image.to_blob),
-        filename: signature.filename.to_s.sub('.pdf', '.png'),
-        content_type: 'image/png'
-      )
-    rescue StandardError => e
-      Rails.logger.error "Erreur lors de la conversion PDF->PNG: #{e.message}"
-      errors.add(:signature, "n'a pas pu être convertie en PNG")
-    ensure
-      # Cleanup
-      temp_pdf.unlink if temp_pdf
-    end
   end
 end

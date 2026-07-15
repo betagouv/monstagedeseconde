@@ -180,6 +180,7 @@ Rails.application.routes.draw do
 
       resources :schools, path: "ecoles", only: %i[index edit update show] do
         patch :update_signature, on: :member
+        patch :update_header_logo, on: :member
         resources :invitations, only: %i[new create index destroy], module: "schools"
         get "/resend_invitation", to: "schools/invitations#resend_invitation", module: "schools"
         resources :users, path: "utilisateurs", only: %i[destroy update index], module: "schools"
@@ -289,6 +290,7 @@ Rails.application.routes.draw do
 
   get "mon-compte(/:section)", to: "users#edit", as: "account"
   patch "mon-compte", to: "users#update"
+  patch "mon-compte-documents-convention", to: "users#update_agreement_assets", as: "account_agreement_assets"
   patch "account_password", to: "users#update_password"
   get "/magic_link", to: "magic_links#show", as: :magic_link
   get  "/double-authentification", to: "two_factor_challenges#new",    as: :two_factor_challenge

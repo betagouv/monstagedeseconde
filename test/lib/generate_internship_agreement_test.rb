@@ -27,4 +27,46 @@ class GenerateInternshipAgreementTest < ActiveSupport::TestCase
     assert rendered.start_with?('%PDF-')
     assert_operator rendered.bytesize, :>, 1000
   end
+
+  test 'call renders header logos when school and employer logos are attached' do
+    internship_agreement = create(:mono_internship_agreement)
+    attach_png_logo(internship_agreement.school.header_logo)
+    attach_png_logo(internship_agreement.employer.header_logo)
+
+    without_logos = GenerateInternshipAgreement.new(internship_agreement.id)
+    internship_agreement.school.header_logo.detach
+    internship_agreement.employer.header_logo.detach
+
+    rendered_without_logos = without_logos.call.render
+
+    attach_png_logo(internship_agreement.school.header_logo)
+    attach_png_logo(internship_agreement.employer.header_logo)
+    rendered_with_logos = GenerateInternshipAgreement.new(internship_agreement.id).call.render
+
+    assert rendered_with_logos.start_with?('%PDF-')
+    assert_operator rendered_with_logos.bytesize, :>, rendered_without_logos.bytesize
+  end
+
+  test 'call survives a corrupted logo attachment' do
+    internship_agreement = create(:mono_internship_agreement)
+    internship_agreement.school.header_logo.attach(
+      io: StringIO.new('not a real image'),
+      filename: 'logo.png',
+      content_type: 'image/png'
+    )
+
+    rendered = GenerateInternshipAgreement.new(internship_agreement.id).call.render
+
+    assert rendered.start_with?('%PDF-')
+  end
+
+  private
+
+  def attach_png_logo(attachment)
+    attachment.attach(
+      io: File.open(Rails.root.join('test/fixtures/files/signature.png')),
+      filename: 'logo.png',
+      content_type: 'image/png'
+    )
+  end
 end

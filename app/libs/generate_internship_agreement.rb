@@ -4,6 +4,8 @@ require "mini_magick"
 include ApplicationHelper
 
 class GenerateInternshipAgreement < Prawn::Document
+  include AgreementPdfImages
+
   def initialize(internship_agreement_id)
     @internship_agreement = InternshipAgreement.find(internship_agreement_id)
     @pdf = Prawn::Document.new(margin: [ 40, 40, 90, 40 ])
@@ -43,6 +45,7 @@ class GenerateInternshipAgreement < Prawn::Document
     article_7
     article_8
     article_9
+    article_10
     # article_bonus
 
     annexe_a
@@ -56,7 +59,8 @@ class GenerateInternshipAgreement < Prawn::Document
   end
 
   def header
-    y_position = @pdf.cursor
+    header_logos(school: @internship_agreement.school,
+                 employer: @internship_agreement.employer)
   end
 
   def title
@@ -78,11 +82,11 @@ class GenerateInternshipAgreement < Prawn::Document
       "le Code civil, et notamment ses articles 1240 à 1242 ; " \
       "la circulaire n°96-248 du 25-10-1996 relative à la surveillance des élèves ; " \
       "la circulaire du 10-2-2021 relative au projet d'accueil individualisé pour raison de santé ; " \
-      "la circulaire du 13-6-2023 relative à l'organisation des sorties et voyages scolaires " \
+      "la circulaire du 16 juillet 2024 relative à l'organisation des sorties et voyages scolaires " \
       "dans les écoles, les collèges et les lycées publics ; " \
-      "la circulaire du 12 juillet 2024 relative aux séquences d'observation, " \
-      "visites d'information et stages pour les élèves de collège" \
-      "#{@internship_agreement.delegation_date.present? ? "; la délibération du conseil d'administration en date du #{@internship_agreement.delegation_date.strftime('%d/%m/%Y')};" : ';'}"
+      "la circulaire du 21 novembre 2025 relative aux séquences d'observation, " \
+      "visite d'information et stages pour les élèves de collège et de lycée général et technologique" \
+      "#{@internship_agreement.delegation_date.present? ? " ; la délibération du conseil d'administration en date du #{@internship_agreement.delegation_date.strftime('%d/%m/%Y')} de l'établissement ;" : ' ;'}"
     )
     @pdf.move_down 5
   end
@@ -100,7 +104,8 @@ class GenerateInternshipAgreement < Prawn::Document
     paraphing("d'une part, et \n "\
       "L'établissement d'enseignement scolaire : #{@internship_agreement.school.name} (code U.A.I.: #{@internship_agreement.school.code_uai}), "\
       "représenté par M/Mme #{@internship_agreement.school_representative_full_name}, "\
-      "en qualité de chef(fe) d'établissement d'autre part, \n" \
+      "en qualité de chef ou cheffe d'établissement d'autre part, \n" \
+      "Concernant : #{@internship_agreement.student_full_name.presence || student.presenter.formal_name} \n" \
       "Il a été convenu ce qui suit :")
   end
 
@@ -108,7 +113,7 @@ class GenerateInternshipAgreement < Prawn::Document
     titleing("Titre I : Dispositions générales")
     paraphing("Article 1 - "\
       "La présente convention a pour objet la mise en œuvre d'une séquence "\
-      "d'observation en milieu professionnel, au bénéfice en classe de quatrième "\
+      "d'observation en milieu professionnel, au bénéfice des élèves scolarisés en classe de quatrième "\
       "ou de troisième au collège ou en classe de seconde générale et technologique au lycée.")
   end
 
@@ -120,19 +125,19 @@ class GenerateInternshipAgreement < Prawn::Document
 
   def article_3
     paraphing("Article 3 - L'organisation de la séquence d'observation est déterminée d'un "\
-    "commun accord entre la/le responsable de l'organisme d'accueil et la/le chef(fe) d'établissement.")
+    "commun accord entre le ou la responsable de l'organisme d'accueil et le ou la cheffe d'établissement.")
   end
 
   def article_4
     paraphing("Article 4 - Les élèves demeurent sous statut scolaire durant la période "\
     "d'observation en milieu professionnel. Ils restent placés sous l'autorité "\
-    "et la responsabilité du chef(fe) d'établissement. \n"\
+    "et la responsabilité du chef ou de la cheffe d'établissement. \n"\
     "Ils ne peuvent prétendre à aucune rémunération ou gratification de l'entreprise ou de l'organisme d'accueil.")
   end
 
   def article_5
     paraphing("Article 5 - Durant la séquence d'observation, les élèves n'ont pas à "\
-      "concourir au travail dans l'entreprise ou l'organisme d'accueil."\
+      "concourir au travail dans l'entreprise ou l'organisme d'accueil. \n"\
       "Au cours des séquences d'observation, les élèves peuvent effectuer des "\
       "enquêtes en liaison avec les enseignements. Ils peuvent également participer "\
       "à des activités de l'entreprise ou de l'organisme d'accueil, à des essais ou à "\
@@ -143,74 +148,80 @@ class GenerateInternshipAgreement < Prawn::Document
       "Les élèves ne peuvent accéder aux machines, appareils ou produits dont l'usage est proscrit aux mineurs par les articles D. 4153-15 à D. 4153-37 du Code du travail. Ils ne peuvent ni procéder à des manœuvres ou manipulations sur d'autres machines, produits ou appareils de production, ni effectuer des travaux légers autorisés aux mineurs par ce même code."
     )
     paraphing(
-      "Si l'état de santé de l'élève nécessite d'avoir une trousse d'urgence dans le cadre d'un Projet d'Accueil Individualisé (PAI), la famille s'assure que son enfant emporte la trousse pendant la durée de la séquence d'observation."
+      "Si l'état de santé de l'élève nécessite d'avoir une trousse d'urgence dans le cadre d'un Projet d'Accueil Individualisé (PAI), les représentants légaux s'assurent que l'élève concerné emporte la trousse pendant la durée de la séquence d'observation."
     )
   end
 
   def article_6
     paraphing(
-      "Article 6 - La/le responsable de l'organisme d'accueil prend les dispositions nécessaires "\
-      "pour garantir sa responsabilité civile chaque fois qu'elle sera engagée (en "\
-      "application des articles 1240 à 1242 du Code civil) :"
-    )
-    @pdf.move_up 10
-    html_formating "<div style='margin-left: 25'>- soit en souscrivant une assurance particulière "\
-      "garantissant sa responsabilité civile en cas de faute imputable à l'entreprise ou à "\
-      "l'organisme d'accueil à l'égard de l'élève ;"
-
-    # @pdf.move_down 5
-    html_formating "<div style='margin-left: 25'>- soit en ajoutant à son contrat déjà souscrit "\
-      "au titre de la \“responsabilité civile entreprise\” ou de la \“responsabilité"\
-      "civile professionnelle\” un avenant relatif à l'accueil d'élèves."
-
-    @pdf.move_down 5
-    paraphing(
-      "La/le chef(fe) de l'établissement d'enseignement contracte une assurance couvrant la "\
-      "responsabilité civile des élèves placés sous sa responsabilité pour les dommages qu'ils "\
-      "pourraient causer à l’occasion de la visite d'information ou de la séquence d'observation "\
-      "en milieu professionnel, ainsi qu'en dehors de l'entreprise ou de l'organisme d’accueil, ou"\
-      " sur le trajet menant, soit au lieu où se déroule la visite d’information ou la séquence "\
-      "d’observation, soit au domicile."
+      "Article 6 - La souscription par l'élève majeur ou par les responsables légaux d'un élève "\
+      "mineur d'une assurance scolaire couvrant les dommages dont l'élève serait l'auteur "\
+      "(garantie responsabilité civile) ou qu'il pourrait subir (garantie dommages corporels) "\
+      "en milieu professionnel est vivement recommandé."
     )
     paraphing(
-      "L’élève (et en cas de minorité ses responsables légaux) doit souscrire et produire une "\
-      "attestation d’assurance couvrant sa responsabilité civile pour les dommages qu’il pourrait "\
-      "causer ou qui pourraient lui advenir en milieu professionnel."
+      "En application des articles 1240 à 1242 du code civil, le chef ou la cheffe d'entreprise "\
+      "ou le ou la responsable de l'organisme d'accueil (hors services de l'État, qui est son "\
+      "propre assureur) prend les dispositions nécessaires pour garantir sa responsabilité "\
+      "civile chaque fois qu'elle peut être engagée."
     )
   end
 
   def article_7
     paraphing(
       "Article 7 - En cas d'accident survenant à l'élève, soit en milieu professionnel, soit au"\
-      " cours du trajet, la/le responsable de l'organisme d’accueil alerte sans délai la/le chef(fe)"\
-      " d’établissement d’enseignement de l’élève par tout moyen mis à sa disposition et lui adresse "\
+      " cours du trajet, le ou la responsable de l'organisme d'accueil alerte sans délai le chef ou la cheffe"\
+      " d'établissement d'enseignement de l'élève par tout moyen mis à sa disposition et lui adresse "\
       "la déclaration d'accident dûment renseignée dans la même journée."
     )
   end
 
   def article_8
     paraphing(
-      "Article 8 - Dans le cadre de l’obligation générale de l’employeur d’assurer la sécurité et de "\
-      "protéger la santé physique et mentale des travailleurs, et conformément aux articles L. 1142-2-1 ,"\
-      " L.1153-1 et suivants du Code du travail, et à la loi n°2018-703 du 3 août 2018 renforçant la lutte "\
-      "contre les violences sexistes et sexuelles, l’organisme d’accueil s’engage à préserver l’élève de toute"\
-      " forme d’agissement sexiste, de harcèlement  ou de violence sexuelle. Il prend toutes les dispositions "\
+      "Article 8 - Dans le cadre de l'obligation générale de l'employeur d'assurer la sécurité et de "\
+      "protéger la santé physique et mentale des travailleurs et des travailleuses, et conformément aux articles L. 1142-2-1,"\
+      " L.1153-1 et suivants du code du travail, et à la loi n°2018-703 du 3 août 2018 renforçant la lutte "\
+      "contre les violences sexistes et sexuelles, l'organisme d'accueil s'engage à préserver l'élève de toute"\
+      " forme d'agissement sexiste, de harcèlement ou de violence sexuelle. Il prend toutes les dispositions "\
       "nécessaires en vue de prévenir les faits de harcèlement et toute forme de violence verbale ou physique à "\
       "caractère discriminatoire. \n"\
-      "L’organisme d’accueil s’engage à fournir à l’élève, dès son arrivée, une information claire sur les politiques "\
+      "L'organisme d'accueil s'engage à fournir à l'élève, dès son arrivée, une information claire sur les politiques "\
       "internes en matière de lutte contre les violences sexistes et sexuelles, ainsi que sur les procédures de "\
-      "signalement et de recours disponibles. \n"\
-      "En cas de difficultés, l’élève peut s’adresser à plusieurs personnes ressources dans et hors de l’organisme "\
-      "d’accueil : personnel de l’établissement, tuteur de l’organisme d’accueil ou personne référente désignée par "\
-      "l’organisme d’accueil. »"
+      "signalement et de recours disponibles."
+    )
+    paraphing(
+      "Dans le cadre de la prévention des risques professionnels, l'organisme d'accueil veille à procéder à "\
+      "l'évaluation des risques professionnels auxquels l'élève est susceptible d'être exposé et à prendre "\
+      "toutes les mesures nécessaires pour assurer la sécurité et protéger l'élève. Il fournit à l'élève les "\
+      "équipements de protection individuelle nécessaires, veille au port effectif de ces équipements après "\
+      "l'avoir formé à leur utilisation. Il informe et forme l'élève aux risques liés au poste de travail et "\
+      "aux moyens pour les prévenir."
+    )
+    paraphing(
+      "En cas de non-respect des règles d'hygiène et de sécurité prévues par son règlement intérieur, "\
+      "l'organisme d'accueil peut suspendre et mettre fin au stage en concertation avec l'établissement "\
+      "d'enseignement. En cas de difficultés, l'élève peut s'adresser à plusieurs personnes ressources dans "\
+      "et hors de l'organisme d'accueil : personnel de l'établissement, tuteur de l'organisme d'accueil ou "\
+      "personne référente désignée par l'organisme d'accueil."
     )
   end
 
   def article_9
-    paraphing("Article 9 - La présente convention est signée pour la durée d'une séquence d'observation en milieu professionnel, fixée à :")
+    paraphing(
+      "Article 9 - Le ou la cheffe d'établissement d'enseignement et le ou la responsable de l'organisme "\
+      "d'accueil de l'élève se tiendront mutuellement informés des difficultés qui pourraient naître de "\
+      "l'application de la présente convention et prendront, d'un commun accord et en liaison avec l'équipe "\
+      "pédagogique, les dispositions propres à les résoudre notamment en cas de manquement à la discipline. "\
+      "Les difficultés qui pourraient être rencontrées lors de toute période en milieu professionnel, et "\
+      "notamment toute absence d'un élève, seront aussitôt portées à la connaissance du chef ou de la cheffe d'établissement."
+    )
+  end
+
+  def article_10
+    paraphing("Article 10 - La présente convention est signée pour la durée de la séquence d'observation en milieu professionnel, qui est fixée à :")
     @pdf.move_up 10
-    html_formating "<div style='margin-left: 25'>-  5 jours consécutifs ou non, pour les élèves scolarisés en collège (facultatif en quatrième, obligatoire en troisième) ;</div>"
-    html_formating "<div style='margin-left: 25'>-  une (si deux lieux différents) ou deux semaines consécutives, pour les élèves scolarisés en seconde générale ou technologique durant le dernier mois de l'année scolaire.</div>"
+    html_formating "<div style='margin-left: 25'>-  cinq jours (consécutifs ou non) pour les élèves scolarisés au collège ;</div>"
+    html_formating "<div style='margin-left: 25'>-  une semaine (si deux organismes d'accueil différents) ou deux semaines consécutives durant la seconde quinzaine du mois de juin, pour les élèves scolarisés en seconde générale ou technologique.</div>"
   end
 
   # def article_bonus
@@ -231,19 +242,20 @@ class GenerateInternshipAgreement < Prawn::Document
       "Date de naissance : #{student.presenter.birth_date} \n"\
       "Classe : #{dotting student&.class_room&.name}"
     )
+    paraphing("Existence d’un Projet d’Accueil Individualisé pour raison de santé (PAI) à prendre en compte : "\
+      "#{@internship_agreement.pai_project ? 'OUI' : 'NON'}")
     if @internship_agreement.pai_project
-      paraphing("Existence d’un Projet d’Accueil Individualisé pour raison de santé (PAI) à prendre en compte : "\
-        "#{@internship_agreement.pai_project ? 'OUI' : 'NON'}")
       paraphing("Si oui, la trousse emportée est celle : "\
-        "#{@internship_agreement.pai_trousse_family ? 'De la famille' : 'De l\'établissement'}")
+        "#{@internship_agreement.pai_trousse_family ? 'Des représentants légaux' : 'De l\'établissement scolaire'}")
     end
+    paraphing("Aménagements nécessaires dans le cadre d'un PAI, PAP ou PPS, le cas échéant : #{dotting nil, 60}")
 
-    @pdf.text "Prénom, nom et coordonnées électronique et téléphonique des responsables légaux :"
+    @pdf.text "Prénom, nom et coordonnées électronique et téléphonique des représentants légaux :"
     @pdf.text "#{@internship_agreement.student_legal_representative_full_name}, " \
       "#{@internship_agreement.student_legal_representative_email}, " \
       "#{@internship_agreement.student_legal_representative_phone}"
     @pdf.move_down 5
-    @pdf.text "Prénom, nom du chef(fe) d'établissement, adresse postale et électronique du lieu de scolarisation dont relève l'élève :"
+    @pdf.text "Prénom, nom du chef ou de la cheffe d'établissement, adresse postale et électronique du lieu de scolarisation dont relève l'élève :"
     @pdf.text "#{@internship_agreement.school_representative_full_name}, " \
       "#{@internship_agreement.school_representative_role}, " \
       "#{[ @internship_agreement.school&.street, @internship_agreement.school&.zipcode, @internship_agreement.school&.city ].compact_blank.join(', ')}, " \
@@ -252,13 +264,13 @@ class GenerateInternshipAgreement < Prawn::Document
     @pdf.move_down 5
     @pdf.text "Statut de l'établissement scolaire : #{@internship_agreement.legal_status.try(:capitalize)}"
     @pdf.move_down 5
-    @pdf.text "Prénom, nom du tuteur ou du responsable de l'accueil en milieu professionnel et sa qualité :"
+    @pdf.text "Prénom, nom du tuteur ou de la tutrice de la structure d'accueil si différent du ou de la signataire de la convention :"
     @pdf.text "#{@internship_agreement.tutor_full_name}, " \
       "#{@internship_agreement.tutor_role}, " \
       "#{@internship_agreement.tutor_email}"
     @pdf.move_down 5
-    @pdf.text "Prénom et nom et coordonnées de l'enseignant "\
-      "référent chargé du suivi de la séquence d'observation en milieu professionnel :"
+    @pdf.text "Prénom et nom du référent ou de la référente désignée par le chef ou la cheffe d'établissement "\
+      "pour assurer le suivi de la séquence d'observation en milieu professionnel et coordonnées de contact :"
     @pdf.text "#{@internship_agreement.student_refering_teacher_full_name}, " \
       "#{@internship_agreement.student_refering_teacher_email}, " \
       "#{@internship_agreement.student_refering_teacher_phone}"
@@ -278,9 +290,10 @@ class GenerateInternshipAgreement < Prawn::Document
     # Repères réglementaires relatifs à la législation sur le travail
     paraphing_bold("Repères réglementaires relatifs à la législation sur le travail :")
     @pdf.move_up 10
-    paraphing("Les durées maximales de travail sont de trente-cinq heures hebdomadaires et de sept heures quotidiennes. \n"\
+    paraphing("Les durées maximales de présence sont de trente-cinq heures hebdomadaires et de sept heures quotidiennes. \n"\
       "Les repos quotidiens de l’élève sont respectivement de quatorze heures consécutives au minimum et hebdomadaire de deux jours consécutifs. \n"\
-    "Dès lors que le temps de travail quotidien atteint quatre heures trente minutes, l’élève doit bénéficier d’un temps de pause de trente minutes consécutives minimum. \n")
+      "Dès lors que le temps de présence quotidien atteint quatre heures trente minutes, l’élève doit bénéficier d’un temps de pause de trente minutes consécutives minimum. \n"\
+      "Les horaires journaliers des élèves ne peuvent prévoir leur présence sur leur lieu d'accueil avant six heures du matin et après vingt heures le soir. Cette disposition ne souffre aucune dérogation. \n")
 
     @pdf.text "Les horaires journaliers de l'élève sont précisés ci-dessous :"
     @pdf.move_down 10
@@ -322,18 +335,11 @@ class GenerateInternshipAgreement < Prawn::Document
     html_formating("<div>#{@internship_agreement.activity_scope} </div>")
     @pdf.move_down 5
 
-    html_formating("<div><span>Compétences visées :</span></div>")
-    @pdf.move_down 5
-    html_formating("<div style='margin-left: 15'><span>Observer (capacité de l'élève à décrire l'environnement professionnel qui l'accueille) :</span> </div>")
-    html_formating("<div style='margin-left: 15'><span>Communiquer (savoir-être, posture de l'élève lorsqu'il s'adresse à ses interlocuteurs, les interroge ou leur fait des propositions) </span> </div>")
-    html_formating("<div style='margin-left: 15'><span>Comprendre (esprit de curiosité manifesté par l'élève, capacité à analyser les enjeux du métiers, les relations entre les acteurs, les différentes phases de production, etc.) </span> </div>")
-    html_formating("<div style='margin-left: 15'><span>S'impliquer (faire preuve de motivation, se proposer pour participer à certaines démarches) </span> </div>")
-    @pdf.move_down 5
     paraphing("Modalités d'évaluation de la séquence d'observation en milieu professionnel : "\
-      "La séquence d'observation doit être précédée d'un temps de préparation "\
-      "et suivie d'un temps d'exploitation ou de restitution qui permet de "\
-      "valoriser cette expérience. Les élèves peuvent s'exprimer sur ce qu'ils "\
-      "ont vu, et revenir sur leurs activités et leurs impressions.")
+      "La séquence d'observation est précédée d'un temps de préparation "\
+      "et suivie d'un temps d'exploitation ou de restitution qui permet "\
+      "d'en valoriser les acquis. Cette restitution peut prendre la forme "\
+      "d'un rapport de stage, ou, au lycée, d'un échange collectif en classe de première.")
   end
 
   def annexe_b
@@ -361,13 +367,6 @@ class GenerateInternshipAgreement < Prawn::Document
       "et l'établissement scolaire. L'élève, dans le cadre de l'apprentissage de l'autonomie, "\
       "peut s'y rendre ou en revenir seul."
     )
-    headering("4 - ASSURANCE")
-    @pdf.move_up 10
-    paraphing(
-      "La souscription d'une police d'assurance est obligatoire pour toutes les parties "\
-      "concernées par la présente convention. Il convient de se rapporter à l'article 6 "\
-      "de la convention pour en connaître les modalités."
-    )
   end
 
   def signatures
@@ -378,7 +377,8 @@ class GenerateInternshipAgreement < Prawn::Document
     end
     @pdf.move_down 15
 
-    headers = [ "La/le responsable de l'organisme d'accueil", "La/le chef(fe) d'établissement" ]
+    headers = [ "Le/la responsable de l'organisme d'accueil\nPrénom, nom (cachet et signature)",
+               "Le chef/la cheffe d'établissement\nPrénom, nom (cachet et signature)" ]
     column_widths = [ @pdf.bounds.width / headers.size ] * headers.size
     @pdf.table([ headers ],
                cell_style: { border_width: 0 },
@@ -386,6 +386,10 @@ class GenerateInternshipAgreement < Prawn::Document
       t.cells.align = :left
       t.cells.font_style = :bold
     end
+    @pdf.table([ [ @internship_agreement.organisation_representative_full_name.to_s,
+                  @internship_agreement.school_representative_full_name.to_s ] ],
+               cell_style: { border_width: 0 },
+               column_widths: column_widths)
 
     employer_signature_img = image_from(signature: download_image_and_signature(signatory_role: "employer"))
     school_manager_signature_img = image_from(signature: school_manager_signature)
@@ -393,40 +397,33 @@ class GenerateInternshipAgreement < Prawn::Document
 
     @pdf.table([ signatures_array ], cell_style: { border_width: 0, height: 80 }, column_widths: column_widths)
 
-    # @pdf.move_down 10
-    # @pdf.text 'Vu et pris connaissance,'
-    # @pdf.move_down 10
-    @pdf.table([ [ "Les parents ou les responsables légaux", "L’enseignant (ou les enseignants) éventuellement" ] ],
+    @pdf.table([ [ "L'élève majeur ou le/les responsable(s) légal(aux)\nPrénom, nom et signature",
+                  "Le référent / la référente désigné(e) par le chef ou la cheffe d'établissement éventuellement\nPrénom, nom et signature" ] ],
                cell_style: { border_width: 0 },
                column_widths: column_widths) do |t|
       t.cells.align = :left
       t.cells.font_style = :bold
+    end
+
+    student_and_legal_representative_lines = []
+    if @internship_agreement.signed_by_student?
+      student_and_legal_representative_lines <<
+        "#{@internship_agreement.student.presenter.full_name} a signé électroniquement le : "\
+        "#{@internship_agreement.student_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
     end
     if @internship_agreement.signed_by_legal_representative?
       signator_full_name = @internship_agreement.signature_by_role(signatory_role: "student_legal_representative").try(:student_legal_representative_full_name)
-      student_legal_representative_signature_txt = signator_full_name
-      signatures_txt = [ student_legal_representative_signature_txt, "" ]
-      student_legal_representative_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_legal_representative_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
-      signatures_timing_txt = [ student_legal_representative_signature_timing ]
-      @pdf.table([ signatures_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
-      @pdf.table([ signatures_timing_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
+      student_and_legal_representative_lines <<
+        "#{signator_full_name} a signé électroniquement le : "\
+        "#{@internship_agreement.student_legal_representative_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
     end
-    @pdf.table([ [ "L'élève", "" ] ],
-               cell_style: { border_width: 0 },
-               column_widths: column_widths) do |t|
-      t.cells.align = :left
-      t.cells.font_style = :bold
+    left_cell = student_and_legal_representative_lines.join("\n")
+    right_cell = referent_paper_mention
+    if left_cell.present? || right_cell.present?
+      @pdf.table([ [ left_cell, right_cell ] ],
+                 cell_style: { border_width: 0 },
+                 column_widths: column_widths)
     end
-    # @pdf.move_down 10
-    if @internship_agreement.signed_by_student?
-      student_signature_txt = "#{@internship_agreement.student.presenter.full_name} "
-      signatures_txt = [ student_signature_txt ]
-      student_signature_timing = "a signé électroniquement le : #{@internship_agreement.student_signature.signature_date.strftime('%d/%m/%Y à %Hh%M')}"
-      signatures_timing_txt = [ student_signature_timing ]
-      @pdf.table([ signatures_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
-      @pdf.table([ signatures_timing_txt ], cell_style: { border_width: 0, height: 20 }, column_widths: column_widths)
-    end
-    # @pdf.text 'Le responsable de l’accueil en milieu professionnel'
   end
 
 
@@ -706,8 +703,13 @@ class GenerateInternshipAgreement < Prawn::Document
     internship_application.student
   end
 
-  def referent_teacher
-    internship_agreement.referent_teacher
+  # The referent teacher never signs online : his optional signature is
+  # handwritten on a printed copy of the agreement.
+  def referent_paper_mention
+    name = @internship_agreement.student_refering_teacher_full_name
+    return "" if name.blank? || name.strip.casecmp("N/A").zero?
+
+    "#{name} (signature manuscrite sur l'exemplaire papier, le cas échéant)"
   end
 
   def split_in_two(array, slice:)
