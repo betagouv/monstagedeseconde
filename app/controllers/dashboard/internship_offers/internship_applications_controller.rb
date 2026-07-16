@@ -37,7 +37,7 @@ module Dashboard
       def user_internship_applications
         authorize! :index, :internship_offer_dashboard
         @internship_offers = current_user.internship_offers
-        to_be_loaded = %i[student internship_agreement]
+        to_be_loaded = %i[student internship_agreements]
         @internship_applications = fetch_user_internship_applications.filtering_discarded_students
                                                                      .includes(to_be_loaded)
 
@@ -99,7 +99,7 @@ module Dashboard
 
       def filter_by_week_or_application_date(internship_offer, params_order)
         includings = %i[ internship_offer
-                         internship_agreement]
+                         internship_agreements]
         student_includings = %i[school]
         internship_applications = ::InternshipApplications::WeeklyFramed.includes(*includings)
                                                                         .includes(student: [ *student_includings ])
