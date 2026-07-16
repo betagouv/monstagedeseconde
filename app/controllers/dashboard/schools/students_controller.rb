@@ -2,7 +2,7 @@
 
 module Dashboard
   module Schools
-    class StudentsController < ApplicationController
+    class StudentsController < Dashboard::BaseController
       include NestedSchool
 
       def update_by_group

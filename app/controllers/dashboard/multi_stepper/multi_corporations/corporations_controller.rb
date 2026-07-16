@@ -1,7 +1,6 @@
 module Dashboard::MultiStepper
   module MultiCorporations
-    class CorporationsController < ApplicationController
-      before_action :authenticate_user!
+    class CorporationsController < Dashboard::BaseController
       before_action :fetch_multi_corporation
       before_action :fetch_corporation, only: %i[edit update destroy]
 

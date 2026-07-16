@@ -2,6 +2,7 @@
             url: dashboard_stepper_plannings_path(entreprise_id: @entreprise.id),
             scope: :planning,
             data: { turbo: false },
+            html: { novalidate: true },
             method: :post do |form|
   = render "dashboard/stepper/steps", { current_step_number: 3,
                                         total_steps: 3,

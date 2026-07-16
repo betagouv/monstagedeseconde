@@ -10,6 +10,8 @@ export default class extends Controller {
     'presenceHint',
     'validator',
     'submitButton',
+    'error',
+    'errorGroup',
     // Stage partagé : 2 jeux d'horaires (période 1 / période 2) cohabitent dans le
     // formulaire. Ces targets, scoppées à chaque instance du contrôleur, remplacent
     // les anciens sélecteurs jQuery globaux pour éviter les collisions d'IDs.
@@ -54,6 +56,7 @@ export default class extends Controller {
     }
     this.checkEnoughPresence();
     this.setValidateButton(false);
+    this.clearHoursError();
   }
 
   weeklyStartChange() {
@@ -99,6 +102,7 @@ export default class extends Controller {
       enoughPresence = true;
     }
     this.setValidateButton(enoughPresence);
+    this.refreshHoursError();
   }
 
 
@@ -134,19 +138,20 @@ export default class extends Controller {
   }
 
   checkEnoughPresence() {
-    let daysCounter = 0;
+    let completeDays = 0;
+    let partialDays = 0;
     this.dailyHoursStartTargets.forEach((dailyHoursStartTarget, i) => {
-      if (dailyHoursStartTarget.value !== '' && this.dailyHoursEndTargets[i].value !== '') {
-        daysCounter += 1;
+      const hasStart = dailyHoursStartTarget.value !== '';
+      const hasEnd = this.dailyHoursEndTargets[i].value !== '';
+      if (hasStart && hasEnd) {
+        completeDays += 1;
+      } else if (hasStart || hasEnd) {
+        partialDays += 1;
       }
     });
-    const enoughPresence = daysCounter >= this.minimumPresence;
+    const enoughPresence = completeDays >= this.minimumPresence && partialDays === 0;
     if (this.hasPresenceHintTarget) {
-      if (enoughPresence) {
-        this.presenceHintTarget.classList.add('d-none');
-      } else {
-        this.presenceHintTarget.classList.remove('d-none');
-      }
+      this.presenceHintTarget.classList.toggle('d-none', enoughPresence);
     }
     if (this.hasValidatorTarget) {
       const newValue = enoughPresence ? 'day_selected' : '';
@@ -156,6 +161,7 @@ export default class extends Controller {
       }
     }
     this.setValidateButton(enoughPresence);
+    this.refreshHoursError();
   }
 
   disableOptionBeforeStart(element, start) {
@@ -221,6 +227,70 @@ export default class extends Controller {
   clean_weekly_hours() {
     this.weeklyHoursStartTarget.value = '';
     this.weeklyHoursEndTarget.value = '';
+  }
+  isWeeklyMode() {
+    // Scoped target (multi, 2 instances) when available, global selector (mono) otherwise.
+    if (this.hasWeeklyToggleTarget) return this.weeklyToggleTarget.checked;
+    const checkbox = document.getElementById('weekly_planning');
+    return checkbox ? checkbox.checked : true;
+  }
+
+  hoursAreValid() {
+    if (this.isWeeklyMode()) {
+      return (
+        this.hasWeeklyHoursStartTarget &&
+        this.hasWeeklyHoursEndTarget &&
+        Boolean(this.weeklyHoursStartTarget.value) &&
+        Boolean(this.weeklyHoursEndTarget.value)
+      );
+    }
+    return this.hasValidatorTarget && this.validatorTarget.value === 'day_selected';
+  }
+
+  validate() {
+    if (this.hoursAreValid()) {
+      this.clearHoursError();
+      return true;
+    }
+    this.showHoursError();
+    return false;
+  }
+
+  showHoursError() {
+    if (this.isWeeklyMode()) {
+      this.toggleSelectError(this.weeklyHoursStartTarget, !this.weeklyHoursStartTarget.value);
+      this.toggleSelectError(this.weeklyHoursEndTarget, !this.weeklyHoursEndTarget.value);
+    } else {
+      this.dailyHoursStartTargets.forEach((startTarget, i) => {
+        const endTarget = this.dailyHoursEndTargets[i];
+        const partial = (startTarget.value !== '') !== (endTarget.value !== '');
+        this.toggleSelectError(startTarget, partial && startTarget.value === '');
+        this.toggleSelectError(endTarget, partial && endTarget.value === '');
+      });
+    }
+    
+    if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.add('fr-input-group--error');
+    if (this.hasErrorTarget) this.errorTarget.classList.remove('fr-hidden');
+  }
+
+  clearHoursError() {
+    if (this.hasWeeklyHoursStartTarget) this.toggleSelectError(this.weeklyHoursStartTarget, false);
+    if (this.hasWeeklyHoursEndTarget) this.toggleSelectError(this.weeklyHoursEndTarget, false);
+    this.dailyHoursStartTargets.forEach((t) => this.toggleSelectError(t, false));
+    this.dailyHoursEndTargets.forEach((t) => this.toggleSelectError(t, false));
+    if (this.hasErrorGroupTarget) this.errorGroupTarget.classList.remove('fr-input-group--error');
+    if (this.hasErrorTarget) this.errorTarget.classList.add('fr-hidden');
+  }
+
+  // Re-valide uniquement si l'erreur est déjà affichée (effacement « live » après
+  // un premier clic en erreur), sans afficher l'erreur pendant la saisie initiale.
+  refreshHoursError() {
+    if (!this.hasErrorTarget || this.errorTarget.classList.contains('fr-hidden')) return;
+    this.validate();
+  }
+
+  toggleSelectError(select, on) {
+    if (select) select.classList.toggle('fr-select--error', on);
   }
 
   connect() {

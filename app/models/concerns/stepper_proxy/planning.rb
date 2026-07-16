@@ -36,7 +36,7 @@ module StepperProxy
       def enough_weeks
         return unless weeks.empty?
 
-        error_message = "Indiquez la ou les semaines où vous accueillerez des élèves"
+        error_message = 'Veuillez saisir au moins une semaine de stage'
         errors.add(:all_year_long, error_message)
       end
 

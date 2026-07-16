@@ -30,6 +30,11 @@ namespace :cleaning do
                                       .pluck(:last_date)
         last_dates.empty? || last_dates.max <= trigger_date
       end
+
+      filtered_ids = Users::Employer.kept
+                                    .where(id: filtered_ids)
+                                    .where("current_sign_in_at IS NULL OR current_sign_in_at <= ?", trigger_date)
+                                    .ids
       filtered_ids.each do |id|
         EmployerMailer.cleaning_notification_email(id)
                       .deliver_later

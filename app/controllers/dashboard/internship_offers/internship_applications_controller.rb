@@ -2,10 +2,11 @@
 
 module Dashboard
   module InternshipOffers
-    class InternshipApplicationsController < ApplicationController
+    class InternshipApplicationsController < Dashboard::BaseController
       include ApplicationTransitable
 
       ORDER_WITH_INTERNSHIP_DATE = "internshipDate"
+      skip_before_action :authenticate_user!
       before_action :authenticate_user!, except: %i[update show]
       before_action :find_internship_offer, only: %i[index update show]
       before_action :fetch_internship_application, only: %i[update show set_to_read school_details]

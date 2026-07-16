@@ -1,6 +1,5 @@
 module Dashboard::MultiStepper
-  class MultiPlanningsController < ApplicationController
-    before_action :authenticate_user!
+  class MultiPlanningsController < Dashboard::BaseController
     before_action :fetch_multi_coordinator, only: %i[new create]
     before_action :fetch_multi_planning, only: %i[edit update]
     before_action :fetch_multi_corporation, only: %i[new create edit update]
