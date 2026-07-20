@@ -75,6 +75,15 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_carousel_markup
   end
 
+  test 'GET pages#pro_landing shows the partners carousel' do
+    PagesController.stub_any_instance(:get_all_partners, fake_partners) do
+      get "/professionnels"
+    end
+    assert_response :success
+    assert_template 'pages/pro_landing'
+    assert_carousel_markup
+  end
+
   test 'GET pages#regional_partners_index without partners hides the carousel' do
     get partners_path
     assert_response :success

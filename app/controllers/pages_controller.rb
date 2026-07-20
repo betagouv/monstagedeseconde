@@ -48,6 +48,7 @@ class PagesController < ApplicationController
   def pro_landing
     @faqs = get_faqs('pro')
     @resources = get_resources('pro')
+    @partners = get_all_partners
   end
 
   def school_management_landing
