@@ -59,4 +59,28 @@ class YearEndCleaningTest < ActiveSupport::TestCase
     Rake::Task['cleaning:year_end'].reenable
     YEAR_END_SUB_TASKS.each { |task| Rake::Task["cleaning:#{task}"].reenable }
   end
+
+  test 'cleaning:delete_anonymized_students refuses to run without the DELETE confirmation' do
+    student = create(:student)
+    student.anonymize(send_email: false)
+
+    Rake::Task['cleaning:delete_anonymized_students'].invoke
+
+    assert Users::Student.exists?(student.id), 'without confirmation nothing must be deleted'
+  ensure
+    Rake::Task['cleaning:delete_anonymized_students'].reenable
+  end
+
+  test 'cleaning:delete_anonymized_students deletes anonymized students when confirmed' do
+    kept_student = create(:student)
+    anonymized_student = create(:student)
+    anonymized_student.anonymize(send_email: false)
+
+    Rake::Task['cleaning:delete_anonymized_students'].invoke('DELETE')
+
+    refute Users::Student.exists?(anonymized_student.id)
+    assert Users::Student.exists?(kept_student.id)
+  ensure
+    Rake::Task['cleaning:delete_anonymized_students'].reenable
+  end
 end
