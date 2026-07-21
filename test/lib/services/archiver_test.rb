@@ -56,6 +56,44 @@ module Services
       assert application.student.reload.anonymized?
     end
 
+    test 'archive_students clears the unconfirmed_email' do
+      student = create(:student)
+      student.update_columns(unconfirmed_email: 'pending@example.com')
+
+      Services::Archiver.archive_students
+
+      assert_nil student.reload.unconfirmed_email
+    end
+
+    test 'archive_students clears the free-text messages of internship applications' do
+      application = travel_to(Date.new(2023, 10, 1)) { create(:weekly_internship_application) }
+      application.update_columns(rejected_message: 'contient des infos perso',
+                                 canceled_by_employer_message: 'contient des infos perso',
+                                 canceled_by_student_message: 'contient des infos perso',
+                                 approved_message: 'contient des infos perso',
+                                 restored_message: 'contient des infos perso')
+
+      Services::Archiver.archive_students
+
+      application.reload
+      assert_nil application.rejected_message
+      assert_nil application.canceled_by_employer_message
+      assert_nil application.canceled_by_student_message
+      assert_nil application.approved_message
+      assert_nil application.restored_message
+    end
+
+    test 'archive_internship_agreements anonymizes the agreements signatures' do
+      signature = travel_to(Date.new(2023, 10, 1)) { create(:signature, :employer) }
+
+      Services::Archiver.archive_internship_agreements
+
+      signature.reload
+      assert_equal 'NA', signature.signature_phone_number
+      assert_equal 'NA', signature.signatory_ip
+      assert_equal 'NA', signature.student_legal_representative_full_name
+    end
+
     test 'archive_students processes every student across multiple batches' do
       # Small batch size forces several batches; mutating the filtered `anonymized` column
       # mid-iteration must not skip or reprocess any student (keyset batching by id).

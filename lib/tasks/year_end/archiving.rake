@@ -36,9 +36,17 @@ namespace :cleaning do
     end
   end
 
+  desc "anonymize all class_rooms"
+  task :archive_class_rooms, [] => :environment do |args|
+    PrettyConsole.announce_task("Anonymizing class rooms") do
+      Services::Archiver.archive_class_rooms
+    end
+  end
+
   desc "anonymize and delete what should be after school year's end"
   task year_end: %i[anonymize_internship_agreements
                     archive_students
+                    archive_class_rooms
                     delete_invitations
                     clean_url_shrinker]
 end

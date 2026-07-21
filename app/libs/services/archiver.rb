@@ -9,6 +9,7 @@ module Services
       first_name = 'NA',
       last_name = 'NA',
       phone = NULL,
+      unconfirmed_email = NULL,
       current_sign_in_ip = NULL,
       last_sign_in_ip = NULL,
       anonymized = true,
@@ -36,7 +37,12 @@ module Services
       student_legal_representative_email = 'NA',
       student_legal_representative_phone = '+330600110011',
       student_phone = '+330600110011',
-      student_email = 'NA'
+      student_email = 'NA',
+      rejected_message = NULL,
+      canceled_by_employer_message = NULL,
+      canceled_by_student_message = NULL,
+      approved_message = NULL,
+      restored_message = NULL
     SQL
 
     # Set-based anonymization: 2 UPDATEs per batch (applications, then students) instead of ~3
@@ -94,44 +100,6 @@ module Services
       puts "  ❌ Erreurs: #{error_count}"
       puts "  ⏱️  Temps total: #{format_duration(total_time)}"
       puts "  🚀 Vitesse moyenne: #{(archived_count / total_time * 60).round(1)} étudiants/minute" if total_time > 0
-    end
-
-    # Version ultra-optimisée pour la production
-    def self.archive_students_fast
-      puts "🚀 Début de l'archivage ultra-rapide des étudiants..."
-
-      total_students = Users::Student.kept.count
-      puts "📊 Nombre total d'étudiants à archiver : #{total_students}"
-
-      start_time = Time.current
-
-      # Optimisation maximale : update_all en une seule requête
-      archived_count = Users::Student.kept.update_all(
-        discarded_at: Time.current,
-        birth_date: nil,
-        current_sign_in_ip: nil,
-        last_sign_in_ip: nil,
-        class_room_id: nil,
-        resume_other: nil,
-        resume_languages: nil,
-        gender: nil,
-        ine: nil,
-        address: nil,
-        legal_representative_full_name: nil,
-        legal_representative_phone: nil,
-        legal_representative_email: nil,
-        phone: 'NA',
-        email: "archived_student_#{Random.hex(8)}@archived.local"
-      )
-
-      total_time = Time.current - start_time
-      puts '🎉 Archivage ultra-rapide terminé !'
-      puts '📊 Résumé:'
-      puts "  ✅ Étudiants archivés avec succès: #{archived_count}"
-      puts "  ⏱️  Temps total: #{format_duration(total_time)}"
-      puts "  🚀 Vitesse: #{(archived_count / total_time * 60).round(1)} étudiants/minute" if total_time > 0
-
-      archived_count
     end
 
     def self.archive_school_managements
