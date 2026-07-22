@@ -37,6 +37,8 @@ import '@gouvfr/dsfr/dist/component/radio/radio.min.css';
 import '@gouvfr/dsfr/dist/artwork/pictograms/digital/avatar.svg';
 import '@gouvfr/dsfr/dist/artwork/pictograms/digital/self-training.svg';
 import '@gouvfr/dsfr/dist/artwork/pictograms/digital/ecosystem.svg';
+import '@gouvfr/dsfr/dist/artwork/pictograms/document/document-download.svg';
+import '@gouvfr/dsfr/dist/artwork/pictograms/leisure/community.svg';
 
 import '@gouvfr/dsfr/dist/dsfr.module';
 
