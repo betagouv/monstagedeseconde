@@ -1,13 +1,19 @@
 ruby:
   # FAQ hosted on docs.numerique.gouv.fr until the in-app FAQ page ships (MGF-1777)
   faq_url = 'https://docs.numerique.gouv.fr/docs/cf1cdc70-a30b-4800-b504-d73fda995783/'
-  educonnect_faq_url = 'https://educonnect.education.gouv.fr/educt-aide/aide/'
+  video_url = 'https://nuage06.apps.education.fr/index.php/s/NP49mPGfQ8Ddmei'
   documents = @resources.respond_to?(:values) ? @resources.values.flatten : []
 
 .fr-mx-lg-0
   h4.fr-mb-3w.text-dark Ressources
   .row
     = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_url
+    = render 'pages/home/resource_media_card',
+             title: 'Vidéo de présentation',
+             url: video_url,
+             picto: 'media/leisure/video.svg',
+             badge: 'Vidéo',
+             badge_class: 'fr-badge--blue-cumulus'
     - documents.each do |document|
       = render 'pages/home/resource_media_card',
                title: document[:title],
@@ -16,6 +22,5 @@ ruby:
                badge: 'PDF',
                badge_class: 'fr-badge--purple-glycine',
                download: true
-    = render 'pages/home/resource_media_card', title: 'FAQ Educonnect', url: educonnect_faq_url
 
 .new-fr-hr.fr-mt-4w.fr-mb-4w
