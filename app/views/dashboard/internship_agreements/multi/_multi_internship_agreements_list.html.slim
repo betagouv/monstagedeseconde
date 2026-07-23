@@ -14,7 +14,7 @@
               data: {turbo: turbo},
               method: :post)  do |fg|
 
-    .fr-table.fr-table--multiline.fr-table--bordered.fr-mb-4w.fr-mx-n4w
+    .fr-table.fr-table--multiline.fr-table--bordered.fr-mb-4w
       .fr-table__wrapper
         .fr-table__container
           .fr-table__content style="overflow-x: hidden;"
@@ -36,7 +36,7 @@
                   th.col-sm-2.d-flex.align-items-center Semaine(s) concernée(s)
                   th.col-sm-2.d-flex.align-items-center Statut
                   th.col-sm-2.d-flex.align-items-center Signature en ligne
-                  th.col style='background-color: #f5f5f5; min-height: 70px; min-width: 200px;'
+                  th.col style='background-color: #f5f5f5; min-height: 70px;'
 
               tbody
                 - @multi_internship_agreements.each do |internship_agreement|
@@ -57,7 +57,7 @@
                       'data-group-signing-target': "generalCta",
                       data: { turbo: true }
         - else
-          button.fr-btn.fr-mb-2w.fr-px-4w.fr-mx-n4w[type="button"
+          button.fr-btn.fr-mb-2w.fr-px-4w[type="button"
             disabled="disabled"
             data-fr-opened="false"
             aria-controls="fr-modal-multi-signatures"

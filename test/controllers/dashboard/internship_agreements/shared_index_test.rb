@@ -29,5 +29,22 @@ module Dashboard::InternshipAgreements
       assert_response :success
       assert_includes response.body, 'Semaine(s) concernée(s)'
     end
+
+    test "l'index affiche « Offreur » (statut simple) pour les conventions partagées" do
+      multi_corporation = create(:shared_multi_corporation)
+      offer = create(:multi_internship_offer, multi_corporation: multi_corporation)
+      application = create(:multi_internship_application,
+                           aasm_state: :validated_by_employer,
+                           weeks: SchoolTrack::Seconde.both_weeks,
+                           internship_offer: offer)
+      application.create_agreement
+
+      sign_in(offer.employer)
+      get dashboard_internship_agreements_path
+
+      assert_response :success
+      assert_select 'span', text: 'Offreur'
+      assert_not_includes response.body, 'Offreurs (0/0)'
+    end
   end
 end

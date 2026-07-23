@@ -103,6 +103,28 @@ module Dashboard::MultiStepper
       assert_select 'form'
     end
 
+    test 'GET #edit coordinateur privé : le bloc Type d\'employeur public est masqué au chargement' do
+      sign_in @employer
+      refute @multi_coordinator.is_public
+
+      get edit_dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator)
+
+      assert_response :success
+      assert_select '#ministry-block.fr-hidden'
+    end
+
+    test 'GET #edit coordinateur public : le bloc Type d\'employeur public est visible' do
+      sign_in @employer
+      group = create(:group, is_public: true)
+      @multi_coordinator.update!(is_public: true, group: group)
+
+      get edit_dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator)
+
+      assert_response :success
+      assert_select '#ministry-block'
+      assert_select '#ministry-block.fr-hidden', count: 0
+    end
+
     test 'GET #edit should require authentication' do
       get edit_dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator)
       assert_redirected_to new_user_session_path
