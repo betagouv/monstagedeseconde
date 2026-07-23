@@ -407,7 +407,7 @@ export default function SirenInput({
           Structure introuvable ?
         </small>
         <a
-          href="#manual-input"
+          href="#"
           className="small text-blue-info"
           onClick={openManual}
         >
@@ -468,6 +468,8 @@ export default function SirenInput({
                 <div>
                   <button
                     className="fr-btn fr-btn--secondary fr-icon-delete-line"
+                    aria-label="Effacer la recherche de structure"
+                    title="Effacer la recherche de structure"
                     onClick={clearImmediate}
                   ></button>
                 </div>

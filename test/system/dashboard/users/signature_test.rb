@@ -60,6 +60,7 @@ module Dashboard
           end
           assert_difference 'Signature.count', 2 do
             find('input#submit').click
+            find('span[id="alert-text"]', text: 'Votre signature a été enregistrée')
           end
 
           signature = internship_agreement.signatures.first
@@ -103,87 +104,38 @@ module Dashboard
     end
 
     test 'employer multiple signs multi_agreements and everything is ok' do
-      # Brittle because of CI but shoud be working allright localy
-      if ENV['RUN_BRITTLE_TEST'] || true
-        internship_agreement = create(:multi_internship_agreement, :validated)
-        student = create(:student)
-        employer = internship_agreement.employer
-        internship_offer = create(:multi_internship_offer, employer:)
-        create(:school_manager, school: student.school)
-        internship_application = create(:weekly_internship_application,
-                                        :approved,
-                                        motivation: 'au taquet',
-                                        student:,
-                                        internship_offer:)
-        internship_agreement_2 = InternshipAgreement.last
-        internship_agreement_2.complete!
-        internship_agreement_2.finalize!
-        travel_to(weeks[0].week_date - 1.week) do
-          sign_in(employer)
+      # Pour les conventions multi-structures, l'employeur coordinateur n'appose
+      # pas de signature SMS : il envoie les conventions en signature aux
+      # référents des structures signataires (par email).
+      internship_agreement = create(:multi_internship_agreement, :validated)
+      student = create(:student)
+      employer = internship_agreement.employer
+      internship_offer = create(:multi_internship_offer, employer:)
+      create(:school_manager, school: student.school)
+      internship_application = create(:weekly_internship_application,
+                                      :approved,
+                                      motivation: 'au taquet',
+                                      student:,
+                                      internship_offer:)
+      internship_agreement_2 = InternshipAgreement.last
+      internship_agreement_2.complete!
+      internship_agreement_2.finalize!
+      travel_to(weeks[0].week_date - 1.week) do
+        sign_in(employer)
 
-          visit dashboard_internship_agreements_path
+        visit dashboard_internship_agreements_path
 
-          find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
-          find("button[data-group-signing-id-param='#{internship_agreement_2.id}']").click
-          click_button('Signer en groupe (2)')
+        find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
+        find("button[data-group-signing-id-param='#{internship_agreement_2.id}']").click
+        click_button('Faire signer en groupe (2)')
 
-          find('h1#fr-modal-signature-title', text: 'Vous vous apprêtez à signer 2 conventions de stage')
-          click_button('Recevoir un code')
+        find('h2#multi-modal-title', text: 'Vous vous apprêtez à envoyer en signature')
+        click_button('Envoyer en signature')
+        find('span[id="alert-text"]', text: 'Les emails de signature ont été envoyés aux employeurs.')
 
-          find('h1#fr-modal-signature-title', text: 'Nous vous avons envoyé un code de vérification')
-          find('button#button-code-submit.fr-btn[disabled]')
-          signature_phone_tokens = employer.reload.signature_phone_token.split('')
-          (0..5).to_a.each do |index|
-            execute_script(code_script_enables(index))
-            execute_script(code_script_assign(signature_phone_tokens, index))
-          end
-          execute_script(enable_validation_button('button-code-submit'))
-          find('#button-code-submit').click
-          find("input#submit[disabled='disabled']")
-          within 'dialog' do
-            find('canvas').click
-          end
-          assert_difference 'Signature.count', 2 do
-            find('input#submit').click
-          end
-
-          signature = internship_agreement.signatures.first
-          assert_equal internship_agreement.id, signature.internship_agreement.id
-          assert_equal employer.id, signature.employer.id
-          assert_equal DateTime.now, signature.signature_date
-          assert_equal 'employer', signature.signatory_role
-          # if Rails.application.config.active_storage.service == :local
-          #   assert File.exist?(signature.local_signature_image_file_path)
-          # end
-
-          signature = internship_agreement_2.signatures.first
-          assert_equal internship_agreement_2.id, signature.internship_agreement.id
-          assert_equal employer.id, signature.employer.id
-          assert_equal DateTime.now, signature.signature_date
-          assert_equal 'employer', signature.signatory_role
-          # if Rails.application.config.active_storage.service == :local
-          #   assert File.exist?(signature.local_signature_image_file_path)
-          # end
-
-          assert_equal signature.employer.phone, signature.signature_phone_number
-
-          find('h1', text: 'Editer, imprimer et signer les conventions dématérialisées')
-          first_label = all('a.fr-btn.disabled')[0].text
-          assert_equal 'Déjà signée', first_label
-          second_label = all('a.fr-btn.disabled')[1].text
-          assert_equal 'Déjà signée', second_label
-          find('span[id="alert-text"]', text: 'Votre signature a été enregistrée')
-          all('a.fr-btn--secondary.button-component-cta-button')[0].click # Imprimer
-          sleep 1.2
-          student = internship_agreement.student
-          file_name = "Convention_de_stage_#{student.first_name.upcase}_" \
-                      "#{student.last_name.upcase}.pdf"
-          # assert File.exist? file_name
-          # File.delete file_name
-          # Dir[Signature::SIGNATURE_STORAGE_DIR + '/*'].each do |file|
-          #   File.delete file
-          # end
-        end
+        assert internship_agreement.reload.multi_corporation.signatures_launched_at.present?
+        # une fois l'envoi effectué, le suivi se fait via « Statut des signatures »
+        find('button', text: 'Statut des signatures', match: :first)
       end
     end
 
@@ -293,7 +245,7 @@ module Dashboard
 
         assert_difference -> { Signature.count },  2 do
           click_button('Confirmer')
-          assert_text "Les conventions ont été signées."
+          find('span[id="alert-text"]', text: 'Les conventions ont été signées.')
         end
 
         assert_equal 2, Signature.all.count
@@ -348,7 +300,7 @@ module Dashboard
 
         assert_difference -> { Signature.count },  2 do
           click_button('Confirmer')
-          assert_text "Les conventions ont été signées."
+          find('span[id="alert-text"]', text: 'Les conventions ont été signées.')
         end
 
         assert_equal 2, Signature.all.count
@@ -365,10 +317,12 @@ module Dashboard
 
 
         find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
+        # pour les conventions multi, le bouton du school_manager ayant signé
+        # reste libellé « Signer » mais désactivé (ButtonComponent#second_button_label)
         first_label = all('a.fr-btn.disabled')[0].text
-        assert_equal 'Déjà signée', first_label
+        assert_equal 'Signer', first_label
         second_label = all('a.fr-btn.disabled')[1].text
-        assert_equal 'Déjà signée', second_label
+        assert_equal 'Signer', second_label
         find('span[id="alert-text"]', text: 'Les conventions ont été signées.')
 
         all('a.fr-btn--secondary.button-component-cta-button')[0].click # Télécharger

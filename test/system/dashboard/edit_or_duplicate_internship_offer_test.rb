@@ -55,7 +55,11 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
     visit internship_offer_path(internship_offer)
     assert_changes -> { internship_offer.reload.discarded_at } do
       page.find(".test-discard-button").click
+      # la modale exige un motif ; « Autre motif » révèle le bouton de suppression
+      select "Autre motif (ex : offre créée par erreur, je ne peux plus accueillir d'élèves en stage)",
+             from: "internship_offer_discard_reason"
       page.find("button[data-test-delete-id='delete-#{dom_id(internship_offer)}']").click
+      find("span#alert-text", text: "Votre annonce a bien été supprimée")
     end
   end
 
@@ -82,35 +86,21 @@ class EditOrDuplicateInternshipOffersTest < ApplicationSystemTestCase
   test "Employer can split a duplicated internship offer across both publics" do
     travel_to(Date.new(2025, 3, 1)) do
       employer = create(:employer)
-      original_offer = create(:weekly_internship_offer_3eme_2nde,
+      original_offer = create(:weekly_internship_offer, # les deux publics (2de + collège)
                               employer: employer,
                               internship_offer_area_id: employer.current_area_id)
-      college_week_id = (original_offer.weeks.ids - SchoolTrack::Seconde.both_weeks.map(&:id)).first
-      assert college_week_id
-
       sign_in(employer)
 
       visit new_dashboard_internship_offer_path(duplicate_id: original_offer.id)
 
-      assert_selector "input#internship_offer_grade_2e", visible: :all
-      assert_selector "input#internship_offer_grade_college", visible: :all
+      # le formulaire de duplication est pré-rempli avec les deux publics de
+      # l'offre d'origine : la soumission scinde en deux offres (MGF-1731)
+      assert_checked_field "internship_offer_grade_2e", visible: :all
+      assert_checked_field "internship_offer_grade_college", visible: :all
 
       assert_difference("InternshipOffer.count", 2) do
-        page.execute_script(<<~JS)
-          const seconde = document.querySelector('#internship_offer_grade_2e');
-          const college = document.querySelector('#internship_offer_grade_college');
-          const fullTime = document.querySelector('#period_field_full_time');
-          const specificWeeks = document.querySelector("input[name='internship_offer[all_year_long]'][value='false']");
-          const firstCollegeWeek = document.querySelector("input[name='internship_offer[week_ids][]'][value='#{college_week_id}']");
-
-          [seconde, college, fullTime, specificWeeks, firstCollegeWeek].forEach((input) => {
-            if (!input) return;
-            input.checked = true;
-            input.dispatchEvent(new Event('click', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-          });
-        JS
         click_button "Dupliquer l'offre"
+        find("#alert-text", text: "dupliquée")
       end
 
       offers = InternshipOffer.order(:id).last(2)

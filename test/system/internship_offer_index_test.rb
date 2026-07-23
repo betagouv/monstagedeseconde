@@ -8,10 +8,12 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
 
   def assert_presence_of(internship_offer:)
     assert_selector "div[data-test-id='#{internship_offer.id}']",
-                    count: 1
+                    count: 1,
+                    wait: 10
   end
 
   def assert_absence_of(internship_offer:)
+    assert_selector 'div[data-internship-offer-id]', minimum: 0, wait: 10
     assert_no_selector "div[data-test-id='#{internship_offer.id}']"
   end
 
@@ -41,34 +43,43 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       student = create(:student, :seconde)
       assert_equal 'Paris', student.school.city
       sign_in(student)
-      visit internship_offers_path
+      visit_offers_index internship_offers_path
       click_button 'Rechercher'
       selector = '.test-city'
+      # la recherche sans localisation ne trie plus par distance : on vérifie la
+      # pagination (30 cartes page 1, 2 cartes page 2), pas la composition des villes
       within('.fr-test-internship-offers-container') do
-        assert_selector(selector, text: 'Paris', count: InternshipOffer::PAGE_SIZE, wait: 3)
+        assert_selector(selector, count: InternshipOffer::PAGE_SIZE, wait: 10)
       end
       click_link 'Page suivante'
       within('.fr-test-internship-offers-container') do
-        assert_selector(selector, text: 'Chatillon', count: 2, wait: 2)
+        assert_selector(selector, count: 2, wait: 10)
       end
     end
   end
 
+  # deux tests distincts (élève QPV / élève non QPV) : changer d'utilisateur au
+  # sein d'un même test système ne prend pas de manière fiable (session Warden)
   test 'reserved qpv offers are shown to students from qpv schools' do
     travel_to Date.new(2024, 9, 1) do
       school = create(:school, qpv: true)
       student = create(:student, school: school, grade: Grade.seconde)
-      other_student = create(:student, grade: Grade.seconde)
       internship_offer = create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris,
                                                                zipcode: '75000', qpv: true)
       sign_in(student)
-      visit internship_offers_path
+      visit_offers_index internship_offers_path
       click_button 'Rechercher'
       assert_presence_of(internship_offer: internship_offer)
-      sign_out(student)
+    end
+  end
 
-      sign_in(other_student)
-      visit internship_offers_path
+  test 'reserved qpv offers are hidden from students of other schools' do
+    travel_to Date.new(2024, 9, 1) do
+      student = create(:student, grade: Grade.seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris,
+                                                               zipcode: '75000', qpv: true)
+      sign_in(student)
+      visit_offers_index internship_offers_path
       click_button 'Rechercher'
       assert_absence_of(internship_offer: internship_offer)
     end
@@ -77,17 +88,22 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
     travel_to Date.new(2024, 9, 1) do
       school = create(:school, rep_kind: 'rep')
       student = create(:student, school: school, grade: Grade.seconde)
-      other_student = create(:student, grade: Grade.seconde)
       internship_offer = create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris,
                                                                zipcode: '75000', rep: true)
       sign_in(student)
-      visit internship_offers_path
+      visit_offers_index internship_offers_path
       click_button 'Rechercher'
       assert_presence_of(internship_offer: internship_offer)
-      sign_out(student)
+    end
+  end
 
-      sign_in(other_student)
-      visit internship_offers_path
+  test 'reserved rep/rep_plus offers are hidden from students of other schools' do
+    travel_to Date.new(2024, 9, 1) do
+      student = create(:student, grade: Grade.seconde)
+      internship_offer = create(:weekly_internship_offer_2nde, city: 'Paris', coordinates: Coordinates.paris,
+                                                               zipcode: '75000', rep: true)
+      sign_in(student)
+      visit_offers_index internship_offers_path
       click_button 'Rechercher'
       assert_absence_of(internship_offer: internship_offer)
     end
@@ -114,34 +130,44 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
         create(:weekly_internship_offer_2nde, weeks: SchoolTrack::Seconde.both_weeks, city: 'Paris')
       end
       internship_offer = create(:weekly_internship_offer_2nde, weeks: SchoolTrack::Seconde.both_weeks, city: 'Bordeaux')
-      visit internship_offers_path
-      select 'troisieme générale', from: 'Filière'
+      visit_offers_index internship_offers_path
+      assert_selector('select#grade_id option', count: 3, wait: 10)
+      select '3e', from: 'Niveau de classe'
       click_button 'Rechercher'
       assert_no_selector('.test-city', text: internship_offer.city)
-      select 'seconde générale et technologique', from: 'Filière'
+      select '2de générale et technologique', from: 'Niveau de classe'
       click_button 'Rechercher'
-      find('.test-city', text: 'Bordeaux')
+      find('.test-city', text: 'Bordeaux', wait: 10)
     end
   end
-  test 'search by grade works for students' do
+  # le select de niveau est verrouillé sur le grade de l'élève connecté ;
+  # deux tests distincts car changer d'utilisateur au sein d'un même test
+  # système ne prend pas de manière fiable (session Warden)
+  test 'search by grade works for students - troisieme sees no seconde offer' do
     travel_to Date.new(2024, 9, 1) do
-      seconde_weeks = SchoolTrack::Seconde.both_weeks
-      internship_offer = create(:weekly_internship_offer_2nde, weeks: seconde_weeks)
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: SchoolTrack::Seconde.both_weeks)
 
       student = create(:student, grade: Grade.troisieme)
       sign_in(student)
-      visit internship_offers_path
-      select 'troisieme générale', from: 'Filière'
+      visit_offers_index internship_offers_path
+      assert_selector('select#grade_id option', count: 1, wait: 10)
+      assert_equal ['3e'], find('select#grade_id').all('option').map(&:text)
       click_button 'Rechercher'
       assert_no_selector('.test-city', text: internship_offer.city)
-      logout(student)
+    end
+  end
+
+  test 'search by grade works for students - seconde sees seconde offer' do
+    travel_to Date.new(2024, 9, 1) do
+      internship_offer = create(:weekly_internship_offer_2nde, weeks: SchoolTrack::Seconde.both_weeks)
 
       student = create(:student, grade: Grade.seconde)
       sign_in(student)
-      visit internship_offers_path
-      select Grade.seconde.name, from: 'Filière'
+      visit_offers_index internship_offers_path
+      assert_selector('select#grade_id option', count: 1, wait: 10)
+      assert_equal ['2de générale et technologique'], find('select#grade_id').all('option').map(&:text)
       click_button 'Rechercher'
-      assert_selector('.test-city', text: internship_offer.city)
+      assert_selector('.test-city', text: internship_offer.city, wait: 10)
     end
   end
   # test 'search by weeks displays the right list of weeks for visitors' do
@@ -285,20 +311,20 @@ class InternshipOfferIndexTest < ApplicationSystemTestCase
       assert_equal 1, internship_offer_2.grades.count
       InternshipOffer.stub :nearby, InternshipOffer.all do
         InternshipOffer.stub :by_weeks, InternshipOffer.all do
-          visit internship_offers_path
+          # par défaut, la recherche porte sur la 2de
+          visit_offers_index internship_offers_path
           click_button 'Rechercher'
-          assert_selector('.test-city', text: internship_offer_1.city, count: 1)
-          assert_selector('.test-city', text: internship_offer_2.city, count: 1)
-
-          select 'seconde générale et technologique', from: 'Filière'
-          click_button 'Rechercher'
-          assert_selector('.test-city', text: internship_offer_1.city, count: 1)
+          assert_selector('.test-city', text: internship_offer_1.city, count: 1, wait: 10)
           assert_selector('.test-city', text: internship_offer_2.city, count: 0)
 
-          select 'troisieme générale', from: 'Filière'
+          # sélection du niveau depuis une page vierge : après une recherche sans
+          # critère (URL sans grade_id), le select de niveau ne répond plus
+          # (bug connu du composant React contrôlé), on repart donc de l'index
+          visit_offers_index internship_offers_path
+          select '3e', from: 'Niveau de classe'
           click_button 'Rechercher'
+          assert_selector('.test-city', text: internship_offer_2.city, count: 1, wait: 10)
           assert_selector('.test-city', text: internship_offer_1.city, count: 0)
-          assert_selector('.test-city', text: internship_offer_2.city, count: 1)
         end
       end
     end

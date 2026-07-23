@@ -23,9 +23,10 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
         find('li#downshift-0-item-0', wait: 4).click
         find('span', text: 'Étape 1 sur 3')
         click_on 'Suivant'
+        # attendre l'effet UI avant l'assertion de comptage du bloc assert_difference
+        assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
       end
     end
-    assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
     assert InternshipOccupation.last.coordinates.present?
   end
 
@@ -37,8 +38,12 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       find('#test-create-offer').click
       choose('radio-rich-0', allow_label_click: true)
       click_on 'Commencer'
+      # le stub géocodage global (setup) renvoie toujours des résultats :
+      # on le remplace par une réponse vide pour simuler une adresse introuvable
+      stub_request(:get, %r{data.geopf.fr/geocodage})
+        .to_return(status: 200, body: { type: 'FeatureCollection', features: [] }.to_json)
       fill_in_internship_occupation_form(full_address: 'fdfqq5fdsfqdsfdssfqsdf')
-      assert_raises(Capybara::ElementNotFound) { find('li#downshift-0-item-0') }
+      assert_raises(Capybara::ElementNotFound) { find('li#downshift-0-item-0', wait: 2) }
     end
   end
 
@@ -53,9 +58,12 @@ class ManageInternshipOccupationsTest < ApplicationSystemTestCase
       sign_in(employer)
       visit edit_dashboard_stepper_internship_occupation_path(internship_occupation)
       as = 'a' * 10
-      fill_in_internship_occupation_form(description: as, full_address: ' ')
+      # MGF-1666 : la validation front bloque l'avancement si l'adresse perd ses
+      # coordonnées ; on met à jour la description en conservant l'adresse existante.
+      fill_in_internship_occupation_form(description: as, full_address: '')
       find('button[name="button"][type="submit"]').click
       assert_equal 'Étape 2 sur 3', find('h2 > span.fr-stepper__state').text
+      assert_equal as, internship_occupation.reload.description
     end
   end
 

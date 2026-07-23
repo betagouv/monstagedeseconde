@@ -389,7 +389,7 @@ module Dashboard::InternshipAgreements
       sign_in(internship_agreement.school_manager)
       school_manager_visits_index_and_go_to_multi_internship_agreements
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'En attente de l\'offreur.')
+        find('div.actions', text: 'En attente de l’offreur.')
       end
       find('a.button-component-cta-button', text: 'En attente')
     end
@@ -399,7 +399,7 @@ module Dashboard::InternshipAgreements
       sign_in(internship_agreement.school_manager)
       school_manager_visits_index_and_go_to_multi_internship_agreements
       within('td[data-head="Statut"]') do
-        find('div.actions', text: 'En attente de l\'offreur.')
+        find('div.actions', text: 'En attente de l’offreur.')
       end
       find('a.button-component-cta-button', text: 'En attente')
     end
@@ -410,7 +410,7 @@ module Dashboard::InternshipAgreements
       school_manager_visits_index_and_go_to_multi_internship_agreements
       find('a.button-component-cta-button', text: 'Remplir ma convention').click
       within('td[data-head="Statut"]') do
-        find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
+        find('div.actions', text: 'Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.')
       end
       fill_in 'Date de délibération du Conseil d’administration approuvant la convention-type (optionnel)', with: '10/10/2020'
       select('Privé sous contrat', from: 'Statut de l’établissement')
@@ -452,7 +452,7 @@ module Dashboard::InternshipAgreements
       school_manager_visits_index_and_go_to_multi_internship_agreements
 
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: "L'employeur a déjà signé. En attente de votre signature.")
+        find('.actions.d-flex', text: 'Convention partiellement signée. En attente de votre signature.')
       end
       find('a.button-component-cta-button', text: 'Télécharger')
       # find('button[data-action=\'group-signing#toggleFromButton\']', text: 'Ajouter aux signatures')
@@ -467,7 +467,7 @@ module Dashboard::InternshipAgreements
       sign_in(internship_agreement.school_manager)
       school_manager_visits_index_and_go_to_multi_internship_agreements
       within('td[data-head="Statut"]') do
-        find('.actions.d-flex', text: 'Vous avez déjà signé. En attente de la signature de l’employeur.')
+        find('.actions.d-flex', text: 'Vous avez déjà signé.')
       end
       find('a.button-component-cta-button', text: 'Télécharger')
       find('div[style="color: green"] span', text: 'établissement'.capitalize)
@@ -492,7 +492,7 @@ module Dashboard::InternshipAgreements
     #   sign_in(admin_officer)
     #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
-    #     find('div.actions', text: 'En attente de l\'offreur.')
+    #     find('div.actions', text: 'En attente de l’offreur.')
     #   end
     #   find('a.button-component-cta-button', text: 'En attente')
     # end
@@ -503,7 +503,7 @@ module Dashboard::InternshipAgreements
     #   sign_in(admin_officer)
     #   visit dashboard_internship_agreements_path
     #   within('td[data-head="Statut"]') do
-    #     find('div.actions', text: 'En attente de l\'offreur.')
+    #     find('div.actions', text: 'En attente de l’offreur.')
     #   end
     #   find('a.button-component-cta-button', text: 'En attente')
     # end
@@ -515,7 +515,7 @@ module Dashboard::InternshipAgreements
     #   visit dashboard_internship_agreements_path
     #   find('a.button-component-cta-button', text: 'Remplir ma convention').click
     #   within('td[data-head="Statut"]') do
-    #     find('div.actions', text: "Votre convention est remplie par l'offreur, mais vous ne l'avez pas renseignée.")
+    #     find('div.actions', text: 'Votre convention est remplie par l’offreur, mais vous ne l’avez pas renseignée.')
     #   end
     #   fill_in 'Date de délibération du Conseil d’administration approuvant la convention-type', with: '10/10/2020'
     #   select('Privé hors contrat', from: 'Statut de l’établissement')

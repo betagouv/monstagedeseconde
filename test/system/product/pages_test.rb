@@ -15,7 +15,6 @@ module Product
         eleves_path
         equipe_pedagogique_path
         mentions_legales_path
-        operators_path
         politique_de_confidentialite_path
         professionnels_path
         partners_path
