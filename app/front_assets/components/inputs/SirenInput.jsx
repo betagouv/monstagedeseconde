@@ -407,7 +407,7 @@ export default function SirenInput({
           Structure introuvable ?
         </small>
         <a
-          href="#manual-input-modal"
+          href="#"
           className="small text-blue-info"
           onClick={openManual}
         >
