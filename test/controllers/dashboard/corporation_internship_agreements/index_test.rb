@@ -5,11 +5,11 @@ module Dashboard::CorporationInternshipAgreements
     include Rails.application.routes.url_helpers
 
     setup do
-      @internship_agreement1 = create(:multi_internship_agreement, :validated, pre_selected_for_signature: true)
+      @internship_agreement1 = create(:multi_internship_agreement, :validated, :with_corporation_signature_rows, pre_selected_for_signature: true)
       @corporation = @internship_agreement1.internship_offer.corporations.first
       @corporation_sgid = @corporation.to_sgid.to_s
 
-      @internship_agreement2 = create(:multi_internship_agreement, :validated, pre_selected_for_signature: true)
+      @internship_agreement2 = create(:multi_internship_agreement, :validated, :with_corporation_signature_rows, pre_selected_for_signature: true)
       @corporation_2 = @internship_agreement2.internship_offer.corporations.first
     end
 

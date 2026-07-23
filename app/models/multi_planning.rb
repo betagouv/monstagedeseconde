@@ -63,7 +63,18 @@ class MultiPlanning < ApplicationRecord
   def weekly_planning?
     !daily_planning?
   end
-  
+
+  # Stage partagé : horaires de la seconde période (2e semaine), optionnels.
+  def daily_planning_2?
+    daily_hours_2.present? && daily_hours_2.values.flatten.any?(&:present?)
+  end
+
+  # Vrai si un jeu d'horaires distinct a été saisi pour la seconde période.
+  def has_different_period_2_hours?
+    weekly_hours_2.to_a.any?(&:present?) || daily_planning_2?
+  end
+
+
   def is_fully_editable?
     true
   end

@@ -144,3 +144,22 @@ table.table-scrollable {
 .grey-border {
   border: solid 1px #eee;
 }
+// Conventions employeur : la ligne est un flex (d-flex) dont les 5 colonnes
+// col-sm-2 (5 x 16,7%) + la case à cocher + la colonne d'action dépassaient
+// 100% de la largeur du tableau ; on rend les colonnes de contenu flexibles
+// et on fixe la colonne d'action pour que les boutons restent dans le tableau.
+.fr-internship-agreements-list {
+  tr.d-flex,
+  tr.d-sm-flex {
+    > .col-sm-2 {
+      flex: 1 1 0;
+      max-width: none;
+      min-width: 0;
+    }
+    > .col {
+      flex: 0 0 170px;
+      max-width: 170px;
+      min-width: 170px;
+    }
+  }
+}

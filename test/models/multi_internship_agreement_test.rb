@@ -225,7 +225,7 @@ class MultiInternshipAgreementTest < ActiveSupport::TestCase
   end
 
   test "#send_multi_signature_reminder_emails!" do
-    multi_internship_agreement = create(:multi_internship_agreement)
+    multi_internship_agreement = create(:multi_internship_agreement, :with_corporation_signature_rows)
     multi_corporation = multi_internship_agreement.internship_offer.multi_corporation
     corporation_1 =multi_corporation.corporations.first
     corporation_internship_agreement_1 = CorporationInternshipAgreement.find_by(

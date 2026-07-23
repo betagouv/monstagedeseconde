@@ -50,7 +50,7 @@ module Dashboard
                                                .student
                                                .presenter
                                                .full_name_camel_case
-          if @internship_agreement.from_multi?
+          if @internship_agreement.legacy_multi?
             send_data(
               GenerateMultiInternshipAgreement.new(@internship_agreement.uuid).call.render,
               filename: "Convention_de_stage_#{ext_file_name}.pdf",
@@ -195,6 +195,9 @@ module Dashboard
                                    { school: :school_managers }] }
              ] }
            )
+           # Trié par élève : regroupe les 2 conventions d'un stage partagé
+           # (même candidature) côte à côte dans le tableau (SFD).
+           .order(Arel.sql('users.last_name ASC, users.first_name ASC, internship_agreements.id ASC'))
     end
 
     def internship_agreement_builder

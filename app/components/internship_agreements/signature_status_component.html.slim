@@ -1,4 +1,8 @@
-- if from_multi?
+- if shared_offer_agreement?
+  div style="color: #{corporation_signature_info[:color]}"
+    span class="#{corporation_signature_info[:icon]}"
+    span Offreur
+- elsif from_multi?
   div style="color: #{corporations_info[:color]}"
     span class="#{corporations_info[:icon]}"
     span.text-decoration-underline

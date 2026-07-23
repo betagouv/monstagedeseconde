@@ -78,6 +78,9 @@ class Signature < ApplicationRecord
   end
 
   def all_signed?
+    # Multi (historique ET stage partagé) : la/les structure(s) d'accueil "signe(nt)" via
+    # CorporationInternshipAgreement (pas de compte utilisateur, donc pas de Signature
+    # employer). La convention est complète dès les 4 signatures attendues.
     return true if signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.from_multi?
 
     signatures_count == REQUESTED_SIGNATURES_COUNT && internship_agreement.signed_by_employer?

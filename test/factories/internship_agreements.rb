@@ -52,6 +52,19 @@ FactoryBot.define do
       internship_application { create(:multi_internship_application) }
     end
 
+    # Multi historique : matérialise les lignes corporation_internship_agreements
+    # (une par structure) que l'ancien callback créait avec la convention. Le flux
+    # actuel ne les crée qu'à l'envoi en signature (Builders::SignatureBuilder).
+    trait :with_corporation_signature_rows do
+      after(:create) do |ia|
+        ia.internship_offer.multi_corporation.corporations.each do |corporation|
+          create(:corporation_internship_agreement,
+                 corporation: corporation,
+                 internship_agreement: ia)
+        end
+      end
+    end
+
     trait :created_by_system do
       skip_validations_for_system { true }
     end

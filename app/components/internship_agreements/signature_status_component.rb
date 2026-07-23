@@ -36,6 +36,20 @@ module InternshipAgreements
       @internship_agreement.from_multi?
     end
 
+    def shared_offer_agreement?
+      @internship_agreement.shared_offer_agreement?
+    end
+
+    # Stage partagé : la convention n'a qu'UNE structure ; son statut vient de
+    # corporation_internship_agreements (absent tant que la signature n'est pas lancée).
+    def corporation_signature_info
+      cia = @internship_agreement.corporation.corporation_internship_agreement_for(@internship_agreement)
+      actor_signed = cia&.signed || false
+      color = actor_signed ? 'green' : 'grey'
+      icon = actor_signed ? 'fr-icon-check-line' : 'fr-icon-close-line'
+      { icon: icon, color: color, actor_signed: actor_signed }
+    end
+
     def corporations_info
       raise "Not a multi-corporation internship agreement" unless @internship_agreement.from_multi?
 

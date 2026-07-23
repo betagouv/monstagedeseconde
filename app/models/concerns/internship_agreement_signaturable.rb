@@ -51,22 +51,12 @@ module InternshipAgreementSignaturable
         recipients << school_management_representative.email if school_management_representative
       end
       if from_multi?
-        corporations_all_signed = true
-        internship_offer.corporations.each do |corporation|
-          corporation_internship_agreement = CorporationInternshipAgreement.find_by(
-            corporation_id: corporation.id,
-            internship_agreement_id: id
-          )
-          if corporation_internship_agreement.signed == false
-            corporations_all_signed = false
-            break
-          end
-        end
-        corporations_all_signed
-      else
-        if roles_not_signed_yet.include?('employer')
-          recipients << employer.email if employer
-        end
+        # Multi (historique ET stage partagé) : la/les structure(s) signe(nt) via
+        # CorporationInternshipAgreement. La convention partagée n'a que SA structure.
+        corporation_agreements = CorporationInternshipAgreement.where(internship_agreement_id: id)
+        corporation_agreements.all?(&:signed)
+      elsif roles_not_signed_yet.include?('employer')
+        recipients << employer.email if employer
       end
       recipients
     end
