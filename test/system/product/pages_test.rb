@@ -17,6 +17,7 @@ module Product
         mentions_legales_path
         politique_de_confidentialite_path
         professionnels_path
+        partners_path
         referents_path
         root_path
       ].map do |page_path|

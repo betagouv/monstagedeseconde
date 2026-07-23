@@ -249,11 +249,12 @@ module Dashboard
         end
 
         assert_equal 2, Signature.all.count
-        # l'ordre de traitement des conventions n'est pas garanti (ordre des ids
-        # construits côté JS) : on vérifie chaque convention indépendamment
+
+        # Signatures are created in the DOM order of the agreements list,
+        # which is not deterministic: look them up per agreement instead.
         [internship_agreement, internship_agreement_2].each do |agreement|
           signature = Signature.find_by(internship_agreement_id: agreement.id)
-          refute_nil signature
+          assert_not_nil signature
           assert_equal school_manager.id, signature.school_manager.id
           assert_equal DateTime.now, signature.signature_date
           assert_equal 'school_manager', signature.signatory_role
@@ -303,11 +304,12 @@ module Dashboard
         end
 
         assert_equal 2, Signature.all.count
-        # l'ordre de traitement des conventions n'est pas garanti (ordre des ids
-        # construits côté JS) : on vérifie chaque convention indépendamment
+
+        # Signatures are created in the DOM order of the agreements list,
+        # which is not deterministic: look them up per agreement instead.
         [internship_agreement, internship_agreement_2].each do |agreement|
           signature = Signature.find_by(internship_agreement_id: agreement.id)
-          refute_nil signature
+          assert_not_nil signature
           assert_equal school_manager.id, signature.school_manager.id
           assert_equal DateTime.now, signature.signature_date
           assert_equal 'school_manager', signature.signatory_role

@@ -1,6 +1,7 @@
 module Dashboard
   module GroupSigning
-    class UsersController < ApplicationController
+    class UsersController < Dashboard::BaseController
+      skip_before_action :authenticate_user!
       include Phonable
 
       def start_signing
@@ -9,12 +10,12 @@ module Dashboard
         authorize! :sign_internship_agreements, InternshipAgreement
         @internship_agreement_ids = user_params[:internship_agreement_ids] || []
         @counter = @internship_agreement_ids.size
-        @agreement_ids = @internship_agreement_ids.join(',')
+        @agreement_ids = @internship_agreement_ids.join(",")
         current_user.send_signature_sms_token if current_user.formatted_phone.present?
         respond_to do |format|
           format.turbo_stream do
             render turbo_stream:
-              turbo_stream.update('internship-agreement-group',
+              turbo_stream.update("internship-agreement-group",
                                   partial: starting_path(current_user),
                                   locals: { agreement_ids: @agreement_ids,
                                             counter: @counter })
@@ -29,9 +30,9 @@ module Dashboard
            current_user.reload.send_signature_sms_token
           respond_to do |format|
             format.turbo_stream do
-              path = 'dashboard/internship_agreements/signature/modal_code_submit'
+              path = "dashboard/internship_agreements/signature/modal_code_submit"
               render turbo_stream:
-                turbo_stream.replace('internship-agreement-signature-form',
+                turbo_stream.replace("internship-agreement-signature-form",
                                      partial: path,
                                      locals: { current_user:,
                                                agreement_ids: @agreement_ids })
@@ -40,10 +41,10 @@ module Dashboard
         elsif current_user.errors.any?
           respond_to do |format|
             format.turbo_stream do
-              err_path = 'dashboard/internship_agreements/signature/code_error_messages'
-              err_msg = current_user.errors.messages.values.flatten.join(',')
+              err_path = "dashboard/internship_agreements/signature/code_error_messages"
+              err_msg = current_user.errors.messages.values.flatten.join(",")
               render turbo_stream:
-                turbo_stream.replace('update-error-messages',
+                turbo_stream.replace("update-error-messages",
                                      partial: err_path,
                                      locals: { error_message: err_msg,
                                                agreement_ids: @agreement_ids })
@@ -60,10 +61,10 @@ module Dashboard
         authorize! :sign_internship_agreements, InternshipAgreement
         if current_user.nullify_phone_number!
           redirect_to dashboard_internship_agreements_path(opened_modal: true),
-                      notice: 'Votre numéro de téléphone a été supprimé'
+                      notice: "Votre numéro de téléphone a été supprimé"
         else
           redirect_to dashboard_internship_agreements_path,
-                      alert: 'Une erreur est survenue et ' \
+                      alert: "Une erreur est survenue et " \
                              "votre demande n'a pas été traitée"
         end
       end
@@ -73,23 +74,23 @@ module Dashboard
         @agreement_ids = user_params[:agreement_ids]
         signature_builder.post_signature_sms_token do |on|
           on.success do
-            flash_path = 'dashboard/internship_agreements/signature/flash_new_code'
+            flash_path = "dashboard/internship_agreements/signature/flash_new_code"
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace('code-request',
+                  turbo_stream.replace("code-request",
                                        partial: flash_path,
-                                       locals: { notice: 'Un nouveau code a été envoyé' })
+                                       locals: { notice: "Un nouveau code a été envoyé" })
               end
             end
           end
           on.failure do |error|
             err_msg = "Une erreur est survenue et votre demande n'a pas été traitée"
-            flash_path = 'dashboard/internship_agreements/signature/flash_new_code'
+            flash_path = "dashboard/internship_agreements/signature/flash_new_code"
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace('code-request',
+                  turbo_stream.replace("code-request",
                                        partial: flash_path,
                                        locals: { alert: err_msg })
               end
@@ -102,14 +103,14 @@ module Dashboard
         authorize! :sign_internship_agreements, InternshipAgreement
 
         @agreement_ids = user_params[:agreement_ids]
-        err_path = 'dashboard/internship_agreements/signature/code_error_messages'
-        ok_path = 'dashboard/internship_agreements/signature/modal_handwrite_sign'
+        err_path = "dashboard/internship_agreements/signature/code_error_messages"
+        ok_path = "dashboard/internship_agreements/signature/modal_handwrite_sign"
         signature_builder.signature_code_validate do |on|
           on.success do
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace('internship-agreement-group',
+                  turbo_stream.replace("internship-agreement-group",
                                        partial: ok_path,
                                        locals: { current_user:,
                                                  agreement_ids: @agreement_ids })
@@ -120,9 +121,9 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace('error-messages',
+                  turbo_stream.replace("error-messages",
                                        partial: err_path,
-                                       locals: { error_message: error.errors.full_messages.join(','),
+                                       locals: { error_message: error.errors.full_messages.join(","),
                                                  agreement_ids: @agreement_ids })
               end
             end
@@ -131,7 +132,7 @@ module Dashboard
             respond_to do |format|
               format.turbo_stream do
                 render turbo_stream:
-                  turbo_stream.replace('error-messages',
+                  turbo_stream.replace("error-messages",
                                        partial: err_path,
                                        locals: { error_message: error_msg.message,
                                                  agreement_ids: @agreement_ids })
@@ -151,11 +152,11 @@ module Dashboard
           end
           on.failure do |sig|
             redirect_to dashboard_internship_agreements_path,
-                        alert: 'Votre signature n\'a pas été enregistrée'
+                        alert: "Votre signature n'a pas été enregistrée"
           end
           on.argument_error do |error|
             redirect_to dashboard_internship_agreements_path,
-                        alert: 'Votre signature n\'a pas été détectée'
+                        alert: "Votre signature n'a pas été détectée"
           end
         end
       end
@@ -163,7 +164,7 @@ module Dashboard
       def school_management_group_signature
         redirect_to dashboard_internship_agreements_path and return unless params[:ids].present?
 
-        params[:ids].split(',').each do |id|
+        params[:ids].split(",").each do |id|
           internship_agreement = current_user.internship_agreements.find(id)
           authorize! :sign_internship_agreements, internship_agreement
         end
@@ -177,13 +178,13 @@ module Dashboard
 
         update_school_signature if params[:internship_agreement]&.[](:signature).present?
 
-        params[:ids].split(',').each do |id|
+        params[:ids].split(",").each do |id|
           internship_agreement = current_user.internship_agreements.find(id)
           multi = true if internship_agreement.from_multi?
           authorize! :sign_internship_agreements, internship_agreement
           if internship_agreement.school.signature.blank?
             redirect_to dashboard_internship_agreements_path,
-                        flash: { danger: 'Vous devez d\'abord importer la signature du chef d\'établissement. Avant de signer la convention.' } and return
+                        flash: { danger: "Vous devez d'abord importer la signature du chef d'établissement. Avant de signer la convention." } and return
           end
 
           update_school_signature if params.dig(:internship_agreement, :signature).present?
@@ -199,7 +200,7 @@ module Dashboard
         end
 
         redirect_to dashboard_internship_agreements_path,
-                    flash: { success: 'Les conventions ont été signées.' }
+                    flash: { success: "Les conventions ont été signées." }
       end
 
       def dispatch_multi_agreements_signature
@@ -214,11 +215,11 @@ module Dashboard
           signature_builder.dispatch_multi_agreements_signature(internship_agreement_ids: @agreement_ids) do |on|
             on.success do
               redirect_to return_path,
-                          notice: 'Les emails de signature ont été envoyés aux employeurs.'
+                          notice: "Les emails de signature ont été envoyés aux employeurs."
             end
             on.failure do |error|
-              redirect_to return_path ,
-                          alert: 'Une erreur est survenue et les emails n\'ont pas été envoyés.'
+              redirect_to return_path,
+                          alert: "Une erreur est survenue et les emails n'ont pas été envoyés."
             end
           end
         end
@@ -227,13 +228,13 @@ module Dashboard
       private
 
       def starting_path(current_user)
-        path_with_phone    = 'dashboard/internship_agreements/signature/modal_code_submit'
-        path_without_phone = 'dashboard/internship_agreements/signature/modal_phone_request'
+        path_with_phone    = "dashboard/internship_agreements/signature/modal_code_submit"
+        path_without_phone = "dashboard/internship_agreements/signature/modal_phone_request"
         current_user.formatted_phone.present? ? path_with_phone : path_without_phone
       end
 
       def signature_builder
-        @signature_builder = Builders::SignatureBuilder.new(
+        @signature_builder ||= Builders::SignatureBuilder.new(
           user: current_user,
           context: :web,
           params: user_params
@@ -249,7 +250,7 @@ module Dashboard
           agreement_ids
           internship_agreement_ids
         ].concat((0..5).map { |index| "digit-code-target-#{index}".to_sym })
-          .concat([internship_agreement_ids: []])
+          .concat([ internship_agreement_ids: [] ])
       end
 
       def user_params

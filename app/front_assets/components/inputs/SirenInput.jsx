@@ -11,21 +11,6 @@ import {
   toggleHideContainerById,
 } from "../../utils/dom";
 
-const setTallyModalSeen = () => {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 jours
-  document.cookie = `tally_modal_seen=true;expires=${expires.toUTCString()};path=/`;
-};
-
-const isTallyModalSeen = () => {
-  return document.cookie.includes("tally_modal_seen=true");
-};
-
-const resetTallyModalSeen = () => {
-  document.cookie =
-    "tally_modal_seen=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
-};
-
 // see: https://geo.api.gouv.fr/adresse
 export default function SirenInput({
   resourceName,
@@ -117,78 +102,9 @@ export default function SirenInput({
       });
   };
 
-  const closeModal = () => {
-    const modalElement = document.getElementById("manual-input-modal");
-    if (modalElement) {
-      modalElement.setAttribute("data-fr-opened", "false");
-      modalElement.setAttribute("aria-hidden", "true");
-      modalElement.classList.remove("fr-modal--opened");
-
-      // After closing the modal, open the manual input
-      setOpenManual();
-    }
-  };
-
-  // Function to reset the cookie (for tests)
-  const resetModalCookie = () => {
-    resetTallyModalSeen();
-  };
-
-  // Function to handle the Tally form messages
-  const handleTallyMessage = (event) => {
-    if (event.origin !== "https://tally.so") return;
-
-    if (event.data.type === "tally.formSubmitted") {
-      // The form has been submitted, close the modal
-      closeModal();
-    }
-  };
-
-  // Add the event listener for the Tally messages
-  useEffect(() => {
-    window.addEventListener("message", handleTallyMessage);
-    return () => {
-      window.removeEventListener("message", handleTallyMessage);
-    };
-  }, []);
-
   const openManual = (event) => {
     event.preventDefault();
-
-    // Check if the modal has already been viewed by this visitor
-    if (isTallyModalSeen()) {
-      // If the modal has already been viewed, open the manual input
-      setOpenManual();
-      return;
-    }
-
-    // Open the DSFR modal
-    const modalElement = document.getElementById("manual-input-modal");
-    if (modalElement) {
-      // Use the DSFR method to open the modal
-      modalElement.setAttribute("data-fr-opened", "true");
-      modalElement.setAttribute("aria-hidden", "false");
-      modalElement.classList.add("fr-modal--opened");
-
-      // Set the cookie to indicate that the modal has been viewed
-      setTallyModalSeen();
-
-      // Add an event listener to close the modal
-      const closeButton = modalElement.querySelector(".fr-link--close");
-      if (closeButton) {
-        closeButton.addEventListener("click", (e) => {
-          e.preventDefault();
-          closeModal();
-        });
-      }
-
-      // Close the modal by clicking on the overlay
-      modalElement.addEventListener("click", (e) => {
-        if (e.target === modalElement) {
-          closeModal();
-        }
-      });
-    }
+    setOpenManual();
   };
 
   // Active (public) ou désactive (privé) l'option "Fonction publique" du select de secteur.
@@ -497,16 +413,6 @@ export default function SirenInput({
         >
           Ajouter votre structure manuellement
         </a>
-        {railsEnv === "development" && (
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-secondary ml-2"
-            onClick={resetModalCookie}
-            title="Réinitialiser le cookie de la modal (dev only)"
-          >
-            Reset Modal
-          </button>
-        )}
       </div>
     </div>
   );
