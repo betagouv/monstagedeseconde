@@ -58,6 +58,33 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_select 'title', 'Accessibilité | 1Élève1Stage'
   end
 
+  test 'GET pages#faq_eleves works' do
+    get faq_eleves_path
+    assert_response :success
+    assert_template 'pages/faq_eleves'
+    assert_select 'title', 'FAQ Élèves | 1Élève1Stage'
+    assert_select 'h1', "Besoin d'aide ?"
+    assert_select 'section.fr-accordion', minimum: 20
+  end
+
+  test 'GET pages#faq_etablissements works' do
+    get faq_etablissements_path
+    assert_response :success
+    assert_template 'pages/faq_etablissements'
+    assert_select 'title', 'FAQ Établissements | 1Élève1Stage'
+    assert_select 'h1', "Besoin d'aide ?"
+    assert_select 'section.fr-accordion', minimum: 15
+  end
+
+  test 'GET pages#faq_offreurs works' do
+    get faq_offreurs_path
+    assert_response :success
+    assert_template 'pages/faq_offreurs'
+    assert_select 'title', 'FAQ Offreurs | 1Élève1Stage'
+    assert_select 'h1', "Besoin d'aide ?"
+    assert_select 'section.fr-accordion', minimum: 20
+  end
+
   test 'GET pages#regional_partners_index shows the partners carousel' do
     PagesController.stub_any_instance(:get_all_partners, fake_partners) do
       get partners_path
