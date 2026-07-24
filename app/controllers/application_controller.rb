@@ -143,8 +143,19 @@ class ApplicationController < ActionController::Base
   end
 
   def holidays_maintenance_redirection_exception?
+    return true if current_user&.god?
+
     allowed_paths = %w[/maintenance_estivale.html /contact.html /waiting_list]
+    # Keep the god sign-in flow reachable (password, then magic link, then OTP);
+    # Users::SessionsController#create rejects non-god sign-ins while the flag is on.
+    god_sign_in_paths = %w[
+      /utilisateurs/connexion
+      /utilisateurs/deconnexion
+      /magic_link
+      /double-authentification
+    ]
     request.path.in?(allowed_paths) ||
+      request.path.in?(god_sign_in_paths) ||
       (request.path == '/waiting_list' && request.post?)
   end
 

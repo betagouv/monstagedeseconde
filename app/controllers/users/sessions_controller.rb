@@ -24,6 +24,11 @@ module Users
     end
 
     def create
+      if Flipper.enabled?(:holidays_maintenance) && !fetch_user_by_email.try(:god?)
+        sign_out current_user if user_signed_in?
+        redirect_to '/maintenance_estivale.html' and return
+      end
+
       allowed_profiles_when_employers_only = current_user.try(:employer?) ||
                                              current_user.try(:operator?) ||
                                              current_user.try(:god?)
