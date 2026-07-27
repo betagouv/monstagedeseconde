@@ -268,6 +268,11 @@ class InternshipAgreement < ApplicationRecord
       student_legal_representative_phone: "NA"
     }
     update_columns(fields_to_reset)
+    signatures.update_all(
+      signature_phone_number: 'NA',
+      signatory_ip: 'NA',
+      student_legal_representative_full_name: 'NA'
+    )
     discard! unless discarded?
   end
 

@@ -1,13 +1,11 @@
 ruby:
-  # FAQ hosted on docs.numerique.gouv.fr until the in-app FAQ page ships (MGF-1777)
-  faq_url = 'https://docs.numerique.gouv.fr/docs/cf1cdc70-a30b-4800-b504-d73fda995783/'
   educonnect_faq_url = 'https://educonnect.education.gouv.fr/educt-aide/aide/'
   documents = @resources.respond_to?(:values) ? @resources.values.flatten : []
 
 .fr-mx-lg-0
   h4.fr-mb-3w.text-dark Ressources
   .row
-    = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_url
+    = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_eleves_path
     - documents.each do |document|
       = render 'pages/home/resource_media_card',
                title: document[:title],

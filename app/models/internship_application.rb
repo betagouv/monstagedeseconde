@@ -537,6 +537,11 @@ class InternshipApplication < ApplicationRecord
       student_legal_representative_phone: "+330600110011",
       student_phone: "+330600110011",
       student_email: "NA",
+      rejected_message: nil,
+      canceled_by_employer_message: nil,
+      canceled_by_student_message: nil,
+      approved_message: nil,
+      restored_message: nil,
     )
   end
 
