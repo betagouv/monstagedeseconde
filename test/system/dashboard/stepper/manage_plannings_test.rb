@@ -40,7 +40,8 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       planning = Planning.last
       assert_equal entreprise.id, planning.entreprise_id
       assert_equal Grade.troisieme_et_quatrieme.ids.sort, planning.grades.map(&:id).sort
-      assert_equal Week.selectable_on_school_year.pluck(:id).sort,
+      # au 1er janvier, « toute l'année » ne couvre que les semaines restantes
+      assert_equal Week.selectable_from_now_until_end_of_school_year.pluck(:id).sort,
                    planning.weeks.pluck(:id).sort
       assert_equal 'test de lunch break', planning.lunch_break
       refute SchoolTrack::Seconde.first_week.id.in?(planning.weeks.pluck(:id))
@@ -146,10 +147,15 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       # select("Lycée evariste Gallois", from: "Établissement")
 
       assert_difference('Planning.count') do
-        assert_difference('InternshipOffers::WeeklyFramed.count') do
+        # MGF-1731 : sélectionner les deux publics crée DEUX offres distinctes,
+        # après confirmation dans la modale dédiée
+        assert_difference('InternshipOffers::WeeklyFramed.count', 2) do
           find("button[type='submit']").click
+          within('dialog#double-grades-modal-action') do
+            click_button 'Publier 2 offres'
+          end
           notice = find('span#alert-text').text
-          assert_match 'Votre offre est publiée', notice
+          assert_match 'Vos deux offres sont publiées', notice
         end
       end
 
@@ -165,23 +171,30 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       end)
       assert_equal ['08:00', '15:00'], planning.weekly_hours
 
-      internship_offer = InternshipOffer.last
-      assert_equal planning.id, internship_offer.planning_id
-      assert_equal employer.id, internship_offer.employer_id
-      assert_equal 4, internship_offer.max_candidates
-      assert_equal 'test de lunch break', internship_offer.lunch_break
-      assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
-      assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude
-      assert_equal Coordinates.paris[:latitude], internship_offer.entreprise_coordinates.latitude
-      assert_equal Coordinates.paris[:longitude], internship_offer.entreprise_coordinates.longitude
-      assert SchoolTrack::Seconde.first_week.id.in?(internship_offer.weeks.pluck(:id))
-      refute SchoolTrack::Seconde.second_week.id.in?(internship_offer.weeks.pluck(:id))
+      # les deux offres créées se partagent le planning : l'une pour la 2de,
+      # l'autre pour le collège, chacune avec ses semaines
+      offers = InternshipOffer.last(2)
+      offers.each do |internship_offer|
+        assert_equal planning.id, internship_offer.planning_id
+        assert_equal employer.id, internship_offer.employer_id
+        assert_equal 4, internship_offer.max_candidates
+        assert_equal 'test de lunch break', internship_offer.lunch_break
+        assert_equal Coordinates.paris[:latitude], internship_offer.coordinates.latitude
+        assert_equal Coordinates.paris[:longitude], internship_offer.coordinates.longitude
+        assert_equal '75012', internship_offer.zipcode
+        assert_equal 'Paris', internship_offer.city
+        refute internship_offer.is_public
+      end
+      seconde_offer = offers.find { |o| o.grades.include?(Grade.seconde) }
+      college_offer = offers.find { |o| o.grades.include?(Grade.troisieme) }
+      refute_nil seconde_offer
+      refute_nil college_offer
+      refute_equal seconde_offer.id, college_offer.id
+      assert SchoolTrack::Seconde.first_week.id.in?(seconde_offer.weeks.pluck(:id))
+      refute SchoolTrack::Seconde.second_week.id.in?(seconde_offer.weeks.pluck(:id))
       assert(SchoolTrack::Troisieme.selectable_from_now_until_end_of_school_year.pluck(:id)[1..-1].all? do |id|
-        id.in?(internship_offer.weeks.pluck(:id))
+        id.in?(college_offer.weeks.pluck(:id))
       end)
-      assert_equal '75012', internship_offer.zipcode
-      assert_equal 'Paris', internship_offer.city
-      refute internship_offer.is_public
     end
   end
 
@@ -196,9 +209,9 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_no_difference('Planning.count') do
         fill_in_planning_form(with_seconde: false, with_troisieme: false)
         find("button[type='submit']").click
-      end
-      within('.fr-alert.fr-alert--error.server-error') do
-        find 'strong', text: /Niveaux ciblés/
+        # MGF-1666 : la validation est côté front, l'alerte s'affiche en ligne
+        find('[data-grade-target="alertContainer"] p',
+             text: 'Vous devez sélectionner au moins un public parmi les lycéens et les collégiens')
       end
     end
   end
@@ -233,13 +246,8 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       assert_text "Vous n'êtes pas autorisé à effectuer cette action"
     end
   end
-  test 'can create a planning with seconde grade only' do
-  end
-  test 'can create a planning with all grades' do
-  end
-
   test 'planning shows the right amount of schools nearby the entreprise' do
-    travel_to Date.new(2019, 9, 1) do
+    travel_to Date.new(2024, 9, 2) do
       first_3_weeks = Week.selectable_from_now_until_end_of_school_year.first(3)
       school_bordeaux = create(:school, city: 'Bordeaux', zipcode: '33000',
                                         weeks: first_3_weeks, coordinates: Coordinates.bordeaux)
@@ -248,7 +256,7 @@ class ManagePlanningsTest < ApplicationSystemTestCase
       internship_occupation = create(:internship_occupation, city: 'Paris', zipcode: '75001',
                                                              coordinates: Coordinates.paris)
       entreprise = create(:entreprise, internship_occupation:)
-      expected_hash = { "school-week-36": 1 }
+      expected_hash = { "school-week-#{first_3_weeks.first.id}": 1 }
       assert_equal expected_hash, School.nearby_school_weeks(
         latitude: internship_occupation.coordinates.latitude,
         longitude: internship_occupation.coordinates.longitude,

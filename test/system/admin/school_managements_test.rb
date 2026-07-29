@@ -19,6 +19,7 @@ module Admin
       visit admin_school_managements_path
 
       fill_in "Nom, prénom, email ou code UAI…", with: "Curie"
+      click_button "Rechercher"
       assert_text "Curie", wait: 2
       assert_text @school.name
     end
@@ -28,6 +29,7 @@ module Admin
       visit admin_school_managements_path
 
       fill_in "Nom, prénom, email ou code UAI…", with: "0330001A"
+      click_button "Rechercher"
       assert_text "Curie", wait: 2
     end
 
@@ -36,6 +38,7 @@ module Admin
       visit admin_school_managements_path
 
       fill_in "Nom, prénom, email ou code UAI…", with: "zzzmatch999"
+      click_button "Rechercher"
       assert_text "Aucun résultat", wait: 2
     end
 
@@ -44,11 +47,12 @@ module Admin
       visit admin_school_managements_path
 
       fill_in "Nom, prénom, email ou code UAI…", with: "Curie"
+      click_button "Rechercher"
       assert_text "Gérer", wait: 2
       click_on "Gérer"
 
       assert_current_path admin_school_management_path(@school_management)
-      assert_text "Établissement principal (immuable)"
+      assert_text "Établissement principal"
       assert_text @school.name
       assert_text "Associer un établissement"
     end
@@ -58,10 +62,11 @@ module Admin
       visit admin_school_management_path(@school_management)
 
       fill_in "Nom, commune ou code UAI…", with: "Victor"
+      find('button[title="Rechercher"]').click
       assert_text "Lycée Victor Hugo", wait: 2
       click_on "Associer"
 
-      assert_text "Lycée Victor Hugo", wait: 2
+      within("#extra-schools") { assert_text "Lycée Victor Hugo" }
       assert UserSchool.exists?(user: @school_management, school: @other_school)
     end
 
@@ -71,6 +76,7 @@ module Admin
       visit admin_school_management_path(@school_management)
 
       fill_in "Nom, commune ou code UAI…", with: "Victor"
+      find('button[title="Rechercher"]').click
       assert_text "Aucun résultat", wait: 2
     end
 
@@ -93,9 +99,10 @@ module Admin
 
       # 1. Associer Lycée Victor Hugo
       fill_in "Nom, commune ou code UAI…", with: "Victor"
+      find('button[title="Rechercher"]').click
       assert_text "Lycée Victor Hugo", wait: 2
       click_on "Associer"
-      assert_text "Lycée Victor Hugo", wait: 2
+      within("#extra-schools") { assert_text "Lycée Victor Hugo" }
       assert UserSchool.exists?(user: @school_management, school: @other_school)
 
       # 2. Retirer avec confirmation
@@ -106,9 +113,10 @@ module Admin
 
       # 3. Réassocier
       fill_in "Nom, commune ou code UAI…", with: "Victor"
+      find('button[title="Rechercher"]').click
       assert_text "Lycée Victor Hugo", wait: 2
       click_on "Associer"
-      assert_text "Lycée Victor Hugo", wait: 2
+      within("#extra-schools") { assert_text "Lycée Victor Hugo" }
       assert UserSchool.exists?(user: @school_management, school: @other_school)
 
       # 4. Retirer à nouveau

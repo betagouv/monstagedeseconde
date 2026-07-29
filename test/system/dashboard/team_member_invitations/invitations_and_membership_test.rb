@@ -30,21 +30,30 @@ module Dashboard::TeamMemberInvitations
 
       sign_in(employer_1)
       visit dashboard_team_member_invitations_path
-      click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'team_member_invitation[invitation_email]', with: employer_3.email
       click_on 'Inviter'
-      logout(employer_1)
+      find('span#alert-text', text: "Membre d'équipe invité avec succès")
 
       assert_equal 3, TeamMemberInvitation.count
       assert_equal 1, TeamMemberInvitation.with_pending_invitations.count
       pending_invitation = TeamMemberInvitation.with_pending_invitations.first
       assert_equal employer_1.id, pending_invitation.inviter_id
       assert_equal employer_3.email, pending_invitation.invitation_email
+    end
+
+    test 'when two employers are in the same team, ' \
+         'the second cannot invite an already invited third employer' do
+      employer_1 = create(:employer)
+      employer_2 = create(:employer)
+      create_team(employer_1, employer_2)
+      employer_3 = create(:employer)
+      create :team_member_invitation,
+             inviter_id: employer_1.id,
+             invitation_email: employer_3.email
 
       sign_in(employer_2)
       visit dashboard_team_member_invitations_path
-      click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'team_member_invitation[invitation_email]', with: employer_3.email
       click_on 'Inviter'
@@ -229,7 +238,7 @@ module Dashboard::TeamMemberInvitations
       find('a[title="Répondre à la candidature"]', text: 'Répondre').click
       click_button('Accepter')
       find('#accepter-button').click
-      click_link('Candidatures')
+      visit dashboard_candidatures_path
       click_button('Acceptées')
       find('p.fr-badge--info', text: 'en attente de réponse'.upcase)
     end
@@ -263,21 +272,30 @@ module Dashboard::TeamMemberInvitations
 
       sign_in(statistician_1)
       visit dashboard_team_member_invitations_path
-      click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'team_member_invitation[invitation_email]', with: statistician_3.email
       click_on 'Inviter'
-      logout(statistician_1)
+      find('span#alert-text', text: "Membre d'équipe invité avec succès")
 
       assert_equal 3, TeamMemberInvitation.count
       assert_equal 1, TeamMemberInvitation.with_pending_invitations.count
       pending_invitation = TeamMemberInvitation.with_pending_invitations.first
       assert_equal statistician_1.id, pending_invitation.inviter_id
       assert_equal statistician_3.email, pending_invitation.invitation_email
+    end
+
+    test 'when two statisticians are in the same team, ' \
+         'the second cannot invite an already invited third statistician' do
+      statistician_1 = create(:statistician)
+      statistician_2 = create(:statistician)
+      create_team(statistician_1, statistician_2)
+      statistician_3 = create(:statistician)
+      create :team_member_invitation,
+             inviter_id: statistician_1.id,
+             invitation_email: statistician_3.email
 
       sign_in(statistician_2)
       visit dashboard_team_member_invitations_path
-      click_link 'équipe'.capitalize
       find('a', text: "Inviter un membre de l'équipe").click
       fill_in 'Adresse email', with: statistician_3.email
       click_on 'Inviter'
@@ -334,7 +352,7 @@ module Dashboard::TeamMemberInvitations
       find('a[title="Répondre à la candidature"]', text: 'Répondre').click
       click_button('Accepter')
       find('#accepter-button').click
-      click_link('Candidatures')
+      visit dashboard_candidatures_path
       click_button('Acceptées')
       find('p.fr-badge--info', text: 'en attente de réponse'.upcase)
     end

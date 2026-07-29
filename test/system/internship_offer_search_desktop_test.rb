@@ -8,7 +8,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
   include ::ApiTestHelpers
 
   def submit_form
-    find('button[type="submit"]', wait: 3).click
+    click_button 'Rechercher'
   end
 
   test 'search form is visible' do
@@ -25,7 +25,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
                                           city: 'Bordeaux',
                                           coordinates: Coordinates.bordeaux)
 
-    visit internship_offers_path
+    visit_offers_index internship_offers_path
     fill_in_city_or_zipcode(with: 'Pari ', expect: 'Paris')
     submit_form
     # all('.fr-card').first.click
@@ -33,8 +33,11 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
     assert_card_presence_of(internship_offer: internship_offer_at_paris)
     assert_absence_of(internship_offer: internship_offer_at_bordeaux)
 
-    # reset search and submit
-    fill_in_city_or_zipcode(with: '', expect: '')
+    # nouvelle recherche sans localisation : les deux offres apparaissent.
+    # NB : la première navigation `visit` qui suit un Turbo.visit peut être
+    # avalée par Chrome (l'URL ne change pas) — la double visite fiabilise.
+    visit internship_offers_path
+    visit_offers_index internship_offers_path
     submit_form
     assert_card_presence_of(internship_offer: internship_offer_at_paris)
     assert_card_presence_of(internship_offer: internship_offer_at_bordeaux)
@@ -47,7 +50,7 @@ class InternshipOfferSearchDesktopTest < ApplicationSystemTestCase
       internship_offer_at_bordeaux = create(:weekly_internship_offer_2nde,
                                             coordinates: Coordinates.bordeaux)
 
-      visit internship_offers_path
+      visit_offers_index internship_offers_path
       fill_in_city_or_zipcode(with: '75012', expect: 'Paris')
       submit_form
       sleep 1
