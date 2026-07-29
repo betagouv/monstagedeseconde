@@ -55,6 +55,16 @@ class HolidaysMaintenanceTest < ActionDispatch::IntegrationTest
     assert is_logged_in?
   end
 
+  test 'POST sessions with god email in mixed case and padded goes through' do
+    admin = create(:god, password: 'Password123!', password_confirmation: 'Password123!')
+
+    post user_session_path, params: {
+      user: { email: " #{admin.email.upcase} ", password: 'Password123!' }
+    }
+
+    assert is_logged_in?
+  end
+
   test 'signed in god is not redirected to maintenance page' do
     admin = create(:god)
     sign_in admin
