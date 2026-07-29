@@ -238,6 +238,7 @@ module Dashboard::TeamMemberInvitations
       find('a[title="Répondre à la candidature"]', text: 'Répondre').click
       click_button('Accepter')
       find('#accepter-button').click
+      find('span#alert-text', text: 'Candidature mise à jour avec succès.')
       visit dashboard_candidatures_path
       click_button('Acceptées')
       find('p.fr-badge--info', text: 'en attente de réponse'.upcase)
@@ -352,6 +353,7 @@ module Dashboard::TeamMemberInvitations
       find('a[title="Répondre à la candidature"]', text: 'Répondre').click
       click_button('Accepter')
       find('#accepter-button').click
+      find('span#alert-text', text: 'Candidature mise à jour avec succès.')
       visit dashboard_candidatures_path
       click_button('Acceptées')
       find('p.fr-badge--info', text: 'en attente de réponse'.upcase)
