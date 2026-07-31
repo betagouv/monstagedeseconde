@@ -50,7 +50,7 @@ class SchoolsControllerTest < ActionDispatch::IntegrationTest
 
     stub_sygne_eleves(code_uai: school_params[:code_uai], token: omogen.token)
 
-    assert_enqueued_with(job: ImportDataFromSygneJob) do
+    assert_enqueued_with(job: CountStudentsFromSygneJob) do
       assert_difference("School.count", 1) do
         post schools_path(school: school_params)
       end

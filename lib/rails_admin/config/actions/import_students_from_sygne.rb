@@ -25,8 +25,8 @@ module RailsAdmin
 
         register_instance_option :controller do
           proc do
-            ImportDataFromSygneJob.perform_later(@object)
-            flash[:success] = "Import des élèves depuis Sygne lancé pour #{@object.name}."
+            CountStudentsFromSygneJob.perform_later(@object)
+            flash[:success] = "Recomptage des effectifs depuis Sygne lancé pour #{@object.name}."
             redirect_to show_path(model_name: 'school', id: @object.id)
           end
         end
