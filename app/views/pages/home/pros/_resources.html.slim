@@ -1,17 +1,10 @@
 ruby:
-  video_url = 'https://nuage06.apps.education.fr/index.php/s/NP49mPGfQ8Ddmei'
   documents = Presenters::ProResources.new(@resources).to_a
 
 .fr-mx-lg-0
   h4.fr-mb-3w.text-dark Ressources
   .row
     = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_offreurs_path
-    = render 'pages/home/resource_media_card',
-             title: 'Vidéo de présentation',
-             url: video_url,
-             picto: 'media/leisure/video.svg',
-             badge: 'Vidéo',
-             badge_class: 'fr-badge--blue-cumulus'
     - documents.each do |document|
       - if document[:kind] == :file
         = render 'pages/home/resource_media_card',

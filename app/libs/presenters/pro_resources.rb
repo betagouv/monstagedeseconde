@@ -2,7 +2,8 @@
 
 module Presenters
   # Curates the Prismic resources shown on the /professionnels landing page:
-  # hides documents superseded by hardcoded cards (FAQ, video) and enforces
+  # hides documents superseded by the hardcoded FAQ card or removed from the
+  # page (tutorial videos, MGF-1782) and enforces
   # the display order requested in MGF-1782 (Prismic has no rank field).
   class ProResources
     HIDDEN_TITLES = [
