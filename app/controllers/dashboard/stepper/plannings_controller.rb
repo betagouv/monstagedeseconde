@@ -2,8 +2,7 @@
 
 module Dashboard::Stepper
   # Step 3 of internship offer creation: fill planning info
-  class PlanningsController < ApplicationController
-    before_action :authenticate_user!
+  class PlanningsController < Dashboard::BaseController
     before_action :fetch_planning, only: %i[edit update]
     before_action :fetch_entreprise, only: %i[new create]
     before_action :fetch_internship_occupation, only: %i[new edit create]

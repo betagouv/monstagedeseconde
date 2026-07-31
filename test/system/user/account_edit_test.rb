@@ -33,6 +33,7 @@ class AccountEditTest < ApplicationSystemTestCase
     phone_suffix = find(:css, '#user_phone_suffix')
     phone_suffix.fill_in(with: '0622558877')
     click_on 'Enregistrer mes informations'
+    find('span#alert-text', text: 'Compte mis à jour avec succès.')
     assert student.reload.phone == '+330622558877'
   end
 
@@ -62,6 +63,7 @@ class AccountEditTest < ApplicationSystemTestCase
     fill_in('user[email]', with: 'test@parole.fr')
     fill_in('user[phone_suffix]', with: '0622558877')
     click_on 'Enregistrer mes informations'
+    assert_text 'Pour confirmer le changement d’adresse électronique,'
     employer.reload
     assert employer.first_name == 'Jean'
     assert employer.last_name == 'Dupont'
@@ -79,6 +81,7 @@ class AccountEditTest < ApplicationSystemTestCase
     fill_in('user[first_name]', with: 'Jean')
     fill_in('user[last_name]', with: 'Dupont')
     click_on 'Enregistrer mes informations'
+    find('span#alert-text', text: 'Compte mis à jour avec succès.')
     statistician.reload
     assert statistician.first_name == 'Jean'
     assert statistician.last_name == 'Dupont'
@@ -97,6 +100,7 @@ class AccountEditTest < ApplicationSystemTestCase
     fill_in('user[email]', with: 'test@free.fr')
     assert_enqueued_emails 0 do
       click_on 'Enregistrer mes informations'
+      find('span#alert-text', text: 'Compte mis à jour avec succès.')
     end
     student.reload
     assert_equal 'test@free.fr', student.email
@@ -106,6 +110,7 @@ class AccountEditTest < ApplicationSystemTestCase
     fill_in('user[email]', with: 'testo@free.fr')
     assert_enqueued_emails 1 do
       click_on 'Enregistrer mes informations'
+      assert_text 'Pour confirmer le changement d’adresse électronique,'
     end
     student.reload
     assert_equal 'test@free.fr', student.email

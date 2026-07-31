@@ -2,8 +2,7 @@
 
 module Dashboard::MultiStepper
   # Step 2 of multi-activity internship offer creation: coordinator information
-  class MultiCoordinatorsController < ApplicationController
-    before_action :authenticate_user!
+  class MultiCoordinatorsController < Dashboard::BaseController
     before_action :fetch_multi_coordinator, only: %i[edit update]
     before_action :sanitize_content, only: %i[create update]
 

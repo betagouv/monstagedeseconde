@@ -12,7 +12,9 @@ class WithTeamTest < ApplicationSystemTestCase
            invitation_email: employer_2.email
     sign_in(employer_2)
     visit employer_2.after_sign_in_path
-    assert_difference('AreaNotification.count', 4) do
+    # en rejoignant l'équipe, l'espace vide du rejoignant est supprimé
+    # (destroy_member_offer_area) : il reste 1 espace × 2 membres = 2 notifications
+    assert_difference('AreaNotification.count', 2) do
       click_button 'Oui'
       assert_equal 2, all('span.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'INSCRIT').count
       assert_equal 2, employer_1.team.team_size
@@ -32,8 +34,11 @@ class WithTeamTest < ApplicationSystemTestCase
            invitation_email: employer_3.email
     sign_in(employer_3)
     visit employer_3.after_sign_in_path
-    assert_difference -> { AreaNotification.count }, 5 do
+    # l'espace vide d'employer_3 est supprimé quand il rejoint l'équipe ;
+    # il reçoit une notification pour chacun des 2 espaces existants
+    assert_difference -> { AreaNotification.count }, 2 do
       click_button 'Oui'
+      assert_equal 3, all('span.fr-badge.fr-badge--no-icon.fr-badge--success', text: 'INSCRIT').count
     end
   end
 
@@ -48,17 +53,19 @@ class WithTeamTest < ApplicationSystemTestCase
     visit employer_2.after_sign_in_path
     assert_equal 0, AreaNotification.all.count
     click_button 'Oui'
-    find('li a', text: 'Espaces').click
-    assert_equal 4, AreaNotification.all.count # (one minimum area per user )* 2 team members
+    open_my_space_menu
+    click_link 'Espaces'
+    # l'espace vide du rejoignant est supprimé : 1 espace × 2 membres
+    assert_equal 2, AreaNotification.all.count
     click_button 'Créer un nouvel espace'
     fill_in('Nom de l\'espace', with: space_name)
     find('input[type="submit"]').click
     find('h1', text: space_name)
-    assert_equal 6, AreaNotification.all.count # (one minimum area per user + new one )* 2 team members
+    assert_equal 4, AreaNotification.all.count # (espace partagé + nouvel espace) × 2 membres
     find('label', text: employer_1.name).click
     find('label', text: employer_1.name).click
     find('label', text: employer_1.name).click
-    assert_equal 6, AreaNotification.all.count
+    assert_equal 4, AreaNotification.all.count
 
     click_link 'Tous mes espaces'
     new_area = InternshipOfferArea.last
@@ -75,13 +82,19 @@ class WithTeamTest < ApplicationSystemTestCase
     sign_in(employer_2)
     visit employer_2.after_sign_in_path
     assert_equal 4, AreaNotification.all.count
-    find('li a', text: 'Espaces').click
+    open_my_space_menu
+    click_link 'Espaces'
     all('tbody tr td.area-name a').each do |el|
       el.text.in?([employer_1.current_area.name, employer_2.current_area.name])
     end
-    find("button[aria-controls='fr-modal-area-destroy-dialog-#{employer_2.current_area_id}']").click
-    find('input[type="submit"]').click
-    find 'tbody tr td.area-name a'
+    # impossible de supprimer son espace courant (garde contrôleur) :
+    # on supprime l'autre espace de l'équipe
+    other_area_id = InternshipOfferArea.where.not(id: employer_2.current_area_id).first.id
+    find("button[aria-controls='fr-modal-area-destroy-dialog-#{other_area_id}']").click
+    within("dialog#fr-modal-area-destroy-dialog-#{other_area_id}") do
+      find('input[type="submit"]').click
+    end
+    assert_selector('tbody tr td.area-name a', count: 1)
     assert_equal 1, InternshipOfferArea.all.count
     assert_equal 2, AreaNotification.all.count
   end

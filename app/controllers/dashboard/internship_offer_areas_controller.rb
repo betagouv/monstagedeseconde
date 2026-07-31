@@ -1,5 +1,6 @@
 module Dashboard
-  class InternshipOfferAreasController < ApplicationController
+  class InternshipOfferAreasController < Dashboard::BaseController
+    skip_before_action :authenticate_user!
     before_action :authenticate_user!, only: %i[index create edit update destroy new filter_by_area]
     before_action :set_internship_offer_area, only: %i[edit update destroy flip]
 

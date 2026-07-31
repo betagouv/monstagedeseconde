@@ -11,9 +11,8 @@ module Dashboard::Users
                                                            aasm_state: :validated)
       sign_in(employer)
       visit dashboard_internship_agreements_path
-      click_on 'Ajouter aux signatures'
-      find('button.fr-btn.button-component-cta-button[disabled]')
-      click_on 'Signer'
+      find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
+      click_button 'Signer'
 
       find('h1#fr-modal-signature-title', text: 'Vous vous apprêtez à signer 1 convention de stage')
       find('input#phone_suffix').set('0612345678')
@@ -33,8 +32,8 @@ module Dashboard::Users
                                                            aasm_state: :validated)
       sign_in(employer)
       visit dashboard_internship_agreements_path
-      click_on 'Ajouter aux signatures'
-      click_on 'Signer'
+      find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
+      click_button 'Signer'
 
       find('h1#fr-modal-signature-title', text: 'Vous vous apprêtez à signer 1 convention de stage')
       find('input#phone_suffix').set('0612345678')

@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Dashboard
-  class InternshipOffersController < ApplicationController
+  class InternshipOffersController < Dashboard::BaseController
     include TroisiemeDuplicationPeriod
 
-    before_action :authenticate_user!
     before_action :set_internship_offer,
                   only: %i[edit update destroy republish]
 

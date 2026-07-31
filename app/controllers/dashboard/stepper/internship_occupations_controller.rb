@@ -2,8 +2,7 @@
 
 module Dashboard::Stepper
   # Step 1 of internship offer creation: fill in company info
-  class InternshipOccupationsController < ApplicationController
-    before_action :authenticate_user!
+  class InternshipOccupationsController < Dashboard::BaseController
     before_action :clean_params, :sanitize_content, only: %i[create update]
     before_action :fetch_internship_occupation, only: %i[edit update]
 

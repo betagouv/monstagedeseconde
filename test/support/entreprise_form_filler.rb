@@ -58,9 +58,6 @@ module EntrepriseFormFiller
         }].to_json,
         headers: { 'Content-Type' => 'application/json' }
       )
-    # On marque la modale (Tally) comme déjà vue pour qu'elle soit court-circuitée :
-    # "Ajouter manuellement" révèle alors directement le formulaire de saisie.
-    page.driver.browser.manage.add_cookie(name: 'tally_modal_seen', value: 'true')
     click_link('Ajouter votre structure manuellement')
     find("label.fr-label[for='entreprise_is_public_true']").click
     assert Group.is_public.count.positive?

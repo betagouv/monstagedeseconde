@@ -2,8 +2,7 @@
 
 module Dashboard::MultiStepper
   # Step 1 of multi-activity internship offer creation
-  class MultiActivitiesController < ApplicationController
-    before_action :authenticate_user!
+  class MultiActivitiesController < Dashboard::BaseController
     before_action :sanitize_content, only: %i[create update]
     before_action :fetch_multi_activity, only: %i[edit update]
 

@@ -2,7 +2,7 @@
 
 module Dashboard
   module Schools::ClassRooms
-    class StudentsController < ApplicationController
+    class StudentsController < Dashboard::BaseController
       include NestedSchool
 
       def index

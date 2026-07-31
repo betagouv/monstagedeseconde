@@ -24,6 +24,12 @@ module Users
     end
 
     def create
+      if Flipper.enabled?(:holidays_maintenance) && !fetch_user_by_email.try(:god?)
+        Rails.logger.warn('holidays_maintenance: sign-in rejected, submitted email does not match a god account')
+        sign_out current_user if user_signed_in?
+        redirect_to '/maintenance_estivale.html' and return
+      end
+
       allowed_profiles_when_employers_only = current_user.try(:employer?) ||
                                              current_user.try(:operator?) ||
                                              current_user.try(:god?)
@@ -101,7 +107,9 @@ module Users
         Rails.logger.error("--------------\n#{params}\n--------------\n")
         raise "params[:user] is nil"
       end
-      param_email = params[:user][:email]
+      # Normalize like Devise (case_insensitive_keys / strip_whitespace_keys),
+      # otherwise a capitalized or padded email misses the row Devise would find
+      param_email = params[:user][:email].to_s.strip.downcase
       User.find_by(email: param_email) if param_email.present?
     end
 

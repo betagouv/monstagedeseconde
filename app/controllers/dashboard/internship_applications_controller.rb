@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Dashboard
-  class InternshipApplicationsController < ApplicationController
-    before_action :authenticate_user!
+  class InternshipApplicationsController < Dashboard::BaseController
 
     def index
       authorize! :create, InternshipAgreement

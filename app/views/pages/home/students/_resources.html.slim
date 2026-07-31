@@ -1,0 +1,31 @@
+ruby:
+  # FAQ hosted on docs.numerique.gouv.fr until the in-app FAQ page ships (MGF-1777)
+  faq_url = 'https://docs.numerique.gouv.fr/docs/cf1cdc70-a30b-4800-b504-d73fda995783/'
+  educonnect_faq_url = 'https://educonnect.education.gouv.fr/educt-aide/aide/'
+  documents = @resources.respond_to?(:values) ? @resources.values.flatten : []
+
+.fr-mx-lg-0
+  h4.fr-mb-3w.text-dark Ressources
+  .row
+    = render 'pages/home/students/resource_faq_card', title: 'FAQ 1 élève 1 stage', url: faq_url
+    - documents.each do |document|
+      .col-lg-4.col-md-12.d-flex.fr-mt-2w.fr-px-2w
+        .fr-card.fr-card-with-download.fr-card-with-arrow.fr-enlarge-link.flex-fill
+          .fr-card__body.fr-pt-2w
+            .fr-card__content
+              h3.fr-card__title.fr-mb-2w
+                = link_to document[:title], document[:url], target: '_blank', rel: 'noopener'
+          .fr-card__header
+            .fr-card__img.d-flex.align-items-center.justify-content-center style="background-color: #F5F5FE; aspect-ratio: 570 / 321;"
+              = image_tag asset_pack_path('media/document/document-download.svg'),
+                          alt: '',
+                          width: '100px',
+                          height: '100px',
+                          :"aria-hidden" => 'true',
+                          class: 'fr-artwork'
+            ul.fr-badges-group.fr-p-4w
+              li
+                p.fr-badge.fr-badge--purple-glycine PDF
+    = render 'pages/home/students/resource_faq_card', title: 'FAQ Educonnect', url: educonnect_faq_url
+
+.new-fr-hr.fr-mt-4w.fr-mb-4w

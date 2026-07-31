@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module Dashboard
-  class SchoolsController < ApplicationController
-    before_action :authenticate_user!
+  class SchoolsController < Dashboard::BaseController
     before_action :set_school, only: %i[edit update show]
 
     def index

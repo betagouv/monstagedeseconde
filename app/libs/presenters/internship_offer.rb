@@ -2,6 +2,8 @@ include ActionView::Helpers::TagHelper
 include ActionView::Context
 module Presenters
   class InternshipOffer
+    include SiretFormattable
+
     delegate :siret, to: :internship_offer
     delegate :grades, to: :internship_offer
     BADGE_MAPPING= {
@@ -60,12 +62,6 @@ module Presenters
                                 class: 'fr-tag fr-icon-calendar-fill fr-tag--icon-left'),
                     class: 'fr-mb-2w')
       end.join.html_safe
-    end
-
-    def formal_siret
-      return 'N/A' unless siret.present?
-
-      siret.gsub(/(\d{3})(\d{3})(\d{3})(\d{5})/, '\1 \2 \3 \4')
     end
 
     def title_badge

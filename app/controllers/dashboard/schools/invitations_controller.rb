@@ -1,6 +1,7 @@
 module Dashboard
   module Schools
-    class InvitationsController < ApplicationController
+    class InvitationsController < Dashboard::BaseController
+      skip_before_action :authenticate_user!
       before_action :invitation_params, only: :create
       before_action :set_invitation, only: %i[destroy resend_invitation]
 

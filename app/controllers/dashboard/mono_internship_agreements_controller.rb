@@ -1,6 +1,6 @@
 module Dashboard
-  class MonoInternshipAgreementsController < ApplicationController
-    before_action :authenticate_user!
+  class MonoInternshipAgreementsController < Dashboard::BaseController
+
     before_action :set_internship_agreement,
                   only: %i[edit update show school_management_signature school_management_sign]
 

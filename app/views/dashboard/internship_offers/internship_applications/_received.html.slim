@@ -4,7 +4,7 @@ div
       thead
         tr
           th[scope="col"]
-            = check_box_tag "select_all", false, false, class: 'fr-checkbox', data: { action: 'change->internship-application-index#toggleSelectAll', target: 'internship-application-index.selectAll' }
+            = check_box_tag "select_all", false, false, class: 'fr-checkbox', 'aria-label': 'Sélectionner toutes les candidatures', data: { action: 'change->internship-application-index#toggleSelectAll', target: 'internship-application-index.selectAll' }
           th[scope="col"]
             | Nom de l'élève
           th[scope="col"]

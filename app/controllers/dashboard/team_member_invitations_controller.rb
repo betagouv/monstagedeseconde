@@ -1,6 +1,5 @@
 module Dashboard
-  class TeamMemberInvitationsController < ApplicationController
-    before_action :authenticate_user!
+  class TeamMemberInvitationsController < Dashboard::BaseController
     before_action :fetch_invitation, only: %i[destroy join resend_invitation]
     before_action :authorize_member_inviting
 
