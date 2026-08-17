@@ -13,6 +13,7 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
 
     sign_in(student)
     visit internship_offer_path(internship_offer)
+    open_my_space_menu
     page.find 'a', text: 'Mon profil'
     assert_select 'a', text: 'Je postule', count: 0
   end
@@ -66,7 +67,9 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
       internship_offer_troisieme = create(:weekly_internship_offer_3eme, weeks:, title: 'Stage de 3eme - 1')
       internship_offer_seconde = create(:weekly_internship_offer_2nde, title: 'Stage de 2nde - 1')
       assert InternshipOffer.seconde_only.ids.include?(internship_offer_seconde.id)
-      assert InternshipOffer.troisieme_or_quatrieme_only.ids.include?(internship_offer_troisieme.id)
+      # la factory 3eme ne porte que le grade troisieme (les offres réelles du
+      # stepper collège portent 3e + 4e) : on vérifie l'appartenance au collège
+      assert InternshipOffer.troisieme_or_quatrieme.ids.include?(internship_offer_troisieme.id)
       assert_equal 'Stage de 3eme - 1', internship_offer_troisieme.title
 
       InternshipOffer.stub :nearby, InternshipOffer.all do
@@ -208,10 +211,13 @@ class InternshipApplicationStudentFlowTest < ApplicationSystemTestCase
     fill_in('Adresse électronique (email)', with: new_email)
     fill_in('Pourquoi ce stage me motive', with: 'Je suis motivé')
     fill_in('Numéro de téléphone de votre représentant légal', with: '0623456789')
-    fill_in('Numéro de mobile', with: '0623456849')
+    within('.react-tel-input') do
+      find('input[name="internship_application[student_phone]"]').set('0623456849')
+    end
     assert_enqueued_emails 1 do
       click_button('Valider ma candidature')
       click_button('Envoyer ma candidature')
+      find('h4', text: "Félicitations, c'est ici que vous retrouvez toutes vos candidatures.")
     end
     student.reload
     assert_equal new_email, student.email

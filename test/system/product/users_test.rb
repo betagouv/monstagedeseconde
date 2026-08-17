@@ -6,6 +6,12 @@ module Product
   class UsersTest < ApplicationSystemTestCase
     include Html5Validator
     include Devise::Test::IntegrationHelpers
+    include ThirdPartyTestHelpers
+
+    setup do
+      # les pages d'inscription employeur/école/référent génèrent un captcha côté serveur
+      captcha_stub
+    end
 
     test 'USE_W3C, register as Employer' do
       run_request_and_cache_response(report_as: 'new_user_registration_path_Employer') do

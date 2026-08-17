@@ -28,14 +28,19 @@ tr class="test-class-room-#{class_room.id}"
                   dashboard_school_class_room_students_path(school, class_room),
                   class: 'small fr-raw-link'
 
+  / Effectif réel de la classe issu de SYGNE (class_size)
   td.align-middle.text-sm-center data-head="#{cols[1]}"
-    span class='total_student_with_zero_application'
-      = class_room.students.count
+    span class='class-room-effectif'
+      = class_room.class_size || 0
+  / Élèves réellement inscrits sur 1élève1stage
   td.align-middle.text-sm-center data-head="#{cols[2]}"
+    span class='class-room-registered'
+      = class_room_stats.total_student
+  td.align-middle.text-sm-center data-head="#{cols[3]}"
     span class='total_student_with_zero_application'
       / |0
       = zero_application_students_count
-  td.align-middle.text-sm-center data-head="#{cols[3]}"
+  td.align-middle.text-sm-center data-head="#{cols[4]}"
     span class='total_student_with_zero_internship'
       / |0
       = zero_internship_students_count

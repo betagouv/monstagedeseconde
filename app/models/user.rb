@@ -144,6 +144,7 @@ class User < ApplicationRecord
 
     fields_to_reset = {
       email: rip_email,
+      unconfirmed_email: nil,
       first_name: 'NA',
       last_name: 'NA',
       phone: nil,

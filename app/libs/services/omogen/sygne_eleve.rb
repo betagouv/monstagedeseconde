@@ -69,6 +69,17 @@ module Services::Omogen
       )
     end
 
+    def gender
+      case @code_sexe
+      when '1'
+        'm'
+      when '2'
+        'f'
+      else
+        'np'
+      end
+    end
+
     private
 
     def initialize(hash)
@@ -96,17 +107,6 @@ module Services::Omogen
       @grade = Grade.grade_by_mef(code_mef: code_mef)
       # Following line takes too much time
       # @responsible = Services::Omogen::Sygne.new.sygne_responsable(@ine)
-    end
-
-    def gender
-      case @code_sexe
-      when '1'
-        'm'
-      when '2'
-        'f'
-      else
-        'np'
-      end
     end
   end
 end

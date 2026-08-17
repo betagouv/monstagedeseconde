@@ -145,7 +145,9 @@ jobs: # a collection of steps
 
   deploy:
     docker:
-      - image: buildpack-deps:trusty
+      # Needs a recent OpenSSH client: Clever Cloud's git endpoint (OpenSSH >= 10)
+      # rejects the SHA-1 ssh-rsa signatures produced by older clients.
+      - image: cimg/base:current
     steps:
       - checkout
       - add_ssh_keys:
@@ -153,12 +155,13 @@ jobs: # a collection of steps
             - "64:44:1e:17:fb:00:ae:75:15:ba:d2:cb:ad:c2:95:ee"
             - "SHA256:Vf+oSncwt0iZXjJXZuowchMvKTQqLZfwDOXrFfuMmsc"
       - run:
-          name: Deploy staging to Clever Cloud
+          name: Deploy staging to Clever Cloud (non-blocking)
+          # A deploy failure must not turn the pipeline red: only tests gate the CI.
           command: |
             set -x
             ssh-keyscan push-n3-par-clevercloud-customers.services.clever-cloud.com >>  ~/.ssh/known_hosts
             git remote add clever git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/$CLEVER_APP_ID.git
-            git push -u clever review:master -f
+            git push -u clever review:master -f || echo "WARNING: staging deploy failed (ignored, does not fail the pipeline)"
 workflows:
   version: 2
   build-deploy:

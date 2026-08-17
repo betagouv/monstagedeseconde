@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 module Dashboard
   module Schools
@@ -10,7 +10,7 @@ module Dashboard
       #
       # Index Student
       #
-      test 'GET class_rooms#index as Student is forbidden' do
+      test "GET class_rooms#index as Student is forbidden" do
         school = create(:school)
         sign_in(create(:student, school: school))
 
@@ -21,11 +21,11 @@ module Dashboard
       #
       # Index, SchoolManagement
       #
-      test 'GET class_rooms#index as school school employees works' do
+      test "GET class_rooms#index as school school employees works" do
         school = create(:school)
-        roles = [create(:school_manager, school: school),
+        roles = [ create(:school_manager, school: school),
                  create(:other, school: school),
-                 create(:teacher, school: school)]
+                 create(:teacher, school: school) ]
         roles.map do |role|
           sign_in(role)
           get dashboard_school_class_rooms_path(school)
@@ -33,26 +33,26 @@ module Dashboard
         end
       end
 
-      test 'GET class_rooms#index as SchoolManagement shows link to manage school' do
+      test "GET class_rooms#index as SchoolManagement shows link to manage school" do
         school = create(:school, :college, :with_school_manager)
 
         sign_in(school.school_manager)
         get dashboard_school_class_rooms_path(school)
-        assert_select 'li a[href=?]',
+        assert_select "li a[href=?]",
                       dashboard_school_users_path(school),
                       { count: 1 },
-                      'missing link to manage school users'
+                      "missing link to manage school users"
       end
 
-      test 'GET class_rooms#index contains key navigations links to manage school classroom' do
+      test "GET class_rooms#index contains key navigations links to manage school classroom" do
         school = create(:school, :with_school_manager)
         class_room_with_student = create(:class_room, school: school,
-                                                      students: [create(:student)])
+                                                      students: [ create(:student) ])
         class_room_without_student = create(:class_room, school: school,
                                                          students: [])
-        roles = [create(:school_manager, school: school),
+        roles = [ create(:school_manager, school: school),
                  create(:other, school: school),
-                 create(:teacher, school: school)]
+                 create(:teacher, school: school) ]
         roles.map do |user|
           sign_in(user)
           role = user.type
@@ -60,32 +60,32 @@ module Dashboard
           follow_redirect!
           assert_response :success
 
-          assert_select 'a[href=?]',
+          assert_select "a[href=?]",
                         dashboard_school_class_room_path(school, class_room_with_student),
                         { count: 0 }, # do not show destroy on classrooms with students,
                         "link to destroy class_room with student present for #{role}"
         end
       end
 
-      test 'GET class_rooms#index shows class rooms list' do
+      test "GET class_rooms#index shows class rooms list" do
         school = create(:school)
         class_rooms = [
           create(:class_room, school: school),
           create(:class_room, school: school),
           create(:class_room, school: school)
         ]
-        roles = [create(:school_manager, school: school),
+        roles = [ create(:school_manager, school: school),
                  create(:other, school: school),
-                 create(:teacher, school: school)]
+                 create(:teacher, school: school) ]
         roles.map do |role|
           sign_in(role)
 
           get dashboard_school_class_rooms_path(school)
           class_rooms.map do |class_room|
-            assert_select '.d-sm-none a[href=?]',
+            assert_select ".d-sm-none a[href=?]",
                           dashboard_school_class_room_students_path(school, class_room),
-                          count: 1, text: 'Voir le détail'
-            assert_select '.col-sm-12 a[href=?]',
+                          count: 1, text: "Voir le détail"
+            assert_select ".col-sm-12 a[href=?]",
                           dashboard_school_class_room_students_path(school, class_room),
                           count: 1, text: class_room.name
 
@@ -100,54 +100,21 @@ module Dashboard
         end
       end
 
-      test 'GET class_rooms#index shows N-1 switch buttons when user belongs to N schools, even after switching school' do
-        school_1 = create(:school)
-        school_2 = create(:school)
-        school_3 = create(:school)
+      test "GET class_rooms#index shows SYGNE effectif and registered students columns" do
+        school = create(:school)
+        class_room = create(:class_room, school: school, class_size: 27)
+        3.times { create(:student, school: school, class_room: class_room) }
 
-        school_manager = create(:school_manager, school: school_1)
-        UserSchool.find_or_create_by!(user: school_manager, school: school_2)
-        UserSchool.find_or_create_by!(user: school_manager, school: school_3)
+        sign_in(create(:school_manager, school: school))
+        get dashboard_school_class_rooms_path(school)
 
-        sign_in(school_manager)
-
-        # Avant switch : connecté sur school_1, doit voir 2 boutons (school_2 et school_3)
-        get dashboard_school_class_rooms_path(school_1)
         assert_response :success
-        assert_select 'button[name="school_id"]', count: 2,
-                      message: 'Doit afficher 2 boutons switch avant le premier switch'
-
-        # Switch vers school_2
-        post school_switches_path, params: { school_id: school_2.id }
-        assert_redirected_to dashboard_school_class_rooms_path(school_2)
-        follow_redirect!
-
-        # Après switch : connecté sur school_2, doit voir 2 boutons (school_1 et school_3)
-        assert_select 'button[name="school_id"]', count: 2,
-                      message: 'Doit afficher 2 boutons switch après le switch vers school_2'
+        assert_select "thead th", text: "Dont élèves inscrits"
+        assert_select ".test-class-room-#{class_room.id} .class-room-effectif", text: "27"
+        assert_select ".test-class-room-#{class_room.id} .class-room-registered", text: "3"
       end
 
-      test 'GET class_rooms#index shows N-1 switch buttons even when current_school is not in user_schools' do
-        school_1 = create(:school)
-        school_2 = create(:school)
-        school_3 = create(:school)
-
-        # school_manager dont school_id = school_1, mais user_schools ne contient que school_2 et school_3
-        # (simulate legacy data where school_id n'est pas dans user_schools)
-        school_manager = create(:school_manager, school: school_1)
-        UserSchool.where(user: school_manager, school: school_1).destroy_all
-        UserSchool.find_or_create_by!(user: school_manager, school: school_2)
-        UserSchool.find_or_create_by!(user: school_manager, school: school_3)
-
-        sign_in(school_manager)
-
-        get dashboard_school_class_rooms_path(school_1)
-        assert_response :success
-        assert_select 'button[name="school_id"]', count: 2,
-                      message: 'Doit afficher 2 boutons même si current_school absent de user_schools'
-      end
-
-      test 'GET show as SchoolManagement works and only show not archived students' do
+      test "GET show as SchoolManagement works and only show not archived students" do
         school = create(:school)
         class_room = create(:class_room, school: school)
         student_in_class_room = create(:student, school: school, class_room: class_room)

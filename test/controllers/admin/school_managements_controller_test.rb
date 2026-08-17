@@ -9,7 +9,9 @@ module Admin
     setup do
       @god   = create(:god)
       @school = create(:school)
-      @school_management = create(:school_manager, school: @school)
+      # Fixed last_name: Faker can generate names shorter than the 3-char
+      # minimum query length, which makes the search tests flaky
+      @school_management = create(:school_manager, school: @school, last_name: "Dupont")
     end
 
     # --- Authorization ---
