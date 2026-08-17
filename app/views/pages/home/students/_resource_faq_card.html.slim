@@ -1,0 +1,17 @@
+.col-lg-4.col-md-12.d-flex.fr-mt-2w.fr-px-2w
+  .fr-card.fr-card-with-arrow.fr-enlarge-link.flex-fill
+    .fr-card__body.fr-pt-2w
+      .fr-card__content
+        h3.fr-card__title.fr-mb-2w
+          = link_to title, url, target: '_blank', rel: 'noopener'
+    .fr-card__header
+      .fr-card__img.d-flex.align-items-center.justify-content-center style="background-color: #F5F5FE; aspect-ratio: 570 / 321;"
+        = image_tag asset_pack_path('media/leisure/community.svg'),
+                    alt: '',
+                    width: '100px',
+                    height: '100px',
+                    :"aria-hidden" => 'true',
+                    class: 'fr-artwork'
+      ul.fr-badges-group.fr-p-4w
+        li
+          p.fr-badge.fr-badge--green-emeraude Lien

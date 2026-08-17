@@ -190,6 +190,48 @@ module Services::Omogen
       raise SygneApiError, "sygne_eleves réseau | uai=#{code_uai} niveau=#{niveau} | #{e.message.truncate(120)}"
     end
 
+    # GET /eleves/{ine} : récupère la scolarité d'un seul élève à partir de son INE.
+    # Renvoie un SygneEleve (ou nil si l'élève est introuvable / sans scolarité exploitable).
+    # NB : la forme exacte du JSON n'est pas documentée ; normalize_eleve_payload gère une
+    # réponse à plat, un objet `scolarite` imbriqué ou un tableau `scolarites`.
+    def sygne_eleve(ine)
+      uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}")
+      response = get_with_token_refresh(uri)
+      case response
+      when Net::HTTPSuccess
+        hash = normalize_eleve_payload(JSON.parse(response.body, symbolize_names: true), ine: ine)
+        hash && SygneEleve.new(hash)
+      when Net::HTTPNotFound
+        nil
+      else
+        raise SygneApiError, "sygne_eleve #{response.code} | ine=#{ine}"
+      end
+    rescue JSON::ParserError => e
+      raise SygneApiError, "sygne_eleve JSON invalide | ine=#{ine} | #{e.message.truncate(120)}"
+    rescue Net::OpenTimeout, Net::ReadTimeout => e
+      raise SygneApiError, "sygne_eleve timeout | ine=#{ine} | #{e.class}"
+    rescue SocketError => e
+      raise SygneApiError, "sygne_eleve réseau | ine=#{ine} | #{e.message.truncate(120)}"
+    end
+
+    # Compte les élèves éligibles par classe sans rien persister.
+    # Renvoie un Hash : [nom_classe, grade_id] => { count:, grade_id:, female:, male: }
+    def sygne_count_by_school(code_uai)
+      tally = Hash.new { |hash, key| hash[key] = { count: 0, grade_id: nil, female: 0, male: 0 } }
+      MEFSTAT4_CODES.each do |niveau|
+        sygne_eleves(code_uai, niveau: niveau).each do |eleve|
+          next if eleve.grade.blank? || eleve.classe.blank?
+
+          key = [ eleve.classe, eleve.grade.id ]
+          tally[key][:count] += 1
+          tally[key][:grade_id] = eleve.grade.id
+          tally[key][:female] += 1 if eleve.gender == "f"
+          tally[key][:male] += 1 if eleve.gender == "m"
+        end
+      end
+      tally
+    end
+
     def sygne_responsable(ine)
       uri = URI("#{ENV['SYGNE_URL']}/eleves/#{ine}/responsables")
       response = get_with_token_refresh(uri)
@@ -220,6 +262,33 @@ module Services::Omogen
     attr_reader :token
 
     private
+
+    # Aplatit la réponse de GET /eleves/{ine} vers les clés symboles attendues par
+    # SygneEleve#initialize. Tolère trois formes : à plat, objet `scolarite`, tableau
+    # `scolarites` (on garde la scolarité la plus récente). Renvoie nil si pas de codeMef.
+    def normalize_eleve_payload(payload, ine:)
+      return nil if payload.blank?
+
+      sco = payload[:scolarite] ||
+            Array(payload[:scolarites]).max_by { |scolarite| scolarite[:anneeScolaire].to_i } ||
+            payload
+      return nil if sco[:codeMef].blank?
+
+      {
+        ine: payload[:ine] || ine,
+        nom: payload[:nomFamille] || payload[:nom],
+        prenom: payload[:prenom1] || payload[:prenom],
+        dateNaissance: payload[:dateNaissance],
+        codeSexe: payload[:codeSexe],
+        codeUai: sco[:codeUai],
+        anneeScolaire: sco[:anneeScolaire],
+        niveau: sco[:niveau],
+        libelleNiveau: sco[:libelleNiveau],
+        codeMef: sco[:codeMef],
+        classe: sco[:classe],
+        codeStatut: sco[:codeStatut]
+      }
+    end
 
     def perform_http_request(uri, additional_headers = {})
       get_request(uri, default_headers).merge(additional_headers)

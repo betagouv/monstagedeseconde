@@ -25,10 +25,15 @@
               = form.hidden_field :internship_occupation_id, value: resource.internship_occupation_id
               = form.hidden_field :entreprise_coordinates, value: { latitude: latitude, longitude: longitude }
               = form.hidden_field :internship_address_manual_enter, value: resource.internship_address_manual_enter || false
-              = form.hidden_field :siret, value: resource&.siret || '' unless resource.persisted?
+              - unless resource.persisted?
+                / en duplication, le champ visible :siret est aussi rendu : id distinct
+                / pour le champ caché (SirenInput écrit dans le premier id trouvé)
+                - hidden_siret_id = @duplication ? "#{form.object_name}_siret_prefill" : "#{form.object_name}_siret"
+                = form.hidden_field :siret, value: resource&.siret || '', id: hidden_siret_id
               = form.hidden_field :code_ape, value: resource&.code_ape || ''
               - if resource.id
-                = form.hidden_field :id, value: resource.id
+                / id distinct : internship_occupations/_form_fields rend aussi ce champ sur le formulaire complet
+                = form.hidden_field :id, value: resource.id, id: "#{form.object_name}_entreprise_hidden_id"
               - unless resource.persisted?
                 .hide-when-manual
                   / span = "#{resource.try(:errors).try(:any?)} [onSubmitError]"
@@ -78,7 +83,7 @@
                 .fr-messages-group#radio-hint-messages aria-live="assertive"
           #ministry-block.row.fr-mt-3w.bloc-tooggle[data-ministry-fields-target="groupNamePublic"]
             .col-12
-              = form.label :'group-choice', class: 'fr-label' do
+              = label_tag 'group-choice', class: 'fr-label' do
                 = "Type d’employeur public *"
 
               - selected_group_id = resource.group.try(:id)

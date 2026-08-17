@@ -4,8 +4,9 @@
 - extra_header_classes = extra_header_classes || ''
 - error = form.object&.errors[field].any?
 - options = {:'aria-describedby' => "#{id}-messages"}.merge(options)
-fieldset#checkboxes class="fr-fieldset #{error ? 'fr-fieldset--error' : ''}" aria-labelledby="checkboxes-legend checkboxes-messages"
-  legend#checkboxes-legend class="fr-fieldset__legend--regular fr-fieldset__legend #{extra_header_classes}"
+/ ids dérivés du champ : le partial peut être rendu plusieurs fois par page
+fieldset id="checkboxes-#{id}" class="fr-fieldset #{error ? 'fr-fieldset--error' : ''}" aria-labelledby="checkboxes-legend-#{id} #{id}-messages"
+  legend id="checkboxes-legend-#{id}" class="fr-fieldset__legend--regular fr-fieldset__legend #{extra_header_classes}"
     - if title.present?
       = title
   .fr-fieldset__element
@@ -15,7 +16,7 @@ fieldset#checkboxes class="fr-fieldset #{error ? 'fr-fieldset--error' : ''}" ari
       = form.check_box field, options.merge(name: name)
       label.fr-label for="#{id}"
         = label
-      div.fr-messages-group id="{id}-messages" aria-live="assertive"
+      div.fr-messages-group id="#{id}-messages" aria-live="assertive"
     - if error
       .fr-messages-group aria-live="assertive" id="checkboxes-error-message-error"
         p.fr-message.fr-message--error" id="checkboxes-error-message-error"

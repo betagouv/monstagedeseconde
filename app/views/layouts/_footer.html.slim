@@ -21,6 +21,7 @@ footer#footer.fr-footer role="contentinfo"
             .fr-py-1w = link_to "Déposer une offre de stage", professionnels_path, class: 'fr-raw-link fr-text--sm link'
             .fr-py-1w = link_to "Découvrir le dispositif", professionnels_path(anchor: 'discover'), class: 'fr-raw-link fr-text--sm link'
             .fr-py-1w = link_to "Ressources utiles", professionnels_path(anchor: 'resources'), class: 'fr-raw-link fr-text--sm link'
+            .fr-py-1w = link_to "Partenaires", partners_path, class: 'fr-raw-link fr-text--sm link'
         .col-12.col-md-3
           .fr-footer__top-column
             - path = employers_only? ? '#' : equipe_pedagogique_path

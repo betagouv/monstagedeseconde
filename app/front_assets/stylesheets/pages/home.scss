@@ -13,6 +13,7 @@ body {
     color: white;
 }
 .fr-btn.fr-btn--secondary:hover,
+.fr-btn.fr-btn--tertiary:hover,
 .fr-follow__social .fr-btn:hover {
     color: $blue-france;
 }
@@ -66,30 +67,55 @@ a:hover {
   }
 }
 
-.logo-card{
-  width: 270px;
-  margin-right: 24px;
-  border: 1px solid $light-grey;
-  .header{
-    img{
-      max-width: 268px;
+.partners-carousel {
+  .partners-carousel__viewport {
+    overflow: hidden;
+    padding: 20px 0;
+  }
+  .partners-carousel__track {
+    display: flex;
+    width: max-content;
+    animation: partners-carousel-scroll calc(var(--logo-count, 20) * 2.5s) linear infinite;
+  }
+  // Paused via the button (Stimulus toggles .paused), on hover and when a
+  // logo link has keyboard focus
+  &.paused .partners-carousel__track,
+  .partners-carousel__viewport:hover .partners-carousel__track,
+  .partners-carousel__viewport:focus-within .partners-carousel__track {
+    animation-play-state: paused;
+  }
+  .partners-carousel__group {
+    display: flex;
+    align-items: center;
+  }
+  .partners-carousel__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 3rem;
+    img {
+      max-height: 120px;
+      max-width: 180px;
+      width: auto;
+      height: auto;
     }
   }
-  .body{
-    font-weight: bold;
-    height: 112px;
-    font-size: 18px;
-    text-align: left;
-    padding: 24px;
+}
+@keyframes partners-carousel-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
-.involved_partner_logo{
-  text-align: center  ;
-  img{
-    max-height: 120px;
-    width: 146px;
+@media (prefers-reduced-motion: reduce) {
+  .partners-carousel .partners-carousel__track {
+    animation: none;
   }
-
+  .partners-carousel .partners-carousel__viewport {
+    overflow-x: auto;
+  }
 }
 
 .red-border {
@@ -296,6 +322,13 @@ p.fr-card__desc.std-height {
 
 .fr-card-with-arrow::before {
     content: "" !important;
+}
+
+// Vertical card whose bottom-right icon is a download arrow
+// (fr-card--download switches to a horizontal layout on desktop, which the design does not want)
+.fr-card-with-download .fr-card__title a::after {
+    -webkit-mask-image: url("~@gouvfr/dsfr/dist/icons/system/download-line.svg");
+    mask-image: url("~@gouvfr/dsfr/dist/icons/system/download-line.svg");
 }
 
 .newsletter-button .fr-btn {

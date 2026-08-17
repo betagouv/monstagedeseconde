@@ -16,12 +16,12 @@ module Dashboard::Users
       employer, internship_offer = create_employer_and_offer_2nde
       internship_application = create(:weekly_internship_application, internship_offer:)
       internship_agreement = create(:mono_internship_agreement, internship_application:,
-                                                           aasm_state: :validated)
+                                                                aasm_state: :validated)
       sign_in(employer)
 
       visit dashboard_internship_agreements_path
-      click_on 'Ajouter aux signatures'
-      click_on 'Signer'
+      find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
+      click_button 'Signer'
 
       find('h1#fr-modal-signature-title', text: 'Vous vous apprêtez à signer 1 convention de stage')
       find('input#phone_suffix').set('0612345678')
@@ -39,37 +39,43 @@ module Dashboard::Users
       within('dialog') do
         click_button('Signer la convention')
       end
+      # le code est bon : la modale de signature manuscrite s'ouvre
+      find('canvas#signature-pad')
     end
 
     test 'employer signs and code is wrong' do
-      internship_agreement = create(:mono_internship_agreement, :validated)
-      school_manager = internship_agreement.school_manager
-      sign_in(school_manager)
+      # le contrôle par code SMS ne concerne que les signataires employeurs :
+      # les personnels de direction signent désormais par import de la signature
+      # de l'établissement (school_management_group_sign)
+      employer, internship_offer = create_employer_and_offer_2nde
+      internship_application = create(:weekly_internship_application, internship_offer:)
+      internship_agreement = create(:mono_internship_agreement, internship_application:,
+                                                                aasm_state: :validated)
+      sign_in(employer)
 
       visit dashboard_internship_agreements_path
-      click_on 'Signer en ligne'
-      click_on 'Ajoutez votre signature'
+      find("button[data-group-signing-id-param='#{internship_agreement.id}']").click
+      click_button 'Signer'
 
+      find('h1#fr-modal-signature-title', text: 'Vous vous apprêtez à signer 1 convention de stage')
       find('input#phone_suffix').set('0612345678')
-      if ENV['RUN_BRITTLE_TEST']
-        click_button('Recevoir un code')
+      click_button('Recevoir un code')
 
-        find('h1', text: 'Nous vous avons envoyé un code de vérification')
-        find('button#button-code-submit.fr-btn[disabled]')
-        (0..5).to_a.each do |index|
-          execute_script(code_script_enables(index))
-          execute_script(code_script_assign(index, index)) # wrong code
-        end
-        find('#button-code-submit')
-        execute_script("document.getElementById('button-code-submit').removeAttribute('disabled')")
-        within('dialog') do
-          click_button('Signer la convention')
-        end
-        find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
-
-        assert_equal 0, Signature.all.count
-        find('.fr-alert p', text: 'Erreur de code, veuillez recommencer')
+      find('h1#fr-modal-signature-title', text: 'Nous vous avons envoyé un code de vérification')
+      find('button#button-code-submit.fr-btn[disabled]')
+      wrong_tokens = employer.reload.signature_phone_token.split('').map { |c| ((c.to_i + 1) % 10).to_s }
+      (0..5).to_a.each do |index|
+        execute_script(code_script_enables(index))
+        execute_script(code_script_assign(wrong_tokens, index))
       end
+      find('#button-code-submit')
+      execute_script("document.getElementById('button-code-submit').removeAttribute('disabled')")
+      within('dialog') do
+        click_button('Signer la convention')
+      end
+
+      find('.fr-alert.fr-alert--error p', text: 'Erreur de code, veuillez recommencer')
+      assert_equal 0, Signature.all.count
     end
   end
 end

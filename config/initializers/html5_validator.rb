@@ -20,9 +20,7 @@ module Html5Validator
     end
 
     # CircleCI task w3c validation depends on this path
-    w3c_files_to_validates.map do |last_run|
-      FileUtils.rm(last_run)
-    end
+    FileUtils.rm_rf(Dir["#{W3C_RESPONSE_STORED_DIR}/*"])
   end
 
   def self.run
@@ -36,6 +34,7 @@ module Html5Validator
     ext = '.html'
     assert_equal 1, page.all('.content').size
 
+    FileUtils.mkdir_p(W3C_RESPONSE_STORED_DIR)
     File.open(W3C_RESPONSE_STORED_DIR.join("#{basename}#{ext}"), 'w+') do |fd|
       fd.write('<!DOCTYPE html>')
       fd.write(page.body)

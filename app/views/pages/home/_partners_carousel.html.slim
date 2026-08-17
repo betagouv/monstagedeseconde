@@ -1,0 +1,19 @@
+- if @partners.any?
+  section.partners-carousel.fr-py-4w aria-labelledby="partners-carousel-title" data-controller="carousel"
+    .d-flex.align-items-center.justify-content-between.flex-wrap
+      h2#partners-carousel-title.h2.text-dark Nos partenaires
+      button.fr-btn.fr-btn--tertiary.fr-btn--sm type="button" data-action="click->carousel#togglePlay" data-carousel-target="playButton"
+        | Mettre en pause
+    .partners-carousel__viewport
+      .partners-carousel__track style="--logo-count: #{@partners.size}"
+        / The logos are rendered twice to build a seamless scrolling loop;
+          the duplicate set is hidden from assistive technologies
+        - 2.times do |copy|
+          .partners-carousel__group aria-hidden=(copy == 1 ? 'true' : nil)
+            - @partners.each do |partner|
+              - if partner[:url].present?
+                a.partners-carousel__logo.fr-raw-link href=partner[:url] target="_blank" rel="noopener" title="#{partner[:name]} - nouvelle fenêtre" tabindex=(copy == 1 ? '-1' : nil)
+                  = image_tag partner[:logo], alt: partner[:name], loading: 'lazy'
+              - else
+                .partners-carousel__logo
+                  = image_tag partner[:logo], alt: partner[:name], loading: 'lazy'
