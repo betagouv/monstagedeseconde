@@ -262,10 +262,8 @@ module Dashboard
 
 
         find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
-        first_label = all('a.fr-btn.disabled')[0].text
-        assert_equal 'Déjà signée', first_label
-        second_label = all('a.fr-btn.disabled')[1].text
-        assert_equal 'Déjà signée', second_label
+        # all() ne réessaie pas : attendre explicitement les deux boutons désactivés
+        assert_selector('a.fr-btn.disabled', text: 'Déjà signée', count: 2)
         find('span[id="alert-text"]', text: 'Les conventions ont été signées.')
 
         all('a.fr-btn--secondary.button-component-cta-button')[0].click # Télécharger
@@ -319,10 +317,8 @@ module Dashboard
         find('h1', text: 'Éditer, imprimer et signez vos conventions dématérialisées')
         # pour les conventions multi, le bouton du school_manager ayant signé
         # reste libellé « Signer » mais désactivé (ButtonComponent#second_button_label)
-        first_label = all('a.fr-btn.disabled')[0].text
-        assert_equal 'Signer', first_label
-        second_label = all('a.fr-btn.disabled')[1].text
-        assert_equal 'Signer', second_label
+        # all() ne réessaie pas : attendre explicitement les deux boutons désactivés
+        assert_selector('a.fr-btn.disabled', text: 'Signer', count: 2)
         find('span[id="alert-text"]', text: 'Les conventions ont été signées.')
 
         all('a.fr-btn--secondary.button-component-cta-button')[0].click # Télécharger

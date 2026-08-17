@@ -134,7 +134,7 @@ module Dashboard::InternshipAgreements
       else
         internship_agreement.update(aasm_state: :validated)
       end
-      internship_agreement.update(pre_selected_for_signature: true) if pre_selected_for_signature
+      pre_select_for_signature(internship_agreement) if pre_selected_for_signature
       corporation = internship_agreement.internship_offer.corporations.first
       corporation_sgid = corporation.to_sgid.to_s
       [internship_agreement, corporation, corporation_sgid]
@@ -144,8 +144,20 @@ module Dashboard::InternshipAgreements
       internship_application = create(:weekly_internship_application, :approved, internship_offer: internship_agreement.internship_offer)
       internship_agreement2 = internship_application.internship_agreement
       internship_agreement2.update(aasm_state: :validated) if validated
-      internship_agreement2.update(pre_selected_for_signature: true) if pre_selected_for_signature
+      pre_select_for_signature(internship_agreement2) if pre_selected_for_signature
       internship_agreement2
+    end
+
+    # Reproduit l'état laissé par Builders::SignatureBuilder à l'envoi en signature :
+    # pre_selected_for_signature + une ligne corporation_internship_agreements par structure.
+    def pre_select_for_signature(internship_agreement)
+      internship_agreement.update(pre_selected_for_signature: true)
+      internship_agreement.internship_offer.multi_corporation.corporations.each do |corporation|
+        CorporationInternshipAgreement.find_or_create_by!(
+          corporation: corporation,
+          internship_agreement: internship_agreement
+        )
+      end
     end
 
     def agreement_checkbox_id(internship_agreement)
@@ -212,7 +224,7 @@ module Dashboard::InternshipAgreements
         pre_selected_for_signature: true
         )
       # these upper two agreements share the same internship offer and corporations consequently
-      internship_agreement.update_columns(pre_selected_for_signature: true)
+      pre_select_for_signature(internship_agreement)
 
       visit dashboard_corporation_internship_agreements_path(corporation_sgid: corporation_sgid)
 
@@ -251,7 +263,8 @@ module Dashboard::InternshipAgreements
       sign_in(coordinator_user)
 
       visit dashboard_internship_agreements_path
-      first('button[data-action="group-signing#toggleFromButton"]').click
+      # l'ordre des lignes du tableau n'est pas déterministe : cibler la convention voulue
+      add_button(internship_agreement).click
       click_button('Faire signer')
       within('dialog[aria-labelledby="multi-modal-title"]') do
         click_button('Envoyer en signature')
@@ -341,7 +354,8 @@ module Dashboard::InternshipAgreements
     end
 
     test 'multi internship_agreements employer checks the corporation signature status modal' do
-      internship_agreement = create(:multi_internship_agreement, aasm_state: :validated, pre_selected_for_signature: true)
+      internship_agreement = create(:multi_internship_agreement, :with_corporation_signature_rows,
+                                    aasm_state: :validated, pre_selected_for_signature: true)
       employer = internship_agreement.employer
       first_corporation = internship_agreement.internship_offer.corporations.first
       multi_corporation = internship_agreement.multi_corporation

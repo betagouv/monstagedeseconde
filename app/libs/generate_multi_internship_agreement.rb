@@ -418,7 +418,8 @@ class GenerateMultiInternshipAgreement < Prawn::Document
         corporation_id: corporation.id,
         internship_agreement_id: @internship_agreement.id
       )
-      if corporation_internship_agreement.signed
+      # La ligne n'existe qu'une fois la signature envoyée (Builders::SignatureBuilder)
+      if corporation_internship_agreement&.signed
         txt = "- Signé électroniquement par #{corporation.employer_name} " \
               "le #{corporation_internship_agreement.signed_at.strftime('%d/%m/%Y à %Hh%M')}" \
               " pour #{corporation.corporation_name}"
