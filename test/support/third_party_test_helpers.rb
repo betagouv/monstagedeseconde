@@ -195,9 +195,7 @@ module ThirdPartyTestHelpers
   end
 
   def prismic_straight_stub(&block)
-    PagesController.stub_any_instance(:get_resources, []) do
-      PagesController.stub_any_instance(:get_faqs, [], &block)
-    end
+    PagesController.stub_any_instance(:get_resources, [], &block)
   end
 
   def banner_message_stub
