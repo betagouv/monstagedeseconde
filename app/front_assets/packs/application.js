@@ -39,6 +39,7 @@ import '@gouvfr/dsfr/dist/artwork/pictograms/digital/self-training.svg';
 import '@gouvfr/dsfr/dist/artwork/pictograms/digital/ecosystem.svg';
 import '@gouvfr/dsfr/dist/artwork/pictograms/document/document-download.svg';
 import '@gouvfr/dsfr/dist/artwork/pictograms/leisure/community.svg';
+import '@gouvfr/dsfr/dist/artwork/pictograms/leisure/video.svg';
 
 import '@gouvfr/dsfr/dist/dsfr.module';
 

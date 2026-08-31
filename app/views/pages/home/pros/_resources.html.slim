@@ -1,0 +1,20 @@
+ruby:
+  documents = Presenters::ProResources.new(@resources).to_a
+
+.fr-mx-lg-0
+  h4.fr-mb-3w.text-dark Ressources
+  .row
+    = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_offreurs_path
+    - documents.each do |document|
+      - if document[:kind] == :file
+        = render 'pages/home/resource_media_card',
+                 title: document[:title],
+                 url: document[:url],
+                 picto: 'media/document/document-download.svg',
+                 badge: 'PDF',
+                 badge_class: 'fr-badge--purple-glycine',
+                 download: true
+      - else
+        = render 'pages/home/resource_media_card', title: document[:title], url: document[:url]
+
+.new-fr-hr.fr-mt-4w.fr-mb-4w
