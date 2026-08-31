@@ -104,7 +104,7 @@ module ApplicationHelper
         end
 
         # Ajouter le paragraphe avec traitement des spans (liens)
-        html_parts << "<p>#{process_text_with_spans(block.text, block.spans)}</p>" unless block.text.blank?
+        html_parts << content_tag(:p, process_text_with_spans(block.text, block.spans)) unless block.text.blank?
 
       when Prismic::Fragments::StructuredText::Block::ListItem
         # Démarrer une nouvelle liste ou continuer la liste en cours
@@ -126,7 +126,7 @@ module ApplicationHelper
     # Fermer la dernière liste si elle existe
     html_parts << build_list_html(current_list_items, current_list_ordered) if current_list_items.any?
 
-    html_parts.safe_join("\n")
+    safe_join(html_parts, "\n")
   end
 
   def js_email_pattern = '^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$'
