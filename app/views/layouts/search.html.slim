@@ -35,6 +35,7 @@ html lang="fr"
       = render 'layouts/footer'
     - if current_user&.student? && current_user.internship_applications.validated_by_employer.count.positive?
       = render partial: 'dashboard/internship_offers/reminder_modal' if session.delete(:show_student_reminder_modal)
+    = render 'layouts/chatmd'
     
 
 

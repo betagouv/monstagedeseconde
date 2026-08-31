@@ -1,0 +1,7 @@
+- if show_chatmd?
+  .chatmd-widget data-controller="chatmd"
+    button.chatmd-widget__button type="button" aria-expanded="false" aria-controls="chatmd-box" data-action="chatmd#toggle" data-chatmd-target="button"
+      span.fr-icon-question-answer-fill aria-hidden="true"
+      span.fr-sr-only Ouvrir l'assistant virtuel
+    #chatmd-box.chatmd-widget__box hidden=true data-chatmd-target="box"
+      iframe.chatmd-widget__iframe data-chatmd-target="iframe" data-src=chatmd_iframe_url title="Assistant virtuel 1élève1stage" sandbox="allow-scripts allow-modals allow-popups allow-same-origin" allow="fullscreen"
