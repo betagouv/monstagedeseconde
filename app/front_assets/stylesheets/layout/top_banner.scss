@@ -1,0 +1,9 @@
+// Prismic top banner: DSFR sets .fr-notice__title in bold, which would hide the
+// <strong> spans coming from the CMS. Keep the text regular and reserve bold for <strong>.
+.top-banner .fr-notice__title {
+  font-weight: 400;
+
+  strong {
+    font-weight: 700;
+  }
+}

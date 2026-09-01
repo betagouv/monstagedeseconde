@@ -133,44 +133,58 @@ module ApplicationHelper
 
   private
 
+  # Renders the inline spans (links, strong, em) of a Prismic text block as escaped HTML.
+  # Mirrors the nesting logic of Prismic::Fragments::StructuredText::Block::Text#as_html:
+  # a stack of open spans, the widest spans being opened first at a given position.
   def process_text_with_spans(text, spans)
-    return h(text) if spans.blank?
+    spans = Array(spans).select { |span| span.start >= 0 && span.start < span.end && span.end <= text.length }
+    return h(text) if spans.empty?
+
+    opens = spans.group_by(&:start).transform_values { |group| group.sort_by { |span| -(span.end - span.start) } }
+    closes = spans.group_by(&:end)
+    boundaries = ([ 0, text.length ] + opens.keys + closes.keys).uniq.sort
 
     result = "".html_safe
-    last_end = 0
-
-    spans.sort_by(&:start).each do |span|
-      result << h(text[last_end...span.start]) if span.start > last_end
-
-      case span
-      when Prismic::Fragments::StructuredText::Span::Hyperlink
-        link_text = h(text[span.start...span.end])
-        link_attributes = build_link_attributes(span.link)
-        result << "<a #{link_attributes}>#{link_text}</a>".html_safe
-      else
-        result << h(text[span.start...span.end])
-      end
-
-      last_end = span.end
+    stack = []
+    current = -> { stack.empty? ? result : stack.last[:html] }
+    close_span = lambda do
+      closed = stack.pop
+      current.call << wrap_span(closed[:span], closed[:html])
     end
 
-    result << h(text[last_end..]) if last_end < text.length
+    boundaries.each_cons(2) do |from, to|
+      closes.fetch(from, []).each { close_span.call }
+      opens.fetch(from, []).each { |span| stack << { span: span, html: "".html_safe } }
+      current.call << h(text[from...to])
+    end
+    closes.fetch(text.length, []).each { close_span.call }
+
     result
   end
 
-  def build_link_attributes(link)
-    attributes = []
+  def wrap_span(span, inner)
+    case span
+    when Prismic::Fragments::StructuredText::Span::Hyperlink
+      link_tag(span.link, inner)
+    when Prismic::Fragments::StructuredText::Span::Strong
+      content_tag(:strong, inner)
+    when Prismic::Fragments::StructuredText::Span::Em
+      content_tag(:em, inner)
+    else
+      inner
+    end
+  end
 
+  def link_tag(link, inner)
     case link
     when Prismic::Fragments::WebLink
-      attributes << "href=\"#{h(link.url.to_s)}\""
-      attributes << "target=\"#{h(link.target)}\"" if link.target.present?
-      attributes << 'rel="noopener noreferrer"' if link.target == "_blank"
+      target = link.target.presence
+      content_tag(:a, inner, href: link.url.to_s, target: target, rel: (target == "_blank" ? "noopener noreferrer" : nil))
     when Prismic::Fragments::DocumentLink
-      attributes << "href=\"#{h(link.url.to_s)}\""
+      content_tag(:a, inner, href: link.url.to_s)
+    else
+      inner
     end
-
-    attributes.join(" ")
   end
 
   def build_list_html(list_items, ordered)
