@@ -1,0 +1,368 @@
+= render 'layouts/breadcrumb', links: [ ['', "FAQ Élèves"] ]
+.row.fr-mb-6w
+  .col-12
+    h1.fr-h2.blue-france Besoin d'aide ?
+
+    h2.fr-h4.blue-france Connexion et identifiants
+    .fr-accordions-group.fr-mt-2w.fr-mb-4w
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-1" aria-expanded="false"
+            | Je n’ai pas mes identifiants
+        #accordion-eleve-1.fr-collapse
+          .fr-text
+            p
+              | L'équipe d'assistance
+              strong  1 Élève 1 Stage
+              |  n'est pas habilitée à vous communiquer vos identifiants
+              |  Educonnect.
+            p Vous devez demander ces informations à votre établissement scolaire.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-2" aria-expanded="false"
+            | Mon établissement n’utilise pas Educonnect
+        #accordion-eleve-2.fr-collapse
+          .fr-text
+            p
+              | La connexion à la plateforme
+              strong  1 Élève 1 Stage
+              |  ne peut se faire qu'avec des identifiants
+              strong  Educonnect
+              |  (seuls les établissements publics et privés sous contrat sont
+              |  « educonnectés »).
+            p
+              | L'équipe d'assistance 1 Élève 1 stage n'est pas habilitée à
+              |  fournir ces accès.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-3" aria-expanded="false"
+            | Mon nom d’utilisateur et mon mot de passe ne sont pas reconnus
+        #accordion-eleve-3.fr-collapse
+          .fr-text
+            p
+              | L'assistance
+              strong  1 Élève 1 Stage
+              |  ne dispose d'aucun accès à la gestion d'Educonnect, nous ne
+              |  sommes pas en mesure d'intervenir.
+            p
+              | Pour toute assistance ou information complémentaire, nous vous
+              |  invitons à
+              strong  contacter directement votre établissement scolaire.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-4" aria-expanded="false"
+            | J’ai une erreur “Elève non répertorié“
+        #accordion-eleve-4.fr-collapse
+          .fr-text
+            p
+              | Si vous êtes entré dans l'établissement en cours d'année, c'est
+              |  tout à fait normal. Adressez-vous à votre établissement pour
+              |  qu'il demande la mise à jour de votre scolarité.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-5" aria-expanded="false"
+            | Je suis en seconde professionnelle ou dans le supérieur
+        #accordion-eleve-5.fr-collapse
+          .fr-text
+            p
+              | Le dispositif
+              strong  1 Élève 1 Stage
+              |  ne concerne actuellement que les stages d'observation pour les
+              |  élèves de 4e, 3e, et 2de générale et technologique.
+
+    h2.fr-h4.blue-france.fr-mt-4w Stages
+    .fr-accordions-group.fr-mt-2w.fr-mb-4w
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-6" aria-expanded="false"
+            | Comment rechercher un stage ?
+        #accordion-eleve-6.fr-collapse
+          .fr-text
+            p
+              | Vous pouvez rechercher un stage sans être connecté en vous
+              |  rendant sur l’
+              a.fr-link href="/eleves" espace élève
+              | . Vous y verrez les offres disponibles.
+            p
+              | Vous pourrez déterminer certains critères de recherche
+              |  (géographie, niveau, mot-clé ou domaine) qui vous permettront
+              |  d’avoir des offres triées en fonction de vos priorités.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-7" aria-expanded="false"
+            | Comment postuler à un stage ?
+        #accordion-eleve-7.fr-collapse
+          .fr-text
+            p
+              | Pour candidater à une offre ou voir celles dédiées
+              |  éventuellement à votre établissement, il faut vous connecter
+              |  avec vos identifiants Educonnect
+              strong  élève
+              |  sur la plateforme.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-8" aria-expanded="false"
+            | Je ne trouve pas de stage
+        #accordion-eleve-8.fr-collapse
+          .fr-text
+            p
+              | Si votre recherche ne fait apparaitre aucune offre de stage,
+              |  vous pouvez demander à votre établissement de contacter
+              |  l'assistance.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-9" aria-expanded="false"
+            | Les offres de stage disparaissent après connexion
+        #accordion-eleve-9.fr-collapse
+          .fr-text
+            p
+              | Il est possible que certaines offres n'apparaissent pas après
+              |  connexion. C'est tout à fait normal, certaines offres ne
+              |  correspondent pas à votre niveau, vos dates ou sont réservées à
+              |  des établissements en particulier.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-10" aria-expanded="false"
+            | Qui détermine les dates de stage ?
+        #accordion-eleve-10.fr-collapse
+          .fr-text
+            p
+              | Si vous êtes au collège, c'est votre établissement qui détermine
+              |  les dates de stage. Si vous êtes au lycée, les dates sont fixées
+              |  nationalement les 2 dernières semaines de juin.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-11" aria-expanded="false"
+            | Le résultat de la recherche n'affiche pas d'offre de stage correspondant aux métiers et mots-clés saisis, ou au secteur d'activité.
+        #accordion-eleve-11.fr-collapse
+          .fr-text
+            p
+              | La fonction de recherche met en avant les stages qui
+              |  contiennent le ou les critères saisis mais affiche ensuite tous
+              |  les stages correspondant aux critères "commune", "niveau de
+              |  classe" et "dates de stage" sélectionnés.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-12" aria-expanded="false"
+            | A quoi correspond exactement le nombre de stages disponibles ?
+        #accordion-eleve-12.fr-collapse
+          .fr-text
+            p
+              | Dans le résultat de la recherche, le nombre de stages
+              |  disponibles correspond au nombre total de places proposées par
+              |  les offreurs.
+
+    h2.fr-h4.blue-france.fr-mt-4w Candidatures
+    .fr-accordions-group.fr-mt-2w.fr-mb-4w
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-13" aria-expanded="false"
+            | L'offreur n'a pas répondu à ma candidature
+        #accordion-eleve-13.fr-collapse
+          .fr-text
+            p
+              | Il arrive que les structures d'accueil ne répondent pas à
+              |  toutes les candidatures reçues. Passé un délai de 15 jours, la
+              |  candidature passe en statut "expiré". N'hésitez pas à effectuer
+              |  plusieurs candidatures pour maximiser vos chances d'obtenir une
+              |  réponse favorable.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-14" aria-expanded="false"
+            | L'offreur a refusé ma candidature
+        #accordion-eleve-14.fr-collapse
+          .fr-text
+            p
+              | Il arrive que les structures d'accueil ne répondent pas
+              |  favorablement à votre candidature. L'équipe d'assistance
+              strong  1 Élève 1 Stage
+              |  ne connaît pas la raison de chaque refus. N'hésitez pas à
+              |  effectuer plusieurs candidatures pour maximiser vos chances
+              |  d'obtenir une réponse favorable.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-15" aria-expanded="false"
+            | Ma candidature apparaît dans l'onglet "Expirées" avec le libellé "Vous n'avez pas répondu dans les temps" - pourquoi ?
+        #accordion-eleve-15.fr-collapse
+          .fr-text
+            p
+              | Lorsqu’un employeur accepte votre candidature, vous disposez de
+              |  15 jours pour confirmer que vous acceptez à votre tour le
+              |  stage. Si vous ne répondez pas dans ce délai, la candidature
+              |  passe en statut "expirée" afin de laisser la place à d’autres
+              |  élèves intéressés par la même offre. Pensez à vérifier
+              |  régulièrement vos notifications et votre tableau de bord pour
+              |  ne pas manquer une réponse de l'offreur.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-16" aria-expanded="false"
+            | Puis-je annuler une candidature ? Et comment ?
+        #accordion-eleve-16.fr-collapse
+          .fr-text
+            p
+              | Il est tout à fait possible d'annuler une candidature, même si
+              |  elle a été acceptée, et si vous avez validé votre stage. Dans
+              |  Candidatures, vous devez cliquer sur "Voir", puis sur "Annuler
+              |  la candidature". L'employeur sera alors notifié par mail.
+            p
+              strong Attention !
+              |  Si vous annulez cette candidature, vous ne pourrez plus
+              |  candidater à nouveau à cette même offre.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-17" aria-expanded="false"
+            | Je suis en seconde, j'ai validé un stage de 2 semaines mais je ne souhaite faire qu'une semaine
+        #accordion-eleve-17.fr-collapse
+          .fr-text
+            p
+              | Vous pouvez tout à fait décider de ne faire qu'une semaine, en
+              |  accord avec l'employeur et votre établissement. Toutefois les
+              |  dates de la convention ne sont pas modifiables et porteront sur
+              |  les 2 semaines de stage. Il vous sera également impossible de
+              |  postuler pour l'autre semaine de stage.
+            p
+              | Il est préférable de suggérer à l'employeur d'annuler votre
+              |  candidature et de publier à votre attention une offre de stage
+              |  portant uniquement sur la semaine que vous souhaitez effectuer.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-18" aria-expanded="false"
+            | Est-ce possible d’avoir plusieurs candidatures acceptées ?
+        #accordion-eleve-18.fr-collapse
+          .fr-text
+            p
+              | Oui, c’est possible ! Nous vous recommandons même de candidater
+              |  à plusieurs offres à la fois, pour multiplier vos chances de
+              |  décrocher un stage. Prenez bien le temps de lire la description
+              |  du stage pour vous assurer qu’il correspond à ce que vous
+              |  recherchez.
+            p
+              | Si votre candidature a été acceptée pour plusieurs stages,
+              |  prenez le temps de réfléchir à celui qui vous intéresse le
+              |  plus, et validez le.
+            p
+              strong Attention !
+              |  Vous disposez de 15 jours pour accepter à votre tour le stage.
+              |  Si vous ne répondez pas dans ce délai, la candidature expirera
+              |  automatiquement. Lorsque vous acceptez un stage, vos autres
+              |  candidatures sont automatiquement annulées.
+
+    h2.fr-h4.blue-france.fr-mt-4w Conventions
+    .fr-accordions-group.fr-mt-2w.fr-mb-4w
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-19" aria-expanded="false"
+            | Qui s'occupe de la convention ?
+        #accordion-eleve-19.fr-collapse
+          .fr-text
+            p
+              | Le processus se déroule en 5 étapes simples après l'acceptation
+              |  de la candidature :
+            ul
+              li
+                strong Validation :
+                |  L’élève valide l'offre, puis l’organisme d’accueil remplit
+                |  et valide la convention.
+              li
+                strong Complétion :
+                |  L’établissement scolaire est notifié pour remplir et valider
+                |  à son tour le document.
+              li
+                strong Signature électronique :
+                |  Tous les acteurs (organisme, établissement, élève et
+                |  responsables légaux) sont invités à signer en ligne.
+                strong  Il n’y a pas d'ordre imposé
+                | , chacun peut signer quand il le souhaite.
+              li
+                strong Suivi :
+                |  Vous pouvez suivre l'avancée des signatures en temps réel
+                |  depuis votre espace (onglet Candidatures pour l’élève,
+                |  Conventions pour les partenaires et écoles).
+              li
+                strong Téléchargement :
+                |  Une fois signée par tout le monde, la convention définitive
+                |  est immédiatement téléchargeable au format PDF.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-20" aria-expanded="false"
+            | Je ne trouve pas la convention
+        #accordion-eleve-20.fr-collapse
+          .fr-text
+            p
+              | Une fois connecté avec votre compte Educonnect élève, les
+              |  conventions sont accessibles depuis le menu "candidatures" en
+              |  haut à droite de la page.
+
+    h2.fr-h4.blue-france.fr-mt-4w Autres sujets
+    .fr-accordions-group.fr-mt-2w
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-21" aria-expanded="false"
+            | L'utilisation de la plate-forme est-elle obligatoire ?
+        #accordion-eleve-21.fr-collapse
+          .fr-text
+            p
+              strong Non.
+              |  Trouver un stage via notre plateforme n'est pas une
+              |  obligation. C'est un outil mis à votre disposition pour
+              |  faciliter vos recherches.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-22" aria-expanded="false"
+            | L'offreur ne souhaite pas passer par la plate-forme
+        #accordion-eleve-22.fr-collapse
+          .fr-text
+            p
+              | Vous pouvez accepter le stage. La plateforme n'est pas
+              |  obligatoire pour valider votre période en entreprise. Dans
+              |  cette situation, demandez directement à votre établissement
+              |  scolaire une convention de stage pour la faire remplir et
+              |  signer par l'employeur.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-23" aria-expanded="false"
+            | Mon établissement n'utilise pas la plate-forme
+        #accordion-eleve-23.fr-collapse
+          .fr-text
+            p
+              | Vous pouvez tout à fait consulter les offres disponibles sur la
+              |  plateforme
+              strong  1 Élève 1 Stage
+              |  et postuler. Cependant, si un employeur retient votre
+              |  candidature, la convention de stage ne pourra pas être éditée
+              |  via notre outil. Vous devrez demander directement au
+              |  secrétariat ou au responsable des stages de votre
+              |  établissement de vous fournir une convention de stage (au
+              |  format papier ou via l'outil habituel de votre école) pour la
+              |  faire signer à l'entreprise.
+
+      section.fr-accordion
+        h3.fr-accordion__title
+          button.fr-accordion__btn type="button" aria-controls="accordion-eleve-24" aria-expanded="false"
+            | Puis-je contacter une structure d'accueil qui m'intéresse avant que ma candidature n'ait été acceptée ?
+        #accordion-eleve-24.fr-collapse
+          .fr-text
+            p
+              | Les coordonnées de l'entreprise ne s'affichent sur la
+              |  plateforme
+              strong  1 Élève 1 Stage
+              |  qu'après acceptation de votre candidature. Avant cette étape
+              |  nous ne pouvons pas vous mettre en contact avec celle-ci.

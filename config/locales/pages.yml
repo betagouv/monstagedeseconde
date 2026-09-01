@@ -133,6 +133,12 @@ fr:
       page_title: "Documents utiles"
     exemple_offre_ideale_ministere:
       page_title: "Exemple d'offre idéale (ministère)"
+    faq_eleves:
+      page_title: "FAQ Élèves"
+    faq_etablissements:
+      page_title: "FAQ Établissements"
+    faq_offreurs:
+      page_title: "FAQ Offreurs"
     exemple_offre_ideale_sport:
       page_title: "Exemple d'offre idéale (sport)"
     home:

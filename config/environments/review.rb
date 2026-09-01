@@ -93,7 +93,6 @@ Rails.application.configure do
   # n'effectue aucun envoi réel. letter_thief (gem présent dans le groupe :review) enregistre
   # automatiquement son Observer (car delivery_method != :letter_thief) et stocke chaque email
   # en base. Ils sont consultables via l'engine monté sur /letter_thief (cf. config/routes.rb).
-  # Cela remplace l'ancien service Mailtrap.
   config.action_mailer.delivery_method = :test
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = true

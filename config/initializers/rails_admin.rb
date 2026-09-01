@@ -163,9 +163,9 @@ RailsAdmin.config do |config|
     'Feature flip' => '/admin/flipper/',
     'AB Testing' => '/split'
   }
-  # letter_thief n'est monté qu'en development et review (cf. config/routes.rb) :
-  # on n'affiche le lien que là, sinon il pointerait dans le vide en prod/staging.
-  if Rails.env.development? || Rails.env.review?
+  # letter_thief n'est monté qu'en development, review et staging (cf. config/routes.rb) :
+  # on n'affiche le lien que là, sinon il pointerait dans le vide en prod.
+  if Rails.env.development? || Rails.env.review? || Rails.env.staging?
     config.navigation_static_links.merge!(
       'Letter Thief' => '/letter_thief'
     )

@@ -33,9 +33,9 @@ Rails.application.routes.draw do
       # flipper
       mount Flipper::UI.app(Flipper) => "/admin/flipper"
 
-      # letter_thief : emails sortants interceptés (remplace Mailtrap en review).
+      # letter_thief : emails sortants interceptés en review et en staging.
       # Réservé aux comptes god car ils contiennent des données personnelles.
-      mount LetterThief::Engine => "/letter_thief" if Rails.env.review?
+      mount LetterThief::Engine => "/letter_thief" if Rails.env.review? || Rails.env.staging?
     end
 
     mount RailsAdmin::Engine => "/admin", as: "rails_admin"
@@ -300,6 +300,9 @@ Rails.application.routes.draw do
   # get '/conditions-d-utilisation-service-signature', to: 'pages#conditions_utilisation_service_signature',
   get "/contact", to: "pages#contact", as: "contact"
   get "/documents-utiles", to: "pages#documents_utiles"
+  get "/faq/eleves", to: "pages#faq_eleves", as: "faq_eleves"
+  get "/faq/etablissements", to: "pages#faq_etablissements", as: "faq_etablissements"
+  get "/faq/offreurs", to: "pages#faq_offreurs", as: "faq_offreurs"
   get "/javascript-required", to: "pages#javascript_required"
   get "/mentions-legales", to: "pages#mentions_legales"
   get "/operators", to: "pages#operators"

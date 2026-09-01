@@ -89,23 +89,15 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: ENV.fetch("HOST") }
   config.action_mailer.preview_paths << "#{Rails.root}/lib/mailer_previews"
 
-  LetterThief.observer_enabled = false if defined?(LetterThief)
-
-  ActionMailer::Base.delivery_method = :smtp
-  ActionMailer::Base.smtp_settings = {
-    user_name: ENV['SMTP_USERNAME'],
-    password: ENV['SMTP_PASSWORD'],
-    domain: ENV['SMTP_DOMAIN'] || 'smtp.mailtrap.io',
-    address: ENV['SMTP_ADDRESS'] || 'smtp.mailtrap.io',
-    port: ENV['SMTP_PORT'] || '2525',
-    authentication: ENV['SMTP_AUTHENTICATION'] || 'cram_md5',
-    enable_starttls_auto: true
-  }
-
-
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+  # Les emails sortants ne sont pas envoyés vers l'extérieur : la delivery method :test
+  # n'effectue aucun envoi réel. letter_thief (gem présent dans le groupe :staging) enregistre
+  # automatiquement son Observer (car delivery_method != :letter_thief) et stocke chaque email
+  # en base. Ils sont consultables via l'engine monté sur /letter_thief (cf. config/routes.rb).
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.perform_deliveries = true
+  # L'Observer de letter_thief rescue déjà ses propres erreurs : on évite de bloquer une
+  # livraison si l'attache d'une pièce jointe ActiveStorage échoue.
+  config.action_mailer.raise_delivery_errors = false
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

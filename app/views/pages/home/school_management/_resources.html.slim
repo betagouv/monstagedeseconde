@@ -5,7 +5,7 @@ ruby:
 .fr-mx-lg-0
   h4.fr-mb-3w.text-dark Ressources
   .row
-    = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_eleves_path
+    = render 'pages/home/resource_media_card', title: 'FAQ 1 élève 1 stage', url: faq_etablissements_path
     - documents.each do |document|
       = render 'pages/home/resource_media_card',
                title: document[:title],
