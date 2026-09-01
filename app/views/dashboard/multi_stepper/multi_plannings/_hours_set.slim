@@ -1,0 +1,90 @@
+/ Jeu d'horaires (hebdo OU journalier) pour une période donnée du stage partagé.
+/ Locals : form, disabled, period (1 = première semaine, 2 = seconde semaine).
+/ Chaque jeu est son propre contrôleur Stimulus `daily-hours` (targets scoppées) afin
+/ que les 2 périodes n'interfèrent pas (cf. refactor daily_hours_controller).
+- obj = form.object_name
+- weekly_field = period == 2 ? 'weekly_hours_2' : 'weekly_hours'
+- daily_field  = period == 2 ? 'daily_hours_2'  : 'daily_hours'
+- weekly_values = period == 2 ? form.object.weekly_hours_2 : form.object.weekly_hours
+- daily_values  = period == 2 ? form.object.daily_hours_2  : form.object.daily_hours
+- is_daily = period == 2 ? form.object.daily_planning_2? : form.object.daily_planning?
+- mandatory = period == 1
+- sfx = "_p#{period}"
+
+div.fr-my-2w data-controller="daily-hours"
+  .fr-checkbox-group.fr-checkbox-group--sm.mb-1
+    = check_box_tag "weekly_planning#{sfx}",
+                  true,
+                  !is_daily,
+                  data: { action: "change->daily-hours#handleToggleWeeklyPlanning", :'daily-hours-target' => 'weeklyToggle' },
+                  disabled: disabled
+    = label_tag "weekly_planning#{sfx}",
+                'Les horaires seront les mêmes sur toute la période de stage',
+                 class: 'fr-label'
+
+  div id="weekly-planning#{sfx}" class="mt-3 fr-my-2w #{'d-none' if is_daily}" data-daily-hours-target="weeklyContainer"
+    .row
+      .col-5
+        - start_data = { :'daily-hours-target' => 'weeklyHoursStart', action: mandatory ? 'change->daily-hours#weeklyStartChange change->mandatory-fields#fieldChange' : 'change->daily-hours#weeklyStartChange' }
+        - start_data[:'mandatory-fields-target'] = 'mandatoryField' if mandatory
+        = select_tag :"#{obj}[#{weekly_field}][]",
+                      options_for_select(hours_by_quarter, selected: weekly_values&.first),
+                      { :include_blank => '--',
+                      class: "fr-select",
+                      disabled: disabled,
+                      data: start_data,
+                      aria: { label: "Selectionner une heure de debut de stage pour tous les jours de la période de stage" }, id: "#{obj}_#{weekly_field}_start#{sfx}" }
+
+      .col-2 style="display: flex;align-items: center;justify-content: center;"
+        | à
+      .col-5
+        - end_data = { :'daily-hours-target' => 'weeklyHoursEnd', action: mandatory ? 'change->daily-hours#weeklyEndChange change->mandatory-fields#fieldChange' : 'change->daily-hours#weeklyEndChange' }
+        - end_data[:'mandatory-fields-target'] = 'mandatoryField' if mandatory
+        = select_tag :"#{obj}[#{weekly_field}][]",
+                      options_for_select(hours_by_quarter, selected: weekly_values&.last),
+                      { :include_blank => '--',
+                      class: "fr-select",
+                      disabled: disabled || !weekly_values&.first.present?,
+                      data: end_data,
+                      aria: { label: "Selectionner une heure de fin de stage pour tous les jours de la période de stage" }, id: "#{obj}_#{weekly_field}_end#{sfx}" }
+
+  div id="daily-planning-container#{sfx}" class="mt-3 fr-my-2w #{'d-none' unless is_daily}" data-daily-hours-target="dailyContainer"
+    - if mandatory
+      = text_field_tag "daily_hours_validator#{sfx}",
+                       '',
+                       style: 'position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;',
+                       tabindex: '-1',
+                       readonly: true,
+                       aria: { hidden: true },
+                       data: { :'daily-hours-target' => 'validator',
+                               :'mandatory-fields-target' => 'mandatoryField',
+                               action: 'change->mandatory-fields#fieldChange' }
+    - %w(lundi mardi mercredi jeudi vendredi samedi).each_with_index do |weekday, i|
+      .row.mt-3
+        .col-3 style="display: flex;align-items: center;justify-content: start;"
+          .fr-label= "#{weekday.capitalize} : "
+        .col-2 style="display: flex;align-items: center;justify-content: center;"
+          | de
+        .col-3
+          = select_tag :"#{obj}[#{daily_field}][#{weekday}][]",
+                        options_for_select(hours_by_quarter, selected: daily_values&.dig(weekday)&.first),
+                        {:include_blank => '--',
+                         class: "fr-select daily-hours-start",
+                         disabled: disabled,
+                         data: { :'daily-hours-target' => "dailyHoursStart",
+                                 i: i,
+                                 action: "change->daily-hours#dailyHoursStartChange" },
+                         aria: { label: "Selectionner une heure de debut de stage pour le #{weekday.capitalize}" }, id: "#{obj}_#{daily_field}_#{weekday}_start#{sfx}"}
+
+        .col-1 style="display: flex;align-items: center;justify-content: center;"
+          | à
+        .col-3
+          = select_tag :"#{obj}[#{daily_field}][#{weekday}][]",
+                        options_for_select(hours_by_quarter, selected: daily_values&.dig(weekday)&.last),
+                        {:include_blank => '--',
+                         class: "fr-select daily-hours-end",
+                         disabled: disabled,
+                         data: { :'daily-hours-target' => "dailyHoursEnd",
+                                 i: i,
+                                 action: "change->daily-hours#dailyHoursEndChange" },
+                         aria: { label:"Selectionner une heure de fin de stage pour le #{weekday.capitalize}" }, id: "#{obj}_#{daily_field}_#{weekday}_end#{sfx}"}

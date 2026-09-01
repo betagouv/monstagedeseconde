@@ -107,4 +107,46 @@ class CorporationTest < ActiveSupport::TestCase
       )
     end
   end
+
+  test "period must be 1, 2 or nil" do
+    @corporation.period = 3
+    refute @corporation.valid?
+    assert @corporation.errors[:period].present?
+
+    [1, 2, nil].each do |valid_period|
+      @corporation.period = valid_period
+      assert @corporation.valid?, "period #{valid_period.inspect} should be valid"
+    end
+  end
+
+  test "period is unique per multi_corporation with an explicit message" do
+    multi_corporation = create(:multi_corporation)
+    multi_corporation.corporations.destroy_all
+    create(:corporation, multi_corporation:, period: 1)
+
+    duplicate = build(:corporation, multi_corporation:, period: 1)
+    refute duplicate.valid?
+    assert_includes duplicate.errors[:period],
+                    "cette période est déjà couverte par l'autre structure"
+  end
+
+  test "the same period is allowed across different multi_corporations" do
+    first = create(:multi_corporation)
+    first.corporations.destroy_all
+    second = create(:multi_corporation)
+    second.corporations.destroy_all
+    create(:corporation, multi_corporation: first, period: 1)
+
+    other = build(:corporation, multi_corporation: second, period: 1)
+    assert other.valid?
+  end
+
+  test "several nil periods are allowed in the same multi_corporation (legacy compat)" do
+    multi_corporation = create(:multi_corporation)
+    multi_corporation.corporations.destroy_all
+    create(:corporation, multi_corporation:, period: nil)
+
+    another = build(:corporation, multi_corporation:, period: nil)
+    assert another.valid?
+  end
 end

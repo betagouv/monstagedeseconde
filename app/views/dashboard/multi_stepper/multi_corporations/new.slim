@@ -5,7 +5,7 @@
 
 .fr-grid-row
   .fr-col-12
-    h1.fr-h3.fr-mb-1w Déposer une offre de stage pour plusieurs entreprises
+    h1.fr-h3.fr-mb-1w Déposer une offre de stage pour 2 structures
     
     .fr-stepper
       h2.fr-stepper__title
@@ -21,9 +21,12 @@
 .fr-grid-row.fr-grid-row--gutters
   .fr-col-md-7
     turbo-frame id="corporation_form_frame"
-      = render 'dashboard/multi_stepper/multi_corporations/corporations/form', 
-               multi_corporation: @multi_corporation, 
-               corporation: @corporation || Corporation.new(multi_corporation_id: @multi_corporation.id)
+      - if @multi_corporation.full? && @corporation.nil?
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/limit_reached', multi_corporation: @multi_corporation
+      - else
+        = render 'dashboard/multi_stepper/multi_corporations/corporations/form',
+                 multi_corporation: @multi_corporation,
+                 corporation: @corporation || Corporation.new(multi_corporation_id: @multi_corporation.id)
 
   .fr-col-md-5
     turbo-frame id="corporations_list"

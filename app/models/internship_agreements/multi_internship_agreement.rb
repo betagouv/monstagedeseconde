@@ -1,9 +1,11 @@
 module InternshipAgreements
   class MultiInternshipAgreement < InternshipAgreement
-    after_commit :create_unsigned_corporation_internship_agreements, on: :create
     # Includes
 
     # Associations
+    # Conservées pour les multi "historiques" (legacy_multi?) : 1 convention regroupant
+    # N corporations. Le nouveau flux "stage partagé" crée 1 convention par corporation
+    # (rattachée via internship_agreements.corporation_id) et n'alimente plus ces tables.
     has_many :corporation_internship_agreements, dependent: :destroy, foreign_key: :internship_agreement_id
     has_many :corporations, through: :corporation_internship_agreements
 
@@ -31,18 +33,6 @@ module InternshipAgreements
 
     def pre_selected_for_signature?
       !!pre_selected_for_signature
-    end
-
-    private
-
-    def create_unsigned_corporation_internship_agreements
-      internship_offer.multi_corporation.corporations.each do |corporation|
-        CorporationInternshipAgreement.find_or_create_by!(
-          corporation_id: corporation.id,
-          internship_agreement_id: self.id,
-          signed: false
-        )
-      end
     end
   end
 end

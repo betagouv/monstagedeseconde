@@ -22,6 +22,16 @@ module InternshipApplications
       assert_redirected_to new_user_session_path
     end
 
+    test 'GET #user_internship_applications succeeds as employer with an agreement (preloads internship_agreements)' do
+      internship_application = create(:weekly_internship_application, :submitted)
+      employer = internship_application.internship_offer.employer
+      sign_in(employer)
+
+      get dashboard_candidatures_path
+
+      assert_response :success
+    end
+
     test 'GET #index redirects to root_path when logged in as student' do
       sign_in(create(:student))
       get dashboard_internship_offer_internship_applications_path(create(:weekly_internship_offer_2nde))

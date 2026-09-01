@@ -18,6 +18,40 @@ module Dashboard::MultiStepper
       assert_response :success
     end
 
+    test 'GET #new avec moins de 2 structures affiche le formulaire de structure' do
+      @multi_corporation.corporations.destroy_all
+      create(:corporation, multi_corporation: @multi_corporation, period: 1)
+
+      get new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_coordinator.id)
+
+      assert_response :success
+      assert_select "input[name='corporation[corporation_name]']"
+    end
+
+    test 'GET #new avec 2 structures renseignées affiche la limite atteinte sans formulaire' do
+      @multi_corporation.corporations.destroy_all
+      create(:corporation, multi_corporation: @multi_corporation, period: 1)
+      create(:corporation, multi_corporation: @multi_corporation, period: 2)
+
+      get new_dashboard_multi_stepper_multi_corporation_path(multi_coordinator_id: @multi_coordinator.id)
+
+      assert_response :success
+      assert_match 'renseignées et validées', response.body
+      assert_select "input[name='corporation[corporation_name]']", count: 0
+    end
+
+    test 'GET #edit avec 2 structures renseignées affiche la limite atteinte sans formulaire' do
+      @multi_corporation.corporations.destroy_all
+      create(:corporation, multi_corporation: @multi_corporation, period: 1)
+      create(:corporation, multi_corporation: @multi_corporation, period: 2)
+
+      get edit_dashboard_multi_stepper_multi_corporation_path(@multi_corporation)
+
+      assert_response :success
+      assert_match 'renseignées et validées', response.body
+      assert_select "input[name='corporation[corporation_name]']", count: 0
+    end
+
     test 'POST #create with valid params redirects to edit' do
       assert_difference('MultiCorporation.count', 1) do
         post dashboard_multi_stepper_multi_corporations_path, params: {

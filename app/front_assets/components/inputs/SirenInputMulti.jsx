@@ -162,6 +162,14 @@ export default function SirenInputMulti({
 
   const show_form = (show) => {
     toggleHideContainers(document.querySelectorAll(".bloc-tooggle"), show);
+    // #ministry-block is a .bloc-tooggle but must stay hidden unless "structure publique" is checked
+    const ministryBlock = document.querySelector("#ministry-block");
+    const isPublicChecked = document.getElementById(
+      `${resourceName}_is_public_true`
+    )?.checked;
+    if (ministryBlock && !isPublicChecked) {
+      ministryBlock.classList.add("fr-hidden");
+    }
   };
 
   const hide_siret_input = () => {

@@ -30,6 +30,8 @@ module Builders
         max_candidates: multi_planning.max_candidates,
         weekly_hours: multi_planning.weekly_hours,
         daily_hours: multi_planning.daily_hours,
+        weekly_hours_2: multi_planning.weekly_hours_2,
+        daily_hours_2: multi_planning.daily_hours_2,
         lunch_break: multi_planning.lunch_break,
         rep: multi_planning.rep,
         qpv: multi_planning.qpv,

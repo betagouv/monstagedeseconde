@@ -100,7 +100,15 @@ module Builders
       # the internship_agreements may be related to different internship_offers 
       # and consequently to different corporations
       internship_agreements.each do |internship_agreement|
-        internship_agreement.internship_offer.multi_corporation.corporations.each do |corporation|
+        # Stage partagé : la convention est rattachée à UNE structure (corporation_id) et
+        # ne doit inviter que celle-ci. Multi historique : toutes les structures de l'offre.
+        agreement_corporations =
+          if internship_agreement.corporation_id.present?
+            [internship_agreement.corporation]
+          else
+            internship_agreement.internship_offer.multi_corporation.corporations
+          end
+        agreement_corporations.each do |corporation|
           corporations << corporation
           CorporationInternshipAgreement.find_or_create_by!(
             corporation_id: corporation.id,

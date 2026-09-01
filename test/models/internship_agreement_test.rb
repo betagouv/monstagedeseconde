@@ -144,4 +144,27 @@ class InternshipAgreementTest < ActiveSupport::TestCase
     internship_agreement.sign!
     assert internship_agreement.reload.signed_by_all?
   end
+
+  test '#legacy_multi? and #shared_offer_agreement? for a multi agreement' do
+    travel_to Date.new(2026, 1, 15) do
+      agreement = build(:multi_internship_agreement)
+      assert agreement.from_multi?
+      assert_nil agreement.corporation_id
+      assert agreement.legacy_multi?
+      refute agreement.shared_offer_agreement?
+
+      agreement.corporation = create(:corporation)
+      assert agreement.shared_offer_agreement?
+      refute agreement.legacy_multi?
+    end
+  end
+
+  test '#shared_offer_agreement? and #legacy_multi? are false for a mono agreement' do
+    travel_to Date.new(2026, 1, 15) do
+      agreement = build(:mono_internship_agreement)
+      refute agreement.from_multi?
+      refute agreement.shared_offer_agreement?
+      refute agreement.legacy_multi?
+    end
+  end
 end

@@ -686,7 +686,8 @@ CREATE TABLE public.corporations (
     employer_role character varying(120),
     internship_coordinates public.geometry(Point,4326),
     employer_name character varying,
-    uuid uuid DEFAULT gen_random_uuid() NOT NULL
+    uuid uuid DEFAULT gen_random_uuid() NOT NULL,
+    period integer
 );
 
 
@@ -1050,7 +1051,8 @@ CREATE TABLE public.internship_agreements (
     pai_trousse_family boolean,
     access_token character varying,
     type character varying DEFAULT 'InternshipAgreements::MonoInternshipAgreement'::character varying NOT NULL,
-    pre_selected_for_signature boolean DEFAULT false NOT NULL
+    pre_selected_for_signature boolean DEFAULT false NOT NULL,
+    corporation_id bigint
 );
 
 
@@ -1519,7 +1521,9 @@ CREATE TABLE public.internship_offers (
     targeted_grades public.targeted_grades DEFAULT 'seconde_only'::public.targeted_grades,
     open_data boolean DEFAULT true,
     code_ape character varying,
-    multi_corporation_id bigint
+    multi_corporation_id bigint,
+    daily_hours_2 jsonb DEFAULT '{}'::jsonb,
+    weekly_hours_2 text[] DEFAULT '{}'::text[]
 );
 
 
@@ -1881,7 +1885,9 @@ CREATE TABLE public.multi_plannings (
     qpv boolean DEFAULT false NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    weekly_hours text[] DEFAULT '{}'::text[]
+    weekly_hours text[] DEFAULT '{}'::text[],
+    daily_hours_2 jsonb DEFAULT '{}'::jsonb,
+    weekly_hours_2 text[] DEFAULT '{}'::text[]
 );
 
 
@@ -3985,6 +3991,20 @@ CREATE INDEX index_groups_on_visible ON public.groups USING btree (visible);
 
 
 --
+-- Name: index_ia_on_application_id_corporation_unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_ia_on_application_id_corporation_unique ON public.internship_agreements USING btree (internship_application_id, corporation_id) WHERE ((discarded_at IS NULL) AND (corporation_id IS NOT NULL));
+
+
+--
+-- Name: index_ia_on_application_id_mono_unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_ia_on_application_id_mono_unique ON public.internship_agreements USING btree (internship_application_id) WHERE ((discarded_at IS NULL) AND (corporation_id IS NULL));
+
+
+--
 -- Name: index_inappropriate_offers_on_ground; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4020,10 +4040,10 @@ CREATE UNIQUE INDEX index_internship_agreements_on_access_token ON public.intern
 
 
 --
--- Name: index_internship_agreements_on_application_id_unique; Type: INDEX; Schema: public; Owner: -
+-- Name: index_internship_agreements_on_corporation_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_internship_agreements_on_application_id_unique ON public.internship_agreements USING btree (internship_application_id) WHERE (discarded_at IS NULL);
+CREATE INDEX index_internship_agreements_on_corporation_id ON public.internship_agreements USING btree (corporation_id);
 
 
 --
@@ -5067,6 +5087,14 @@ ALTER TABLE ONLY public.internship_occupations
 
 
 --
+-- Name: internship_agreements fk_rails_32bd8af47e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.internship_agreements
+    ADD CONSTRAINT fk_rails_32bd8af47e FOREIGN KEY (corporation_id) REFERENCES public.corporations(id);
+
+
+--
 -- Name: internship_applications fk_rails_32ed157946; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -5561,6 +5589,10 @@ ALTER TABLE ONLY public.class_rooms
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260629100300'),
+('20260629100200'),
+('20260629100100'),
+('20260629100000'),
 ('20260610090000'),
 ('20260608090000'),
 ('20260604000000'),
@@ -6069,3 +6101,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190215085127'),
 ('20190212163331'),
 ('20190207111844');
+

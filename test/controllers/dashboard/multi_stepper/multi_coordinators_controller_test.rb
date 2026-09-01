@@ -18,7 +18,7 @@ module Dashboard::MultiStepper
       get new_dashboard_multi_stepper_multi_coordinator_path(multi_activity_id: @multi_activity.id)
       assert_response :success
       assert_select 'form'
-      assert_select 'h1', text: /Déposer une offre de stage pour plusieurs structures/
+      assert_select 'h1', text: /Déposer une offre de stage pour 2 structures/
     end
 
     test 'GET #new should require authentication' do
@@ -101,6 +101,28 @@ module Dashboard::MultiStepper
       get edit_dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator)
       assert_response :success
       assert_select 'form'
+    end
+
+    test 'GET #edit coordinateur privé : le bloc Type d\'employeur public est masqué au chargement' do
+      sign_in @employer
+      refute @multi_coordinator.is_public
+
+      get edit_dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator)
+
+      assert_response :success
+      assert_select '#ministry-block.fr-hidden'
+    end
+
+    test 'GET #edit coordinateur public : le bloc Type d\'employeur public est visible' do
+      sign_in @employer
+      group = create(:group, is_public: true)
+      @multi_coordinator.update!(is_public: true, group: group)
+
+      get edit_dashboard_multi_stepper_multi_coordinator_path(@multi_coordinator)
+
+      assert_response :success
+      assert_select '#ministry-block'
+      assert_select '#ministry-block.fr-hidden', count: 0
     end
 
     test 'GET #edit should require authentication' do

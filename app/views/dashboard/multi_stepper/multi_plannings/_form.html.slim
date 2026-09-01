@@ -42,28 +42,29 @@
     .row
       .col-12
         hr
-    / Troisiemes
-    .row
-      .col-12
-        = render 'inputs/dsfr_checkbox_field',
-          form: form,
-          field: :grade_college,
-          title: '',
-          label: 'Collégiens (4ème et 3ème)',
-          extra_header_classes: 'fr-h6',
-          options: { data: {:'grade-target' => 'gradeCollege',
-                            action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
-                            :'select-weeks-target' => 'gradeCollege'  } }
+    / Stage partagé : seconde uniquement. Le public « Collégiens » est masqué, mais la
+    / checkbox (cachée, décochée) et son conteneur de semaines restent dans le DOM pour
+    / ne pas casser les contrôleurs Stimulus grade / select-weeks.
+    .fr-hidden
+      / Troisiemes
+      .row
+        .col-12
+          = render 'inputs/dsfr_checkbox_field',
+            form: form,
+            field: :grade_college,
+            title: '',
+            label: 'Collégiens (4ème et 3ème)',
+            extra_header_classes: 'fr-h6',
+            options: { data: {:'grade-target' => 'gradeCollege',
+                              action: 'grade#onClick click->select-weeks#onGradeTroisiemeClick' ,
+                              :'select-weeks-target' => 'gradeCollege'  } }
 
-    .row data-grade-target="troisiemeContainer"
-      .col-12
-        = render partial: "weeks/checkbox_inputs",
-                          locals: { current_weeks: @available_weeks,
-                                    form: form,
-                                    render_employer_components: true }
-    .row
-      .col-12
-        hr
+      .row data-grade-target="troisiemeContainer"
+        .col-12
+          = render partial: "weeks/checkbox_inputs",
+                            locals: { current_weeks: @available_weeks,
+                                      form: form,
+                                      render_employer_components: true }
 
     / Stage individuel / collectif
     .fr-my-2w
@@ -101,13 +102,8 @@
                                     selectClassRoom: false,
                                     existingSchools: form.object&.schools&.as_json})
     .row.fr-mt-2w
-      .col-12
-        = render 'inputs/dsfr_checkbox_field',
-          form: form,
-          field: :rep,
-          title: nil,
-          label: 'Ce stage est réservé aux collèges classés en éducation prioritaire (REP et REP+) ?',
-          options: {}
+      / Stage partagé = seconde : l'option REP (réservée aux collèges) ne s'applique pas.
+      = form.hidden_field :rep, value: false
       .col-12
         = render 'inputs/dsfr_checkbox_field',
           form: form,

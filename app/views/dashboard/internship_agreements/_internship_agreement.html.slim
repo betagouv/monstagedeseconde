@@ -34,6 +34,9 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     .fr-mt-2w.fr-ms2e-wrapper
       = prez.employer_name
 
+  td.rg2a-width-100.col-sm-2.d-sm-flex.align-items-center.text-left data-head="Semaine(s) concernée(s)" style='word-wrap: break-word; white-space: normal;'
+    = internship_agreement.date_range
+
   td.rg2a-width-100.col-sm-2.d-sm-flex.align-items-center.text-left data-head="Statut" style='word-wrap: break-word; white-space: normal;'
     .actions.d-flex.d-sm-block
       = prez.inline_status_label
@@ -55,6 +58,6 @@ tr class="d-sm-flex internship-application-row student-application-#{internship_
     = render(InternshipAgreements::ButtonComponent.new( internship_agreement: internship_agreement,
                                                         current_user: current_user) )
 tr
-  td.col-12.p-0 colspan=5
+  td.col-12.p-0 colspan=6
     = render partial: "dashboard/internship_offers/internship_applications/show_modal",
              locals: {application: internship_agreement.internship_application}

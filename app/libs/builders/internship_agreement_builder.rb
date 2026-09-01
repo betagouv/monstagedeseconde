@@ -3,13 +3,15 @@
 module Builders
   # wrap internship offer creation logic / failure for API/web usage
   class InternshipAgreementBuilder < BuilderBase
-    def new_from_application(internship_application)
+    # corporation: présent => stage partagé, on génère UNE convention pour CETTE
+    # structure d'accueil (remplie depuis ses propres coordonnées / horaires / semaine).
+    def new_from_application(internship_application, corporation: nil)
       authorize :new, InternshipAgreement
-      multi_agreements = internship_application.internship_offer.from_multi?
-      internship_agreement = nil
+      internship_offer = internship_application.internship_offer
+      multi_agreements = internship_offer.from_multi?
       params = {}.merge(preprocess_student_to_params(internship_application.student))
-                 .merge(preprocess_internship_offer_params(internship_application.internship_offer))
-                 .merge(preprocess_internship_application_params(internship_application))
+                 .merge(preprocess_internship_offer_params(internship_offer, corporation: corporation))
+                 .merge(preprocess_internship_application_params(internship_application, corporation: corporation))
       klass = multi_agreements ? InternshipAgreements::MultiInternshipAgreement : InternshipAgreements::MonoInternshipAgreement
       internship_agreement = klass.new(**params)
       internship_agreement.internship_application = internship_application
@@ -59,9 +61,15 @@ module Builders
       raise ArgumentError, "#{user.type} can not create agreement yet"
     end
 
-    def preprocess_internship_application_params(internship_application)
+    def preprocess_internship_application_params(internship_application, corporation: nil)
+      date_range =
+        if corporation
+          date_range_for_corporation(internship_application, corporation)
+        else
+          Presenters::InternshipApplication.new(internship_application, user).date_range
+        end
       {
-        date_range: Presenters::InternshipApplication.new(internship_application, user).date_range,
+        date_range: date_range,
         student_legal_representative_email: internship_application.student.legal_representative_email,
         student_legal_representative_phone: internship_application.student.legal_representative_phone,
         student_legal_representative_full_name: internship_application.student.legal_representative_full_name,
@@ -69,7 +77,57 @@ module Builders
       }
     end
 
-    def preprocess_internship_offer_params(internship_offer)
+    # Stage partagé : chaque structure accueille l'élève sur 1 semaine (sa période).
+    # On restreint le date_range de la convention à la semaine concernée.
+    def date_range_for_corporation(internship_application, corporation)
+      weeks = internship_application.weeks.sort_by(&:monday)
+      week = corporation.period.to_i == 2 ? weeks.last : weeks.first
+      return Presenters::InternshipApplication.new(internship_application, user).date_range if week.nil?
+
+      "Du #{week.monday.strftime('%d/%m/%Y')} au #{week.friday.strftime('%d/%m/%Y')}"
+    end
+
+    # Horaires de la convention selon la période de la structure : période 2 utilise le
+    # second jeu d'horaires s'il a été saisi, sinon retombe sur celui de la période 1.
+    def hours_for_corporation(internship_offer, corporation)
+      if corporation.period.to_i == 2 && period_2_specific_hours?(internship_offer)
+        { daily_hours: internship_offer.daily_hours_2, weekly_hours: internship_offer.weekly_hours_2 }
+      else
+        { daily_hours: internship_offer.daily_hours, weekly_hours: internship_offer.weekly_hours }
+      end
+    end
+
+    def period_2_specific_hours?(internship_offer)
+      internship_offer.weekly_hours_2.to_a.any?(&:present?) ||
+        internship_offer.daily_hours_2.to_h.values.flatten.any?(&:present?)
+    end
+
+    # Stage partagé : convention remplie depuis SA structure d'accueil (Corporation)
+    # plutôt que depuis l'employeur coordinateur.
+    def preprocess_corporation_params(internship_offer, corporation)
+      hours = hours_for_corporation(internship_offer, corporation)
+      {
+        corporation_id: corporation.id,
+        organisation_representative_full_name: corporation.employer_name,
+        organisation_representative_role: corporation.employer_role,
+        employer_name: corporation.corporation_name,
+        employer_contact_email: corporation.employer_email,
+        siret: corporation.siret,
+        tutor_full_name: corporation.tutor_name,
+        tutor_role: corporation.tutor_role_in_company,
+        tutor_email: corporation.tutor_email,
+        daily_hours: hours[:daily_hours],
+        weekly_hours: hours[:weekly_hours],
+        lunch_break: internship_offer.lunch_break,
+        internship_address: corporation.internship_full_address,
+        entreprise_address: corporation.corporation_address,
+        activity_scope: internship_offer.description
+      }
+    end
+
+    def preprocess_internship_offer_params(internship_offer, corporation: nil)
+      return preprocess_corporation_params(internship_offer, corporation) if corporation
+
       if internship_offer.from_multi?
         {
         organisation_representative_full_name: internship_offer.employer.presenter.full_name,

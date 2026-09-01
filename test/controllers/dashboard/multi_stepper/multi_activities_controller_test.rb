@@ -20,7 +20,7 @@ module Dashboard::MultiStepper
 
       get new_dashboard_multi_stepper_multi_activity_path
       assert_response :success
-      assert_select 'h1.h2', text: "Déposer une offre de stage pour plusieurs structures"
+      assert_select 'h1.h2', text: "Déposer une offre de stage pour 2 structures"
       assert_select 'form'
       assert_select 'input[name="multi_activity[title]"]'
       assert_select 'textarea[name="multi_activity[description]"]'

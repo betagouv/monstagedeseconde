@@ -52,10 +52,24 @@
                   = f.hidden_field :corporation_street
                   = f.hidden_field :corporation_zipcode
                   = f.hidden_field :corporation_city
-                  
+
                   / Hidden fields for internship coordinates
                   / = f.hidden_field :internship_coordinates, value: corporation.internship_coordinates
                   / = f.hidden_field :coordinates, value: corporation.internship_coordinates
+
+                / Stage partagé : période (semaine) accueillie par cette structure
+                - selected_period = corporation.period || multi_corporation.next_available_period
+                .fr-col-12
+                  fieldset.fr-fieldset
+                    legend.fr-fieldset__legend.fr-text--bold Période d'accueil dans cette structure (1 semaine) *
+                    .fr-fieldset__element
+                      .fr-radio-group
+                        = f.radio_button :period, 1, id: "corporation_period_1", checked: selected_period == 1
+                        = f.label :period, "Semaine 1 (première période)", for: "corporation_period_1"
+                    .fr-fieldset__element
+                      .fr-radio-group
+                        = f.radio_button :period, 2, id: "corporation_period_2", checked: selected_period == 2
+                        = f.label :period, "Semaine 2 (seconde période)", for: "corporation_period_2"
 
       / Bloc 2: Adresse du stage
       section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
@@ -105,7 +119,7 @@
       / Bloc 4: Tuteur
       section.fr-accordion.corporation-accordion.fr-mt-3w.bloc-tooggle class="#{corporation.persisted? ? '' : 'fr-hidden'}"
         h3.fr-accordion__title
-          button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-tutor" Coordonnées du tuteur
+          button.fr-accordion__btn aria-expanded="true" aria-controls="accordion-tutor" Coordonnées du tuteur (celui dont le nom est sur la convention)
         #accordion-tutor.fr-collapse
           .fr-p-2w
             .fr-checkbox-group.fr-mb-2w

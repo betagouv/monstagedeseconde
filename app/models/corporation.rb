@@ -16,6 +16,13 @@ class Corporation < ApplicationRecord
   # Validations
   validates :siret, presence: true, length: { is: 14 }
 
+  # Stage partagé : chaque structure accueille l'élève sur une période d'1 semaine
+  # (1 ou 2). allow_nil conserve la compat avec le multi historique (period non saisie).
+  validates :period, inclusion: { in: [1, 2] }, allow_nil: true
+  validates :period, uniqueness: { scope: :multi_corporation_id,
+                                   message: 'cette période est déjà couverte par l\'autre structure' },
+                     allow_nil: true
+
   # Structure Accueillante
   validates :corporation_name, presence: true, length: { maximum: 120 }
   validates :corporation_address, presence: true, length: { maximum: 250 }

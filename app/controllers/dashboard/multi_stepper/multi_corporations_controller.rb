@@ -6,7 +6,7 @@ module Dashboard::MultiStepper
       @multi_coordinator = MultiCoordinator.find(params[:multi_coordinator_id])
       authorize! :create, MultiCorporation
       @multi_corporation = MultiCorporation.find_or_create_by!(multi_coordinator: @multi_coordinator)
-      @corporation = Corporation.new(multi_corporation_id: @multi_corporation.id)
+      @corporation = build_corporation_unless_full
     end
 
     def create
@@ -22,7 +22,7 @@ module Dashboard::MultiStepper
 
     def edit
       authorize! :update, @multi_corporation
-      @corporation = Corporation.new(multi_corporation_id: @multi_corporation.id)
+      @corporation = build_corporation_unless_full
     end
 
     def update
@@ -36,6 +36,13 @@ module Dashboard::MultiStepper
     end
 
     private
+
+    # Stage partagé : pas de formulaire de 3e structure quand les 2 sont renseignées
+    def build_corporation_unless_full
+      return nil if @multi_corporation.full?
+
+      Corporation.new(multi_corporation_id: @multi_corporation.id)
+    end
 
     def fetch_multi_corporation
       @multi_corporation = MultiCorporation.find(params[:id])

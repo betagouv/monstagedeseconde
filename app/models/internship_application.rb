@@ -81,7 +81,7 @@ class InternshipApplication < ApplicationRecord
   belongs_to :student, class_name: "Users::Student",
                        foreign_key: "user_id",
                        touch: false
-  has_one :internship_agreement, dependent: :destroy
+  has_many :internship_agreements, dependent: :destroy
   has_many :state_changes, class_name: "InternshipApplicationStateChange",
                            dependent: :destroy
   has_many :internship_application_weeks, dependent: :destroy
@@ -490,17 +490,32 @@ class InternshipApplication < ApplicationRecord
     weeks
   end
 
+  # Compat : de nombreuses vues/abilities historiques attendent UNE convention par
+  # candidature. Pour les stages partagés (2 conventions), on renvoie la première
+  # (suffisant côté offreur/coordinateur ; l'élève voit les 2 via #internship_agreements).
+  def internship_agreement
+    internship_agreements.kept.first
+  end
+
+  # Stage classique : 1 convention. Stage partagé : 1 convention distincte par
+  # structure d'accueil (idempotent par corporation). On notifie l'approbation une
+  # seule fois (les structures sont invitées à signer via le flux dédié).
   def create_agreement
     return unless internship_agreement_creation_allowed?
-    return if InternshipAgreement.kept.exists?(internship_application_id: id)
 
-    agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
-                                                    .new_from_application(self)
-    agreement.skip_validations_for_system = true
-    agreement.save!
+    created_agreements =
+      if from_multi?
+        build_shared_agreements
+      elsif InternshipAgreement.kept.exists?(internship_application_id: id)
+        []
+      else
+        [build_agreement_from_application]
+      end
+
+    return if created_agreements.empty?
 
     EmployerMailer.internship_application_approved_with_agreement_email(
-      internship_agreement:,
+      internship_agreement: created_agreements.first
     ).deliver_later
   end
 
@@ -672,17 +687,22 @@ class InternshipApplication < ApplicationRecord
     SendSmsStudentValidatedApplicationJob.perform_later(internship_application_id: id)
   end
 
-  def create_multi_agreement
-    return unless internship_agreement_creation_allowed?
+  # Stage partagé : une convention distincte par structure d'accueil, remplie depuis
+  # SA corporation. Idempotent : ne recrée pas une convention déjà présente.
+  def build_shared_agreements
+    internship_offer.corporations.filter_map do |corporation|
+      next if InternshipAgreement.kept.exists?(internship_application_id: id, corporation_id: corporation.id)
 
+      build_agreement_from_application(corporation: corporation)
+    end
+  end
+
+  def build_agreement_from_application(corporation: nil)
     agreement = Builders::InternshipAgreementBuilder.new(user: Users::God.new)
-                                                    .new_from_application(self)
+                                                    .new_from_application(self, corporation: corporation)
     agreement.skip_validations_for_system = true
     agreement.save!
-    # TODO notify coordinator and employers
-    EmployerMailer.internship_application_approved_with_agreement_email(
-      internship_agreement:,
-    ).deliver_later
+    agreement
   end
 
   def internship_application_counter_hook

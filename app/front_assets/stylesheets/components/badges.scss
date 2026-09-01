@@ -27,11 +27,11 @@
   margin-bottom: 12px;
 
   .fr-card__title {
-    height: 3rem;
+    min-height: 3rem;
   }
   .fr-card__detail{
     .fr-row {
-    height: 100px
+    min-height: 100px
     }
   }
 }

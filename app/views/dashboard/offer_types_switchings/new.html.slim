@@ -42,7 +42,7 @@
             label.fr-label for="radio-rich-2"
               span
                 span.fr-badge.fr-badge--new.fr-badge--no-icon.fr-badge--sm.fr-mr-1v> Nouveau
-                | Je coordonne un stage impliquant plusieurs structures (toutes signataires de la convention)
+                | Je coordonne un stage commun à 2 structures
             .fr-radio-rich__pictogram
               = image_tag asset_pack_path('media/digital/ecosystem.svg'),
                           viewBox:"0 0 80 80",
@@ -55,29 +55,28 @@
 
         p
           |
-            Les stages « multi-entreprises »
-            permettent à un ou plusieurs élèves de découvrir un ou plusieurs métiers dans plusieurs entreprises/structures engagées d'un même
-            territoire, afin de diversifier leur expérience et leur découverte du monde professionnel. Cette modalité, facultative, doit rester
-            compatible avec les objectifs d'apprentissage des élèves, il convient donc de limiter le nombre d'entreprises/structures d'accueil
-            pour permettre une véritable découverte et observation du ou des métiers présentés.
+            Les stages partagés entre 2 entreprises permettent à un ou plusieurs élèves de
+            découvrir les métiers des 2 entreprises/structures, afin de diversifier leur
+            expérience et leur découverte du monde professionnel.
     
   - if Flipper.enabled?(:multi_offer, current_user)
     .row.fr-mb-3w.multi-step-0
       .fr-col-md-12
         .fr-alert.fr-alert--info role="alert"
-          h3.fr-alert__title Stage impliquant plusieurs structures
+          h3.fr-alert__title Stage partagé entre 2 structures
           p
             |
-              Le nouveau parcours permet de déposer une offre de stage partagée entre plusieurs structures, chacune signataire de la convention.
+              Le nouveau parcours permet de déposer une offre de stage partagé entre 2 entreprises / structures,
+              chacune signe une convention pour la période pendant laquelle elle accueille le ou les élève(s) concerné(s).
           p
             |
-              Avant de commencer, veillez à préparer toutes les informations nécessaires : le planning détaillé pour 
-              chaque structure chaque jour, les horaires de début, fin et pause déjeuner, le nombre de places de stage 
-              et, le cas échéant, le ou les établissements scolaires auquel ou auxquels le stage est réservé, Pour 
-              chaque structure d’accueil en stage, vous devrez indiquer son SIRET ou son nom, l’adresse du lieu de 
-              déroulement du stage, ainsi que les coordonnées du représentant de chaque structure et qui signera la 
-              convention de stage, et du tuteur de chacune des structures: nom, prénom, fonction, téléphone et e-mail. 
-              Attention : vous ne pourrez ni enregistrer un brouillon, ni modifier l’offre une fois publiée. Si besoin, 
+              Avant de commencer, veillez à préparer toutes les informations nécessaires : le planning détaillé pour
+              chaque structure chaque jour, les horaires de début, de fin et de pause déjeuner, le nombre de places de stage
+              et, le cas échéant, le ou les établissements scolaires auquel ou auxquels le stage est réservé. Pour chacune
+              des 2 structures d’accueil en stage, vous devrez indiquer son SIRET ou son nom, l’adresse des lieux de
+              déroulement du stage, ainsi que les coordonnées du représentant de chaque structure et qui signera la
+              convention de stage, et du tuteur de chacune des structures : nom, prénom, fonction, téléphone et e-mail.
+              Attention : vous ne pourrez ni enregistrer un brouillon, ni modifier l’offre une fois publiée. Si besoin,
               vous devrez supprimer l’offre, puis la recréer.
     
   .row.fr-mb-5w.multi-step-0
