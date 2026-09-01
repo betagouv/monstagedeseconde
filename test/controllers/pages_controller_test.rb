@@ -85,6 +85,14 @@ class PagesTest < ActionDispatch::IntegrationTest
     assert_select 'section.fr-accordion', minimum: 20
   end
 
+  test 'GET pages#statistician_landing links the FAQ card to the employers FAQ page' do
+    get "/referents"
+    assert_response :success
+    assert_template 'pages/statistician_landing'
+    assert_select "a[href='#{faq_offreurs_path}']", text: 'FAQ 1 élève 1 stage'
+    assert_select "a[href*='docs.numerique.gouv.fr']", count: 0
+  end
+
   test 'GET pages#regional_partners_index shows the partners carousel' do
     PagesController.stub_any_instance(:get_all_partners, fake_partners) do
       get partners_path
