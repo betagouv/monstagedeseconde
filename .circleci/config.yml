@@ -152,8 +152,8 @@ jobs: # a collection of steps
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "64:44:1e:17:fb:00:ae:75:15:ba:d2:cb:ad:c2:95:ee"
-            - "SHA256:Vf+oSncwt0iZXjJXZuowchMvKTQqLZfwDOXrFfuMmsc"
+            - "46:88:9a:2e:cf:87:4a:5d:29:61:e3:50:66:b7:dd:71"
+            - "SHA256:sUt7KnPUzHxVnIq/8VBPxPbOksyl2ccsa+gWWHi3iBk"
       - run:
           name: Deploy staging to Clever Cloud (non-blocking)
           # A deploy failure must not turn the pipeline red: only tests gate the CI.
