@@ -127,9 +127,9 @@ group :development do
 end
 
 # letter_thief intercepte les emails sortants et les stocke en base (consultables sur
-# /letter_thief). Disponible en review pour remplacer Mailtrap. launchy est requis pour
-# l'ouverture automatique du navigateur en développement.
-group :development, :review do
+# /letter_thief). Disponible en review et en staging. launchy est requis pour l'ouverture
+# automatique du navigateur en développement.
+group :development, :review, :staging do
   gem "letter_thief"
   gem "launchy"
 end

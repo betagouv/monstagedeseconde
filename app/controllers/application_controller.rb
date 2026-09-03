@@ -66,6 +66,25 @@ class ApplicationController < ActionController::Base
   end
   helper_method :user_presenter, :current_user_or_visitor, :employers_only?
 
+  CHATMD_HOST = 'https://chatmd.forge.apps.education.fr'
+
+  # ChatMD bubble is shown on every page once signed in,
+  # but only on the student login page before that.
+  def show_chatmd?
+    return false unless Flipper.enabled?(:chatmd)
+    return false if chatmd_iframe_url.blank?
+
+    user_signed_in? || (controller_name == 'pages' && action_name == 'student_login')
+  end
+
+  def chatmd_iframe_url
+    markdown_url = ENV['CHATMD_MARKDOWN_URL'].presence || prismic_chatmd_markdown_url
+    return nil if markdown_url.blank?
+
+    "#{CHATMD_HOST}/##{markdown_url}"
+  end
+  helper_method :show_chatmd?, :chatmd_iframe_url
+
   def check_for_maintenance
     redirect_to '/maintenance.html' if Flipper.enabled?(:maintenance_mode)
   end
@@ -128,6 +147,19 @@ class ApplicationController < ActionController::Base
     api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
     response = api.query([ Prismic::Predicates.at('document.type', 'top_banner') ])
     response.results.first
+  end
+
+  def prismic_chatmd_markdown_url
+    return nil if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
+
+    Rails.cache.fetch('prismic_chatmd_markdown_url', expires_in: 1.hour) do
+      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
+      response = api.query([Prismic::Predicates.at('document.type', 'chatbot')])
+      response.results.first.try(:[], 'chatbot.markdown_file').try(:url)
+    rescue StandardError => e
+      Rails.logger.error "Error fetching Prismic chatbot: #{e}"
+      nil
+    end
   end
 
   def check_school_requested
