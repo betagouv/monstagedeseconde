@@ -7,6 +7,7 @@
   "street": "Rue de Grenelle",
   "zipcode": "75007",
   "city": "Paris",
+  "siret": null,
   "remote_id": "remote_id",
   "permalink": "http://monsite.com",
   "max_candidates": 1,

@@ -20,6 +20,7 @@ module InternshipOffers
     validates :permalink, presence: true,
                           format: { without: /.*(test|staging).*/i, message: 'Le lien ne doit pas renvoyer vers un environnement de test.' }
     validates :employer_description, presence: true, length: { maximum: EMPLOYER_DESCRIPTION_MAX_SIZE }
+    validates :siret, length: { is: 14 }, allow_blank: true
 
     validate :college_xor_lycee
 
@@ -94,6 +95,7 @@ module InternshipOffers
                  street
                  zipcode
                  city
+                 siret
                  remote_id
                  permalink
                  sector_uuid

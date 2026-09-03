@@ -184,8 +184,41 @@ module Api
         assert_equal false, internship_offer.qpv
 
         assert_equal permalink, internship_offer.permalink
+        assert_equal siret, internship_offer.siret
 
         assert_equal JSON.parse(internship_offer.to_json), json_response
+      end
+
+      test 'POST #create as operator with invalid siret renders validation error' do
+        sector = Sector.find_by(name: 'Fonction publique')
+        assert_no_difference('InternshipOffer.count') do
+          post api_v2_internship_offers_path(
+            params: {
+              token: "Bearer #{@token}",
+              internship_offer: {
+                title: 'title',
+                description: 'description',
+                employer_name: 'employer_name',
+                employer_description: 'employer_description',
+                siret: '123',
+                'coordinates' => { latitude: 1, longitude: 1 },
+                street: "Avenue de l'opéra",
+                zipcode: '75002',
+                city: 'Paris',
+                sector_uuid: sector.uuid,
+                remote_id: 'test_invalid_siret',
+                permalink: 'http://monsite.com',
+                max_candidates: 2,
+                is_public: true,
+                grades: %w[seconde],
+                weeks: InternshipOffers::Api.mandatory_seconde_weeks
+              }
+            }
+          )
+        end
+        assert_response :bad_request
+        assert_equal 'VALIDATION_ERROR', json_response['code']
+        assert_equal [ 'ne fait pas la bonne longueur (doit comporter 14 caractères)' ], json_response['error']['siret']
       end
 
       test 'POST #create when missing coordinates works to create internship_offers' do
@@ -304,7 +337,7 @@ module Api
           stub_request(:get, 'https://nominatim.openstreetmap.org/search?accept-language=fr&addressdetails=1&format=json&q=75002,%20France').to_return(geocoder_response)
 
           assert_difference('InternshipOffer.count', 0) do
-            documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
+            documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_missing_mandatory_weeks) do
               post api_v2_internship_offers_path(
                 params: {
                   token: "Bearer #{@token}",
@@ -356,7 +389,7 @@ module Api
           grades = %w[troisieme seconde]
 
           assert_difference('InternshipOffer.count', 0) do
-            documents_as(endpoint: :'v2/internship_offers/create', state: :created) do
+            documents_as(endpoint: :'v2/internship_offers/create', state: :unprocessable_entity_mixed_grades) do
               post api_v2_internship_offers_path(
                 params: {
                   token: "Bearer #{@token}",

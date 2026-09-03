@@ -7,7 +7,8 @@
   "street": "1 rue du poulet",
   "zipcode": "75001",
   "city": "Paris",
-  "remote_id": "5",
+  "siret": "11122233300000",
+  "remote_id": "4",
   "permalink": "https://google.fr",
   "max_candidates": 2,
   "published_at": null,
@@ -17,7 +18,7 @@
     "longitude": 2.333333
   },
   "weeks": [
-    "2026-W26"
+    "2027-W25"
   ],
   "grades": [
     "seconde"

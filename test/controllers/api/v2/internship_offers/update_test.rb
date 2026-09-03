@@ -114,6 +114,7 @@ module Api
                 token: "Bearer #{@token}",
                 internship_offer: {
                   title: new_title,
+                  siret: '90943224700015',
                   max_candidates: 2,
                   published_at: nil,
                   is_public: true,
@@ -128,6 +129,7 @@ module Api
           assert_response :success
           assert_equal new_title, @internship_offer.reload.title
           assert_equal 2, @internship_offer.max_candidates
+          assert_equal '90943224700015', @internship_offer.siret
           assert_equal JSON.parse(@internship_offer.to_json), json_response
           assert @internship_offer.reload.is_public
           assert @internship_offer.reload.handicap_accessible
