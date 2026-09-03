@@ -94,6 +94,22 @@ class InternshipOfferTest < ActiveSupport::TestCase
     end
   end
 
+  test 'school_year is computed from weeks when left to its SQL default of 0' do
+    travel_to(Date.new(2025, 3, 1)) do
+      internship_offer = build(:weekly_internship_offer_2nde, :week_1, school_year: 0)
+      internship_offer.save!
+      assert_equal 2025, internship_offer.school_year
+    end
+  end
+
+  test 'api offer school_year is computed from weeks at creation' do
+    travel_to(Date.new(2025, 3, 1)) do
+      api_offer = build(:api_internship_offer_2nde, school_year: 0)
+      api_offer.save!
+      assert_equal 2025, api_offer.school_year
+    end
+  end
+
   test 'targeted_grades enum' do
     travel_to Date.new(2023, 10, 1) do
       internship_offer = create(:weekly_internship_offer_2nde, :week_1)

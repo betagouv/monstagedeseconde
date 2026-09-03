@@ -488,4 +488,25 @@ namespace :retrofit do
       PrettyConsole.say_in_green "#{counter} offers have been processed"
     end
   end
+
+  desc '03/09/2026 - backfill internship offers school_year still set to 0 (from their weeks)'
+  task backfill_zero_school_years: :environment do |task|
+    PrettyConsole.announce_task(task) do
+      counter = 0
+      skipped = 0
+      InternshipOffer.where(school_year: 0).includes(:weeks).find_each do |offer|
+        reference_date = offer.weeks.map(&:week_date).max || offer.last_date || offer.first_date
+        if reference_date.nil?
+          skipped += 1
+          next
+        end
+
+        offer.update_columns(school_year: SchoolYear::Floating.new(date: reference_date).year_in_june)
+        counter += 1
+        print '.' if (counter % 100).zero?
+      end
+      PrettyConsole.say_in_green "#{counter} offers have been updated"
+      PrettyConsole.say_in_yellow "#{skipped} offers skipped (no week nor date)" if skipped.positive?
+    end
+  end
 end

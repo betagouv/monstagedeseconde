@@ -100,6 +100,7 @@ class InternshipOffer < ApplicationRecord
   after_initialize :init
 
   before_save :sync_first_and_last_date, unless: :still_unpublished?
+  before_save :set_school_year
   before_save :reverse_academy_by_zipcode,
               :make_sure_area_is_set,
               :entreprise_used_name,
@@ -479,7 +480,17 @@ class InternshipOffer < ApplicationRecord
   end
 
   def init
-    self.school_year ||= SchoolYear::Current.year_in_june
+    # The school_year column has a SQL default of 0 (NOT NULL), so a bare
+    # `||=` can never detect a missing value: treat 0 as "not set".
+    self.school_year = SchoolYear::Current.year_in_june if new_record? && school_year.to_i.zero?
+  end
+
+  # school_year is the year of the end of the school year the offer belongs
+  # to (e.g. 2025/2026 -> 2026). It is derived from the offer weeks.
+  def set_school_year
+    last_week_date = weeks.map(&:week_date).max
+    self.school_year = SchoolYear::Floating.new(date: last_week_date).year_in_june if last_week_date
+    self.school_year = SchoolYear::Current.year_in_june if school_year.to_i.zero?
   end
 
   def already_applied_by_student?(student)
