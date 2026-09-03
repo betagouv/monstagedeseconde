@@ -71,6 +71,7 @@ class ApplicationController < ActionController::Base
   # ChatMD bubble is shown on every page once signed in,
   # but only on the student login page before that.
   def show_chatmd?
+    return false unless Flipper.enabled?(:chatmd)
     return false if chatmd_iframe_url.blank?
 
     user_signed_in? || (controller_name == 'pages' && action_name == 'student_login')

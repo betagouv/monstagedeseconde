@@ -7,10 +7,12 @@ class ChatmdTest < ActionDispatch::IntegrationTest
 
   setup do
     ENV['CHATMD_MARKDOWN_URL'] = 'https://example.com/chatbot.md'
+    Flipper.enable(:chatmd)
   end
 
   teardown do
     ENV.delete('CHATMD_MARKDOWN_URL')
+    Flipper.disable(:chatmd)
   end
 
   test 'chatmd bubble is shown on the student login page for a visitor' do
@@ -39,6 +41,13 @@ class ChatmdTest < ActionDispatch::IntegrationTest
 
   test 'chatmd bubble is hidden when no markdown url is configured' do
     ENV.delete('CHATMD_MARKDOWN_URL')
+    get student_login_path
+
+    assert_select '.chatmd-widget', count: 0
+  end
+
+  test 'chatmd bubble is hidden when the chatmd feature is disabled' do
+    Flipper.disable(:chatmd)
     get student_login_path
 
     assert_select '.chatmd-widget', count: 0

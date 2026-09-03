@@ -59,6 +59,7 @@ end
 # A list of features to be deployed on first push
 features = [
   :maintenance_mode,
+  :chatmd,
 ]
 
 def database_exists?

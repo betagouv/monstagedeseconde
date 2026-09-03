@@ -13,6 +13,7 @@ def import_flipper_local_file
   seed.enable(:multi_offer)
   seed.enable(:student_signature)
   seed.enable(:show_modal_info)
+  seed.enable(:chatmd)
 
 
   # keep following lines commented out, they are for future use
