@@ -40,13 +40,11 @@ class PagesController < ApplicationController
     if employers_only?
       redirect_to root_path
     else
-      @faqs = get_faqs('student')
       @resources = get_resources('student')
     end
   end
 
   def pro_landing
-    @faqs = get_faqs('pro')
     @resources = get_resources('pro')
     @partners = get_all_partners
   end
@@ -55,7 +53,6 @@ class PagesController < ApplicationController
     if employers_only?
       redirect_to root_path
     else
-      @faqs = get_faqs('education')
       @resources = get_resources('education')
       @school_weeks_list, @preselected_weeks_list = current_user_or_visitor.compute_weeks_lists
       @fim_url = build_fim_url
@@ -63,7 +60,6 @@ class PagesController < ApplicationController
   end
 
   def statistician_landing
-    @faqs = get_faqs('statistician')
     @resources = get_resources('statistician')
   end
 
@@ -72,7 +68,6 @@ class PagesController < ApplicationController
   end
 
   def search_companies
-    @faqs = get_faqs('student')
     @resources = get_resources('student')
   end
 
@@ -119,58 +114,21 @@ class PagesController < ApplicationController
   end
 
   def student_login
-    @faqs = get_faqs('student')
     @resources = get_resources('student')
     @educonnect_url = build_educonnect_url
   end
 
   def pro_login
-    @faqs = get_faqs('pro')
   end
 
   def statistician_login
-    @faqs = get_faqs('statistician')
   end
 
   def school_management_login
-    @faqs = get_faqs('education')
     @fim_url = build_fim_url
   end
 
   private
-
-  def link_resolver
-    @link_resolver ||= Prismic::LinkResolver.new(nil) do |link|
-      # URL for the category type
-      if link.type == 'faq'
-        '/faq/' + link.uid
-      # Default case for all other types
-      else
-        '/'
-      end
-    end
-  end
-
-  def get_faqs(tag)
-    return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
-
-    Rails.cache.fetch("prismic_faqs_#{tag}", expires_in: 1.hour) do
-      api = Prismic.api(ENV['PRISMIC_URL'], ENV['PRISMIC_API_KEY'])
-
-      begin
-        response = api.query([
-                               Prismic::Predicates.at('document.type', 'faq'),
-                               Prismic::Predicates.at('document.tags', [tag])
-                             ],
-                             { 'orderings' => '[my.faq.order]' })
-      rescue StandardError => e
-        Rails.logger.error "Error fetching Prismic FAQs: #{e}"
-        return []
-      end
-
-      serialize_faq(response.results)
-    end
-  end
 
   def get_resources(tag)
     return [] if ENV['PRISMIC_URL'].blank? || ENV['PRISMIC_API_KEY'].blank? || Rails.env.test?
@@ -189,16 +147,6 @@ class PagesController < ApplicationController
       end
 
       serialize_resource(response.results)
-    end
-  end
-
-  def serialize_faq(results)
-    results.map do |doc|
-      {
-        question: doc['faq.question'].as_text,
-        answer: doc['faq.answer'].as_html(link_resolver),
-        url: doc['faq.url'].try(:as_text)
-      }
     end
   end
 
