@@ -317,6 +317,11 @@ components:
         employer_name:
           type: string
           example: BNP Paribas
+        siret:
+          type: string
+          description: Numéro SIRET de l'entreprise proposant le stage (14 chiffres, peut être null)
+          example: "11122233300000"
+          nullable: true
         employer_description:
           maxLength: 275
           type: string
@@ -379,6 +384,7 @@ components:
         employer_description: "Créateur de lotions, de parfums et de produits cosmé\
           tiques, embaumeur"
         employer_name: BNP Paribas
+        siret: "11122233300000"
         title: Stage d'observation du métier de chef de service
         lunch_break: 12h-14h
         zipcode: "75001"

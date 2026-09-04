@@ -66,6 +66,7 @@ module Api
             assert_equal "Paris", json_response["internshipOffers"][0]["city"]
             assert_equal "Tours", json_response["internshipOffers"][1]["city"]
             assert_equal "paris_id", json_response["internshipOffers"][0]["remote_id"]
+            assert_equal "11122233300000", json_response["internshipOffers"][0]["siret"]
           end
         end
       end

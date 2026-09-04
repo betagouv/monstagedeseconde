@@ -91,6 +91,7 @@ The internship offers described below are intended for **quatrième**, **troisi�
     title: Title of the internship offer
     description: Description of the internship offer
     employer_name: Name of the company offering the internship
+    siret: SIRET number of the company offering the internship (14 digits, may be null)
     employer_description: Description of the company offering the internship
     employer_website: Website link to the company offering the internship
 
@@ -255,6 +256,7 @@ In addition to these general errors, request-specific errors will be detailed fo
 * **internship_offer.employer_name** *(string, required* ≤ 150 characters)  
 * **internship_offer.employer_description** *(string, required* ≤ 275 characters)  
 * **internship_offer.employer_website** *(string, optional* ≤ 560 characters)  
+* **internship_offer.siret** *(string, optional, 14 digits)*: SIRET number of the company offering the internship  
 * **internship_offer.coordinates** *(object/geography, optional)*: `{ "latitude": 1, "longitude": 1 }`  
 * **internship_offer.street** *(text, optional* ≤ 500 characters)  
 * **internship_offer.zipcode** *(string, required* ≤ 5 characters)  
@@ -277,7 +279,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
      -H "Accept: application/json" \
      -H "Content-type: application/json" \
      -X POST \
-     -d '{"internship_offer": {"title":"title","description":"description","employer_website":"http://google.fr","street":"Tour Effeil","zipcode":"75002","city":"Paris","employer_name":"employer_name", "employer_description":"employer_description","remote_id":"test_2","permalink":"https://www.google.fr","sector_uuid": "1ce60ecc-273d-4c73-9b1a-2f5ee14e1bc6", "coordinates":{"latitude":1.0,"longitude":1.0}}}' \
+     -d '{"internship_offer": {"title":"title","description":"description","employer_website":"http://google.fr","street":"Tour Effeil","zipcode":"75002","city":"Paris","employer_name":"employer_name", "employer_description":"employer_description","siret":"11122233300000","remote_id":"test_2","permalink":"https://www.google.fr","sector_uuid": "1ce60ecc-273d-4c73-9b1a-2f5ee14e1bc6", "coordinates":{"latitude":1.0,"longitude":1.0}}}' \
      -vvv \
      $ENV/api/internship_offers
 ```
@@ -352,6 +354,7 @@ curl -H "Authorization: Bearer $API_TOKEN" \
 * **internship_offer.employer_name** *(string)*  
 * **internship_offer.employer_description** *(string, ≤ 275 characters)*  
 * **internship_offer.employer_website** *(string)*  
+* **internship_offer.siret** *(string, optional, 14 digits)*  
 * **internship_offer.coordinates** *(object/geography)*: `{ "latitude": 1, "longitude": 1 }`  
 * **internship_offer.street** *(text)*  
 * **internship_offer.zipcode** *(string)*  

@@ -58,6 +58,7 @@ module Api
             assert_response :success
             assert_equal 2, json_response['internshipOffers'].count
             assert_equal 2, json_response['pagination']['totalInternshipOffers']
+            assert_equal '11122233300000', json_response['internshipOffers'][0]['siret']
             assert_equal 1, json_response['pagination']['totalPages']
             assert_equal true, json_response['pagination']['isFirstPage']
           end

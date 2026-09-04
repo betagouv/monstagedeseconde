@@ -12,11 +12,12 @@
   },
   "internshipOffers": [
     {
-      "id": 20,
-      "title": "Stage de 3eme - 4",
+      "id": 48,
+      "title": "Stage de 3eme - 3",
       "description": "Lorem ipsum dolor",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/20?page=1&utm_source=operator-9",
+      "siret": "11122233300000",
+      "url": "http://www.example.com/offres-de-stage/48?page=1&utm_source=operator-6",
       "city": "Paris",
       "zipcode": "75001",
       "street": "1 rue du poulet",
@@ -41,11 +42,12 @@
       "qpv": false
     },
     {
-      "id": 19,
-      "title": "Stage de 3eme - 3",
+      "id": 47,
+      "title": "Stage de 3eme - 2",
       "description": "Lorem ipsum dolor",
       "employer_name": "Octo",
-      "url": "http://www.example.com/offres-de-stage/19?page=1&utm_source=operator-9",
+      "siret": "11122233300000",
+      "url": "http://www.example.com/offres-de-stage/47?page=1&utm_source=operator-6",
       "city": "Paris",
       "zipcode": "75001",
       "street": "1 rue du poulet",
