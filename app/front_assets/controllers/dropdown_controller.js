@@ -8,7 +8,7 @@ export default class extends Controller {
     const menu = this.menuTarget
     const isShown = menu.style.display === "block"
     menu.style.display = isShown ? "none" : "block"
-    this.element.querySelector("button").setAttribute(
+    event.currentTarget.setAttribute(
       "aria-expanded",
       isShown ? "false" : "true"
     )
